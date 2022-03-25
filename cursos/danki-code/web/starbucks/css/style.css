@@ -5,15 +5,22 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+html, body {
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
 .center {
   display: flex;
   flex-wrap: wrap;
-  max-width: 1280;
+  max-width: 90%;
   margin: 0 auto;
   padding: 0 2%;
 }
 
-.header {
+header {
+  height: 200px;
   padding: 20px 0;
 }
 
@@ -34,10 +41,82 @@
   margin-right: 15px;
 }
 
+section.sobre {
+  height: calc(100% - 200px);
+  position: relative;
+}
+
+.extras {
+  position: absolute;
+  bottom: -550px;
+  right: -600px;
+  width: 1200px;
+  height: 1200px;
+  border-radius: 50%;
+  background-color: #017143;
+}
+
+.social-media {
+  position: absolute;
+  right: 620px;
+  top: 200px;
+}
+
+.social-media img {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 30px 0;
+}
+
+.texto-sobre {
+  display: block;
+  margin-top: 100px;
+}
+
+.texto-sobre h1 {
+  font-size: 40px;
+}
+
+.texto-sobre h1 > span.texto-destaque {
+  color: #017143;
+}
+
+.texto-sobre p {
+  margin: 20px 0;
+  color: black;
+  font-size: 14px;
+  max-width: 800px;
+  font-weight: bold;
+}
+
+.texto-sobre button {
+  border: 0;
+  background-color: #017143;
+  color: white;
+  border-radius: 20px;
+  width: 120px;
+  height: 40px;
+  cursor: pointer;
+}
 
 /*
-Alterações pessoais - Fica atento caso haja confitos
+Alterações pessoais
 */
-body {
-  padding-top: 20px;
+
+#img-grande {
+  max-height: 500px;
+}
+
+.sabores {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  display: flex;
+}
+
+.sabores img {
+  height: 100px;
+  margin: 0 25px;
 }

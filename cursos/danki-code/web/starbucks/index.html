@@ -12,12 +12,44 @@
     <div class="center">
       <div class="logo"><img src="assets/logo.png" alt=""></div><!-- div.logo -->
       <nav class="menu">
-        <a href="#">Home</a>
+        <a href="#">Inicio</a>
         <a href="#">Menu</a>
         <a href="#">Novidades</a>
         <a href="#">Contato</a>
       </nav>
     </div><!-- div.center -->
   </header>
+  <section class="sobre">
+    <div class="center">
+      <div class="texto-sobre">
+        <h1>Não é apenas café<br>É <span class="texto-destaque">StarBucks</span></h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec scelerisque est tellus. Morbi non nisi id enim fermentum egestas et sed dui. Donec nisl justo, semper quis tempus at, mattis at magna. Curabitur vestibulum hendrerit facilisis. Pellentesque id ex non libero fermentum hendrerit a et justo. Integer id leo in nulla rhoncus congue. Nunc vulputate, sem eget vulputate venenatis, nisl magna sodales turpis, sed volutpat sem nisi ac mi. Maecenas auctor nisi est, eget aliquam felis sagittis non. In lacinia pellentesque fringilla. Mauris vestibulum eget ex et dignissim. Vestibulum lorem turpis, sagittis vitae mauris at, placerat placerat nunc. Quisque nibh turpis, ultricies euismod tempor a, fermentum eu eros. Quisque ipsum tortor, laoreet pulvinar sem nec, vestibulum elementum est. Donec volutpat sem id commodo ullamcorper. Nulla laoreet odio ut nulla rhoncus, eu sodales eros blandit. </p>
+        <button>Saiba Mais</button>
+      </div>
+    </div>
+    <div class="extras">
+      <img id="img-grande" src="assets/img1.png" alt="">
+      <div class="social-media">
+        <a href=""><img src="assets/facebook.png" alt=""></a>
+        <a href=""><img src="assets/instagram.png" alt=""></a>
+        <a href=""><img src="assets/twitter.png" alt=""></a>
+      </div>
+    </div><!-- div.extras -->
+    <!-- Adionado ao projeto -->
+    <div class="sabores">
+      <img src="assets/thumb1.png" onmouseover="mudarImg('assets/img1.png')" id="thumb1" alt="">
+      <img src="assets/thumb2.png" onmouseover="mudarImg('assets/img2.png')" alt="">
+      <img src="assets/thumb3.png" onmouseover="mudarImg('assets/img3.png')" alt="">
+    </div><!-- div.sabores -->
+  </section><!-- section.sobre -->
+
+  <!-- Adionado ao projeto -->
+  <script lang="javascript">
+    console.log('test');
+    function mudarImg(src) {
+      let img = document.getElementById('img-grande');
+      img.src = src;
+    }
+  </script>
 </body>
 </html>
