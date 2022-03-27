@@ -11,9 +11,11 @@ html, body{
 .center {
   width: 1280px;
   margin: 0 auto;
+  padding: 0 2%;
 }
 
 .header {
+  min-width: 1280px;
   width: 100%;
   height: 90px;
   background-color: #212343;
@@ -30,6 +32,7 @@ html, body{
 }
 
 .container-banner{
+  min-width: 1280px;
   width: 100%;
   height: 557px;
   background-image: url('../images/header_bg.png');
@@ -50,6 +53,9 @@ html, body{
   border: 8px solid #ccc;
   float: right;
   background-color: white;
+  border-color: rgba(120, 120, 120, .5);
+  border-style: solid;
+  background-clip: padding-box;
 }
 
 .form h2{
@@ -98,3 +104,97 @@ form > .input-submit-container > input{
 .input-submit-container > input:hover{
   background-color: #323665;
 }
+
+.container-list{
+  padding: 30px;
+  margin-top: 40px;
+  float: left;
+  width: 619px;
+  height: 270px;
+  background-color: rgba(33, 35, 67, .7);
+}
+
+.container-list ul{
+  list-style-position: inside;
+}
+
+.container-list ul li{
+  margin-top: 18px;
+  color: white;
+}
+
+.container-2{
+  min-width: 1280px;
+  padding: 70px 0;
+  background-color: #DDDDDD;
+  text-align: center;
+}
+
+.container-2 h2{
+  font-weight: normal;
+}
+
+.container-2 p{
+  width: 698px;
+  margin: 15px 0;
+  display: inline-block;
+  text-align: justify;
+}
+
+.arrow{
+  position: relative;
+  top: -20px;
+  left: 50%;
+  margin-left: -20px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../images/arrow.png');
+  background-size: 100% 100%;
+}
+
+.section-1{
+  padding: 90px 0;
+}
+
+.section-1 h2{
+  text-align: center;
+  color: #462663;
+  font-weight: normal;
+}
+
+.container-section{
+  margin-top: 40px;
+  text-align: center;
+}
+
+.container-single{
+  float: left;
+  width: 33.333%;
+  padding: 30px;
+}
+
+.container-single p{
+  text-align: justify;
+  padding: 10px 25px;
+}
+
+.container-single img{
+  width: 70px;
+}
+
+.clear{
+  clear: both;
+}
+
+.footer{
+  border-top: 2px solid #888888;
+  padding: 10px 0;
+  text-align: center;
+  color: #888;
+}
+
+.footer p{
+  margin: 8px 0;
+}
+
+
