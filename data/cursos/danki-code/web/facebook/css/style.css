@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+
+.center{
+  max-width: 1280px;
+  padding: 0 2%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.clear{
+  clear: both;
+}
+
+header{
+  background: #2f5a92;
+  padding: 8px 0;
+}
+
+.logo{
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -40%);
+  height: 100%;
+  float: left;
+  color: white;
+}
+
+.logo h2{
+  font-size: 29px;
+  font-weight: normal;
+}
+
+form.form-login{
+  float: right;
+}
+
+.form-login .form-element{
+  display: inline-block;
+  margin-right: 15px;
+  margin-top: 5px;
+}
+
+.form-element p{
+  color: white;
+  font-size: 14px;
+}
+
+.form-element input{
+  margin-top: 4px;
+  border: 0;
+  height: 22px;
+  padding-left: 3px;
+}
+
+.form-element input[type=submit]{
+  height: auto;
+  cursor: pointer;
+  border: 0;
+  color: white;
+  background: #1969e5;
+  border: 2px solid #4c87df;
+  padding: 3px 5px;
+}
+
+.form-element input[type=submit]:hover{
+  background: #215ab2;
+}
+
+section.main{
+  background: linear-gradient(white, #D3D8E8);
+  padding: 40px 0;
+}
+
+.img-rede{
+  float: left;
+  width: 60%;
+}
+
+.img-rede img{
+  max-width: 100%;
+}
+
+.abrir-conta{
+  width: 40%;
+  float: right;
+}
+
+.abrir-conta h2{
+  color: black;
+  font-size: 35px;
+}
+
+.abrir-conta h3{
+  font-size: 19px;
+  color: rgb(30, 30, 30);
+  margin-top: 8px;
+  font-weight: normal;
+}
+
+form.criar-conta{
+  margin-top: 10px;
+}
+
+.w50{
+  width: 50%;
+  float: left;
+  padding: 0 5px;
+}
+
+.w100{
+  width: 100%;
+  float: left;
+  padding: 0 5px;
+}
+
+form.criar-conta input{
+  width: 100%;
+  margin-top: 8px;
+}
+
+form.criar-conta input{
+  height: 40px;
+  padding-left: 10px;
+  font-size: 20px;
+  border: 1px solid #a5dcff;
+  border-radius: 5px;
+}
+
+form.criar-conta input[type=submit]{
+  height: 40px;
+  background: linear-gradient(#67ae55, #578843);
+  color: white;
+  cursor: pointer;
+  border: 0;
+  font-size: 19px;
+}
