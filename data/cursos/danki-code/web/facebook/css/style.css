@@ -50,7 +50,7 @@ form.form-login{
   font-size: 14px;
 }
 
-.form-element input{
+.form-element input[type=text],.form-element input[type=email],.form-element input[type=password]{
   margin-top: 4px;
   border: 0;
   height: 22px;
@@ -72,8 +72,17 @@ form.form-login{
 }
 
 section.main{
+  position: relative;
   background: linear-gradient(white, #D3D8E8);
   padding: 40px 0;
+  height: 70vh;
+}
+
+section.main > .center{
+  display: flex;
+  justify-content: center;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .img-rede{
@@ -118,12 +127,12 @@ form.criar-conta{
   padding: 0 5px;
 }
 
-form.criar-conta input{
+form.criar-conta input[type=text],form.criar-conta input[type=password],form.criar-conta input[type=email]{
   width: 100%;
   margin-top: 8px;
 }
 
-form.criar-conta input{
+form.criar-conta input[type=text], form.criar-conta input[type=password], form.criar-conta input[type=email], form.criar-conta input[type=date]{
   height: 40px;
   padding-left: 10px;
   font-size: 20px;
@@ -136,6 +145,60 @@ form.criar-conta input[type=submit]{
   background: linear-gradient(#67ae55, #578843);
   color: white;
   cursor: pointer;
+  width: 50%;
   border: 0;
   font-size: 19px;
+  margin-top: 10px;
+}
+
+form .w100 h2{
+  color: #1d2129;
+  font-size: 22px;
+  font-weight: normal;
+  margin-top: 5px;
+}
+
+.input-radio{
+  float: left;
+  padding: 10px;
+}
+
+.input-radio label{
+  font-size: 18px;
+  display: inline-block;
+}
+
+div.input-radio > input[type=radio] {
+  width: auto !important;
+  display: inline-block;
+}
+
+section.linguas{
+  padding: 30px 0;
+  background: white;
+}
+
+section.linguas a{
+  text-decoration: none;
+  padding-right: 10px;
+  color: #365899;
+  font-size: 14px;
+}
+
+section.linguas a.selected-lingua{
+  color: #737373;
+}
+
+section.linguas .center{
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+section.linguas div#lorem{
+  border: 0;
+  margin-top: 10px;
+}
+
+footer{
+  font-size: 10px;
 }
