@@ -18,10 +18,11 @@ header{
   width: 100%;
   height: 90vh;
   padding: 40px 2%;
-  max-height: 700px;
+  /* max-height: 700px; */
   background-size: cover;
   background-position: center;
   background-image: url('../images/capa.png');
+  font-weight: 300;
 }
 
 .clear{
@@ -60,6 +61,7 @@ header li a {
 }
 
 .chamada1 h2{
+  font-weight: 300;
   font-size: 40px;
   color: white;
 }
@@ -68,4 +70,60 @@ header li a {
   font-size: 15px;
   color: white;
   margin-top: 10px;
+}
+
+section.sessao1{
+  width: 100%;
+  background-color: #472562;
+  padding: 0px 2%;
+}
+
+section.sessao1 .container{
+  max-width: 800px;
+}
+
+.texto-sessao1{
+  float: left;
+  width: 50%;
+  color: white;
+}
+
+.texto-sessao1 h2{
+  font-weight: 300;
+}
+
+.texto-sessao1 p{
+  font-size: 13px;
+  margin-top: 20px;
+}
+
+.texto-sessao1 ul{
+  font-size: 13px;
+  list-style-position: inside;
+}
+
+.texto-sessao1 ul li{
+  float: left;
+  width: 100%;
+}
+
+.btn1-texto{
+  background-color: #FF703D;
+  width: 165px;
+  height: 44px;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+  text-align: center;
+  line-height: 44px;
+  border-radius: 25px;
+}
+
+.device-sessao1{
+  float: left;
+  width: 50%;
+  height: 300px;
+  background-image: url('../images/device.png');
+  background-repeat: no-repeat;
+  background-size: contain;
 }
