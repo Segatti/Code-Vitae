@@ -18,7 +18,7 @@ header{
   width: 100%;
   height: 90vh;
   padding: 40px 2%;
-  /* max-height: 700px; */
+  min-height: 800px;
   background-size: cover;
   background-position: center;
   background-image: url('../images/capa.png');
@@ -56,6 +56,40 @@ header nav.desktop-menu li a {
 
 header nav.mobile-menu{
   display: none;
+  width: 32px;
+  height: 32px;
+  background-image: url('../images/menu.png');
+  background-size: 100% 100%;
+}
+
+nav.mobile-menu:hover ul{
+  opacity: 1;
+}
+
+nav.mobile-menu ul li:hover{
+  background-color: rgb(230, 230, 230);
+}
+
+nav.mobile-menu ul{
+  position: absolute;
+  transition: 0.5s;
+  opacity: 0;
+  background-color: white;
+  width: 100%;
+  left: 0;
+  top: 80px;
+  list-style-type: none;
+  text-align: center;
+}
+
+nav.mobile-menu ul li{
+  padding: 8px 0;
+  border-bottom: 1px solid black;
+}
+
+nav.mobile-menu ul li a{
+  color: black;
+  text-decoration: none;
 }
 
 
@@ -138,12 +172,38 @@ section.sessao1 .container{
   background-size: 100% 100%;
 }
 
+.sessao2{
+  padding: 80px 2%;
+  background-color: white;
+  text-align: center;
+}
+
+.sessao2 h2{
+  color: #472663;
+  font-weight: 300;
+}
+
+.sessao2 p{
+  margin-top: 30px;
+  max-width: 900px;
+  display: inline-block;
+}
+
+.sessao2 .container{
+  max-width: 1000px;
+}
+
+.sessao2 img{
+  width: 100%;
+  margin-top: 40px;
+}
+
 @media screen and (max-width: 768px){
-  nav.desktop-menu{
+  header nav.desktop-menu{
     display: none;
   }
 
-  nav.mobile-menu{
+  header nav.mobile-menu{
     display: block;
   }
 
