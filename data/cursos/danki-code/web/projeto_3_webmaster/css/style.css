@@ -34,6 +34,11 @@ header .logo{
   width: 160px;
   height: 40px;
   background-color: #ccc;
+  background-image: url('../images/logo-danki.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  margin-top: -5px;
 }
 
 header nav{
@@ -227,7 +232,7 @@ section.sessao1 .container{
 .wrapper-part1{
   max-width: 600px;
   float: right;
-  padding-right: 50px;
+  padding: 0 50px;
 }
 
 .part2{
@@ -240,7 +245,7 @@ section.sessao1 .container{
 .sobre-autor{
   float: left;
   max-width: 600px;
-  padding-left: 50px;
+  padding: 0 50px;
 }
 
 .wrapper-titulo-autor{
@@ -274,6 +279,8 @@ section.sessao1 .container{
   height: 40px;
   border-radius: 20px;
   background-color: gray;
+  background-image: url('../images/autor.jpg');
+  background-size: 100% 100%;
 }
 
 .texto-autor{
@@ -303,6 +310,115 @@ section.sessao1 .container{
   margin-right: 8px;
   cursor: pointer;
   background-color: rgb(200, 200, 200);
+}
+
+.form{
+  float: left;
+  width: 50%;
+  color: white;
+  padding: 0 50px;
+  margin: 0 auto;
+}
+
+.form h2{
+  
+  font-size: 23px;
+  font-weight: 300;
+}
+
+.form p{
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.form form{
+  margin-top: 15px;
+}
+
+.form form input[type=text]{
+  width: 100%;
+  margin-top: 8px;
+  height: 58px;
+  padding-left: 8px;
+  line-height: 58px;
+  border: 1px solid rgb(200, 200, 200);
+}
+
+.form textarea{
+  width: 100%;
+  padding: 15px;
+  height: 160px;
+  border: 1px solid rgb(200, 200, 200);
+  margin-top: 8px;
+  resize: none;
+}
+
+.form form input[type=submit]{
+  background-color: #FF703D;
+  border: 0;
+  width: 165px;
+  height: 44px;
+  color: white;
+  cursor: pointer;
+  margin-top: 15px;
+  border-radius: 25px;
+}
+
+.map-wraper{
+  float: right;
+  width: 50%;
+  color: white;
+  padding: 0 50px;
+  margin: 0 auto;
+}
+
+.map-wraper h2{
+  font-size: 23px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.map-wraper3{
+  width: 100%;
+  height: 100%;
+  float: left;
+  max-width: 480px;
+  max-height: 400px;
+  position: relative;
+}
+
+.map-wraper2{
+  width: 100%;
+  padding-top: calc(100% - 80px);
+}
+
+.map{
+  width: 100%;
+  height: 100%;
+  top: 0;
+  position: absolute;
+  background: white;
+  border: 5px solid rgb(200, 200, 200);
+}
+
+.sessao4{
+  background-color: #472563;
+  padding: 100px 0;
+}
+
+footer{
+  padding: 40px 2%;
+  background: #192123;
+  color: white;
+  font-size: 14px;
+}
+
+footer p:nth-of-type(1){
+  float: left;
+}
+
+footer p:nth-of-type(2){
+  float: right;
 }
 
 @media screen and (max-width: 768px){
@@ -372,4 +488,41 @@ section.sessao1 .container{
   .device-sessao1{
     display: none;
   }
+
+  .part1, .part2{
+    width: 100%;
+    padding: 2% auto;
+  }
+
+  .form > form >input[type=submit]{
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 30px;
+  }
+
+  .wrapper-part1, .sobre-autor{
+    max-width: none;
+  }
+
+  .form, .map-wraper{
+    width: 100%;
+    text-align: center;
+  }
+
+  .map-wraper3{
+    max-width: none;
+  }
+
+  .map-wraper2{
+    padding-top: 400px;
+  }
+
+  footer{
+    text-align: center;
+  }
+
+  footer p:nth-of-type(1), footer p:nth-of-type(2){
+    float: none;
+  }
+  
 }
