@@ -71,6 +71,11 @@ nav a{
   text-decoration: none;
   color: black;
   margin-left: var(--espacamento-maior);
+  cursor: pointer;
+}
+
+nav a:hover{
+  color: rgb(167, 108, 0);
 }
 
 /* Main */

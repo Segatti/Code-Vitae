@@ -20,10 +20,10 @@
       <div class="logo"></div>
       <div class="menu">
         <nav>
-          <a href="http://">Quem somos</a>
-          <a href="http://">Cursos</a>
-          <a href="http://">Alunos</a>
-          <a href="http://">Contato</a>
+          <a onclick="goToSection('quem-somos')">Quem somos</a>
+          <a onclick="goToSection('cursos')">Cursos</a>
+          <a onclick="goToSection('alunos')">Alunos</a>
+          <a onclick="goToSection('contato')">Contato</a>
         </nav>
       </div>
     </div>
@@ -41,7 +41,7 @@
       <button>Faça sua inscrição</button>
     </div>
   </section>
-  <section class="quem-somos">
+  <section class="quem-somos" id="quem-somos">
     <div class="box-titulo">
       <h3>Quem Somos</h3>
     </div>
@@ -81,7 +81,7 @@
     </div>
     <div class="filtro"></div>
   </section>
-  <section class="cursos">
+  <section class="cursos" id="cursos">
     <div class="box-titulo">
       <h3>Cursos</h3>
     </div>
@@ -99,18 +99,24 @@
     </div>
     <div class="filtro"></div>
   </section>
-  <section class="alunos">
+  <section class="alunos" id="alunos">
     <div class="box-titulo">
       <h3>Alunos</h3>
     </div>
     <div class="filtro"></div>
   </section>
-  <section class="contato">
+  <section class="contato" id="contato">
     <div class="box-titulo">
       <h3>Contato</h3>
     </div>
     <div class="filtro"></div>
   </section>
   <footer></footer>
+
+  <script lang="javascript">
+    function goToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth'});
+    }
+  </script>
 </body>
 </html>
