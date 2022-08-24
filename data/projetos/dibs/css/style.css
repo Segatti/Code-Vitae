@@ -74,6 +74,7 @@ nav a{
   background-color: olivedrab;
   width: 100%;
   height: calc(100% - 100px);
+  min-height: 600px;
   overflow: hidden;
 }
 
