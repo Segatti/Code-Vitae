@@ -31,73 +31,118 @@ body{
   clear: both;
 }
 
+.w25{
+  width: 25%;
+}
+
+.w33{
+  width: calc(100% / 3);
+}
+
+.w50{
+  width: 50%;
+}
+
+.w100{
+  width: 100%;
+}
+
+.conteudo{
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
 /* Header */
+
 header{
-  background-color: white;
+  position: fixed;
+  z-index: 999999;
+}
+
+header div.row{
+  background-color: #004aad;
+  box-shadow: 0 5px rgba(1, 1, 1, 0.7);
+}
+
+header div.logo-column{
   height: 100px;
-  padding: var(--espacamento-menor) var(--espacamento-maior);
-}
-
-header > div.container {
-  position: relative;
-  height: 100%;
-}
-
-header .logo {
   float: left;
-  width: 50%;
-  height: 100%;
-  background-image: url('../assets/images/logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: transparent;
 }
 
-header .menu{
-  float: right;
-  text-align: end;
-  font-weight: bold;
-  width: 50%;
-  height: 100%;
+header div.logo-column > a > img {
+  cursor: pointer;
+  height: 100px;
+  width: auto;
 }
 
-header nav {
+header div.menu-column{
   position: relative;
+  height: 100px;
+  float: right;
+}
+
+header div.menu-pc{
+  text-align: end;
+  position: absolute;
+  width: 100%;
   top: 50%;
+  -ms-transform: translateY(-50%);
   transform: translateY(-50%);
 }
 
-nav a{
-  text-decoration: none;
-  color: black;
-  margin-left: var(--espacamento-maior);
-  cursor: pointer;
+header div.menu-pc > nav {
+  display: flex;
+  justify-content: space-between;
 }
 
-nav a:hover{
-  color: rgb(167, 108, 0);
+header div.menu-pc > nav > a {
+  cursor: pointer;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: 0.25s;
 }
+
+header div.menu-pc > nav > a:hover{
+  color: #5ce6c9;
+}
+
+header div.menu-mobile{
+  display: none;
+}
+
+header div.fita > img {
+  max-width: 100px;
+  float: right;
+}
+
 
 /* Main */
-.main-video {
-  position: relative;
-  background-color: olivedrab;
-  width: 100%;
-  height: calc(100% - 100px);
-  min-height: 600px;
-  overflow: hidden;
+
+section.bloco{
+  height: 100px;
 }
 
-.main-video video{
-  position: relative;
-  height: 100%;
+section.main-video {
   width: 100%;
+  height: calc(100% - 100px);
+  overflow: hidden;
+  box-shadow: 0 5px rgba(1, 1, 1, 0.7);
+}
+
+section.main-video video{
+  width: inherit;
   object-fit: cover;
 }
 
+/* ///////////////////////// */
+
+/* Main */
+
 .vagas{
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -105,30 +150,40 @@ nav a:hover{
 .vagas h3{
   text-align: center;
   color: white;
-  font-size: 5rem;
-  font-weight: bolder;
+  font-size: 4rem;
+  font-weight: bold;
   text-shadow: 5px 5px 15px #000000;
 }
 
 .vagas button{
+  color: white;
   cursor: pointer;
   position: relative;
   justify-content: center;
-  background-color: orange;
+  background-color: #fa7b2c;
   border: 0;
-  padding: 10px;
+  padding: 15px;
   border-radius: 10px;
   font-size: 1.5rem;
   margin: var(--espacamento-maior);
   left: 50%;
   transform: translateX(-50%);
-  transition: padding 0.5s;
+  transition: 0.5s;
+}
+
+section.vagas button > a{
+  width: 100%;
+  height: 100%;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
 }
 
 .vagas button:hover{
-  padding: 10px 30px;
+  border-radius: 30px;
+  padding: 15px 50px;
 }
-
+/*
 section.faixa-branca{
   height: 20px;
   background-color: white;
@@ -376,15 +431,29 @@ section.faixa-branca{
 
 /* Footer */
 
-footer {
+/*footer {
   background-color: black;
   color: white;
   text-align: center;
   padding: 20px;
+}*/
+
+@media screen and (max-width: 1280px){
+  .conteudo{
+    padding: 0 2%;
+  }
 }
 
 /* Tablet */
-@media screen and (max-width: 1080px){
+/*@media screen and (max-width: 1080px){
+
+  header nav.mobile-menu{
+    display: block;
+  }
+
+  header.menu{
+    display: none;
+  }
 
   .vagas button{
     margin: 0;
@@ -419,10 +488,14 @@ footer {
 }
 
 /* Celular */
-@media screen and (max-width: 768px){
+/*@media screen and (max-width: 768px){
 
   .vagas h3{
     font-size: 4rem;
+  }
+
+  .desktop-menu{
+    display: none;
   }
 
   .quem-somos .postagem{

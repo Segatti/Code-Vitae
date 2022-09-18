@@ -15,30 +15,50 @@
 </head>
 <body>
 
-  <header>
-    <div class="container">
-      <div class="logo"></div>
-      <div class="menu">
-        <nav>
-          <a onclick="goToSection('quem-somos')">Quem somos</a>
-          <a onclick="goToSection('cursos')">Cursos</a>
-          <a onclick="goToSection('alunos')">Alunos</a>
-          <a onclick="goToSection('contato')">Contato</a>
-        </nav>
+  <header class="w100">
+    <div class="row w100">
+      <div class="conteudo">
+        <div class="logo-column w50">
+          <a onclick="goToSection('inicio')"><img src="assets/images/logo.png" alt="Logo" /></a>
+        </div>
+        <div class="menu-column w50">
+          <div class="menu-pc">
+            <nav>
+              <a onclick="goToSection('quem-somos')">Quem somos</a>
+              <a onclick="goToSection('cursos')">Cursos</a>
+              <a onclick="goToSection('alunos')">Alunos</a>
+              <a onclick="goToSection('contato')">Contato</a>
+            </nav>
+          </div>
+          <div class="menu-mobile">
+            <nav>
+              <a onclick="goToSection('quem-somos')">Quem somos</a>
+              <a onclick="goToSection('cursos')">Cursos</a>
+              <a onclick="goToSection('alunos')">Alunos</a>
+              <a onclick="goToSection('contato')">Contato</a>
+            </nav>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div class="conteudo">
+      <div class="fita">
+        <img src="assets/images/fita.png" alt="Fita Marcador" />
       </div>
     </div>
   </header>
-  <div class="clear"></div>
-
+  <!-- O Bloco é para evitar de conteudo ficar atrás do menu -->
+  <section class="bloco" id="inicio"></section>
   <section class="main-video">
     <video autoplay loop>
       <source src="assets/videos/liberdade.mp4" type="video/mp4">
     </video>
   </section>
   <section class="vagas">
-    <div class="container">
+    <div class="conteudo">
       <h3>Vagas Abertas!</h3>
-      <button>Faça sua inscrição</button>
+      <button onclick="goToSection('contato')">Faça sua inscrição</button>
     </div>
   </section>
   <section class="faixa-branca"></section>
