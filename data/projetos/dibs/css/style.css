@@ -431,12 +431,13 @@ section.faixa-branca{
 
 /* Footer */
 
-/*footer {
-  background-color: black;
+footer {
+  background-color: rgba(0, 0, 0, 0.85);
   color: white;
+  font-weight: bolder;
   text-align: center;
   padding: 20px;
-}*/
+}
 
 @media screen and (max-width: 1280px){
   .conteudo{
