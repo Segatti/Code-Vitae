@@ -7,9 +7,9 @@
 }
 
 :root {
-  --espacamento-menor: 6px;
-  --espacamento-medio: 12px;
-  --espacamento-maior: 18px;
+  --espacamento-menor: 12px;
+  --espacamento-medio: 24px;
+  --espacamento-maior: 48px;
 }
 
 /* Gerais */
@@ -19,7 +19,7 @@ html, body{
 
 body{
   background-image: url('../assets/images/fundo-letras.jpg');
-  background-size: 10%;
+  background-size: 5%;
 }
 
 .container{
@@ -183,21 +183,146 @@ section.vagas button > a{
   border-radius: 30px;
   padding: 15px 50px;
 }
-/*
+
 section.faixa-branca{
-  height: 20px;
-  background-color: white;
-  border-top: 5px solid rgb(141, 200, 255);
-  border-bottom: 5px solid rgb(141, 200, 255);
+  height: 15px;
+  background-color: rgba(255, 255, 255);
+  border-top: 5px solid rgba(1, 1, 1, 0.8);
+  border-bottom: 5px solid rgba(1, 1, 1, 0.8);
 }
 
 .quem-somos {
-  background-color: rgba(78, 149, 197, 0.87);
-  background-size: 10%;
-  padding: 60px 0px;
+  background-color: rgba(92, 230, 201, 0.8);
+  padding: var(--espacamento-maior);
+}
+
+.quem-somos .section-titulo{
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 20px 0px 20px 0px;
+  margin-bottom: var(--espacamento-maior);
+}
+
+.quem-somos .section-titulo > h3{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.quem-somos .post-wraper{
+  display: flex;
+  justify-content: space-between;
+}
+
+.quem-somos .post {
+  width: calc(100% / 3 - 40px);
+  height: fit-content;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px #414141;
+}
+
+.quem-somos .post > .post-titulo{
+  display: flex;
+  justify-content: left;
+  vertical-align: bottom;
+  padding: 10px 15px;
+}
+
+.quem-somos .post > .post-titulo > .logo{
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  background-image: url('../assets/images/logo.png');
+  background-size: cover;
+}
+
+.quem-somos .post > .post-titulo > h2{
+  align-self: center;
+  font-size: 16px;
+  margin-left: 10px;
+  height: min-content;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.quem-somos .post > .post-foto > img{
+  width: 100%;
+}
+
+.quem-somos .post > .post-legenda{
+  height: min-content;
+  padding: 0px 15px;
+  text-align: justify;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.quem-somos .post > .post-botoes{
+  padding: 20px 0px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.quem-somos .post > .post-botoes i{
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #585858;
+  transition: 0.25s;
+}
+
+
+.quem-somos .post > .post-botoes i:hover{
+  color: #fa7b2c;
 }
 
 .cursos {
+  background-color: rgba(250, 123, 44, 0.8);
+  padding: var(--espacamento-maior);
+}
+
+.cursos .section-titulo{
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 20px 0px 20px 0px;
+  margin-bottom: var(--espacamento-maior);
+}
+
+.cursos .section-titulo > h3{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.cursos .banner-wraper{
+  display: flex;
+  justify-content: center;
+}
+
+.cursos .banner {
+  width: calc(100% / 3);
+  height: fit-content;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 0px 20px #414141;
+}
+
+.cursos .banner > .banner-foto > img{
+  width: 100%;
+}
+
+.cursos hr {
+  width: calc(100% / 3);
+  margin: var(--espacamento-medio) auto;
+}
+
+/*
+.botoes i:hover{
+  color: rgb(22, 22, 22);
+}
+
+/* .cursos {
   background-color: rgba(156, 109, 81, 0.87);
   background-size: 10%;
   padding: 60px 0px;
@@ -212,85 +337,19 @@ section.faixa-branca{
 .contato {
   background-color: rgba(99, 49, 17, 0.87);
   background-size: 10%;
-  padding: 60px 0px;
-}
+  padding: 60px 0px; 
+}*/
 
-.box-titulo{
-  background-color: #524e4ec4;
-  padding: 20px;
-  width: fit-content;
-  margin: 0 auto;
-  border-radius: 20px 0px 20px 0px;
-}
 
-.box-titulo h3{
-  position: relative;
-  text-align: center;
-  color: white;
-  font-size: 2rem;
-  font-weight: bold;
-  text-decoration: underline;
-}
+/*
 
-.postagem {
-  width: 450px;
-  margin: 0 auto;
-  margin-top: 30px;
-  background-color: white;
-  border-radius: 20px;
-  box-shadow: 0px 0px 20px #414141;
-}
 
-.postagem .titulo {
-  padding: 10px 15px;
-}
 
-.postagem .titulo .logo{
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  background-position: center;
-  background-image: url('../assets/images/logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: transparent;
-}
 
-.postagem .titulo h2{
-  display: inline-block;
-  position: relative;
-  transform: translateY(-60%);
-  font-size: 16px;
-  margin-left: 10px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-}
 
-.postagem .main img{
-  position: relative;
-  width: 100%;
-}
 
-.postagem .legenda{
-  padding: 10px 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
-.postagem .botoes{
-  padding: 20px;
-  display: flex;
-  justify-content: space-around;
-}
-
-.botoes i{
-  font-size: 2rem;
-  color: #585858;
-  transition: 0.5s;
-}
-
-.botoes i:hover{
-  color: rgb(22, 22, 22);
-}
 
 .cursos .banner{
   width: calc(100% / 3);
