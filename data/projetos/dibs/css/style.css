@@ -19,7 +19,7 @@ html, body{
 
 body{
   background-image: url('../assets/images/fundo-letras.jpg');
-  background-size: 5%;
+  background-size: 10%;
 }
 
 .container{
@@ -124,6 +124,7 @@ section.bloco{
   height: 100px;
 }
 
+/* Video EUA */
 section.main-video {
   width: 100%;
   height: calc(100% - 100px);
@@ -132,14 +133,12 @@ section.main-video {
 }
 
 section.main-video video{
-  width: inherit;
+  height: 100%;
+  width: 100%;
   object-fit: cover;
 }
 
-/* ///////////////////////// */
-
-/* Main */
-
+/* Vagas */
 .vagas{
   position: absolute;
   top: 60%;
@@ -191,8 +190,10 @@ section.faixa-branca{
   border-bottom: 5px solid rgba(1, 1, 1, 0.8);
 }
 
+/* Quem somos */
+
 .quem-somos {
-  background-color: rgba(92, 230, 201, 0.8);
+  background-color: rgba(92, 230, 201, 0.9);
   padding: var(--espacamento-maior);
 }
 
@@ -275,8 +276,10 @@ section.faixa-branca{
   color: #fa7b2c;
 }
 
+/* Cursos */
+
 .cursos {
-  background-color: rgba(250, 123, 44, 0.8);
+  background-color: rgba(250, 123, 44, 0.9);
   padding: var(--espacamento-maior);
 }
 
@@ -317,169 +320,132 @@ section.faixa-branca{
   margin: var(--espacamento-medio) auto;
 }
 
-/*
-.botoes i:hover{
-  color: rgb(22, 22, 22);
-}
-
-/* .cursos {
-  background-color: rgba(156, 109, 81, 0.87);
-  background-size: 10%;
-  padding: 60px 0px;
-}
+/* Alunos */
 
 .alunos {
-  background-color: rgba(78, 149, 197, 0.87);
-  background-size: 10%;
-  padding: 60px 0px;
+  background-color: rgba(92, 230, 201, 0.9);
+  padding: var(--espacamento-maior);
 }
 
-.contato {
-  background-color: rgba(99, 49, 17, 0.87);
-  background-size: 10%;
-  padding: 60px 0px; 
-}*/
-
-
-/*
-
-
-
-
-
-
-
-
-
-.cursos .banner{
-  width: calc(100% / 3);
-  display: inline-block;
-  background-image: url('../assets/images/folha.jpg');
-  background-size: 100% 100%;
-  padding: 20px 25px;
-  text-align: justify;
-  border-radius: 10px;
+.alunos .section-titulo{
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 20px 0px 20px 0px;
+  margin-bottom: var(--espacamento-maior);
 }
 
-.cursos .banner-wrap{
-  padding: 50px 0px;
-  display: flex;
-  justify-content: space-around;
-}
-
-.banner h2{
-  margin-top: 20px;
-  margin-bottom: 40px;
+.alunos .section-titulo > h3{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
   text-decoration: underline;
 }
 
-.banner p{
-  line-height: 35px;
-}
-
-.banner button{
-  background-color: rgb(255, 137, 41);
-  border: 0;
-  padding: 15px;
-  border-radius: 30px;
-  margin-top: 10px;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: 0.25s;
-}
-
-.cursos{
-  padding-left: 200px;
-  padding-right: 200px;
-}
-
-.banner button:hover{
-  background-color: #461fd4;
-  color: white;
-  font-size: 15px;
-}
-
-.alunos .box-wrap{
+.alunos .post-wrap{
   display: flex;
   justify-content: space-around;
-  margin-top: 30px;
 }
 
-.alunos .box{
-  width: 25%;
-  border-radius: 20px;
+.alunos .post{
+  width: calc(100% / 3);
+  border-radius: 10px;
   background-color: white;
-  margin: 20px auto;
   overflow: hidden;
-  display: inline-block;
+  height: fit-content;
 }
 
-.box img{
-  position: relative;
-  width: 100%;
+.alunos .post > img{
+  max-width: 100%;
 }
 
-.box p{
+.alunos .post > p{
   padding: 10px 20px;
   text-align: justify;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.box a{
+.alunos .post > p > a{
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-decoration: none;
 }
 
-.contato .formulario{
-  width: 800px;
-  height: 400px;
-  margin: 0 auto;
-  margin-top: 30px;
-  background-color: rgb(255, 255, 255);
+/* Contato */
+
+.contato{
+  background-color: rgba(88, 88, 88, 0.9);
+  padding: var(--espacamento-maior);
 }
 
-.formulario .foto{
-  float: left;
-  width: 50%;
-}
-
-.formulario form{
-  float: right;
-  width: 50%;
-  height: 100%;
-  background-image: url('../assets/folha.jpg');
-  background-size: cover;
+.contato .section-titulo{
+  background-color: #ffffff;
   padding: 20px;
-  padding-top: 40px;
+  border-radius: 20px 0px 20px 0px;
+  margin-bottom: var(--espacamento-maior);
 }
 
-.formulario form input{
+.contato .section-titulo > h3{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.contato .formulario{
+  width: 100%;
+  display: flex;
+  background-color: white;
+  border-radius: 250px 0px 0px 250px;
+  overflow: hidden;
+  padding: var(--espacamento-maior);
+}
+
+.contato .formulario > .foto{
+  width: 30%;
+  margin-right: var(--espacamento-maior);
+}
+
+.contato .formulario > .foto > img{
+  width: 100%;
+  border-radius: 50%;
+  height: 100%;
+}
+
+.contato .formulario form{
+  width: 70%;
+  background-color: white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.contato .formulario form input{
   width: 100%;
   height: 30px;
-  margin-bottom: 10px;
+  outline: 0;
 }
 
-.formulario form textarea{
+.contato .formulario form textarea{
   width: 100%;
-  height: 155px;
+  height: max-content;
+  outline: 0;
   resize: none;
-  margin-bottom: 10px;
 }
 
-.foto img{
+.contato .foto img{
   width: 100%;
   height: 400px;
-}
-
-.contato input{
-  display: block;
 }
 
 .contato input[type='submit']{
   background-color: #461fd4;
-  height: 50px;
   color: white;
+  border: 0;
+  transition: 0.25s;
+}
+
+.contato input[type='submit']:hover{
+  background-color: #5ce6c9;
 }
 
 .contato p{
@@ -491,7 +457,7 @@ section.faixa-branca{
 /* Footer */
 
 footer {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.8);
   color: white;
   font-weight: bolder;
   text-align: center;
@@ -505,7 +471,7 @@ footer {
 }
 
 /* Tablet */
-/*@media screen and (max-width: 1080px){
+@media screen and (max-width: 1080px){
 
   header nav.mobile-menu{
     display: block;
@@ -548,7 +514,7 @@ footer {
 }
 
 /* Celular */
-/*@media screen and (max-width: 768px){
+@media screen and (max-width: 768px){
 
   .vagas h3{
     font-size: 4rem;
