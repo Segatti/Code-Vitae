@@ -142,6 +142,7 @@ div.menu-mobile nav a{
 section.main-video {
   width: 100%;
   height: calc(100% - 100px);
+  background-color: black;
   overflow: hidden;
   box-shadow: 0 5px rgba(1, 1, 1, 0.7);
 }
@@ -521,68 +522,71 @@ footer {
     margin: 0;
     margin-top: 20px;
   }
+
+  .quem-somos .post-wraper{
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .quem-somos .post{
+    width: 80%;
+    margin-bottom: var(--espacamento-medio);
+  }
+
+  .quem-somos .post:last-child{
+    margin-bottom: 0px;
+  }
   
   .cursos .banner{
-    display: block;
-    width: 100%;
+    width: 80%;
   }
 
-  .alunos .box-wrap{
-    display: block;
+  .cursos hr{
+    width: 80%;
   }
 
-  .cursos .banner:first-of-type{
-    margin-bottom: 30px;
+  .alunos .post-wrap{
+    flex-direction: column;
+    align-items: center;
   }
 
-  .cursos .banner-wrap{
-    display: block;
+  .alunos .post{
+    width: 80%;
   }
 
-  .alunos .box{
-    display: block;
-    width: 50%;
+  .alunos .post:first-child{
+    margin-bottom: var(--espacamento-medio);
   }
 
   .contato .formulario{
+    border-radius: 0px;
     width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .contato .formulario .foto{
+    display: none;
+  }
+
+  .contato .formulario form{
+    width: 100%;
+  }
+  
+  .contato .formulario input{
+    width: 100%;
+    margin: 10px 0;
   }
 }
 
 /* Celular */
 @media screen and (max-width: 768px){
 
+  header .fita{
+    display: none;
+  }
+
   .vagas h3{
-    font-size: 4rem;
-  }
-
-  .desktop-menu{
-    display: none;
-  }
-
-  .quem-somos .postagem{
-    width: 80%;
-  }
-
-  .cursos {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .cursos .banner-wrap{
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .alunos .box{
-    width: 80%;
-  }
-  .formulario .foto{
-    display: none;
-  }
-
-  .formulario form{
-    width: 100%;
-    margin-top: -10px;
+    font-size: 3rem;
   }
 }

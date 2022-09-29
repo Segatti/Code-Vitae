@@ -77,3 +77,19 @@ div.mensagem a{
 div.mensagem span{
   color: #3fbd82;
 }
+
+/* Celular */
+@media screen and (max-width: 768px){
+
+  div.mensagem{
+    padding: 20px;
+  }
+
+  .mensagem h1{
+    font-size: 1.2rem;
+  }
+
+  .mensagem p{
+    font-size: 0.8rem;
+  }
+}
