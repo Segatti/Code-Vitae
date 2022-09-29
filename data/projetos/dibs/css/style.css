@@ -3,7 +3,6 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Aboreto', cursive;
-  /* overflow: hidden; */
 }
 
 :root {
@@ -98,6 +97,7 @@ header div.menu-pc > nav {
 
 header div.menu-pc > nav > a {
   cursor: pointer;
+  text-decoration: none;
   color: white;
   font-size: 1.1rem;
   font-weight: bold;
@@ -106,10 +106,6 @@ header div.menu-pc > nav > a {
 
 header div.menu-pc > nav > a:hover{
   color: #5ce6c9;
-}
-
-header div.menu-mobile{
-  display: none;
 }
 
 header div.fita > img {
@@ -122,6 +118,24 @@ header div.fita > img {
 
 section.bloco{
   height: 100px;
+}
+
+/* Menu Mobile */
+div.menu-mobile nav {
+  z-index: 99999999999999999999999;
+  display: none;
+  width: 100%;
+  border-top: 5px solid #fff;
+  position: fixed;
+  background-color: #004aad;
+  padding: 20px;
+  text-align: center;
+}
+
+div.menu-mobile nav a{
+  display: block;
+  margin: 10px 0;
+  text-decoration: none;
 }
 
 /* Video EUA */
@@ -193,8 +207,9 @@ section.faixa-branca{
 /* Quem somos */
 
 .quem-somos {
-  background-color: rgba(92, 230, 201, 0.9);
+  background-color: rgba(79, 196, 170, 0.9);
   padding: var(--espacamento-maior);
+  min-height: calc(100% - 100px);
 }
 
 .quem-somos .section-titulo{
@@ -279,8 +294,9 @@ section.faixa-branca{
 /* Cursos */
 
 .cursos {
-  background-color: rgba(250, 123, 44, 0.9);
+  background-color: rgba(221, 132, 77, 0.9);
   padding: var(--espacamento-maior);
+  min-height: calc(100% - 100px);
 }
 
 .cursos .section-titulo{
@@ -323,8 +339,9 @@ section.faixa-branca{
 /* Alunos */
 
 .alunos {
-  background-color: rgba(92, 230, 201, 0.9);
+  background-color: rgba(79, 196, 170, 0.9);
   padding: var(--espacamento-maior);
+  min-height: calc(100% - 100px);
 }
 
 .alunos .section-titulo{
@@ -432,6 +449,10 @@ section.faixa-branca{
   resize: none;
 }
 
+.contato .formulario form input, textarea{
+  padding: 5px;
+}
+
 .contato .foto img{
   width: 100%;
   height: 400px;
@@ -446,6 +467,7 @@ section.faixa-branca{
 
 .contato input[type='submit']:hover{
   background-color: #5ce6c9;
+  cursor: pointer;
 }
 
 .contato p{
@@ -470,14 +492,28 @@ footer {
   }
 }
 
-/* Tablet */
-@media screen and (max-width: 1080px){
-
-  header nav.mobile-menu{
-    display: block;
+@media screen and (min-width: 1024px){
+  div.menu-mobile {
+    display: none;
   }
 
-  header.menu{
+  div.menu-mobile nav{
+    display: none;
+  }
+}
+
+/* Tablet */
+@media screen and (max-width: 1024px){
+
+  header div.menu-pc{
+    right: 0;
+    width: 32px;
+    height: 32px;
+    background-image: url('../assets/icons/menu.png');
+    background-size: 100% 100%;
+  }
+
+  header div.menu-pc nav{
     display: none;
   }
 
