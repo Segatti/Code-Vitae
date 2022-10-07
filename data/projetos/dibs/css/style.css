@@ -572,6 +572,15 @@ footer {
     width: 80%;
   }
 
+  .alunos .post img{
+    height: 100%;
+    width: 100%;
+  }
+
+  .alunos .post p{
+    margin-top: -5px;
+  }
+
   .contato .formulario{
     border-radius: 0px;
     width: 80%;
@@ -579,8 +588,16 @@ footer {
     padding: 20px;
   }
 
-  .contato .formulario .foto{
-    display: none;
+  .contato .formulario > .foto{
+    width: 30%;
+  }
+
+  .contato .botoes{
+    width: 70%;
+  }
+
+  .contato .formulario .botoes a:first-child{
+    margin-bottom: var(--espacamento-medio);
   }
 }
 
@@ -593,5 +610,20 @@ footer {
 
   .vagas h3{
     font-size: 3rem;
+  }
+
+  .contato .formulario{
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .contato .formulario .foto{
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: var(--espacamento-medio);
+  }
+
+  .contato .formulario .botoes{
+    width: 100%;
   }
 }
