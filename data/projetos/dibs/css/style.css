@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Aboreto', cursive;
+  font-family: 'Chau Philomene One', sans-serif;
 }
 
 :root {
@@ -100,7 +100,6 @@ header div.menu-pc > nav > a {
   text-decoration: none;
   color: white;
   font-size: 1.1rem;
-  font-weight: bold;
   transition: 0.25s;
 }
 
@@ -117,12 +116,13 @@ header div.fita > img {
 /* Main */
 
 section.bloco{
-  height: 100px;
+  height: 100%;
 }
 
 /* Menu Mobile */
 div.menu-mobile nav {
   z-index: 99999999999999999999999;
+  top: 100px;
   display: none;
   width: 100%;
   border-top: 5px solid #fff;
@@ -138,8 +138,15 @@ div.menu-mobile nav a{
   text-decoration: none;
 }
 
+div.bloco100{
+  height: 100px;
+}
+
 /* Video EUA */
 section.main-video {
+  margin-top: 100px;
+  position: fixed;
+  z-index: -999;
   width: 100%;
   height: calc(100% - 100px);
   background-color: black;
@@ -155,45 +162,37 @@ section.main-video video{
 
 /* Vagas */
 .vagas{
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  background-color: rgba(0, 0, 0, 0);
+  padding: var(--espacamento-maior);
+  min-height: calc(100% - 100px);
+}
+
+.vagas .chamada{
+  padding: var(--espacamento-maior);
+  text-align: center;
 }
 
 .vagas h3{
-  text-align: center;
+  margin-bottom: var(--espacamento-medio);
   color: white;
-  font-size: 4rem;
-  font-weight: bold;
+  font-size: 3rem;
   text-shadow: 5px 5px 15px #000000;
 }
 
-.vagas button{
+.vagas a{
   color: white;
+  text-decoration: none;
   cursor: pointer;
-  position: relative;
-  justify-content: center;
   background-color: #fa7b2c;
-  border: 0;
   padding: 15px;
   border-radius: 10px;
   font-size: 1.5rem;
-  margin: 20px 0;
-  left: 50%;
-  transform: translateX(-50%);
   transition: 0.5s;
 }
 
-section.vagas button > a{
-  width: 100%;
-  height: 100%;
-  left: 50%;
-  position: relative;
-  transform: translateX(-50%);
-}
-
-.vagas button:hover{
+.vagas a:hover{
   border-radius: 30px;
   padding: 15px 50px;
 }
@@ -208,12 +207,18 @@ section.faixa-branca{
 /* Quem somos */
 
 .quem-somos {
-  background-color: rgba(79, 196, 170, 0.9);
+  background-color: rgba(0, 0, 0, 0.2);
   padding: var(--espacamento-maior);
   min-height: calc(100% - 100px);
 }
 
+.quem-somos .post-wraper{
+  flex-direction: column;
+  align-items: center;
+}
+
 .quem-somos .section-titulo{
+  margin: 0 auto;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 20px 0px 20px 0px;
@@ -223,7 +228,6 @@ section.faixa-branca{
 .quem-somos .section-titulo > h3{
   text-align: center;
   font-size: 1.5rem;
-  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -233,7 +237,7 @@ section.faixa-branca{
 }
 
 .quem-somos .post {
-  width: calc(100% / 3 - 40px);
+  width: calc(100% / 3);
   height: fit-content;
   background-color: white;
   border-radius: 10px;
@@ -260,7 +264,7 @@ section.faixa-branca{
   font-size: 16px;
   margin-left: 10px;
   height: min-content;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .quem-somos .post > .post-foto > img{
@@ -271,7 +275,7 @@ section.faixa-branca{
   height: min-content;
   padding: 0px 15px;
   text-align: justify;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .quem-somos .post > .post-botoes{
@@ -295,12 +299,14 @@ section.faixa-branca{
 /* Cursos */
 
 .cursos {
-  background-color: rgba(221, 132, 77, 0.9);
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.4);
   padding: var(--espacamento-maior);
   min-height: calc(100% - 100px);
 }
 
 .cursos .section-titulo{
+  margin: 0 auto;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 20px 0px 20px 0px;
@@ -310,7 +316,6 @@ section.faixa-branca{
 .cursos .section-titulo > h3{
   text-align: center;
   font-size: 1.5rem;
-  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -332,7 +337,7 @@ section.faixa-branca{
   width: 100%;
 }
 
-.cursos hr {
+hr {
   width: calc(100% / 3);
   margin: var(--espacamento-medio) auto;
 }
@@ -340,12 +345,18 @@ section.faixa-branca{
 /* Alunos */
 
 .alunos {
-  background-color: rgba(79, 196, 170, 0.9);
+  background-color: rgba(0, 0, 0, 0.6);
   padding: var(--espacamento-maior);
   min-height: calc(100% - 100px);
 }
 
+.alunos .post-wrap{
+  flex-direction: column;
+  align-items: center;
+}
+
 .alunos .section-titulo{
+  margin: 0 auto;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 20px 0px 20px 0px;
@@ -355,7 +366,6 @@ section.faixa-branca{
 .alunos .section-titulo > h3{
   text-align: center;
   font-size: 1.5rem;
-  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -379,22 +389,27 @@ section.faixa-branca{
 .alunos .post > p{
   padding: 10px 20px;
   text-align: justify;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .alunos .post > p > a{
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
   text-decoration: none;
 }
 
 /* Contato */
 
 .contato{
-  background-color: rgba(88, 88, 88, 0.9);
+  background-color: rgba(0, 0, 0, 0.8);
   padding: var(--espacamento-maior);
+  min-height: calc(100% - 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .contato .section-titulo{
+  margin: 0 auto;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 20px 0px 20px 0px;
@@ -404,8 +419,14 @@ section.faixa-branca{
 .contato .section-titulo > h3{
   text-align: center;
   font-size: 1.5rem;
-  font-weight: bold;
   text-decoration: underline;
+}
+
+.contato .wrap-contato{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 100%;
 }
 
 .contato .formulario{
@@ -418,7 +439,7 @@ section.faixa-branca{
 }
 
 .contato .formulario > .foto{
-  width: 30%;
+  width: 25%;
   margin-right: var(--espacamento-maior);
 }
 
@@ -428,30 +449,32 @@ section.faixa-branca{
   height: 100%;
 }
 
-.contato .formulario form{
-  width: 70%;
-  background-color: white;
-  overflow: hidden;
+.contato .botoes{
+  width: 100%;
   display: flex;
+  align-items: center;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
-.contato .formulario form input{
+.contato .botoes > a{
+  background-color: #fa7b2c;
+  color: white;
+  padding: 20px;
   width: 100%;
-  height: 30px;
-  outline: 0;
+  text-align: center;
+  border-radius: 20px;
+  transition: 0.5s;
+  text-decoration: none;
 }
 
-.contato .formulario form textarea{
-  width: 100%;
-  height: max-content;
-  outline: 0;
-  resize: none;
+.contato .botoes > a:hover{
+  background-color: #cf5e18;
+  color: white;
 }
 
-.contato .formulario form input, textarea{
-  padding: 5px;
+.contato .botoes > a > i{
+  margin-right: 10px;
 }
 
 .contato .foto img{
@@ -459,30 +482,21 @@ section.faixa-branca{
   height: 400px;
 }
 
-.contato input[type='submit']{
-  background-color: #461fd4;
-  color: white;
-  border: 0;
-  transition: 0.25s;
-}
-
-.contato input[type='submit']:hover{
-  background-color: #5ce6c9;
-  cursor: pointer;
+.contato .info-empresa{
+  margin-top: var(--espacamento-maior);
 }
 
 .contato p{
   text-align: center;
-  margin-top: 20px;
+  margin-top: 30px;
   color: white;
 }
 
 /* Footer */
 
 footer {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 1);
   color: white;
-  font-weight: bolder;
   text-align: center;
   padding: 20px;
 }
@@ -506,12 +520,17 @@ footer {
 /* Tablet */
 @media screen and (max-width: 1024px){
 
+  .section-titulo{
+    width: 80%;
+  }
+
   header div.menu-pc{
     right: 0;
     width: 32px;
     height: 32px;
     background-image: url('../assets/icons/menu.png');
     background-size: 100% 100%;
+    cursor: pointer;
   }
 
   header div.menu-pc nav{
@@ -530,7 +549,6 @@ footer {
 
   .quem-somos .post{
     width: 80%;
-    margin-bottom: var(--espacamento-medio);
   }
 
   .quem-somos .post:last-child{
@@ -541,7 +559,7 @@ footer {
     width: 80%;
   }
 
-  .cursos hr{
+  hr{
     width: 80%;
   }
 
@@ -554,10 +572,6 @@ footer {
     width: 80%;
   }
 
-  .alunos .post:first-child{
-    margin-bottom: var(--espacamento-medio);
-  }
-
   .contato .formulario{
     border-radius: 0px;
     width: 80%;
@@ -567,15 +581,6 @@ footer {
 
   .contato .formulario .foto{
     display: none;
-  }
-
-  .contato .formulario form{
-    width: 100%;
-  }
-  
-  .contato .formulario input{
-    width: 100%;
-    margin: 10px 0;
   }
 }
 
