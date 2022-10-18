@@ -150,14 +150,15 @@ section.main-video {
   position: fixed;
   z-index: -999;
   width: 100%;
-  height: calc(100% - 100px);
+  padding-bottom: 100px;
+  height: calc(100% + 100px);
   background-color: black;
   overflow: hidden;
   box-shadow: 0 5px rgba(1, 1, 1, 0.7);
 }
 
 section.main-video video{
-  height: 100%;
+  height: calc(100% + 100px);
   width: 100%;
   object-fit: cover;
 }
