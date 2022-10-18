@@ -95,7 +95,7 @@ header div.menu-pc > nav {
   justify-content: space-between;
 }
 
-header div.menu-pc > nav > a {
+header div.menu-pc > nav > span {
   cursor: pointer;
   text-decoration: none;
   color: white;
@@ -103,7 +103,7 @@ header div.menu-pc > nav > a {
   transition: 0.25s;
 }
 
-header div.menu-pc > nav > a:hover{
+header div.menu-pc > nav > span:hover{
   color: #5ce6c9;
 }
 
@@ -132,8 +132,10 @@ div.menu-mobile nav {
   text-align: center;
 }
 
-div.menu-mobile nav a{
+div.menu-mobile nav span{
+  cursor: pointer;
   display: block;
+  color: white;
   margin: 10px 0;
   text-decoration: none;
 }
@@ -603,6 +605,10 @@ footer {
 
 /* Celular */
 @media screen and (max-width: 768px){
+
+  .vagas .chamada{
+    padding: 0;
+  }
 
   header .fita{
     display: none;

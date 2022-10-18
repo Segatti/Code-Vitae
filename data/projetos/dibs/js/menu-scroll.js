@@ -1,5 +1,5 @@
 $(function(){
-  $('nav a').click(function() {
+  $('nav span').click(function() {
     let href = $(this).attr('href');
     let distanciaTopo = $(href).offset().top;
 
@@ -15,8 +15,8 @@ $(function(){
       let distanciaObjetoTopo = $(this).offset().top;
 
       if(distanciaObjetoTopo < (scrollAtual + alturaJanela) && (distanciaObjetoTopo + $(this).height()) > scrollAtual){
-        $('nav a').css('border-bottom', '0');
-        $('nav a').css('color', 'white');
+        $('nav span').css('border-bottom', '0');
+        $('nav span').css('color', 'white');
         let id = $(this).attr('id');
         $('.menu-'+id).css({'border-bottom': '2px solid #5ce6c9'});
         $('.menu-'+id).css({'color': '#5ce6c9'});
