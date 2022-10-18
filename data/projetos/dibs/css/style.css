@@ -95,7 +95,7 @@ header div.menu-pc > nav {
   justify-content: space-between;
 }
 
-header div.menu-pc > nav > span {
+header div.menu-pc > nav > a {
   cursor: pointer;
   text-decoration: none;
   color: white;
@@ -103,7 +103,7 @@ header div.menu-pc > nav > span {
   transition: 0.25s;
 }
 
-header div.menu-pc > nav > span:hover{
+header div.menu-pc > nav > a:hover{
   color: #5ce6c9;
 }
 
@@ -132,7 +132,7 @@ div.menu-mobile nav {
   text-align: center;
 }
 
-div.menu-mobile nav span{
+div.menu-mobile nav a{
   cursor: pointer;
   display: block;
   color: white;
