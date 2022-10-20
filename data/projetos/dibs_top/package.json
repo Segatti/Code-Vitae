@@ -1,10 +1,10 @@
 {
-  "name": " ",
-  "version": "0.0.1",
-  "description": "",
-  "keywords": "",
+  "name": "dibs",
+  "version": "1.0.0",
+  "description": "BSD-3-Clause",
+  "keywords": ["Curso", "Inglês", "Online"],
   "license": "",
-  "author": "",
+  "author": "Vittor Feitosa",
   "scripts": {
     "build": "parcel build index.html",
     "dev": "parcel index.html --open",
@@ -13,5 +13,9 @@
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.2",
+    "jquery": "^3.6.1"
   }
 }

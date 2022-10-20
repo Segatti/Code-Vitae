@@ -3,11 +3,12 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    <Heloisa> -- <Fundadora> -- <twitter>
+    <Vittor> -- <Desenvolvedor Web e Mobile> -- <twitter>
 
 # THANKS
 
-    <name>
+    <Marcelo Mattei>
 
 # TECHNOLOGY COLOPHON
 
