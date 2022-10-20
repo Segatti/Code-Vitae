@@ -1,9 +1,9 @@
 {
   "name": "dibs",
   "version": "1.0.0",
-  "description": "BSD-3-Clause",
+  "description": "Curso de inglês em qualquer lugar do mundo",
   "keywords": ["Curso", "Inglês", "Online"],
-  "license": "",
+  "license": "BSD-3-Clause",
   "author": "Vittor Feitosa",
   "scripts": {
     "build": "parcel build index.html",
