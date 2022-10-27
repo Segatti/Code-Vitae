@@ -275,6 +275,10 @@ textarea {
   --espacamento-maior: 96px;
 }
 
+.clear {
+  clear: both;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -288,14 +292,14 @@ body {
 }
 
 body {
-  background-image: url('../img/background.jpg');
+  background-image: url("../img/background.jpg");
   background-size: 400px;
   background-color: #f3eff5;
 }
 
 /* Header */
 
-header{
+header {
   position: fixed;
   width: 100%;
   z-index: 9999;
@@ -326,27 +330,98 @@ header div.logo img {
   border-radius: 50%;
 }
 
-header{
+header {
   font-size: var(--fonte-conteudo);
-
 }
 
-div.conteudo{
+div.conteudo {
   font-size: var(--fonte-conteudo);
 }
 
 footer {
   font-size: var(--fonte-legenda);
   text-align: center;
-  background-color: #0D0A0B;
-  color: #F3EFF5;
+  background-color: #0d0a0b;
+  color: #f3eff5;
 }
 
 /* Inicio */
 
-div.fundo > img{
+div.conteudo div.fundo > img {
   max-width: 100%;
   min-height: 100vh !important;
   max-height: 150vh !important;
   overflow-x: hidden;
+}
+
+div.conteudo > div.inicio > div.container {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+div.conteudo div.chamada {
+  color: white;
+  background-color: #1f569e;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 0;
+  border: 2.5px solid #0d0a0b;
+  border-radius: 10px;
+  padding: var(--espacamento-menor);
+  transition: 0.5s;
+  margin-bottom: var(--espacamento-medio);
+  box-shadow: 5px 5px rgb(1 1 1 / 70%);
+  transform: skew(-20deg);
+}
+
+div.conteudo div.chamada:last-of-type {
+  transform: none;
+  animation: aniclick 2s linear infinite;
+  background-color: #fa7b2c;
+  color: white;
+  cursor: pointer;
+}
+
+@keyframes aniclick {
+  16.65% {
+    transform: translateY(8px);
+  }
+  33.3% {
+    transform: translateY(-6px);
+  }
+  49.95% {
+    transform: translateY(4px);
+  }
+  66.6% {
+    transform: translateY(-2px);
+  }
+  83.25% {
+    transform: translateY(1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+div.conteudo div.chamada:last-of-type:hover {
+  /* border: 3px solid #004aad; */
+
+}
+
+div.conteudo div.chamada > div.mensagem > h1 {
+  font-size: var(--fonte-titulo);
+  text-align: center;
+  text-decoration: underline;
+}
+
+div.conteudo div.chamada > div.mensagem > p {
+  font-size: var(--fonte-conteudo-menor);
+}
+
+div.conteudo div.chamada > div.mensagem > p:last-of-type {
+  margin-bottom: 0;
 }
