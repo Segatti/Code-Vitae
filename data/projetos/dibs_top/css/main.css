@@ -329,6 +329,24 @@ header div.menu-pc ul {
   justify-content: space-between;
 }
 
+header div.menu-pc li:hover{
+  cursor: pointer;
+  color: #004aad;
+}
+
+header div.icone-menu{
+  display: none;
+  padding: 10px 10px;
+}
+
+header div.icone-menu:hover{
+  cursor: pointer;
+}
+
+header div.icone-menu:active{
+  color: #fa7b2c;
+}
+
 header div.menu-mobile {
   display: none;
 }
@@ -340,6 +358,17 @@ header div.logo img {
 
 header {
   font-size: var(--fonte-conteudo);
+  transition: 0.3s;
+}
+
+.navbar-colored {
+  background-color: white;
+  border-bottom: #000 solid 2px;
+  box-shadow: 2px 0px 10px #000;
+}
+
+.navbar-transparent {
+  background-color: transparent;
 }
 
 div.conteudo {
@@ -386,6 +415,10 @@ div.conteudo div.chamada {
   transform: skew(-20deg);
 }
 
+div.conteudo div.chamada h1 {
+  text-decoration: none;
+}
+
 div.conteudo div.chamada:last-of-type {
   transform: none;
   animation: aniclick 2s linear infinite;
@@ -408,6 +441,18 @@ div.conteudo div.chamada-sonhos {
   padding: var(--espacamento-menor);
   background-color: #fa7b2c;
   color: white;
+}
+
+.opacity-zero {
+  opacity: 0;
+}
+
+.transition {
+  transition: 0.5s;
+}
+
+.opacity-full {
+  opacity: 1;
 }
 
 @keyframes aniclick {
@@ -434,7 +479,6 @@ div.conteudo div.chamada-sonhos {
 div.conteudo div.chamada > div.mensagem > h1 {
   font-size: var(--fonte-titulo);
   text-align: center;
-  text-decoration: underline;
 }
 
 div.conteudo div.chamada > div.mensagem > p {
@@ -497,7 +541,6 @@ div.secoes div.conteudo div.postagem-instagram {
 
 .secoes div.postagem-instagram > div.nome:hover {
   color: #fa7b2c;
-  cursor: pointer;
 }
 
 .secoes div.postagem-instagram div.imagem img {
@@ -514,7 +557,7 @@ div.secoes div.conteudo div.postagem-instagram {
   padding-bottom: 10px;
 }
 
-.secoes div.postagem-instagram > div.botoes > i:hover {
+.secoes div.postagem-instagram > div.botoes > a:hover {
   color: #fa7b2c;
   cursor: pointer;
 }
@@ -613,7 +656,58 @@ footer h6 {
   color: #ccc;
 }
 
+@media screen and (max-width: 900px) {
+  div.conteudo div.fundo > img {
+    content: url("../img/fundo-pequeno.png") !important;
+    min-width: 100%;
+    min-height: 100vh !important;
+    max-height: 150vh !important;
+    overflow-x: hidden;
+  }
+
+  div.inicio div.chamada {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 991px) {
+  div.menu-pc nav{
+    display: none !important;
+  }
+
+  div.menu-pc{
+    justify-content: right;
+  }
+
+  div.menu-pc div.icone-menu{
+    display: flex !important;
+  }
+
+  div.menu-mobile{
+    text-align: center;
+    justify-content: center;
+    background-color: #ccccd4;
+  }
+
+  div.menu-mobile nav{
+    width: 100%;
+  }
+
+  div.menu-mobile ul{
+    list-style: none;
+    margin: 0px;
+    width: 100%;
+  }
+
+  div.menu-mobile li{
+    padding: 15px 0px;
+    cursor: pointer;
+  }
+
+  div.menu-mobile li:hover{
+    background-color: #b3d4fc;
+  }
+
   div.secoes div.contatos {
     display: flex;
     flex-direction: column;
@@ -625,5 +719,25 @@ footer h6 {
   }
   div.secoes div.contatos div.botao {
     width: 100%;
+  }
+
+  div.inicio div.chamada div.mensagem h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  div.conteudo div.fundo > img {
+    content: url("../img/fundo-medio.png");
+    min-width: 100%;
+    min-height: 100vh !important;
+    max-height: 150vh !important;
+    overflow-x: hidden;
+  }
+}
+
+@media screen and (max-width: 1700px) {
+  div.chamada-sonhos {
+    display: none !important;
   }
 }

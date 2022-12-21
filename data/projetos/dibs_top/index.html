@@ -44,7 +44,7 @@
 
   <body>
     <!-- Add your site or application content here -->
-    <header>
+    <header id="navbar-fixed">
       <div class="container">
         <div class="row">
           <div class="logo col-4">
@@ -53,32 +53,35 @@
           <div class="menu-pc col-8">
             <nav>
               <ul>
-                <li>Inicio</li>
-                <li>Empresa</li>
-                <li>Planos</li>
-                <li>Alunos</li>
-                <li>Contato</li>
+                <li href="#inicio">Inicio</li>
+                <li href="#empresa">Empresa</li>
+                <li href="#planos">Planos</li>
+                <li href="#alunos">Alunos</li>
+                <li href="#contato">Contato</li>
               </ul>
             </nav>
+            <div class="icone-menu">
+              <i class="fa fa-solid fa-bars"></i>
+            </div>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="menu-mobile">
+        <div class="menu-mobile col-md-12">
           <nav>
             <ul>
-              <li>Inicio</li>
-              <li>Empresa</li>
-              <li>Planos</li>
-              <li>Alunos</li>
-              <li>Contato</li>
+              <li href="#inicio">Inicio</li>
+              <li href="#empresa">Empresa</li>
+              <li href="#planos">Planos</li>
+              <li href="#alunos">Alunos</li>
+              <li href="#contato">Contato</li>
             </ul>
           </nav>
         </div>
       </div>
     </header>
     <div class="conteudo">
-      <div class="inicio">
+      <div class="inicio" id="inicio">
         <div class="fundo">
           <img src="img/fundo.png" alt="" srcset="" />
         </div>
@@ -98,11 +101,11 @@
               <h1>Professores Capacitados</h1>
             </div>
           </div>
-          <div class="chamada col-6">
+          <div class="chamada col-md-6 col-sm-12" id="chevron">
             <i class="fa fa-chevron-down"></i>
           </div>
         </div>
-        <div class="container">
+        <div id="chamada-sonhos" class="container display-none transition">
           <div class="chamada-sonhos col-6">
             <div class="mensagem">
               Aqui você dá o primeiro passo para conquistar seu sonho, seja ele
@@ -112,7 +115,7 @@
         </div>
       </div>
       <div class="container">
-        <div class="secoes">
+        <div class="secoes" id="empresa">
           <div class="titulo">
             <i class="fa fa-solid fa-chevron-right"></i
             ><i class="fa fa-solid fa-chevron-right"></i> Empresa
@@ -129,9 +132,9 @@
                 aprender inglês️.
               </div>
               <div class="botoes">
-                <i class="fa fa-brands fa-instagram"></i>
-                <i class="fa fa-brands fa-whatsapp"></i>
-                <i class="fa fa-regular fa-envelope"></i>
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
               </div>
             </div>
             <div class="postagem-instagram col-md-12 col-lg-6">
@@ -148,9 +151,9 @@
                 particulares de inglês.
               </div>
               <div class="botoes">
-                <i class="fa fa-brands fa-instagram"></i>
-                <i class="fa fa-brands fa-whatsapp"></i>
-                <i class="fa fa-regular fa-envelope"></i>
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
               </div>
             </div>
             <div class="postagem-instagram col-md-12 col-lg-6">
@@ -163,14 +166,14 @@
                 professores com formação adequada e fluentes 🥰.
               </div>
               <div class="botoes">
-                <i class="fa fa-brands fa-instagram"></i>
-                <i class="fa fa-brands fa-whatsapp"></i>
-                <i class="fa fa-regular fa-envelope"></i>
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
               </div>
             </div>
           </div>
         </div>
-        <div class="secoes">
+        <div class="secoes" id="planos">
           <div class="titulo">
             <i class="fa fa-solid fa-chevron-right"></i
             ><i class="fa fa-solid fa-chevron-right"></i> Planos
@@ -198,9 +201,23 @@
                 <img src="img/3.png" alt="" />
               </div>
             </div>
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Intensivão - parte 1</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/intensivao-1.jpeg" alt="Intensivão 1" />
+              </div>
+            </div>
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Intensivão - parte 2</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/intensivao-2.jpeg" alt="Intensivão 2" />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="secoes">
+        <div class="secoes" id="alunos">
           <div class="titulo">
             <i class="fa fa-solid fa-chevron-right"></i
             ><i class="fa fa-solid fa-chevron-right"></i> Alunos
@@ -217,9 +234,9 @@
                 conversação em inglês na nossa escola.
               </div>
               <div class="botoes">
-                <i class="fa fa-brands fa-instagram"></i>
-                <i class="fa fa-brands fa-whatsapp"></i>
-                <i class="fa fa-regular fa-envelope"></i>
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
               </div>
             </div>
             <div class="postagem-instagram col-md-12 col-lg-6">
@@ -243,14 +260,14 @@
                 certeza eu posso afirmar: I speak English, very well!"
               </div>
               <div class="botoes">
-                <i class="fa fa-brands fa-instagram"></i>
-                <i class="fa fa-brands fa-whatsapp"></i>
-                <i class="fa fa-regular fa-envelope"></i>
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
               </div>
             </div>
           </div>
         </div>
-        <div class="secoes">
+        <div class="secoes" id="contato">
           <div class="titulo">
             <i class="fa fa-solid fa-chevron-right"></i
             ><i class="fa fa-solid fa-chevron-right"></i> Contato
@@ -289,6 +306,7 @@
       </div>
     </footer>
 
+    <script src="js/vendor/jquery-3.6.1.min.js"></script>
     <script src="js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
@@ -304,6 +322,33 @@
       ga("set", "anonymizeIp", true);
       ga("set", "transport", "beacon");
       ga("send", "pageview");
+    </script>
+    <script>
+      var myNav = document.getElementById("navbar-fixed");
+      var chamadaSonho = document.getElementById("chamada-sonhos");
+      window.onscroll = function () {
+        if (
+          document.body.scrollTop >= 50 ||
+          document.documentElement.scrollTop >= 50
+        ) {
+          myNav.classList.add("navbar-colored");
+          myNav.classList.remove("navbar-transparent");
+        } else {
+          myNav.classList.add("navbar-transparent");
+          myNav.classList.remove("navbar-colored");
+        }
+
+        if (
+          document.documentElement.scrollTop >= 300 &&
+          document.documentElement.scrollTop <= 700
+        ) {
+          chamadaSonho.classList.add("opacity-full");
+          chamadaSonho.classList.remove("opacity-zero");
+        } else {
+          chamadaSonho.classList.add("opacity-zero");
+          chamadaSonho.classList.remove("opacity-full");
+        }
+      };
     </script>
     <script src="https://www.google-analytics.com/analytics.js" async></script>
   </body>
