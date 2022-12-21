@@ -1,0 +1,13 @@
+{
+  "short_name": "Dibs",
+  "name": "Dibs English School",
+  "description": "Curso de inglês em qualquer lugar.",
+  "icons": [{
+    "src": "favicon.ico",
+    "type": "image/png",
+    "sizes": "192x192"
+  }],
+  "start_url": "/",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa"
+}

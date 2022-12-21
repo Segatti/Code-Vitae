@@ -1,0 +1,743 @@
+/*! HTML5 Boilerplate v8.0.0 | MIT License | https://html5boilerplate.com/ */
+
+/* main.css 2.1.0 | MIT License | https://github.com/h5bp/main.css#readme */
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html {
+  color: #222;
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * Vendor-prefixed and regular ::selection selectors cannot be combined:
+ * https://stackoverflow.com/a/16982510/7133471
+ *
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+/*
+ * Remove the gap between audio, canvas, iframes,
+ * images, videos and the bottom of their containers:
+ * https://github.com/h5bp/html5-boilerplate/issues/440
+ */
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+  vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+  resize: vertical;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/*
+ * Hide visually and from screen readers
+ */
+
+.hidden,
+[hidden] {
+  display: none !important;
+}
+
+/*
+ * Hide only visually, but have it available for screen readers:
+ * https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ *
+ * 1. For long content, line feeds are not interpreted as spaces and small width
+ *    causes content to wrap 1 word per line:
+ *    https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+ */
+
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+  /* 1 */
+}
+
+/*
+ * Extends the .sr-only class to allow the element
+ * to be focusable when navigated to via the keyboard:
+ * https://www.drupal.org/node/897638
+ */
+
+.sr-only.focusable:active,
+.sr-only.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  white-space: inherit;
+  width: auto;
+}
+
+/*
+ * Hide visually and from screen readers, but maintain layout
+ */
+
+.invisible {
+  visibility: hidden;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+.clearfix::before,
+.clearfix::after {
+  content: " ";
+  display: table;
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+  /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+  (-webkit-min-device-pixel-ratio: 1.25),
+  (min-resolution: 1.25dppx),
+  (min-resolution: 120dpi) {
+  /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid the additional HTTP request:
+   https://www.phpied.com/delay-loading-your-print-css/
+   ========================================================================== */
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: #fff !important;
+    color: #000 !important;
+    /* Black prints faster */
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+
+  abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+
+  /*
+   * Don't show links that are fragment identifiers,
+   * or use the `javascript:` pseudo protocol
+   */
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
+
+  pre {
+    white-space: pre-wrap !important;
+  }
+
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  /*
+   * Printing Tables:
+   * https://web.archive.org/web/20180815150934/http://css-discuss.incutio.com/wiki/Printing_Tables
+   */
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}
+
+/* CSS Personalizado */
+
+/* Padrões */
+:root {
+  --fonte-legenda: 1rem;
+  --fonte-conteudo-menor: 1.4rem;
+  --fonte-conteudo: 1.6rem;
+  --fonte-titulo: 2.1rem;
+
+  --espacamento-menor: 24px;
+  --espacamento-medio: 48px;
+  --espacamento-maior: 96px;
+}
+
+.clear {
+  clear: both;
+}
+
+span.laranja {
+  color: #fa7b2c;
+}
+
+span.azul {
+  color: #004aad;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto Slab", serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image: url("../img/background-cinza.jpg");
+  background-size: 400px;
+  background-color: #f3eff5;
+}
+
+/* Header */
+
+header {
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+}
+
+header div.menu-pc {
+  display: flex;
+  align-items: center;
+}
+
+header div.menu-pc > nav {
+  width: 100%;
+}
+
+header div.menu-pc ul {
+  list-style: none;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+header div.menu-pc li:hover{
+  cursor: pointer;
+  color: #004aad;
+}
+
+header div.icone-menu{
+  display: none;
+  padding: 10px 10px;
+}
+
+header div.icone-menu:hover{
+  cursor: pointer;
+}
+
+header div.icone-menu:active{
+  color: #fa7b2c;
+}
+
+header div.menu-mobile {
+  display: none;
+}
+
+header div.logo img {
+  height: 120px;
+  border-radius: 50%;
+}
+
+header {
+  font-size: var(--fonte-conteudo);
+  transition: 0.3s;
+}
+
+.navbar-colored {
+  background-color: white;
+  border-bottom: #000 solid 2px;
+  box-shadow: 2px 0px 10px #000;
+}
+
+.navbar-transparent {
+  background-color: transparent;
+}
+
+div.conteudo {
+  font-size: var(--fonte-conteudo);
+}
+
+footer {
+  font-size: var(--fonte-legenda);
+  text-align: center;
+  background-color: #0d0a0b;
+  color: #f3eff5;
+}
+
+/* Inicio */
+
+div.conteudo div.fundo > img {
+  max-width: 100%;
+  min-height: 100vh !important;
+  max-height: 150vh !important;
+  overflow-x: hidden;
+}
+
+div.conteudo > div.inicio > div.container {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+div.conteudo div.chamada {
+  color: white;
+  background-color: #1f569e;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 0;
+  border: 2.5px solid #0d0a0b;
+  border-radius: 10px;
+  padding: var(--espacamento-menor);
+  transition: 0.5s;
+  margin-bottom: var(--espacamento-medio);
+  box-shadow: 5px 5px rgb(1 1 1 / 70%);
+  transform: skew(-20deg);
+}
+
+div.conteudo div.chamada h1 {
+  text-decoration: none;
+}
+
+div.conteudo div.chamada:last-of-type {
+  transform: none;
+  animation: aniclick 2s linear infinite;
+  background-color: #fa7b2c;
+  color: white;
+  cursor: pointer;
+}
+
+div.conteudo div.chamada-sonhos {
+  color: white;
+  background-color: #1f569e;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 75vh;
+  border: 2.5px solid #0d0a0b;
+  border-radius: 10px;
+  font-size: var(--fonte-conteudo-menor);
+  padding: var(--espacamento-menor);
+  background-color: #fa7b2c;
+  color: white;
+}
+
+.opacity-zero {
+  opacity: 0;
+}
+
+.transition {
+  transition: 0.5s;
+}
+
+.opacity-full {
+  opacity: 1;
+}
+
+@keyframes aniclick {
+  16.65% {
+    transform: translateY(8px);
+  }
+  33.3% {
+    transform: translateY(-6px);
+  }
+  49.95% {
+    transform: translateY(4px);
+  }
+  66.6% {
+    transform: translateY(-2px);
+  }
+  83.25% {
+    transform: translateY(1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+div.conteudo div.chamada > div.mensagem > h1 {
+  font-size: var(--fonte-titulo);
+  text-align: center;
+}
+
+div.conteudo div.chamada > div.mensagem > p {
+  font-size: var(--fonte-conteudo-menor);
+}
+
+div.conteudo div.chamada > div.mensagem > p:last-of-type {
+  margin-bottom: 0;
+}
+
+.secoes {
+  background-color: #fff;
+  padding: 20px 20px;
+  margin: 40px 0px;
+}
+
+.secoes > div.titulo > i:first-of-type {
+  color: #fa7b2c;
+}
+
+.secoes > div.titulo > i:last-of-type {
+  color: #004aad;
+}
+
+.secoes > div.conteudo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.secoes > div.conteudo > div.postagem-instagram {
+  opacity: 0.9;
+  margin: 0 auto;
+  border: #ccc solid 2px;
+  border-radius: 12px;
+}
+
+div.secoes div.conteudo div.postagem-instagram {
+  padding: 0px 0px !important;
+}
+
+.secoes div.postagem-instagram {
+  box-shadow: 5px 5px 10px rgb(177, 177, 177);
+  margin-bottom: 20px !important;
+}
+
+.secoes > div.conteudo > div.postagem-instagram:hover {
+  opacity: 1;
+  box-shadow: 10px 10px 10px rgb(177, 177, 177);
+}
+
+.secoes div.postagem-instagram:last-of-type {
+  margin-bottom: 0px !important;
+}
+
+.secoes div.postagem-instagram > div.nome {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+}
+
+.secoes div.postagem-instagram > div.nome:hover {
+  color: #fa7b2c;
+}
+
+.secoes div.postagem-instagram div.imagem img {
+  max-width: 100%;
+}
+
+.secoes div.postagem-instagram > div.legenda {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+}
+
+.secoes div.postagem-instagram > div.botoes {
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+
+.secoes div.postagem-instagram > div.botoes > a:hover {
+  color: #fa7b2c;
+  cursor: pointer;
+}
+
+footer {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: fit-content;
+}
+
+.secoes > div.conteudo > div.plano {
+  opacity: 0.9;
+  margin: 0 auto;
+  border: #ccc solid 2px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.secoes > div.conteudo > div.plano:hover {
+  opacity: 1;
+}
+
+.secoes > div.conteudo > div.plano:last-of-type {
+  margin-bottom: 0px;
+}
+
+div.secoes div.plano div.nome {
+  text-align: center;
+  padding: 20px;
+}
+
+div.secoes div.plano hr {
+  margin-top: 0px;
+}
+
+div.secoes div.plano div.imagem img {
+  width: 100%;
+}
+
+div.secoes div.contatos {
+  border-radius: 12px;
+  background-color: #004aad;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+div.secoes div.contatos div.imagem {
+  padding: 0px;
+}
+
+div.secoes div.contatos img {
+  width: 100%;
+  border-radius: 12px;
+}
+div.secoes div.contatos div.botoes {
+  padding-right: 150px;
+}
+
+div.secoes div.contatos div.botoes div.botao {
+  width: 100%;
+  background-color: #fa7b2c;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 5px 5px 20px rgb(53, 53, 53);
+}
+
+div.secoes div.contatos div.botoes div.botao:hover {
+  color: black;
+}
+
+div.secoes div.contatos div.botoes a {
+  text-decoration: none;
+}
+
+div.secoes div.contatos div.botoes hr {
+  margin: 30px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0);
+}
+
+div.secoes div.contatos div.botoes div.botao:active {
+  box-shadow: 0px 0px 0px black;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+footer h6 {
+  color: #ccc;
+}
+
+@media screen and (max-width: 900px) {
+  div.conteudo div.fundo > img {
+    content: url("../img/fundo-pequeno.png") !important;
+    min-width: 100%;
+    min-height: 100vh !important;
+    max-height: 150vh !important;
+    overflow-x: hidden;
+  }
+
+  div.inicio div.chamada {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  div.menu-pc nav{
+    display: none !important;
+  }
+
+  div.menu-pc{
+    justify-content: right;
+  }
+
+  div.menu-pc div.icone-menu{
+    display: flex !important;
+  }
+
+  div.menu-mobile{
+    text-align: center;
+    justify-content: center;
+    background-color: #ccccd4;
+  }
+
+  div.menu-mobile nav{
+    width: 100%;
+  }
+
+  div.menu-mobile ul{
+    list-style: none;
+    margin: 0px;
+    width: 100%;
+  }
+
+  div.menu-mobile li{
+    padding: 15px 0px;
+    cursor: pointer;
+  }
+
+  div.menu-mobile li:hover{
+    background-color: #b3d4fc;
+  }
+
+  div.secoes div.contatos {
+    display: flex;
+    flex-direction: column;
+  }
+
+  div.secoes div.contatos div.botoes {
+    margin: 50px 0px;
+    padding: 0px 30px;
+  }
+  div.secoes div.contatos div.botao {
+    width: 100%;
+  }
+
+  div.inicio div.chamada div.mensagem h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  div.conteudo div.fundo > img {
+    content: url("../img/fundo-medio.png");
+    min-width: 100%;
+    min-height: 100vh !important;
+    max-height: 150vh !important;
+    overflow-x: hidden;
+  }
+}
+
+@media screen and (max-width: 1700px) {
+  div.chamada-sonhos {
+    display: none !important;
+  }
+}
