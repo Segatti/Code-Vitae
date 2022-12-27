@@ -1,243 +1,355 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-  <title>Dibs - Online English School</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="Curso, Ingles, Online, Professores">
-  <meta name="author" content="Vittor Feitosa de Morais">
-  <meta name="description" content="Curso de inglês online com os profissionais qualificados com alunos do Brasil e do mundo."/>
-  
-  <link rel="shortcut icon" href="assets/icons/icone.ico" type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chau+Philomene+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://kit.fontawesome.com/b3c7d082f8.js" crossorigin="anonymous"></script>
+<html class="no-js" lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>Dibs</title>
+    <meta name="description" content="Curso de Inglês Online" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-</head>
-<body>
+    <meta property="og:title" content="Dibs English School" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.dibsinglesonline.com/" />
+    <meta
+      property="og:image"
+      content="https://www.dibsinglesonline.com//img/logo.png"
+    />
 
-  <header class="w100">
-    <div class="row w100">
-      <div class="conteudo">
-        <div class="logo-column w50">
-          <a onclick="goToSection('inicio')"><img src="assets/images/logo.png" alt="Logo" /></a>
-        </div>
-        <div class="menu-column w50">
-          <div class="menu-pc">
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="favicon.ico" />
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/main.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@200;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/b3c7d082f8.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <meta name="theme-color" content="#fafafa" />
+  </head>
+
+  <body>
+    <!-- Add your site or application content here -->
+    <header id="navbar-fixed">
+      <div class="container">
+        <div class="row">
+          <div class="logo col-4">
+            <img alt="Logo" srcset="img/logo-branca.png, img/logo-escura.png" />
+          </div>
+          <div class="menu-pc col-8">
             <nav>
-              <a href="#quem-somos" class="menu-quem-somos">Quem somos</a>
-              <a href="#cursos" class="menu-cursos">Cursos</a>
-              <a href="#alunos" class="menu-alunos">Alunos</a>
-              <a href="#contato" class="menu-contato">Contato</a>
+              <ul>
+                <li href="#inicio">Inicio</li>
+                <li href="#empresa">Empresa</li>
+                <li href="#planos">Planos</li>
+                <li href="#alunos">Alunos</li>
+                <li href="#contato">Contato</li>
+              </ul>
             </nav>
+            <div class="icone-menu">
+              <i class="fa fa-solid fa-bars"></i>
+            </div>
           </div>
         </div>
-        <div class="clear"></div>
       </div>
-    </div>
+      <div class="row">
+        <div class="menu-mobile col-md-12">
+          <nav>
+            <ul>
+              <li href="#inicio">Inicio</li>
+              <li href="#empresa">Empresa</li>
+              <li href="#planos">Planos</li>
+              <li href="#alunos">Alunos</li>
+              <li href="#contato">Contato</li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
     <div class="conteudo">
-      <div class="fita" onclick="alert('t')">
-        <img src="assets/images/fita.png" alt="Fita Marcador" />
-      </div>
-    </div>
-  </header>
-  
-  <div class="menu-mobile">
-    <nav>
-      <a href="#quem-somos" class="menu-quem-somos">Quem somos</a>
-      <a href="#cursos" class="menu-cursos">Cursos</a>
-      <a href="#alunos" class="menu-alunos">Alunos</a>
-      <a href="#contato" class="menu-contato">Contato</a>
-    </nav>
-  </div>
-  <section class="main-video sessao">
-    <video autoplay loop muted playsinline>
-      <source src="assets/videos/liberdade.mp4" type="video/mp4">
-    </video>
-  </section>
-  <section class="vagas sessao">
-    <div class="row w100">
-      <div class="conteudo">
-        <div class="chamada">
-          <h3>Matrículas aqui!</h3>
-          <a href="https://wa.me/5594984068284?text=Hey" target="_blank">Fale conosco aqui</a>
-          <i class="fa fa-chevron-down" onclick="goToSection('quem-somos')"></i>
+      <div class="inicio" id="inicio">
+        <div class="fundo">
+          <img src="img/fundo.png" alt="" srcset="" />
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="quem-somos sessao" id="quem-somos">
-    <div class="row w100">
-      <div class="conteudo">
-        <div class="section-titulo w50">
-          <h3>Quem Somos</h3>
-        </div>
-        <div class="post-wraper w100">
-          <div class="post">
-            <div class="post-titulo">
-              <div class="logo"></div>
-              <h2>dibsinglesonline_</h2>
-            </div>
-            <div class="post-foto">
-              <img src="assets/images/quem.png"/>
-            </div>
-            <div class="post-legenda">
-              @dibsinglesonline_ tudo preparado com muito cuidado e carinho para você começar a aprender inglês em 2022 ❤️.
-            </div>
-            <div class="post-botoes">
-              <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-regular fa-heart"></i></a>
-              <a href="https://wa.me/5594984068284?text=Hey"><i class="fa fa-regular fa-comment"></i></a>
-              <a href="https://forms.gle/tkUshqzxJ9hDvc7L9" target="_blank"><i class="fa fa-sharp fa-solid fa-share"></i></i></a>
+        <div class="container">
+          <div class="chamada col-6">
+            <div class="mensagem">
+              <h1>Curso de Inglês</h1>
             </div>
           </div>
-          <hr/>
-          <div class="post">
-            <div class="post-titulo">
-              <div class="logo"></div>
-              <h2>dibsinglesonline_</h2>
-            </div>
-            <div class="post-foto">
-              <img src="assets/images/fundadora.jpg"/>
-            </div>
-            <div class="post-legenda">
-              @dibsinglesonline_ Meu nome é Heloísa, sou fundadora da Dibs Online English school, sou graduada em Letras inglês pela Universidade Federal do Sul e Sudeste do Pará - UNIFESSPA👩🏻‍🎓.
-            </div>
-            <div class="post-botoes">
-              <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-regular fa-heart"></i></a>
-              <a href="https://wa.me/5594984068284?text=Hey"><i class="fa fa-regular fa-comment"></i></a>
-              <a href="https://forms.gle/tkUshqzxJ9hDvc7L9" target="_blank"><i class="fa fa-sharp fa-solid fa-share"></i></i></a>
+          <div class="chamada col-6">
+            <div class="mensagem">
+              <h1>100% Online</h1>
             </div>
           </div>
-          <hr/>
-          <div class="post">
-            <div class="post-titulo">
-              <div class="logo"></div>
-              <h2>dibsinglesonline_</h2>
+          <div class="chamada col-6">
+            <div class="mensagem">
+              <h1>Professores Capacitados</h1>
             </div>
-            <div class="post-foto">
-              <img src="assets/images/equipe.jpg"/>
-            </div>
-            <div class="post-legenda">
-              @dibsinglesonline_ Equipe de colaboradores da nossa escola, aqui você aprende com professores com formação adequada e fluentes 🥰.
-            </div>
-            <div class="post-botoes">
-              <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-regular fa-heart"></i></a>
-              <a href="https://wa.me/5594984068284?text=Hey"><i class="fa fa-regular fa-comment"></i></a>
-              <a href="https://forms.gle/tkUshqzxJ9hDvc7L9" target="_blank"><i class="fa fa-sharp fa-solid fa-share"></i></i></a>
+          </div>
+          <div class="chamada col-md-6 col-sm-12" id="chevron">
+            <i class="fa fa-chevron-down"></i>
+          </div>
+        </div>
+        <div id="chamada-sonhos" class="container display-none transition">
+          <div class="chamada-sonhos col-6">
+            <div class="mensagem">
+              Aqui você dá o primeiro passo para conquistar seu sonho, seja ele
+              um bom emprego ou uma viagem para o exterior.
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-
-  <section class="cursos sessao" id="cursos">
-    <div class="row w100">
-      <div class="conteudo">
-        <div class="section-titulo w50">
-          <h3>Cursos</h3>
-        </div>
-        <div class="banner-wraper w100 primeiro-banner">
-          <div class="banner">
-            <div class="banner-foto">
-              <img src="assets/images/1.png"/>
+      <div class="container">
+        <div class="secoes" id="empresa">
+          <div class="titulo">
+            <i class="fa fa-solid fa-chevron-right"></i
+            ><i class="fa fa-solid fa-chevron-right"></i> Empresa
+          </div>
+          <hr />
+          <div class="conteudo">
+            <div class="postagem-instagram col-md-12 col-lg-6">
+              <div class="nome">dibsenglishschool</div>
+              <div class="imagem">
+                <img src="img/quem.png" alt="Sobre a Empresa" />
+              </div>
+              <div class="legenda">
+                Tudo preparado com muito cuidado e carinho para você começar a
+                aprender inglês️.
+              </div>
+              <div class="botoes">
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
+              </div>
+            </div>
+            <div class="postagem-instagram col-md-12 col-lg-6">
+              <div class="nome">dibsenglishschool</div>
+              <div class="imagem">
+                <img src="img/fundadora.jpg" alt="Fundadora" />
+              </div>
+              <div class="legenda">
+                Sou Heloísa, fundadora da empresa
+                <span class="laranja">Dibs</span>
+                <span class="azul">Online English school</span>, graduada em
+                Letras inglês pela Universidade Federal do Sul e Sudeste do Pará
+                - UNIFESSPA👩🏻‍🎓. Atuei no mercado por alguns anos dando aulas
+                particulares de inglês.
+              </div>
+              <div class="botoes">
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
+              </div>
+            </div>
+            <div class="postagem-instagram col-md-12 col-lg-6">
+              <div class="nome">dibsenglishschool</div>
+              <div class="imagem">
+                <img src="img/equipe.jpg" alt="Equipe" />
+              </div>
+              <div class="legenda">
+                Equipe de colaboradores da nossa escola, aqui você aprende com
+                professores com formação adequada e fluentes 🥰.
+              </div>
+              <div class="botoes">
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
+              </div>
             </div>
           </div>
         </div>
-        <hr/>
-        <div class="banner-wraper w100">
-          <div class="banner">
-            <div class="banner-foto">
-              <img src="assets/images/2.png"/>
+        <div class="secoes" id="planos">
+          <div class="titulo">
+            <i class="fa fa-solid fa-chevron-right"></i
+            ><i class="fa fa-solid fa-chevron-right"></i> Planos
+          </div>
+          <hr />
+          <div class="conteudo">
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Informações Gerais</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/1.png" alt="" />
+              </div>
+            </div>
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Plano Básico</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/2.png" alt="" />
+              </div>
+            </div>
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Plano Premium</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/3.png" alt="" />
+              </div>
+            </div>
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Intensivão - parte 1</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/intensivao-1.jpeg" alt="Intensivão 1" />
+              </div>
+            </div>
+            <div class="plano col-md-12 col-lg-6">
+              <div class="nome">Intensivão - parte 2</div>
+              <hr />
+              <div class="imagem">
+                <img src="img/intensivao-2.jpeg" alt="Intensivão 2" />
+              </div>
             </div>
           </div>
         </div>
-        <hr/>
-        <div class="banner-wraper w100">
-          <div class="banner">
-            <div class="banner-foto">
-              <img src="assets/images/3.png"/>
+        <div class="secoes" id="alunos">
+          <div class="titulo">
+            <i class="fa fa-solid fa-chevron-right"></i
+            ><i class="fa fa-solid fa-chevron-right"></i> Alunos
+          </div>
+          <hr />
+          <div class="conteudo">
+            <div class="postagem-instagram col-md-12 col-lg-6">
+              <div class="nome">dibsenglishschool</div>
+              <div class="imagem">
+                <img src="img/alunos.png" alt="Alunos" />
+              </div>
+              <div class="legenda">
+                Nossos alunos pelo mundo todo 🌍 tendo aulas focadas em
+                conversação em inglês na nossa escola.
+              </div>
+              <div class="botoes">
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
+              </div>
+            </div>
+            <div class="postagem-instagram col-md-12 col-lg-6">
+              <div class="nome">dibsenglishschool</div>
+              <div class="imagem">
+                <img src="img/aluno-disney.png" alt="Aluno na disney" />
+              </div>
+              <div class="legenda">
+                "Há exatamente um mês atrás eu embarcava para uma das maiores
+                aventuras de minha vida: conhecer a Disney e os EUA! E quem
+                diria que eu conseguiria desenrolar conversando em inglês
+                durante o período que passaria lá? Com certeza a
+                <span class="azul"
+                  ><a
+                    href="https://www.instagram.com/dibsinglesonline_/"
+                    target="_blank"
+                    >@dibsinglesonline_</a
+                  ></span
+                >
+                ! Obrigado por todo apoio, vocês foram essenciais e hoje com
+                certeza eu posso afirmar: I speak English, very well!"
+              </div>
+              <div class="botoes">
+                <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank"><i class="fa fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i></a>
+                <a><i class="fa fa-regular fa-envelope"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="secoes" id="contato">
+          <div class="titulo">
+            <i class="fa fa-solid fa-chevron-right"></i
+            ><i class="fa fa-solid fa-chevron-right"></i> Contato
+          </div>
+          <hr />
+          <div class="conteudo">
+            <div class="contatos">
+              <div class="imagem col-md-12 col-lg-6">
+                <img src="img/logo-escura.png" alt="" />
+              </div>
+              <div class="botoes col-md-12 col-lg-6">
+                <a href="https://wa.me/5594984068284?text=Hey" target="_blank"
+                  ><div class="botao">
+                    <i class="fa fa-brands fa-whatsapp"></i>
+                    Whatsapp
+                  </div></a
+                >
+                <hr />
+                <a href="https://forms.gle/tkUshqzxJ9hDvc7L9" target="_blank"
+                  ><div class="botao">
+                    <i class="fa fa-solid fa-list"></i>
+                    Lista de Espera
+                  </div></a
+                >
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-
-  <section class="alunos sessao" id="alunos">
-    <div class="row w100">
-      <div class="conteudo">
-        <div class="section-titulo w50">
-          <h3>Alunos</h3>
-        </div>
-        <div class="post-wrap">
-          <div class="post">
-            <img src="assets/images/alunos.png" />
-            <p>Atendendo mais de 40 alunos semanalmente com aulas focadas em conversação em inglês! This is amazing, we are very happy. 🎉😭🥰 Where are you Dibs' student? 
-          </div>
-          <hr/>
-          <div class="post">
-            <img src="assets/images/aluno-disney.png" />
-            <p>"Há exatamente um mês atrás eu embarcava para uma das maiores aventuras de minha vida: conhecer a Disney e os EUA!
-              E quem diria que eu conseguiria desenrolar conversando em inglês durante o período que passaria lá? Com certeza a <a href="https://www.instagram.com/dibsinglesonline_/" target="_blank">@dibsinglesonline_</a> !
-              Obrigado por todo apoio, vocês foram essenciais e hoje com certeza eu posso afirmar: I speak English, very well!"</p>
-          </div>
-        </div>
+    <footer>
+      <div class="container">
+        <h5>Segunda a Sexta 8h às 20h • Sábado 9h às 12h</h5>
+        <h5>ceo@<span class="laranja">dibsenglishschool</span>.com</h5>
+        <h6>© 2022 Dibs. Todos direitos reservados.</h6>
       </div>
-    </div>
-    
-  </section>
-  
+    </footer>
 
-  <section class="contato sessao" id="contato">
-    <div class="conteudo">
-      <div class="row w100">
-        <div class="section-titulo w50">
-          <h3>Contato</h3>
-        </div>
-      </div>
-    </div>
-    <div class="conteudo">
-      <div class="row w100">
-        <div class="formulario">
-          <div class="foto">
-            <img src="assets/images/logo-escura.png" alt="Logo" />
-          </div>
-          <div class="botoes">
-            <a href="https://wa.me/5594984068284?text=Hey" target="_blank"><i class="fa fa-brands fa-whatsapp"></i>Whatsapp</a>
-            <a href="https://forms.gle/tkUshqzxJ9hDvc7L9" target="_blank"><i class="fa fa-solid fa-list"></i>Lista de Espera</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row w100">
-      <div class="info-empresa">
-        <p>Segunda a Sexta 8h às 20h • Sábado 9h às 12h</p>
-        <p>ceo@dibsenglishschool.com</p>
-        <p>CNPJ: 44.174.762/0001-80</p>
-      </div>
-    </div>
-  </section>
-  <footer>
-    © 2022 Dibs. Todos direitos reservados.
-  </footer>
+    <script src="js/vendor/jquery-3.6.1.min.js"></script>
+    <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
 
-  <script src="js/jquery-3.6.1.min.js"></script>
-  <script src="js/menu-mobile.js"></script>
-  <script src="js/menu-scroll.js"></script>
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+      window.ga = function () {
+        ga.q.push(arguments);
+      };
+      ga.q = [];
+      ga.l = +new Date();
+      ga("create", "UA-XXXXX-Y", "auto");
+      ga("set", "anonymizeIp", true);
+      ga("set", "transport", "beacon");
+      ga("send", "pageview");
+    </script>
+    <script>
+      var myNav = document.getElementById("navbar-fixed");
+      var chamadaSonho = document.getElementById("chamada-sonhos");
+      window.onscroll = function () {
+        if (
+          document.body.scrollTop >= 50 ||
+          document.documentElement.scrollTop >= 50
+        ) {
+          myNav.classList.add("navbar-colored");
+          myNav.classList.remove("navbar-transparent");
+        } else {
+          myNav.classList.add("navbar-transparent");
+          myNav.classList.remove("navbar-colored");
+        }
 
-  <script lang="javascript">
-    function goToSection(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth'});
-    }
-  </script>
-</body>
+        if (
+          document.documentElement.scrollTop >= 300 &&
+          document.documentElement.scrollTop <= 700
+        ) {
+          chamadaSonho.classList.add("opacity-full");
+          chamadaSonho.classList.remove("opacity-zero");
+        } else {
+          chamadaSonho.classList.add("opacity-zero");
+          chamadaSonho.classList.remove("opacity-full");
+        }
+      };
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async></script>
+  </body>
 </html>
