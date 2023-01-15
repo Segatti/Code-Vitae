@@ -4,4 +4,4 @@
 
 ## Contato: dev.vittor@gmail.com
 
-### Meu Curriculum Vitae de projetos pessoais e de cursos concluidos
+### Monorepo composto por projetos pessoais expostos como portifólio pessoal
