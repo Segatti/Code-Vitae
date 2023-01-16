@@ -43,7 +43,7 @@ class CharactersModel extends Characters {
           : null,
       results: map['results'] != null
           ? List<CharacterModel>.from(
-              (map['results'] as List<int>).map<Character?>(
+              (map['results'] as List).map<Character?>(
                 (x) => CharacterModel.fromMap(x as Map<String, dynamic>),
               ),
             )

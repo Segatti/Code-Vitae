@@ -30,7 +30,7 @@ class CharacterModel extends Character {
   });
 
   CharacterModel copyWith({
-    String? id,
+    int? id,
     String? name,
     String? status,
     String? species,
@@ -78,7 +78,7 @@ class CharacterModel extends Character {
 
   factory CharacterModel.fromMap(Map<String, dynamic> map) {
     return CharacterModel(
-      id: map['id'] as String,
+      id: map['id'] as int,
       name: map['name'] as String,
       status: map['status'] as String,
       species: map['species'] as String,
@@ -89,7 +89,7 @@ class CharacterModel extends Character {
       location: CharacterLocationModel.fromMap(
           map['location'] as Map<String, dynamic>),
       image: map['image'] as String,
-      episode: List<String>.from((map['episode'] as List<String>)),
+      episode: List<String>.from((map['episode'] as List)),
       url: map['url'] as String,
       created: map['created'] as String,
     );

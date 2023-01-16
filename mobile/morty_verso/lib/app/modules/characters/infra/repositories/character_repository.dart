@@ -8,7 +8,7 @@ import '../../domain/repositories/character_repository.dart';
 import '../datasources/api_datasource.dart';
 
 class CharacterRepository implements ICharacterRepository {
-  ApiDatasource apiDatasource;
+  IApiDatasource apiDatasource;
 
   CharacterRepository({
     required this.apiDatasource,

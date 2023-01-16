@@ -2,7 +2,7 @@ import 'character_location.dart';
 import 'character_origin.dart';
 
 class Character {
-  final String? id;
+  final int? id;
   final String? name;
   final String? status;
   final String? species;

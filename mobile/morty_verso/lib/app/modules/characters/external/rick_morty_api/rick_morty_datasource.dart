@@ -4,8 +4,8 @@ import '../../infra/datasources/api_datasource.dart';
 import '../../infra/models/character_model.dart';
 import '../../infra/models/characters_model.dart';
 
-class RickMortyDatasource implements ApiDatasource {
-  String urlApi = 'https://rickandmortyapi.com/api/';
+class RickMortyDatasource implements IApiDatasource {
+  String urlApi = 'https://rickandmortyapi.com/api';
   Dio dio;
 
   RickMortyDatasource({
