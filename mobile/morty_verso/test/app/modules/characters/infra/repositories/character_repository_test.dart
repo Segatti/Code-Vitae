@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -19,14 +17,14 @@ void main() {
 
   group('Sucessos', () {
     test('Buscar todos os personagens pelo Datasource', () async {
-      when(datasource.getAll(any)).thenAnswer((_) async => CharactersModel());
+      when(datasource.getAll(any)).thenAnswer((_) async => const CharactersModel());
 
       final result = await repository.getAll(1);
       expect(result.fold(id, id), isA<CharactersModel>());
     });
 
     test('Buscar um personagem pelo Datasource', () async {
-      when(datasource.getOne(any)).thenAnswer((_) async => CharacterModel());
+      when(datasource.getOne(any)).thenAnswer((_) async => const CharacterModel());
 
       final result = await repository.getOne(1);
       expect(result.fold(id, id), isA<CharacterModel>());
