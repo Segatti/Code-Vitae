@@ -1,18 +1,18 @@
 import 'package:dartz/dartz.dart';
 import 'package:morty_verso/app/modules/characters/domain/errors/character_error.dart';
-import 'package:morty_verso/app/modules/characters/infra/repositories/character_repository.dart';
 
 import '../../../../core/domain/errors/failure.dart';
 import '../entities/character.dart';
+import '../repositories/character_repository.dart';
 
-abstract class IUCGetOneCharacters {
+abstract class IUCGetOneCharacter {
   Future<Either<Failure, Character>> call(int id);
 }
 
-class UCGetOneCharacters implements IUCGetOneCharacters {
-  CharacterRepository characterRepository;
+class UCGetOneCharacter implements IUCGetOneCharacter {
+  ICharacterRepository characterRepository;
 
-  UCGetOneCharacters({
+  UCGetOneCharacter({
     required this.characterRepository,
   });
 
@@ -23,7 +23,7 @@ class UCGetOneCharacters implements IUCGetOneCharacters {
     } else {
       final response = await characterRepository.getOne(id);
       return response.fold(
-        (error) => Left(InfraError()),
+        (error) => Left(error),
         (response) => Right(response),
       );
     }

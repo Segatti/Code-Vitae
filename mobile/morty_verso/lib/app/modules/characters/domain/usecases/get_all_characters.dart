@@ -24,7 +24,7 @@ class UCGetAllCharacters implements IUCGetAllCharacters {
     } else {
       final response = await characterRepository.getAll(page);
       return response.fold(
-        (error) => Left(InfraError()),
+        (error) => Left(error),
         (response) => (response.results?.isEmpty ?? true)
             ? Left(EmptyList())
             : Right(response),

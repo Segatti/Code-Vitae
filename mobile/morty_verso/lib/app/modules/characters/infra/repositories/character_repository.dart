@@ -18,9 +18,7 @@ class CharacterRepository implements ICharacterRepository {
   Future<Either<Failure, Characters>> getAll(int page) async {
     try {
       final response = await apiDatasource.getAll(page);
-      return (response.results?.isEmpty ?? true)
-          ? Left(EmptyList())
-          : Right(response);
+      return Right(response);
     } catch (e) {
       return Left(DatasourceError());
     }
