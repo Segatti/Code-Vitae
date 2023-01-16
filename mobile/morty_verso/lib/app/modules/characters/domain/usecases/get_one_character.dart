@@ -10,9 +10,9 @@ abstract class IUCGetOneCharacter {
 }
 
 class UCGetOneCharacter implements IUCGetOneCharacter {
-  ICharacterRepository characterRepository;
+  final ICharacterRepository characterRepository;
 
-  UCGetOneCharacter({
+  const UCGetOneCharacter({
     required this.characterRepository,
   });
 

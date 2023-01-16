@@ -67,14 +67,6 @@ class MockCharacterRepository extends _i1.Mock
         ),
       ) as _i2.IApiDatasource);
   @override
-  set apiDatasource(_i2.IApiDatasource? _apiDatasource) => super.noSuchMethod(
-        Invocation.setter(
-          #apiDatasource,
-          _apiDatasource,
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
   _i5.Future<_i3.Either<_i6.Failure, _i7.Characters>> getAll(int? page) =>
       (super.noSuchMethod(
         Invocation.method(

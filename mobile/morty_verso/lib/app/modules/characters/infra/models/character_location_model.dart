@@ -4,7 +4,7 @@ import 'package:morty_verso/app/modules/characters/domain/entities/character_loc
 
 class CharacterLocationModel extends CharacterLocation {
 
-  CharacterLocationModel({
+  const CharacterLocationModel({
     required super.name,
     required super.url,
   });

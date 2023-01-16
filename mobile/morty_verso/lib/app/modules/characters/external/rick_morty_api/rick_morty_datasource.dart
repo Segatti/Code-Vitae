@@ -5,10 +5,10 @@ import '../../infra/models/character_model.dart';
 import '../../infra/models/characters_model.dart';
 
 class RickMortyDatasource implements IApiDatasource {
-  String urlApi = 'https://rickandmortyapi.com/api';
-  Dio dio;
+  final String urlApi = 'https://rickandmortyapi.com/api';
+  final Dio dio;
 
-  RickMortyDatasource({
+  const RickMortyDatasource({
     required this.dio,
   });
 

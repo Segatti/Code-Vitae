@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:morty_verso/app/modules/characters/domain/entities/character_origin.dart';
 
 class CharacterOriginModel extends CharacterOrigin {
+  
   const CharacterOriginModel({
     required super.name,
     required super.url,

@@ -72,14 +72,6 @@ class MockRickMortyDatasource extends _i1.Mock
         returnValue: '',
       ) as String);
   @override
-  set urlApi(String? _urlApi) => super.noSuchMethod(
-        Invocation.setter(
-          #urlApi,
-          _urlApi,
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
   _i2.Dio get dio => (super.noSuchMethod(
         Invocation.getter(#dio),
         returnValue: _FakeDio_0(
@@ -87,14 +79,6 @@ class MockRickMortyDatasource extends _i1.Mock
           Invocation.getter(#dio),
         ),
       ) as _i2.Dio);
-  @override
-  set dio(_i2.Dio? _dio) => super.noSuchMethod(
-        Invocation.setter(
-          #dio,
-          _dio,
-        ),
-        returnValueForMissingStub: null,
-      );
   @override
   _i6.Future<_i3.CharactersModel> getAll(int? page) => (super.noSuchMethod(
         Invocation.method(

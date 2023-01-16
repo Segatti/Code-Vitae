@@ -11,9 +11,9 @@ abstract class IUCGetAllCharacters {
 }
 
 class UCGetAllCharacters implements IUCGetAllCharacters {
-  ICharacterRepository characterRepository;
+  final ICharacterRepository characterRepository;
 
-  UCGetAllCharacters({
+  const UCGetAllCharacters({
     required this.characterRepository,
   });
 

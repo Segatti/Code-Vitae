@@ -14,7 +14,7 @@ class CharacterModel extends Character {
   @override
   final CharacterLocationModel? location;
 
-  CharacterModel({
+  const CharacterModel({
     super.id,
     super.name,
     super.status,
