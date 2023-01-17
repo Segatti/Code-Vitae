@@ -6,6 +6,8 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Modular.setInitialRoute('/home');
+
     return MaterialApp.router(
       title: 'Flutter Slidy',
       debugShowCheckedModeBanner: false,

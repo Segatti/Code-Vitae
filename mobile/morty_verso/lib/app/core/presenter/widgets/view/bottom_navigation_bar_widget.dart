@@ -29,7 +29,11 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           backgroundColor: Colors.grey,
           currentIndex: store.currentIndex,
           selectedItemColor: Colors.white,
-          onTap: store.setCurrentIndex,
+          onTap: (value) {
+            store.setCurrentIndex(value);
+
+            Modular.to.navigate(store.routes[value]);
+          },
           items: const [
             BottomNavigationBarItem(
               icon: Icon(

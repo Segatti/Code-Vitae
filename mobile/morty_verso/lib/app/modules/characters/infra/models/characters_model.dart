@@ -14,7 +14,7 @@ class CharactersModel extends Characters {
   final InfoAssistantModel? info;
   @override
   final List<CharacterModel>? results;
-  
+
   const CharactersModel({
     this.info,
     this.results,

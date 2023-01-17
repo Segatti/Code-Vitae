@@ -45,7 +45,9 @@ abstract class _AllCharactersStoreBase with Store {
     setPageState(LoadingState());
     final response = await getAllCharacters(currentPage);
     await response.fold(
-      (l) async => setPageState(ErrorState()),
+      (l) async {
+        setPageState(ErrorState());
+      },
       (r) async {
         setCharacters(r);
         setPageState(SuccessState());

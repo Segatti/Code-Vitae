@@ -14,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   late final HomeStore store;
 
   @override
@@ -25,19 +24,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Counter'),
-      ),
-      body: Observer(
-        builder: (context) => Text('${store.counter}'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          store.increment();
-        },
-        child: const Icon(Icons.add),
-      ),
+    return Observer(
+      builder: (context) => Text('${store.counter}'),
     );
   }
 }
