@@ -29,7 +29,7 @@ class CharactersModule extends Module {
         (i) => UCGetOneCharacter(characterRepository: i())),
 
     // Stores
-    Bind.factory<AllCharactersStore>((i) => AllCharactersStore()),
+    Bind.factory<AllCharactersStore>((i) => AllCharactersStore(i())),
     Bind.factory<CharacterStore>((i) => CharacterStore()),
 
     // Dependency

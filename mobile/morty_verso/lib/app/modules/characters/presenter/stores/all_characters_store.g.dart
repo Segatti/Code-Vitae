@@ -41,6 +41,54 @@ mixin _$AllCharactersStore on _AllCharactersStoreBase, Store {
     });
   }
 
+  late final _$charactersAtom =
+      Atom(name: '_AllCharactersStoreBase.characters', context: context);
+
+  @override
+  Characters get characters {
+    _$charactersAtom.reportRead();
+    return super.characters;
+  }
+
+  @override
+  set characters(Characters value) {
+    _$charactersAtom.reportWrite(value, super.characters, () {
+      super.characters = value;
+    });
+  }
+
+  late final _$currentPageAtom =
+      Atom(name: '_AllCharactersStoreBase.currentPage', context: context);
+
+  @override
+  int get currentPage {
+    _$currentPageAtom.reportRead();
+    return super.currentPage;
+  }
+
+  @override
+  set currentPage(int value) {
+    _$currentPageAtom.reportWrite(value, super.currentPage, () {
+      super.currentPage = value;
+    });
+  }
+
+  late final _$startStoreAsyncAction =
+      AsyncAction('_AllCharactersStoreBase.startStore', context: context);
+
+  @override
+  Future<void> startStore() {
+    return _$startStoreAsyncAction.run(() => super.startStore());
+  }
+
+  late final _$getCharactersAsyncAction =
+      AsyncAction('_AllCharactersStoreBase.getCharacters', context: context);
+
+  @override
+  Future<void> getCharacters() {
+    return _$getCharactersAsyncAction.run(() => super.getCharacters());
+  }
+
   late final _$_AllCharactersStoreBaseActionController =
       ActionController(name: '_AllCharactersStoreBase', context: context);
 
@@ -67,10 +115,34 @@ mixin _$AllCharactersStore on _AllCharactersStoreBase, Store {
   }
 
   @override
+  dynamic setCharacters(Characters value) {
+    final _$actionInfo = _$_AllCharactersStoreBaseActionController.startAction(
+        name: '_AllCharactersStoreBase.setCharacters');
+    try {
+      return super.setCharacters(value);
+    } finally {
+      _$_AllCharactersStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setCurrentPage(int value) {
+    final _$actionInfo = _$_AllCharactersStoreBaseActionController.startAction(
+        name: '_AllCharactersStoreBase.setCurrentPage');
+    try {
+      return super.setCurrentPage(value);
+    } finally {
+      _$_AllCharactersStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 carregando: ${carregando},
-pageState: ${pageState}
+pageState: ${pageState},
+characters: ${characters},
+currentPage: ${currentPage}
     ''';
   }
 }
