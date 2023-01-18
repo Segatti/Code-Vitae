@@ -1,10 +1,10 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:morty_verso/app/modules/characters/characters_module.dart';
-import 'package:morty_verso/app/modules/home/presenter/home_page.dart';
+import 'package:morty_verso/app/modules/home/presenter/pages/home_page.dart';
 import 'package:morty_verso/app/modules/home/presenter/pages/start_page.dart';
 
 import '../settings/settings_module.dart';
-import 'presenter/home_store.dart';
+import 'presenter/stores/home_store.dart';
 
 class HomeModule extends Module {
   @override
