@@ -103,11 +103,13 @@ class _CharacterPageState extends State<CharacterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(title: store.character.name ?? ''),
-      body: BasePageWidget(child: Observer(builder: (context) {
-        return buildState(store.pageState);
-      })),
-    );
+    return Observer(builder: (context) {
+      return Scaffold(
+        appBar: AppBarWidget(title: store.character.name ?? ''),
+        body: BasePageWidget(child: Observer(builder: (context) {
+          return buildState(store.pageState);
+        })),
+      );
+    });
   }
 }
