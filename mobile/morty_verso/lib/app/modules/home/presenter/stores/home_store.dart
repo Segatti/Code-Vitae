@@ -1,5 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:mobx/mobx.dart';
 import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/modules/characters/domain/usecases/get_favorite_characters.dart';
@@ -26,6 +28,8 @@ abstract class _HomeStoreBase with Store {
 
   @action
   Future<void> startStore() async {
+    LocalStorage localStorage = Modular.get<LocalStorage>();
+    await localStorage.ready;
     setPageState(LoadingState());
     await getFavoriteCharactersLocalStorage();
     setPageState(SuccessState());

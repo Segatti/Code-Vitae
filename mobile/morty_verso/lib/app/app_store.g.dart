@@ -25,18 +25,20 @@ mixin _$AppStore on _AppStoreBase, Store {
     });
   }
 
-  late final _$_AppStoreBaseActionController =
-      ActionController(name: '_AppStoreBase', context: context);
+  late final _$setThemeIsDarkAsyncAction =
+      AsyncAction('_AppStoreBase.setThemeIsDark', context: context);
 
   @override
-  dynamic setThemeIsDark(bool value) {
-    final _$actionInfo = _$_AppStoreBaseActionController.startAction(
-        name: '_AppStoreBase.setThemeIsDark');
-    try {
-      return super.setThemeIsDark(value);
-    } finally {
-      _$_AppStoreBaseActionController.endAction(_$actionInfo);
-    }
+  Future setThemeIsDark(bool value) {
+    return _$setThemeIsDarkAsyncAction.run(() => super.setThemeIsDark(value));
+  }
+
+  late final _$startStoreAsyncAction =
+      AsyncAction('_AppStoreBase.startStore', context: context);
+
+  @override
+  Future<void> startStore() {
+    return _$startStoreAsyncAction.run(() => super.startStore());
   }
 
   @override

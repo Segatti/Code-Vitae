@@ -13,6 +13,11 @@ class HomeModule extends Module {
   ];
 
   @override
+  List<Module> imports = [
+    CharactersModule(),
+  ];
+
+  @override
   final List<ModularRoute> routes = [
     ChildRoute(
       Modular.initialRoute,

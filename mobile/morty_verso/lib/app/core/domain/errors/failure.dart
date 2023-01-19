@@ -6,3 +6,7 @@ class Failure implements Exception {
     log("Error: $message");
   }
 }
+
+class GenericError extends Failure {
+  GenericError(String message) : super(message);
+}

@@ -86,7 +86,6 @@ class _SettingsPageState extends State<SettingsPage> {
               Text(
                 "Version: ${dotenv.env['VERSION']}",
                 style: const TextStyle(
-                  color: Colors.black45,
                   fontSize: 14,
                 ),
               ),

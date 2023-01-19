@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:localstorage/localstorage.dart';
 
 import 'domain/repositories/character_repository.dart';
 import 'domain/usecases/get_all_characters.dart';
@@ -31,19 +30,18 @@ class CharactersModule extends Module {
     Bind.lazySingleton<IUCGetOneCharacter>(
         (i) => UCGetOneCharacter(characterRepository: i())),
     Bind.lazySingleton<IUCGetFavoriteCharacters>(
-      (i) => UCGetFavoriteCharacters(localStorageService: i()),
+      (i) => UCGetFavoriteCharacters(getValueLocalStorage: i()),
       export: true,
     ),
     Bind.lazySingleton<IUCSetFavoriteCharacters>(
-        (i) => UCSetFavoriteCharacters(localStorageService: i())),
+        (i) => UCSetFavoriteCharacters(setValueLocalStorage: i())),
 
     // Stores
     Bind.factory<AllCharactersStore>((i) => AllCharactersStore(i(), i(), i())),
     Bind.factory<CharacterStore>((i) => CharacterStore()),
 
     // Dependency
-    Bind.singleton((i) => Dio()),
-    Bind.singleton((i) => LocalStorage('characters'), export: true),
+    Bind.singleton<Dio>((i) => Dio()),
   ];
 
   @override

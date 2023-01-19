@@ -11,18 +11,18 @@ class AppWidget extends StatelessWidget {
     Modular.setInitialRoute('/home');
     AppStore store = Modular.get<AppStore>();
 
-    return Observer(
-      builder: (_) {
-        return MaterialApp.router(
-          title: 'Morty Verso',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(brightness: Brightness.light, fontFamily: 'Roboto'),
-          darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'Roboto'),
-          themeMode: store.themeIsDark ? ThemeMode.dark : ThemeMode.light,
-          routerDelegate: Modular.routerDelegate,
-          routeInformationParser: Modular.routeInformationParser,
-        );
-      }
-    );
+    store.startStore();
+
+    return Observer(builder: (_) {
+      return MaterialApp.router(
+        title: 'Morty Verso',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(brightness: Brightness.light, fontFamily: 'Roboto'),
+        darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'Roboto'),
+        themeMode: store.themeIsDark ? ThemeMode.dark : ThemeMode.light,
+        routerDelegate: Modular.routerDelegate,
+        routeInformationParser: Modular.routeInformationParser,
+      );
+    });
   }
 }

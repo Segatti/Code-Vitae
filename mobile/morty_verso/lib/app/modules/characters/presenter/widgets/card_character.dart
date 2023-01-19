@@ -134,9 +134,7 @@ class CardCharacter extends StatelessWidget {
                                 maxLines: 2,
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: (isFavorite)
-                                      ? Colors.orange
-                                      : Colors.black,
+                                  color: (isFavorite) ? Colors.orange : null,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
