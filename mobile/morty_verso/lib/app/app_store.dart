@@ -1,11 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'dart:developer';
-
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:mobx/mobx.dart';
-import 'package:morty_verso/app/core/core_module.dart';
 
 import 'core/domain/usecases/get_value_local_storage.dart';
 import 'core/domain/usecases/set_value_local_storage.dart';
