@@ -1,22 +1,29 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:developer';
+
 import 'package:mobx/mobx.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
 import '../../domain/entities/characters.dart';
 import '../../domain/usecases/get_all_characters.dart';
+import '../../domain/usecases/get_favorite_characters.dart';
+import '../../domain/usecases/set_favorite_characters.dart';
+
 part 'all_characters_store.g.dart';
 
 class AllCharactersStore = _AllCharactersStoreBase with _$AllCharactersStore;
 
 abstract class _AllCharactersStoreBase with Store {
   final UCGetAllCharacters getAllCharacters;
-  _AllCharactersStoreBase(this.getAllCharacters);
+  final UCGetFavoriteCharacters getFavoriteCharacters;
+  final UCSetFavoriteCharacters setFavoriteCharacters;
 
-  @observable
-  bool carregando = false;
-  @action
-  setCarregando(bool value) => carregando = value;
+  _AllCharactersStoreBase(
+    this.getAllCharacters,
+    this.getFavoriteCharacters,
+    this.setFavoriteCharacters,
+  );
 
   @observable
   PageState pageState = StartState();
@@ -25,9 +32,10 @@ abstract class _AllCharactersStoreBase with Store {
 
   @action
   Future<void> startStore() async {
-    setCarregando(true);
+    setPageState(LoadingState());
     await getCharacters();
-    setCarregando(false);
+    await getFavoriteCharactersLocalStorage();
+    if (pageState is LoadingState) setPageState(SuccessState());
   }
 
   @observable
@@ -40,9 +48,21 @@ abstract class _AllCharactersStoreBase with Store {
   @action
   setCurrentPage(int value) => currentPage = value;
 
+  @computed
+  bool get prevButton => currentPage > 1 && characters.info?.prev != null;
+  @computed
+  bool get nextButton =>
+      characters.info?.next != null &&
+      currentPage < (characters.info?.pages ?? 0);
+
+  @observable
+  List<String> favoriteCharactersIdList = [];
+  @action
+  setFavoriteCharactersIdList(List<String> value) =>
+      favoriteCharactersIdList = value;
+
   @action
   Future<void> getCharacters() async {
-    setPageState(LoadingState());
     final response = await getAllCharacters(currentPage);
     await response.fold(
       (l) async {
@@ -50,6 +70,35 @@ abstract class _AllCharactersStoreBase with Store {
       },
       (r) async {
         setCharacters(r);
+      },
+    );
+  }
+
+  @action
+  Future<void> getFavoriteCharactersLocalStorage() async {
+    final response = await getFavoriteCharacters('favorite_characters');
+    await response.fold(
+      (l) async {
+        setPageState(ErrorState());
+      },
+      (r) async {
+        setFavoriteCharactersIdList(r);
+      },
+    );
+  }
+
+  @action
+  Future<void> saveFavoriteCharactersLocalStorage() async {
+    setPageState(LoadingState());
+    final response = await setFavoriteCharacters(
+      'favorite_characters',
+      favoriteCharactersIdList,
+    );
+    await response.fold(
+      (l) async {
+        setPageState(ErrorState());
+      },
+      (r) async {
         setPageState(SuccessState());
       },
     );

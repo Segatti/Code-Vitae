@@ -19,7 +19,7 @@ class UCGetOneCharacter implements IUCGetOneCharacter {
   @override
   Future<Either<Failure, Character>> call(int id) async {
     if (id < 0) {
-      return Left(InvalidInput());
+      return Left(InvalidInput('UCGetOneCharacter - InvalidInput'));
     } else {
       final response = await characterRepository.getOne(id);
       return response.fold(

@@ -48,8 +48,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(PaddingPattern.small),
               child: Image.asset(
                 IconPattern.logo,
-                height: 120,
-                width: 120,
+                cacheHeight: 120,
+                cacheWidth: 120,
               ),
             ),
           ],

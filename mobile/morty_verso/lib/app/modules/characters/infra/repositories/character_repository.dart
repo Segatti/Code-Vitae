@@ -20,7 +20,8 @@ class CharacterRepository implements ICharacterRepository {
       final response = await apiDatasource.getAll(page);
       return Right(response);
     } catch (e) {
-      return Left(DatasourceError());
+      return Left(
+          DatasourceError('CharacterRepository.getAll - DatasourceError'));
     }
   }
 
@@ -30,7 +31,8 @@ class CharacterRepository implements ICharacterRepository {
       final response = await apiDatasource.getOne(id);
       return Right(response);
     } catch (e) {
-      return Left(DatasourceError());
+      return Left(
+          DatasourceError('CharacterRepository.getOne - DatasourceError'));
     }
   }
 }

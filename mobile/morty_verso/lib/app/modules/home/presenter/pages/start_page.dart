@@ -21,11 +21,9 @@ class _StartPageState extends State<StartPage> {
       appBar: const AppBarWidget(title: 'Dimension A-0'),
       body: BasePageWidget(
           child: Row(
-        children: [
+        children: const [
           Expanded(
-            child: Observer(
-              builder: (context) => const RouterOutlet(),
-            ),
+            child: RouterOutlet(),
           ),
         ],
       )),

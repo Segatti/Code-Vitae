@@ -1,7 +1,13 @@
 import '../../../../core/domain/errors/failure.dart';
 
-class InvalidInput extends Failure {}
+class InvalidInput extends Failure {
+  InvalidInput(String message):super(message);
+}
 
-class EmptyList extends Failure {}
+class EmptyList extends Failure {
+  EmptyList(String message):super(message);
+}
 
-class DatasourceError extends Failure {}
+class DatasourceError extends Failure {
+  DatasourceError(String message):super(message);
+}

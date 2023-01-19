@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/modules/characters/domain/repositories/character_repository.dart';
-import 'package:morty_verso/app/modules/characters/infra/datasources/api_datasource.dart';
+import 'package:localstorage/localstorage.dart';
 
+import 'domain/repositories/character_repository.dart';
 import 'domain/usecases/get_all_characters.dart';
+import 'domain/usecases/get_favorite_characters.dart';
 import 'domain/usecases/get_one_character.dart';
+import 'domain/usecases/set_favorite_characters.dart';
 import 'external/rick_morty_api/rick_morty_datasource.dart';
+import 'infra/datasources/api_datasource.dart';
 import 'infra/repositories/character_repository.dart';
 import 'presenter/pages/all_characters_page.dart';
 import 'presenter/pages/character_page.dart';
@@ -27,13 +30,20 @@ class CharactersModule extends Module {
         (i) => UCGetAllCharacters(characterRepository: i())),
     Bind.lazySingleton<IUCGetOneCharacter>(
         (i) => UCGetOneCharacter(characterRepository: i())),
+    Bind.lazySingleton<IUCGetFavoriteCharacters>(
+      (i) => UCGetFavoriteCharacters(localStorageService: i()),
+      export: true,
+    ),
+    Bind.lazySingleton<IUCSetFavoriteCharacters>(
+        (i) => UCSetFavoriteCharacters(localStorageService: i())),
 
     // Stores
-    Bind.factory<AllCharactersStore>((i) => AllCharactersStore(i())),
+    Bind.factory<AllCharactersStore>((i) => AllCharactersStore(i(), i(), i())),
     Bind.factory<CharacterStore>((i) => CharacterStore()),
 
     // Dependency
     Bind.singleton((i) => Dio()),
+    Bind.singleton((i) => LocalStorage('characters')),
   ];
 
   @override

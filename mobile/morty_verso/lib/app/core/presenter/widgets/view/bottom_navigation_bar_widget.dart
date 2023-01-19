@@ -37,9 +37,9 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.home,
+                Icons.person,
               ),
-              label: 'Home',
+              label: 'Profile',
             ),
             BottomNavigationBarItem(
               icon: Icon(

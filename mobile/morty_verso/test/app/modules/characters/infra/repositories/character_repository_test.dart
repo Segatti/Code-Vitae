@@ -34,14 +34,14 @@ void main() {
   group('Erros', () {
     test('Erro no Datasource ao tentar buscar todos os personagens',
         () async {
-      when(datasource.getAll(any)).thenThrow((_) async => DatasourceError());
+      when(datasource.getAll(any)).thenThrow((_) async => DatasourceError(''));
 
       final result = await repository.getAll(1);
       expect(result.fold(id, id), isA<DatasourceError>());
     });
 
     test('Erro no Datasource ao tentar buscar um personagem', () async {
-      when(datasource.getOne(any)).thenThrow((_) async => DatasourceError());
+      when(datasource.getOne(any)).thenThrow((_) async => DatasourceError(''));
 
       final result = await repository.getOne(1);
       expect(result.fold(id, id), isA<DatasourceError>());

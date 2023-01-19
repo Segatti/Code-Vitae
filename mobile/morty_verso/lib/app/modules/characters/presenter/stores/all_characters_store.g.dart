@@ -9,21 +9,20 @@ part of 'all_characters_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AllCharactersStore on _AllCharactersStoreBase, Store {
-  late final _$carregandoAtom =
-      Atom(name: '_AllCharactersStoreBase.carregando', context: context);
+  Computed<bool>? _$prevButtonComputed;
 
   @override
-  bool get carregando {
-    _$carregandoAtom.reportRead();
-    return super.carregando;
-  }
+  bool get prevButton =>
+      (_$prevButtonComputed ??= Computed<bool>(() => super.prevButton,
+              name: '_AllCharactersStoreBase.prevButton'))
+          .value;
+  Computed<bool>? _$nextButtonComputed;
 
   @override
-  set carregando(bool value) {
-    _$carregandoAtom.reportWrite(value, super.carregando, () {
-      super.carregando = value;
-    });
-  }
+  bool get nextButton =>
+      (_$nextButtonComputed ??= Computed<bool>(() => super.nextButton,
+              name: '_AllCharactersStoreBase.nextButton'))
+          .value;
 
   late final _$pageStateAtom =
       Atom(name: '_AllCharactersStoreBase.pageState', context: context);
@@ -73,6 +72,24 @@ mixin _$AllCharactersStore on _AllCharactersStoreBase, Store {
     });
   }
 
+  late final _$favoriteCharactersIdListAtom = Atom(
+      name: '_AllCharactersStoreBase.favoriteCharactersIdList',
+      context: context);
+
+  @override
+  List<String> get favoriteCharactersIdList {
+    _$favoriteCharactersIdListAtom.reportRead();
+    return super.favoriteCharactersIdList;
+  }
+
+  @override
+  set favoriteCharactersIdList(List<String> value) {
+    _$favoriteCharactersIdListAtom
+        .reportWrite(value, super.favoriteCharactersIdList, () {
+      super.favoriteCharactersIdList = value;
+    });
+  }
+
   late final _$startStoreAsyncAction =
       AsyncAction('_AllCharactersStoreBase.startStore', context: context);
 
@@ -89,19 +106,28 @@ mixin _$AllCharactersStore on _AllCharactersStoreBase, Store {
     return _$getCharactersAsyncAction.run(() => super.getCharacters());
   }
 
-  late final _$_AllCharactersStoreBaseActionController =
-      ActionController(name: '_AllCharactersStoreBase', context: context);
+  late final _$getFavoriteCharactersLocalStorageAsyncAction = AsyncAction(
+      '_AllCharactersStoreBase.getFavoriteCharactersLocalStorage',
+      context: context);
 
   @override
-  dynamic setCarregando(bool value) {
-    final _$actionInfo = _$_AllCharactersStoreBaseActionController.startAction(
-        name: '_AllCharactersStoreBase.setCarregando');
-    try {
-      return super.setCarregando(value);
-    } finally {
-      _$_AllCharactersStoreBaseActionController.endAction(_$actionInfo);
-    }
+  Future<void> getFavoriteCharactersLocalStorage() {
+    return _$getFavoriteCharactersLocalStorageAsyncAction
+        .run(() => super.getFavoriteCharactersLocalStorage());
   }
+
+  late final _$saveFavoriteCharactersLocalStorageAsyncAction = AsyncAction(
+      '_AllCharactersStoreBase.saveFavoriteCharactersLocalStorage',
+      context: context);
+
+  @override
+  Future<void> saveFavoriteCharactersLocalStorage() {
+    return _$saveFavoriteCharactersLocalStorageAsyncAction
+        .run(() => super.saveFavoriteCharactersLocalStorage());
+  }
+
+  late final _$_AllCharactersStoreBaseActionController =
+      ActionController(name: '_AllCharactersStoreBase', context: context);
 
   @override
   dynamic setPageState(PageState value) {
@@ -137,12 +163,25 @@ mixin _$AllCharactersStore on _AllCharactersStoreBase, Store {
   }
 
   @override
+  dynamic setFavoriteCharactersIdList(List<String> value) {
+    final _$actionInfo = _$_AllCharactersStoreBaseActionController.startAction(
+        name: '_AllCharactersStoreBase.setFavoriteCharactersIdList');
+    try {
+      return super.setFavoriteCharactersIdList(value);
+    } finally {
+      _$_AllCharactersStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-carregando: ${carregando},
 pageState: ${pageState},
 characters: ${characters},
-currentPage: ${currentPage}
+currentPage: ${currentPage},
+favoriteCharactersIdList: ${favoriteCharactersIdList},
+prevButton: ${prevButton},
+nextButton: ${nextButton}
     ''';
   }
 }

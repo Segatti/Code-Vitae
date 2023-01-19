@@ -25,12 +25,28 @@ mixin _$BottomNavigationBarStore on _BottomNavigationBarStoreBase, Store {
     });
   }
 
+  late final _$routesAtom =
+      Atom(name: '_BottomNavigationBarStoreBase.routes', context: context);
+
+  @override
+  List<String> get routes {
+    _$routesAtom.reportRead();
+    return super.routes;
+  }
+
+  @override
+  set routes(List<String> value) {
+    _$routesAtom.reportWrite(value, super.routes, () {
+      super.routes = value;
+    });
+  }
+
   late final _$startStoreAsyncAction =
       AsyncAction('_BottomNavigationBarStoreBase.startStore', context: context);
 
   @override
-  Future<void> startStore(int initialValue) {
-    return _$startStoreAsyncAction.run(() => super.startStore(initialValue));
+  Future<void> startStore(int value) {
+    return _$startStoreAsyncAction.run(() => super.startStore(value));
   }
 
   late final _$_BottomNavigationBarStoreBaseActionController =
@@ -48,9 +64,21 @@ mixin _$BottomNavigationBarStore on _BottomNavigationBarStoreBase, Store {
   }
 
   @override
+  dynamic setRoutes(List<String> value) {
+    final _$actionInfo = _$_BottomNavigationBarStoreBaseActionController
+        .startAction(name: '_BottomNavigationBarStoreBase.setRoutes');
+    try {
+      return super.setRoutes(value);
+    } finally {
+      _$_BottomNavigationBarStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-currentIndex: ${currentIndex}
+currentIndex: ${currentIndex},
+routes: ${routes}
     ''';
   }
 }
