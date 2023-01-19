@@ -1,11 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/core/domain/patterns/font_pattern.dart';
 import 'package:morty_verso/app/core/domain/patterns/icon_pattern.dart';
 import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import '../stores/home_store.dart';
+import '../widgets/home_favorite.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -20,8 +23,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     store = Modular.get<HomeStore>();
+    _init();
+    super.initState();
+  }
+
+  Future _init() async {
+    await store.startStore();
+  }
+
+  Widget buildState(PageState pageState) {
+    if (pageState is StartState) {
+      return const Center(
+        child: Text('Starting dimensional portal...'),
+      );
+    } else if (pageState is LoadingState) {
+      return const Center(
+        child: RepaintBoundary(child: CircularProgressIndicator()),
+      );
+    } else if (pageState is ErrorState) {
+      return const Center(
+        child: Text('Error: Problems with the dimensional portal'),
+      );
+    } else {
+      return HomeFavorite(characters: store.favoriteCharactersIdList);
+    }
   }
 
   @override
@@ -86,129 +112,9 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         const SizedBox(height: PaddingPattern.big),
-        Row(children: <Widget>[
-          Expanded(
-            child: Container(
-                margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                child: const Divider(
-                  color: Colors.black,
-                )),
-          ),
-          Text(
-            "Favorites",
-            style: TextStyle(
-              fontSize: FontPattern.small,
-            ),
-          ),
-          Expanded(
-            child: Container(
-                margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                child: const Divider(
-                  color: Colors.black,
-                )),
-          ),
-        ]),
-        const SizedBox(height: PaddingPattern.medium),
-        LayoutBuilder(
-          builder: (_, constrains) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  color: Colors.amber.shade800,
-                  width: constrains.maxWidth * 0.3,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: constrains.maxWidth * 0.3,
-                        height: constrains.maxWidth * 0.3,
-                        color: Colors.amber,
-                        child: const Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(PaddingPattern.small),
-                        child: Text('0'),
-                      ),
-                    ],
-                  ),
-                ),
-                // TODO: Fazer as features de locations e episodes
-                // Container(
-                //   color: Colors.red.shade800,
-                //   width: constrains.maxWidth * 0.3,
-                //   child: Column(
-                //     children: [
-                //       Container(
-                //         width: constrains.maxWidth * 0.3,
-                //         height: constrains.maxWidth * 0.3,
-                //         color: Colors.red,
-                //         child: const Icon(
-                //           Icons.place,
-                //           size: 50,
-                //           color: Colors.black54,
-                //         ),
-                //       ),
-                //       const Padding(
-                //         padding: EdgeInsets.all(PaddingPattern.small),
-                //         child: Text('1/126'),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // Container(
-                //   color: Colors.green.shade800,
-                //   width: constrains.maxWidth * 0.3,
-                //   child: Column(
-                //     children: [
-                //       Container(
-                //         width: constrains.maxWidth * 0.3,
-                //         height: constrains.maxWidth * 0.3,
-                //         color: Colors.green,
-                //         child: const Icon(
-                //           Icons.play_circle_filled,
-                //           size: 50,
-                //           color: Colors.black54,
-                //         ),
-                //       ),
-                //       const Padding(
-                //         padding: EdgeInsets.all(PaddingPattern.small),
-                //         child: Text('1/51'),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: PaddingPattern.big),
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Share favorites',
-                      style: TextStyle(
-                        fontSize: FontPattern.small,
-                      ),
-                    ),
-                    const Icon(Icons.share),
-                  ],
-                ),
-                onPressed: () {
-                  // TODO: Gerar PDF com os itens favoritados
-                },
-              ),
-            ),
-          ],
-        )
+        Observer(builder: (context) {
+          return buildState(store.pageState);
+        }),
       ],
     );
   }

@@ -1,15 +1,15 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/modules/characters/characters_module.dart';
-import 'package:morty_verso/app/modules/home/presenter/pages/home_page.dart';
-import 'package:morty_verso/app/modules/home/presenter/pages/start_page.dart';
 
+import '../characters/characters_module.dart';
 import '../settings/settings_module.dart';
+import 'presenter/pages/home_page.dart';
+import 'presenter/pages/start_page.dart';
 import 'presenter/stores/home_store.dart';
 
 class HomeModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind.factory((i) => HomeStore()),
+    Bind.factory((i) => HomeStore(i())),
   ];
 
   @override

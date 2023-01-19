@@ -43,7 +43,7 @@ class CharactersModule extends Module {
 
     // Dependency
     Bind.singleton((i) => Dio()),
-    Bind.singleton((i) => LocalStorage('characters')),
+    Bind.singleton((i) => LocalStorage('characters'), export: true),
   ];
 
   @override

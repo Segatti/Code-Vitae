@@ -1,14 +1,46 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:mobx/mobx.dart';
+import 'package:morty_verso/app/core/domain/entities/page_states.dart';
+import 'package:morty_verso/app/modules/characters/domain/usecases/get_favorite_characters.dart';
 
 part 'home_store.g.dart';
 
-class HomeStore = HomeStoreBase with _$HomeStore;
+class HomeStore = _HomeStoreBase with _$HomeStore;
 
-abstract class HomeStoreBase with Store {
+abstract class _HomeStoreBase with Store {
+  final UCGetFavoriteCharacters getFavoriteCharacters;
+
+  _HomeStoreBase(this.getFavoriteCharacters);
+
   @observable
-  int counter = 0;
+  PageState pageState = StartState();
+  @action
+  setPageState(PageState value) => pageState = value;
 
-  Future<void> increment() async {
-    counter = counter + 1;
+  @observable
+  List<String> favoriteCharactersIdList = [];
+  @action
+  setFavoriteCharactersIdList(List<String> value) =>
+      favoriteCharactersIdList = value;
+
+  @action
+  Future<void> startStore() async {
+    setPageState(LoadingState());
+    await getFavoriteCharactersLocalStorage();
+    setPageState(SuccessState());
+  }
+
+  @action
+  Future<void> getFavoriteCharactersLocalStorage() async {
+    final result = await getFavoriteCharacters('favorite_characters');
+    await result.fold(
+      (l) async {
+        setPageState(ErrorState());
+      },
+      (r) async {
+        setFavoriteCharactersIdList(r);
+      },
+    );
   }
 }
