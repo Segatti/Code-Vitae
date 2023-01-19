@@ -18,7 +18,12 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
   @override
   void initState() {
     store = Modular.get<BottomNavigationBarStore>();
+    _init();
     super.initState();
+  }
+
+  Future _init() async {
+    await store.startStore(widget.initialValue);
   }
 
   @override

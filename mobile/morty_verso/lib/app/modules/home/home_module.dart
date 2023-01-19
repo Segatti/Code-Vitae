@@ -29,7 +29,7 @@ class HomeModule extends Module {
           transition: TransitionType.noTransition,
         ),
         ModuleRoute(
-          '/characters',
+          '/characters_navigation',
           module: CharactersModule(),
           transition: TransitionType.noTransition,
         ),

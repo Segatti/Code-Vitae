@@ -15,7 +15,6 @@ class StartPage extends StatefulWidget {
 class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
-    Modular.setInitialRoute('/home');
     return Scaffold(
       appBar: const AppBarWidget(title: 'Dimension A-0'),
       body: BasePageWidget(
@@ -27,7 +26,7 @@ class _StartPageState extends State<StartPage> {
         ],
       )),
       bottomNavigationBar: const BottomNavigationBarWidget(
-        initialValue: 0,
+        initialValue: 1,
       ),
     );
   }

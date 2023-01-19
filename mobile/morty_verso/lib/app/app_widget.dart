@@ -8,7 +8,7 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Modular.setInitialRoute('/home');
+    Modular.setInitialRoute('/characters_navigation');
     AppStore store = Modular.get<AppStore>();
 
     store.startStore();

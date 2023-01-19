@@ -3,6 +3,8 @@ import 'package:morty_verso/app/app_store.dart';
 import 'package:morty_verso/app/core/core_module.dart';
 import 'package:morty_verso/app/modules/home/home_module.dart';
 
+import 'modules/characters/characters_module.dart';
+
 class AppModule extends Module {
   @override
   final List<Bind> binds = [
@@ -17,5 +19,10 @@ class AppModule extends Module {
   @override
   final List<ModularRoute> routes = [
     ModuleRoute(Modular.initialRoute, module: HomeModule()),
+    ModuleRoute(
+      '/characters',
+      module: CharactersModule(),
+      transition: TransitionType.noTransition,
+    ),
   ];
 }

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/core/utils/strings.dart';
 
 import '../../../../core/domain/patterns/padding_pattern.dart';
 import '../../domain/entities/character.dart';
@@ -42,10 +43,9 @@ class CardCharacter extends StatelessWidget {
                 actions: [
                   CupertinoActionSheetAction(
                     onPressed: () {
-                      Modular.to.pushNamed(
-                        './character',
-                        arguments: character.id.toString(),
-                      );
+                      Modular.to.pop();
+                      Modular.to
+                          .pushNamed('/characters/character/${character.id}');
                     },
                     child: const Text('More details'),
                   ),
@@ -130,7 +130,8 @@ class CardCharacter extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AutoSizeText(
-                                "${character.name}${isFavorite ? ' ☆' : ''}",
+                                validText(
+                                    "${character.name}${isFavorite ? ' ☆' : ''}"),
                                 maxLines: 2,
                                 style: TextStyle(
                                   fontSize: 18,
@@ -139,11 +140,13 @@ class CardCharacter extends StatelessWidget {
                                 ),
                               ),
                               AutoSizeText(
-                                "Origin: ${character.origin?.name ?? ''}",
+                                validText(
+                                    "Origin: ${character.origin?.name ?? ''}"),
                                 maxLines: 2,
                               ),
                               AutoSizeText(
-                                "Species: ${character.species ?? ''}",
+                                validText(
+                                    "Species: ${character.species ?? ''}"),
                                 maxLines: 2,
                               ),
                             ],

@@ -38,7 +38,7 @@ class CharactersModule extends Module {
 
     // Stores
     Bind.factory<AllCharactersStore>((i) => AllCharactersStore(i(), i(), i())),
-    Bind.factory<CharacterStore>((i) => CharacterStore()),
+    Bind.factory<CharacterStore>((i) => CharacterStore(i())),
 
     // Dependency
     Bind.singleton<Dio>((i) => Dio()),
@@ -48,9 +48,9 @@ class CharactersModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute('/', child: (_, __) => const AllCharactersPage()),
     ChildRoute(
-      '/character',
+      '/character/:id',
       child: (_, args) => CharacterPage(
-        id: args.params['id'],
+        id: int.parse(args.params['id']),
       ),
     ),
   ];
