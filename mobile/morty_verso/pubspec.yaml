@@ -46,7 +46,7 @@ dependencies:
   auto_size_text: ^3.0.0
   localstorage: ^4.0.0+1
   flutter_dotenv: ^5.0.2
-  shared_preferences: ^2.0.16
+  pdf: ^3.8.4
 
 dev_dependencies:
   flutter_test:
