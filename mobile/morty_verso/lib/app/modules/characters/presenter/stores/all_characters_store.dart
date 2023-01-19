@@ -1,7 +1,5 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'dart:developer';
-
 import 'package:mobx/mobx.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
