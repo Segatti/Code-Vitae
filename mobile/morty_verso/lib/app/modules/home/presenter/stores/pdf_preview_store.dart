@@ -68,9 +68,73 @@ abstract class _PdfPreviewStoreBase with Store {
       );
       final doc = pw.Document(
           title: 'My Favorites', author: 'Vittor Feitosa', theme: myTheme);
-      final netImage = await imageFromAssetBundle('assets/icons/logo.png');
 
-      charactersIdList = ['t'];
+      List<pw.Widget> widgetCharacterList = [];
+
+      for (var character in charactersList) {
+        final netImage = await networkImage(character.image!);
+
+        widgetCharacterList.add(pw.Partition(
+            child: pw.Container(
+          decoration: pw.BoxDecoration(
+            color: PdfColor.fromHex('#000'),
+            border: pw.Border.all(
+              color: const PdfColor(0.66, 0, 0, 0),
+            ),
+            borderRadius: pw.BorderRadius.circular(12),
+          ),
+          child: pw.LayoutBuilder(
+            builder: (_, constrains) {
+              return pw.Row(
+                children: [
+                  pw.Container(
+                    padding: const pw.EdgeInsets.all(PaddingPattern.small),
+                    width: (constrains?.maxWidth ?? 0) * 0.3,
+                    height: (constrains?.maxWidth ?? 0) * 0.3,
+                    child: pw.Image(netImage),
+                  ),
+                  pw.Expanded(
+                    child: pw.Container(
+                      height: (constrains?.maxWidth ?? 0) * 0.3,
+                      padding: const pw.EdgeInsets.all(
+                        PaddingPattern.small,
+                      ),
+                      decoration: pw.BoxDecoration(
+                        color: PdfColor.fromHex('#FFF'),
+                        borderRadius: const pw.BorderRadius.only(
+                          bottomRight: pw.Radius.circular(12),
+                          topRight: pw.Radius.circular(12),
+                        ),
+                      ),
+                      child: pw.Column(
+                        mainAxisSize: pw.MainAxisSize.max,
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(validText("${character.name}"),
+                              maxLines: 2,
+                              style: pw.TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: pw.FontWeight.bold)),
+                          pw.Text(
+                            validText(
+                                "Origin: ${character.origin?.name ?? ''}"),
+                            maxLines: 2,
+                          ),
+                          pw.Text(
+                            validText("Species: ${character.species ?? ''}"),
+                            maxLines: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        )));
+      }
 
       doc.addPage(
         pw.MultiPage(
@@ -102,93 +166,10 @@ abstract class _PdfPreviewStoreBase with Store {
                                         color: green)),
                             pw.Padding(
                                 padding: const pw.EdgeInsets.only(top: 20)),
-                            pw.ListView.separated(
-                              itemBuilder: (_, index) {
-                                return pw.Container(
-                                  decoration: pw.BoxDecoration(
-                                    color: PdfColor.fromHex('#000'),
-                                    border: pw.Border.all(
-                                      color: const PdfColor(0.66, 0, 0, 0),
-                                    ),
-                                    borderRadius: pw.BorderRadius.circular(12),
-                                  ),
-                                  child: pw.LayoutBuilder(
-                                    builder: (_, constrains) {
-                                      return pw.Row(
-                                        children: [
-                                          pw.Container(
-                                            padding: const pw.EdgeInsets.all(
-                                                PaddingPattern.small),
-                                            width: (constrains?.maxWidth ?? 0) *
-                                                0.3,
-                                            height:
-                                                (constrains?.maxWidth ?? 0) *
-                                                    0.3,
-                                            child: pw.Image(netImage),
-                                          ),
-                                          pw.Expanded(
-                                            child: pw.Container(
-                                              height:
-                                                  (constrains?.maxWidth ?? 0) *
-                                                      0.3,
-                                              padding: const pw.EdgeInsets.all(
-                                                PaddingPattern.small,
-                                              ),
-                                              decoration: pw.BoxDecoration(
-                                                color: PdfColor.fromHex('#FFF'),
-                                                borderRadius:
-                                                    const pw.BorderRadius.only(
-                                                  bottomRight:
-                                                      pw.Radius.circular(12),
-                                                  topRight:
-                                                      pw.Radius.circular(12),
-                                                ),
-                                              ),
-                                              child: pw.Column(
-                                                mainAxisSize:
-                                                    pw.MainAxisSize.max,
-                                                mainAxisAlignment: pw
-                                                    .MainAxisAlignment
-                                                    .spaceAround,
-                                                crossAxisAlignment:
-                                                    pw.CrossAxisAlignment.start,
-                                                children: [
-                                                  pw.Text(
-                                                      validText(
-                                                          "${charactersList[index].name}"),
-                                                      maxLines: 2,
-                                                      style: pw.TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight: pw
-                                                              .FontWeight
-                                                              .bold)),
-                                                  pw.Text(
-                                                    validText(
-                                                        "Origin: ${charactersList[index].origin?.name ?? ''}"),
-                                                    maxLines: 2,
-                                                  ),
-                                                  pw.Text(
-                                                    validText(
-                                                        "Species: ${charactersList[index].species ?? ''}"),
-                                                    maxLines: 2,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (_, __) =>
-                                  pw.Divider(thickness: 2),
-                              itemCount: charactersList.length,
-                            ),
                           ],
                         ),
                       ),
+                      for (var widget in widgetCharacterList) widget,
                     ],
                   ),
                 ),
