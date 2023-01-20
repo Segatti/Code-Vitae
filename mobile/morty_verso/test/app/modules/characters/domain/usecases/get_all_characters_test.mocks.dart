@@ -98,4 +98,22 @@ class MockCharacterRepository extends _i1.Mock
           ),
         )),
       ) as _i5.Future<_i3.Either<_i6.Failure, _i8.Character>>);
+  @override
+  _i5.Future<_i3.Either<_i6.Failure, List<_i8.Character>>> getMultiple(
+          List<int>? ids) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getMultiple,
+          [ids],
+        ),
+        returnValue:
+            _i5.Future<_i3.Either<_i6.Failure, List<_i8.Character>>>.value(
+                _FakeEither_1<_i6.Failure, List<_i8.Character>>(
+          this,
+          Invocation.method(
+            #getMultiple,
+            [ids],
+          ),
+        )),
+      ) as _i5.Future<_i3.Either<_i6.Failure, List<_i8.Character>>>);
 }

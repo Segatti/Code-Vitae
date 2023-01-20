@@ -35,4 +35,15 @@ class CharacterRepository implements ICharacterRepository {
           DatasourceError('CharacterRepository.getOne - DatasourceError'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<Character>>> getMultiple(List<int> ids) async {
+    try {
+      final response = await apiDatasource.getMultiple(ids);
+      return Right(response);
+    } catch (e) {
+      return Left(
+          DatasourceError('CharacterRepository.getMultiple - DatasourceError'));
+    }
+  }
 }

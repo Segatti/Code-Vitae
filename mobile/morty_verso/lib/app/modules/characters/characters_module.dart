@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/modules/characters/domain/usecases/get_multiple_characters.dart';
 
 import 'domain/repositories/character_repository.dart';
 import 'domain/usecases/get_all_characters.dart';
@@ -18,11 +19,13 @@ class CharactersModule extends Module {
   @override
   final List<Bind> binds = [
     // External
-    Bind.singleton<IApiDatasource>((i) => RickMortyDatasource(dio: i())),
+    Bind.singleton<IApiDatasource>((i) => RickMortyDatasource(dio: i()),
+        export: true),
 
     // Repository
     Bind.singleton<ICharacterRepository>(
-        (i) => CharacterRepository(apiDatasource: i())),
+        (i) => CharacterRepository(apiDatasource: i()),
+        export: true),
 
     // Use cases
     Bind.lazySingleton<IUCGetAllCharacters>(
@@ -35,13 +38,16 @@ class CharactersModule extends Module {
     ),
     Bind.lazySingleton<IUCSetFavoriteCharacters>(
         (i) => UCSetFavoriteCharacters(setValueLocalStorage: i())),
+    Bind.lazySingleton<IUCGetMultipleCharacters>(
+        (i) => UCGetMultipleCharacters(characterRepository: i()),
+        export: true),
 
     // Stores
     Bind.factory<AllCharactersStore>((i) => AllCharactersStore(i(), i(), i())),
     Bind.factory<CharacterStore>((i) => CharacterStore(i())),
 
     // Dependency
-    Bind.singleton<Dio>((i) => Dio()),
+    Bind.singleton<Dio>((i) => Dio(), export: true),
   ];
 
   @override

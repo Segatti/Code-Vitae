@@ -5,7 +5,8 @@ import '../../../../core/domain/patterns/padding_pattern.dart';
 
 class HomeFavorite extends StatefulWidget {
   final List<String> characters;
-  const HomeFavorite({super.key, required this.characters});
+  final Function? generatePDF;
+  const HomeFavorite({super.key, required this.characters, this.generatePDF});
 
   @override
   State<HomeFavorite> createState() => _HomeFavoriteState();
@@ -120,6 +121,13 @@ class _HomeFavoriteState extends State<HomeFavorite> {
           children: [
             Expanded(
               child: ElevatedButton(
+                onPressed: (widget.characters.isNotEmpty)
+                    ? () {
+                        if (widget.generatePDF != null) {
+                          widget.generatePDF!();
+                        }
+                      }
+                    : null,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -132,9 +140,6 @@ class _HomeFavoriteState extends State<HomeFavorite> {
                     const Icon(Icons.share),
                   ],
                 ),
-                onPressed: () {
-                  // TODO: Gerar PDF com os itens favoritados
-                },
               ),
             ),
           ],

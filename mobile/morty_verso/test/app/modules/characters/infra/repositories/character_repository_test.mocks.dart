@@ -108,4 +108,14 @@ class MockRickMortyDatasource extends _i1.Mock
           ),
         )),
       ) as _i6.Future<_i4.CharacterModel>);
+  @override
+  _i6.Future<List<_i4.CharacterModel>> getMultiple(List<int>? ids) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getMultiple,
+          [ids],
+        ),
+        returnValue:
+            _i6.Future<List<_i4.CharacterModel>>.value(<_i4.CharacterModel>[]),
+      ) as _i6.Future<List<_i4.CharacterModel>>);
 }

@@ -47,6 +47,8 @@ dependencies:
   localstorage: ^4.0.0+1
   flutter_dotenv: ^5.0.2
   pdf: ^3.8.4
+  path_provider: ^2.0.11
+  printing: ^5.9.3
 
 dev_dependencies:
   flutter_test:

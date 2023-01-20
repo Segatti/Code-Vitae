@@ -46,7 +46,17 @@ class _HomePageState extends State<HomePage> {
         child: Text('Error: Problems with the dimensional portal'),
       );
     } else {
-      return HomeFavorite(characters: store.favoriteCharactersIdList);
+      return HomeFavorite(
+        characters: store.favoriteCharactersIdList,
+        generatePDF: () {
+          Modular.to.pushNamed(
+            '/pdf',
+            arguments: {
+              "characters_id": store.favoriteCharactersIdList,
+            }
+          );
+        },
+      );
     }
   }
 

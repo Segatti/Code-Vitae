@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 import '../../infra/datasources/api_datasource.dart';
@@ -31,6 +33,27 @@ class RickMortyDatasource implements IApiDatasource {
       return CharacterModel.fromMap(response.data);
     } else {
       throw Exception('getOne - Status Code API: ${response.statusCode}}');
+    }
+  }
+
+  @override
+  Future<List<CharacterModel>> getMultiple(List<int> ids) async {
+    String paramsIds = ids.join(',');
+    final response = await dio.get(
+      '$urlApi/character/$paramsIds',
+    );
+    if (response.statusCode == 200) {
+      List<CharacterModel> result = [];
+      if (ids.length == 1) {
+        result.add(CharacterModel.fromMap(response.data));
+      } else {
+        for (var item in response.data) {
+          result.add(CharacterModel.fromMap(item));
+        }
+      }
+      return result;
+    } else {
+      throw Exception('getMultiple - Status Code API: ${response.statusCode}}');
     }
   }
 }
