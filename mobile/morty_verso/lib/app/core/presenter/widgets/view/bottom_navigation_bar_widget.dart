@@ -31,7 +31,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
     return Observer(builder: (context) {
       return SafeArea(
         child: BottomNavigationBar(
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.black45,
           currentIndex: store.currentIndex,
           selectedItemColor: Colors.white,
           onTap: (value) {
