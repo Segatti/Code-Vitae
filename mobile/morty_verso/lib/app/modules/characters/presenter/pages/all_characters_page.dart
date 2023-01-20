@@ -17,6 +17,7 @@ class AllCharactersPage extends StatefulWidget {
 
 class _AllCharactersPageState extends State<AllCharactersPage> {
   late AllCharactersStore store;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
       );
     } else {
       return ListView.separated(
+        controller: _scrollController,
         itemBuilder: (_, index) {
           Character character =
               store.characters.results?[index] ?? const Character();
@@ -114,6 +116,11 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
                         ),
                         onPressed: (store.prevButton)
                             ? () async {
+                                _scrollController.animateTo(
+                                  _scrollController.position.minScrollExtent,
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.fastOutSlowIn,
+                                );
                                 store.setCurrentPage(store.currentPage - 1);
                                 await store.getCharacters();
                               }
@@ -142,6 +149,11 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
                         ),
                         onPressed: (store.nextButton)
                             ? () async {
+                                _scrollController.animateTo(
+                                  _scrollController.position.minScrollExtent,
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.fastOutSlowIn,
+                                );
                                 store.setCurrentPage(store.currentPage + 1);
                                 await store.getCharacters();
                               }
