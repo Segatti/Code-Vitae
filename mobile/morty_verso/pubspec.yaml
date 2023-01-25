@@ -80,6 +80,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/icons/
+    - assets/images/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -96,11 +97,15 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: assets/fonts/roboto/Roboto-Light.ttf
-        - asset: assets/fonts/roboto/Roboto-Italic.ttf
+        - asset: assets/fonts/Roboto/Roboto-Light.ttf
+        - asset: assets/fonts/Roboto/Roboto-Italic.ttf
           style: italic
-        - asset: assets/fonts/roboto/Roboto-Regular.ttf
-        - asset: assets/fonts/roboto/Roboto-Bold.ttf
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+
+    - family: SF Pro
+      fonts:
+        - asset: assets/fonts/SF Pro/SF-Pro-Text-Regular.otf
 
   #   - family: Trajan Pro
   #     fonts:
