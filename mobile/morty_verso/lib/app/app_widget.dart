@@ -8,7 +8,6 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Modular.setInitialRoute('/characters_navigation/');
     AppStore store = Modular.get<AppStore>();
 
     store.startStore();
@@ -17,8 +16,8 @@ class AppWidget extends StatelessWidget {
       return MaterialApp.router(
         title: 'Morty Verso',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(brightness: Brightness.light, fontFamily: 'Roboto'),
-        darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'Roboto'),
+        theme: ThemeData(brightness: Brightness.light, fontFamily: 'SF Pro'),
+        darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'SF Pro'),
         themeMode: store.themeIsDark ? ThemeMode.dark : ThemeMode.light,
         routerDelegate: Modular.routerDelegate,
         routeInformationParser: Modular.routeInformationParser,

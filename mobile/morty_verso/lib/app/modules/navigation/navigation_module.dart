@@ -4,6 +4,7 @@ import '../characters/characters_module.dart';
 import '../settings/settings_module.dart';
 import 'presenter/pages/home_page.dart';
 import 'presenter/pages/pdf_preview_page.dart';
+import 'presenter/pages/splash_page.dart';
 import 'presenter/pages/start_page.dart';
 import 'presenter/stores/home_store.dart';
 import 'presenter/stores/pdf_preview_store.dart';
@@ -22,8 +23,9 @@ class NavigationModule extends Module {
 
   @override
   final List<ModularRoute> routes = [
+    ChildRoute(Modular.initialRoute, child: (_, __) => const SplashPage()),
     ChildRoute(
-      Modular.initialRoute,
+      '/navigation',
       child: (_, __) => const StartPage(),
       children: [
         ChildRoute(
