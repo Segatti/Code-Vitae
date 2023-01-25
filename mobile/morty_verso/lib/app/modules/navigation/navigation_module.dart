@@ -29,12 +29,12 @@ class NavigationModule extends Module {
       child: (_, __) => const StartPage(),
       children: [
         ChildRoute(
-          '/home',
+          '/profile',
           child: (context, args) => const HomePage(),
           transition: TransitionType.noTransition,
         ),
         ModuleRoute(
-          '/characters_navigation',
+          '/morty_verso',
           module: CharactersModule(),
           transition: TransitionType.noTransition,
         ),
