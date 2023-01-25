@@ -29,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Future _init() async {
     await Future.delayed(const Duration(seconds: 3))
-        .then((value) => Modular.to.navigate('/navigation/morty_verso'));
+        .then((value) => Modular.to.navigate('/navigation/morty_verso/'));
   }
 
   @override

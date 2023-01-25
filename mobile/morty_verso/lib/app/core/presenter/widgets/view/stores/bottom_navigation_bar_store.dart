@@ -19,7 +19,11 @@ abstract class _BottomNavigationBarStoreBase with Store {
   }
 
   @observable
-  List<String> routes = ['/home', '/characters_navigation/', '/settings/'];
+  List<String> routes = [
+    '/navigation/profile',
+    '/navigation/morty_verso/',
+    '/navigation/settings/'
+  ];
   @action
   setRoutes(List<String> value) => routes = value;
 }
