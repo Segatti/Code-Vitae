@@ -1,14 +1,14 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/modules/home/presenter/pages/pdf_preview_page.dart';
-import 'package:morty_verso/app/modules/home/presenter/stores/pdf_preview_store.dart';
 
 import '../characters/characters_module.dart';
 import '../settings/settings_module.dart';
 import 'presenter/pages/home_page.dart';
+import 'presenter/pages/pdf_preview_page.dart';
 import 'presenter/pages/start_page.dart';
 import 'presenter/stores/home_store.dart';
+import 'presenter/stores/pdf_preview_store.dart';
 
-class HomeModule extends Module {
+class NavigationModule extends Module {
   @override
   final List<Bind> binds = [
     Bind.factory((i) => HomeStore(i())),

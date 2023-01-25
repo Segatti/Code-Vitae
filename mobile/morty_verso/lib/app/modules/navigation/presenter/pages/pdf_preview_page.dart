@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/core/domain/entities/page_states.dart';
-import 'package:morty_verso/app/core/presenter/widgets/view/app_bar_widget.dart';
-import 'package:morty_verso/app/modules/home/presenter/stores/pdf_preview_store.dart';
 import 'package:printing/printing.dart';
+
+import '../../../../core/domain/entities/page_states.dart';
+import '../../../../core/presenter/widgets/view/app_bar_widget.dart';
+import '../stores/pdf_preview_store.dart';
 
 class PdfPreviewPage extends StatefulWidget {
   final List<String> charactersIdList;
