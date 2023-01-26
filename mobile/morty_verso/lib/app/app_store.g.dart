@@ -9,28 +9,45 @@ part of 'app_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AppStore on _AppStoreBase, Store {
-  late final _$themeIsDarkAtom =
-      Atom(name: '_AppStoreBase.themeIsDark', context: context);
+  Computed<bool>? _$themeIsDarkComputed;
 
   @override
-  bool get themeIsDark {
-    _$themeIsDarkAtom.reportRead();
-    return super.themeIsDark;
+  bool get themeIsDark =>
+      (_$themeIsDarkComputed ??= Computed<bool>(() => super.themeIsDark,
+              name: '_AppStoreBase.themeIsDark'))
+          .value;
+
+  late final _$themeDataAtom =
+      Atom(name: '_AppStoreBase.themeData', context: context);
+
+  @override
+  CupertinoThemeData get themeData {
+    _$themeDataAtom.reportRead();
+    return super.themeData;
   }
 
   @override
-  set themeIsDark(bool value) {
-    _$themeIsDarkAtom.reportWrite(value, super.themeIsDark, () {
-      super.themeIsDark = value;
+  set themeData(CupertinoThemeData value) {
+    _$themeDataAtom.reportWrite(value, super.themeData, () {
+      super.themeData = value;
     });
   }
 
-  late final _$setThemeIsDarkAsyncAction =
-      AsyncAction('_AppStoreBase.setThemeIsDark', context: context);
+  late final _$getThemeStorageAsyncAction =
+      AsyncAction('_AppStoreBase.getThemeStorage', context: context);
 
   @override
-  Future setThemeIsDark(bool value) {
-    return _$setThemeIsDarkAsyncAction.run(() => super.setThemeIsDark(value));
+  Future<void> getThemeStorage() {
+    return _$getThemeStorageAsyncAction.run(() => super.getThemeStorage());
+  }
+
+  late final _$toggleThemeStorageAsyncAction =
+      AsyncAction('_AppStoreBase.toggleThemeStorage', context: context);
+
+  @override
+  Future<void> toggleThemeStorage() {
+    return _$toggleThemeStorageAsyncAction
+        .run(() => super.toggleThemeStorage());
   }
 
   late final _$startStoreAsyncAction =
@@ -41,9 +58,24 @@ mixin _$AppStore on _AppStoreBase, Store {
     return _$startStoreAsyncAction.run(() => super.startStore());
   }
 
+  late final _$_AppStoreBaseActionController =
+      ActionController(name: '_AppStoreBase', context: context);
+
+  @override
+  dynamic setThemeData(CupertinoThemeData value) {
+    final _$actionInfo = _$_AppStoreBaseActionController.startAction(
+        name: '_AppStoreBase.setThemeData');
+    try {
+      return super.setThemeData(value);
+    } finally {
+      _$_AppStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
+themeData: ${themeData},
 themeIsDark: ${themeIsDark}
     ''';
   }

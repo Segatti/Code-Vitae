@@ -1,4 +1,4 @@
 abstract class ILocalStorageService {
-  dynamic get(String key);
-  void set(String key, String json);
+  dynamic get(dynamic key);
+  void set(String key, dynamic json);
 }

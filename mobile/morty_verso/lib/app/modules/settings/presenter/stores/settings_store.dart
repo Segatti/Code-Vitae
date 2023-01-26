@@ -13,7 +13,6 @@ abstract class _SettingsStoreBase with Store {
 
   @action
   Future<void> changeTheme() async {
-    bool value = appStore.themeIsDark;
-    appStore.setThemeIsDark(!value);
+    appStore.toggleThemeStorage();
   }
 }

@@ -1,42 +1,51 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:mobx/mobx.dart';
 
-import 'core/domain/usecases/get_value_local_storage.dart';
-import 'core/domain/usecases/set_value_local_storage.dart';
+import 'core/domain/usecases/theme/get_theme.dart';
+import 'core/domain/usecases/theme/set_theme.dart';
+
 part 'app_store.g.dart';
 
 class AppStore = _AppStoreBase with _$AppStore;
 
 abstract class _AppStoreBase with Store {
-  final IUCGetValueLocalStorage getValueLocalStorage;
-  final IUCSetValueLocalStorage setValueLocalStorage;
+  final IUCGetTheme getTheme;
+  final IUCSetTheme setTheme;
 
-  _AppStoreBase(this.getValueLocalStorage, this.setValueLocalStorage);
+  _AppStoreBase(this.getTheme, this.setTheme);
+
+  @computed
+  bool get themeIsDark => themeData.brightness == Brightness.dark;
 
   @observable
-  bool themeIsDark = false;
+  CupertinoThemeData themeData =
+      const CupertinoThemeData(brightness: Brightness.light);
+  @action
+  setThemeData(CupertinoThemeData value) => themeData = value;
 
   @action
-  setThemeIsDark(bool value) async {
-    themeIsDark = value;
-    setValueLocalStorage('theme', value.toString());
+  Future<void> getThemeStorage() async {
+    setThemeData(await getTheme());
+  }
+
+  @action
+  Future<void> toggleThemeStorage() async {
+    await setTheme(
+      themeData.brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+    );
+    await getThemeStorage();
   }
 
   @action
   Future<void> startStore() async {
     LocalStorage localStorage = Modular.get<LocalStorage>();
     await localStorage.ready;
-    var result = await getValueLocalStorage('theme');
-    result.fold((l) => setThemeIsDark(false), (r) {
-      if (r == null) {
-        setThemeIsDark(false);
-      } else {
-        bool parseValue = r.toLowerCase() == 'true';
-        setThemeIsDark(parseValue);
-      }
-    });
+    await getThemeStorage();
   }
 }

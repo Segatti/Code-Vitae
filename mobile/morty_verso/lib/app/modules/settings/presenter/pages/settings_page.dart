@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -33,12 +34,14 @@ class _SettingsPageState extends State<SettingsPage> {
     return BasePageWidget(
       child: Column(
         children: [
-          const Center(
+          Center(
+            // TODO: Seguir esse exemplo
             child: Text(
               'Project Morty Verso',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: CupertinoTheme.of(context).textTheme.textStyle.color,
               ),
             ),
           ),

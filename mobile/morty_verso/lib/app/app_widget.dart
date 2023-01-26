@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -13,12 +14,15 @@ class AppWidget extends StatelessWidget {
     store.startStore();
 
     return Observer(builder: (_) {
-      return MaterialApp.router(
+      return CupertinoApp.router(
         title: 'Morty Verso',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(brightness: Brightness.light, fontFamily: 'SF Pro'),
-        darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'SF Pro'),
-        themeMode: store.themeIsDark ? ThemeMode.dark : ThemeMode.light,
+        theme: store.themeData,
+        localizationsDelegates: const [
+          DefaultMaterialLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
+          DefaultWidgetsLocalizations.delegate,
+        ],
         routerDelegate: Modular.routerDelegate,
         routeInformationParser: Modular.routeInformationParser,
       );

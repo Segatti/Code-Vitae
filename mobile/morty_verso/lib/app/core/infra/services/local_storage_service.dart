@@ -7,7 +7,7 @@ class LocalStorageService implements ILocalStorageService {
   const LocalStorageService(this.localStorage);
 
   @override
-  get(String key) {
+  get(dynamic key) {
     try {
       return localStorage.getItem(key);
     } catch (e) {
@@ -16,7 +16,7 @@ class LocalStorageService implements ILocalStorageService {
   }
 
   @override
-  void set(String key, String json) {
+  void set(String key, dynamic json) {
     localStorage.setItem(key, json);
   }
 }
