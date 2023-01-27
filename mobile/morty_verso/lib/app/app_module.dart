@@ -22,7 +22,6 @@ class AppModule extends Module {
     ModuleRoute(
       '/characters',
       module: CharactersModule(),
-      transition: TransitionType.noTransition,
     ),
   ];
 }

@@ -24,7 +24,7 @@ class _StartPageState extends State<StartPage> {
               Modular.to.navigate('/navigation/profile');
               break;
             case 1:
-              Modular.to.navigate('/navigation/morty_verso/');
+              Modular.to.navigate('/navigation/morty_verso');
               break;
             case 2:
               Modular.to.navigate('/navigation/settings/');

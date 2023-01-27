@@ -21,7 +21,7 @@ abstract class _BottomNavigationBarStoreBase with Store {
   @observable
   List<String> routes = [
     '/navigation/profile',
-    '/navigation/morty_verso/',
+    '/navigation/morty_verso',
     '/navigation/settings/'
   ];
   @action

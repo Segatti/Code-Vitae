@@ -57,7 +57,6 @@ class _BasePageWidgetState extends State<BasePageWidget> {
             ),
           ],
           body: Container(
-            height: 100,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: ExactAssetImage(store.themeIsDark
