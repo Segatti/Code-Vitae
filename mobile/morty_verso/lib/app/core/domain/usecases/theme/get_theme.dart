@@ -13,12 +13,13 @@ class UCGetTheme implements IUCGetTheme {
 
   final CupertinoThemeData themeLight = const CupertinoThemeData(
     brightness: Brightness.light,
-    textTheme:
-        CupertinoTextThemeData(textStyle: TextStyle(color: Color(0xFFFFFFFF))),
+    textTheme: CupertinoTextThemeData(
+        textStyle: TextStyle(color: CupertinoColors.black, fontFamily: 'SF Pro')),
   );
   final CupertinoThemeData themeDark = const CupertinoThemeData(
     brightness: Brightness.dark,
-    textTheme: CupertinoTextThemeData(),
+    textTheme: CupertinoTextThemeData(
+        textStyle: TextStyle(color: CupertinoColors.white, fontFamily: 'SF Pro')),
   );
 
   @override

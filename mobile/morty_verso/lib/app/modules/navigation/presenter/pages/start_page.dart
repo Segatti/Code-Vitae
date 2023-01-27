@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-
-import '../../../../core/presenter/widgets/view/app_bar_widget.dart';
-import '../../../../core/presenter/widgets/view/base_page_widget.dart';
-import '../../../../core/presenter/widgets/view/bottom_navigation_bar_widget.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -13,21 +9,46 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
+  late CupertinoThemeData theme;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppBarWidget(title: 'Dimension A-0'),
-      body: BasePageWidget(
-          child: Row(
-        children: const [
-          Expanded(
-            child: RouterOutlet(),
+    theme = CupertinoTheme.of(context);
+
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        currentIndex: 1,
+        onTap: (value) {
+          switch (value) {
+            case 0:
+              Modular.to.navigate('/navigation/profile');
+              break;
+            case 1:
+              Modular.to.navigate('/navigation/morty_verso/');
+              break;
+            case 2:
+              Modular.to.navigate('/navigation/settings/');
+              break;
+            default:
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.tropicalstorm),
+            label: 'Morty Verso',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.gear),
+            label: 'Settings',
           ),
         ],
-      )),
-      bottomNavigationBar: const BottomNavigationBarWidget(
-        initialValue: 1,
       ),
+      backgroundColor: theme.barBackgroundColor,
+      tabBuilder: (_, __) => const RouterOutlet(),
     );
   }
 }

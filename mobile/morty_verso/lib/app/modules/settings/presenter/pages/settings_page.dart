@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
+import 'package:morty_verso/app/core/presenter/widgets/general/text_widget.dart';
 
-import '../../../../core/domain/patterns/padding_pattern.dart';
 import '../../../../core/presenter/widgets/view/base_page_widget.dart';
 import '../stores/settings_store.dart';
 
@@ -17,6 +18,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   late DotEnv env;
   late SettingsStore store;
+  late CupertinoThemeData theme;
 
   @override
   void initState() {
@@ -31,68 +33,79 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    theme = CupertinoTheme.of(context);
+
     return BasePageWidget(
+      title: 'Settings',
       child: Column(
         children: [
-          Center(
-            // TODO: Seguir esse exemplo
-            child: Text(
-              'Project Morty Verso',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: CupertinoTheme.of(context).textTheme.textStyle.color,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.textTheme.textStyle.color!.withOpacity(.25),
+                  offset: const Offset(0, 4),
+                  blurRadius: 4,
+                )
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(13),
+              child: Column(
+                children: [
+                  CupertinoListTile(
+                    title: const TextWidget(text: 'Dark Mode', fontSize: 17),
+                    backgroundColor: theme.barBackgroundColor,
+                    trailing: CupertinoSwitch(
+                      value: store.appStore.themeIsDark,
+                      onChanged: (bool value) {
+                        store.changeTheme();
+                      },
+                    ),
+                    onTap: () {
+                      store.changeTheme();
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: PaddingPattern.small),
-          const Center(
-            child: Text(
-              'Developed by: Vittor Feitosa',
-              style: TextStyle(
-                fontSize: 16,
-                fontStyle: FontStyle.italic,
-              ),
+          const SizedBox(height: PaddingPattern.medium),
+          Container(
+            width: double.maxFinite,
+            padding: const EdgeInsets.symmetric(
+              vertical: PaddingPattern.medium,
             ),
-          ),
-          const SizedBox(height: PaddingPattern.small),
-          const Center(
-            child: Text(
-              'Made by fan for fan',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-          const SizedBox(height: PaddingPattern.big),
-          Row(
-            children: const [
-              Expanded(
-                  child:
-                      ElevatedButton(onPressed: null, child: Text('Language'))),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: ElevatedButton(
-                onPressed: () {
-                  store.changeTheme();
-                },
-                child: const Text('Change Theme'),
-              )),
-            ],
-          ),
-          const SizedBox(height: PaddingPattern.big),
-          Row(
-            children: [
-              Text(
-                "Version: ${dotenv.env['VERSION']}",
-                style: const TextStyle(
-                  fontSize: 14,
+            decoration: BoxDecoration(
+                color: theme.barBackgroundColor,
+                borderRadius: BorderRadius.circular(13),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.textTheme.textStyle.color!.withOpacity(.25),
+                    offset: const Offset(0, 0),
+                    blurRadius: 4,
+                  )
+                ]),
+            child: Column(
+              children: const [
+                TextWidget(
+                  text: 'Credits',
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
-            ],
+                SizedBox(height: PaddingPattern.small),
+                TextWidget(
+                  text: 'Developer: Vittor Feitosa',
+                  fontSize: 12,
+                ),
+                SizedBox(height: PaddingPattern.small),
+                TextWidget(
+                  text: 'API: https://rickandmortyapi.com/',
+                  fontSize: 12,
+                ),
+              ],
+            ),
           ),
         ],
       ),

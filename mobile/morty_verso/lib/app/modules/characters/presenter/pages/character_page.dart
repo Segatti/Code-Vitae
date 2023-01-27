@@ -106,9 +106,11 @@ class _CharacterPageState extends State<CharacterPage> {
     return Observer(builder: (context) {
       return Scaffold(
         appBar: AppBarWidget(title: store.character.name ?? ''),
-        body: BasePageWidget(child: Observer(builder: (context) {
-          return buildState(store.pageState);
-        })),
+        body: BasePageWidget(
+            title: 'Character',
+            child: Observer(builder: (context) {
+              return buildState(store.pageState);
+            })),
       );
     });
   }

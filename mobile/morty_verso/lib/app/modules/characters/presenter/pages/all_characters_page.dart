@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
 import '../../../../core/domain/patterns/margin_pattern.dart';
@@ -85,95 +86,98 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Observer(
-            builder: (context) => Column(
-              children: [
-                (store.characters.info?.pages != null)
-                    ? Text(
-                        "${store.currentPage}/${store.characters.info?.pages}")
-                    : const Text('???'),
-                const SizedBox(height: MarginPattern.medium),
-                Expanded(child: buildState(store.pageState)),
-                const SizedBox(height: MarginPattern.medium),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(12),
-                                topLeft: Radius.circular(12),
+    return BasePageWidget(
+      title: 'Characters',
+      child: Column(
+        children: [
+          Expanded(
+            child: Observer(
+              builder: (context) => Column(
+                children: [
+                  (store.characters.info?.pages != null)
+                      ? Text(
+                          "${store.currentPage}/${store.characters.info?.pages}")
+                      : const Text('???'),
+                  const SizedBox(height: MarginPattern.medium),
+                  Expanded(child: buildState(store.pageState)),
+                  const SizedBox(height: MarginPattern.medium),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(12),
+                                  topLeft: Radius.circular(12),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        onPressed: (store.prevButton)
-                            ? () async {
-                                _scrollController.animateTo(
-                                  _scrollController.position.minScrollExtent,
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.fastOutSlowIn,
-                                );
-                                store.setCurrentPage(store.currentPage - 1);
-                                await store.getCharacters();
-                              }
-                            : null,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.chevron_left),
-                            Text('Prev'),
-                          ],
+                          onPressed: (store.prevButton)
+                              ? () async {
+                                  _scrollController.animateTo(
+                                    _scrollController.position.minScrollExtent,
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.fastOutSlowIn,
+                                  );
+                                  store.setCurrentPage(store.currentPage - 1);
+                                  await store.getCharacters();
+                                }
+                              : null,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.chevron_left),
+                              Text('Prev'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(12),
-                                topRight: Radius.circular(12),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(12),
+                                  topRight: Radius.circular(12),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        onPressed: (store.nextButton)
-                            ? () async {
-                                _scrollController.animateTo(
-                                  _scrollController.position.minScrollExtent,
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.fastOutSlowIn,
-                                );
-                                store.setCurrentPage(store.currentPage + 1);
-                                await store.getCharacters();
-                              }
-                            : null,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text('Next'),
-                            Icon(Icons.chevron_right),
-                          ],
+                          onPressed: (store.nextButton)
+                              ? () async {
+                                  _scrollController.animateTo(
+                                    _scrollController.position.minScrollExtent,
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.fastOutSlowIn,
+                                  );
+                                  store.setCurrentPage(store.currentPage + 1);
+                                  await store.getCharacters();
+                                }
+                              : null,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text('Next'),
+                              Icon(Icons.chevron_right),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

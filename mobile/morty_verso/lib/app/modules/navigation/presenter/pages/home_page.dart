@@ -7,6 +7,7 @@ import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/core/domain/patterns/font_pattern.dart';
 import 'package:morty_verso/app/core/domain/patterns/icon_pattern.dart';
 import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 import '../stores/home_store.dart';
 import '../widgets/home_favorite.dart';
 
@@ -49,12 +50,9 @@ class _HomePageState extends State<HomePage> {
       return HomeFavorite(
         characters: store.favoriteCharactersIdList,
         generatePDF: () {
-          Modular.to.pushNamed(
-            '/pdf',
-            arguments: {
-              "characters_id": store.favoriteCharactersIdList,
-            }
-          );
+          Modular.to.pushNamed('/pdf', arguments: {
+            "characters_id": store.favoriteCharactersIdList,
+          });
         },
       );
     }
@@ -62,70 +60,74 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.black12,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black38,
-                    spreadRadius: 5,
-                    offset: Offset(0, 5),
-                    blurRadius: 10,
-                    blurStyle: BlurStyle.outer,
-                  ),
-                ],
+    return BasePageWidget(
+      title: 'Profile',
+      // activeScroll: false,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black12,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black38,
+                      spreadRadius: 5,
+                      offset: Offset(0, 5),
+                      blurRadius: 10,
+                      blurStyle: BlurStyle.outer,
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(PaddingPattern.small),
+                child: Image.asset(
+                  IconPattern.logo,
+                  cacheHeight: 120,
+                  cacheWidth: 120,
+                ),
               ),
-              padding: const EdgeInsets.all(PaddingPattern.small),
-              child: Image.asset(
-                IconPattern.logo,
-                cacheHeight: 120,
-                cacheWidth: 120,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: PaddingPattern.big),
-        Text(
-          'God Morty',
-          style: TextStyle(
-            fontSize: FontPattern.medium,
+            ],
           ),
-        ),
-        const SizedBox(height: PaddingPattern.big),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Occupation: Destroyer',
-              style: TextStyle(
-                fontSize: FontPattern.small,
-              ),
+          const SizedBox(height: PaddingPattern.big),
+          Text(
+            'God Morty',
+            style: TextStyle(
+              fontSize: FontPattern.medium,
             ),
-          ],
-        ),
-        const SizedBox(height: PaddingPattern.medium),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Goal: Destroy the universes',
-              style: TextStyle(
-                fontSize: FontPattern.small,
+          ),
+          const SizedBox(height: PaddingPattern.big),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Occupation: Destroyer',
+                style: TextStyle(
+                  fontSize: FontPattern.small,
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: PaddingPattern.big),
-        Observer(builder: (context) {
-          return buildState(store.pageState);
-        }),
-      ],
+            ],
+          ),
+          const SizedBox(height: PaddingPattern.medium),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Goal: Destroy the universes',
+                style: TextStyle(
+                  fontSize: FontPattern.small,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: PaddingPattern.big),
+          Observer(builder: (context) {
+            return buildState(store.pageState);
+          }),
+        ],
+      ),
     );
   }
 }
