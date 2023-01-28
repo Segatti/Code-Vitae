@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/modules/characters/domain/usecases/get_multiple_characters.dart';
 
 import 'domain/repositories/character_repository.dart';
 import 'domain/usecases/get_all_characters.dart';
 import 'domain/usecases/get_favorite_characters.dart';
+import 'domain/usecases/get_multiple_characters.dart';
 import 'domain/usecases/get_one_character.dart';
 import 'domain/usecases/set_favorite_characters.dart';
 import 'external/rick_morty_api/rick_morty_datasource.dart';
@@ -28,17 +28,17 @@ class CharactersModule extends Module {
         export: true),
 
     // Use cases
-    Bind.lazySingleton<IUCGetAllCharacters>(
+    Bind.singleton<IUCGetAllCharacters>(
         (i) => UCGetAllCharacters(characterRepository: i())),
-    Bind.lazySingleton<IUCGetOneCharacter>(
+    Bind.singleton<IUCGetOneCharacter>(
         (i) => UCGetOneCharacter(characterRepository: i())),
-    Bind.lazySingleton<IUCGetFavoriteCharacters>(
+    Bind.singleton<IUCGetFavoriteCharacters>(
       (i) => UCGetFavoriteCharacters(getValueLocalStorage: i()),
       export: true,
     ),
-    Bind.lazySingleton<IUCSetFavoriteCharacters>(
+    Bind.singleton<IUCSetFavoriteCharacters>(
         (i) => UCSetFavoriteCharacters(setValueLocalStorage: i())),
-    Bind.lazySingleton<IUCGetMultipleCharacters>(
+    Bind.singleton<IUCGetMultipleCharacters>(
         (i) => UCGetMultipleCharacters(characterRepository: i()),
         export: true),
 

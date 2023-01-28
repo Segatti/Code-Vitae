@@ -56,11 +56,11 @@ abstract class _PdfPreviewStoreBase with Store {
 
       var myTheme = pw.ThemeData.withFont(
         base: pw.Font.ttf(
-            await rootBundle.load("assets/fonts/roboto/Roboto-Regular.ttf")),
+            await rootBundle.load("assets/fonts/Roboto/Roboto-Regular.ttf")),
         bold: pw.Font.ttf(
-            await rootBundle.load("assets/fonts/roboto/Roboto-Bold.ttf")),
+            await rootBundle.load("assets/fonts/Roboto/Roboto-Bold.ttf")),
         italic: pw.Font.ttf(
-            await rootBundle.load("assets/fonts/roboto/Roboto-Italic.ttf")),
+            await rootBundle.load("assets/fonts/Roboto/Roboto-Italic.ttf")),
       );
       final doc = pw.Document(
           title: 'My Favorites', author: 'Vittor Feitosa', theme: myTheme);
@@ -75,7 +75,7 @@ abstract class _PdfPreviewStoreBase with Store {
           decoration: pw.BoxDecoration(
             color: PdfColor.fromHex('#000'),
             border: pw.Border.all(
-              color: const PdfColor(0.66, 0, 0, 0),
+              color: const PdfColor(0, 0, 0, 0),
             ),
             borderRadius: pw.BorderRadius.circular(12),
           ),

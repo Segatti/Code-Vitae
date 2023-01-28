@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 import 'package:printing/printing.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
-import '../../../../core/presenter/widgets/view/app_bar_widget.dart';
 import '../stores/pdf_preview_store.dart';
 
 class PdfPreviewPage extends StatefulWidget {
@@ -36,7 +36,7 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
       );
     } else if (pageState is LoadingState) {
       return const Center(
-        child: RepaintBoundary(child: CircularProgressIndicator()),
+        child: RepaintBoundary(child: CupertinoActivityIndicator()),
       );
     } else if (pageState is ErrorState) {
       return const Center(
@@ -54,11 +54,10 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppBarWidget(title: 'PDF Preview'),
-      body: Observer(builder: (context) {
-        return buildState(store.pageState);
-      }),
-    );
+    return BasePageWidget(
+        title: 'PDF Preview',
+        child: Observer(builder: (context) {
+          return buildState(store.pageState);
+        }));
   }
 }

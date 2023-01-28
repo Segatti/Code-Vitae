@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:morty_verso/app/core/utils/strings.dart';
 
@@ -24,7 +23,7 @@ class CardCharacter extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: CupertinoColors.inactiveGray.withOpacity(0.5),
             blurRadius: 5.0,
             spreadRadius: 1,
           ),
@@ -71,21 +70,11 @@ class CardCharacter extends StatelessWidget {
             ),
           );
         },
-        child: Card(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-            side: BorderSide(
-              width: 2,
-              color: Colors.grey,
-            ),
-          ),
+        child: Container(
           child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.black26,
+                  color: CupertinoColors.black.withOpacity(.25),
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -107,9 +96,9 @@ class CardCharacter extends StatelessWidget {
                             ),
                           ),
                           placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
+                              const Center(child: CupertinoActivityIndicator()),
                           errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                              const Icon(CupertinoIcons.xmark_circle),
                         ),
                       ),
                       Expanded(
@@ -135,7 +124,7 @@ class CardCharacter extends StatelessWidget {
                                 maxLines: 2,
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: (isFavorite) ? Colors.orange : null,
+                                  color: (isFavorite) ? CupertinoColors.activeOrange : null,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

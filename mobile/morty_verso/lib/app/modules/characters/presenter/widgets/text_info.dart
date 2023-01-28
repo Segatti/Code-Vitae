@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:morty_verso/app/core/utils/strings.dart';
 
 import '../../../../core/domain/patterns/padding_pattern.dart';
@@ -13,10 +13,10 @@ class TextInfo extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: CupertinoColors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: CupertinoColors.inactiveGray.withOpacity(0.2),
             blurRadius: 8,
             spreadRadius: 6,
           ),
@@ -36,13 +36,13 @@ class TextInfo extends StatelessWidget {
                         horizontal: PaddingPattern.medium,
                         vertical: PaddingPattern.small,
                       ),
-                      color: Colors.grey,
+                      color: CupertinoColors.inactiveGray,
                       child: Text(
                         keyValue,
                         textAlign: TextAlign.end,
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.white,
+                          color: CupertinoColors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -54,7 +54,7 @@ class TextInfo extends StatelessWidget {
                         validText(value),
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.black,
+                          color: CupertinoColors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

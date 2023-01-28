@@ -1,9 +1,9 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/app_store.dart';
-import 'package:morty_verso/app/core/core_module.dart';
-import 'package:morty_verso/app/modules/navigation/navigation_module.dart';
 
+import 'app_store.dart';
+import 'core/core_module.dart';
 import 'modules/characters/characters_module.dart';
+import 'modules/navigation/navigation_module.dart';
 
 class AppModule extends Module {
   @override
@@ -14,6 +14,7 @@ class AppModule extends Module {
   @override
   List<Module> imports = [
     CoreModule(),
+    CharactersModule(),
   ];
 
   @override

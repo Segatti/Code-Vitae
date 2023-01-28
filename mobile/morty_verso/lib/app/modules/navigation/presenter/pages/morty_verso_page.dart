@@ -36,7 +36,7 @@ class MortyVersoPage extends StatelessWidget {
                     backgroundColor: theme.barBackgroundColor,
                     trailing: const CupertinoListTileChevron(),
                     onTap: () {
-                      Modular.to.navigate('/characters/');
+                      Modular.to.pushNamed('/characters/');
                     },
                   ),
                   CupertinoListTile(
@@ -44,7 +44,7 @@ class MortyVersoPage extends StatelessWidget {
                     backgroundColor: theme.barBackgroundColor,
                     trailing: const CupertinoListTileChevron(),
                     onTap: () {
-                      Modular.to.navigate('/characters/');
+                      Modular.to.pushNamed('/characters/');
                     },
                   ),
                   CupertinoListTile(
@@ -52,7 +52,7 @@ class MortyVersoPage extends StatelessWidget {
                     backgroundColor: theme.barBackgroundColor,
                     trailing: const CupertinoListTileChevron(),
                     onTap: () {
-                      Modular.to.navigate('/characters/');
+                      Modular.to.pushNamed('/characters/');
                     },
                   ),
                 ],

@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
@@ -19,6 +20,8 @@ class AllCharactersPage extends StatefulWidget {
 class _AllCharactersPageState extends State<AllCharactersPage> {
   late AllCharactersStore store;
   final ScrollController _scrollController = ScrollController();
+  late CupertinoThemeData theme;
+  late TextStyle textStyleTheme;
 
   @override
   void initState() {
@@ -38,7 +41,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
       );
     } else if (pageState is LoadingState) {
       return const Center(
-        child: RepaintBoundary(child: CircularProgressIndicator()),
+        child: RepaintBoundary(child: CupertinoActivityIndicator()),
       );
     } else if (pageState is ErrorState) {
       return const Center(
@@ -73,9 +76,9 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
             margin: const EdgeInsets.symmetric(
               vertical: MarginPattern.small,
             ),
-            child: const Divider(
-              color: Colors.amber,
-              thickness: 2,
+            child: Container(
+              color: CupertinoColors.systemYellow,
+              height: 2,
             ),
           );
         },
@@ -86,88 +89,91 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
 
   @override
   Widget build(BuildContext context) {
+    theme = CupertinoTheme.of(context);
+    textStyleTheme = theme.textTheme.textStyle;
+
     return BasePageWidget(
       title: 'Characters',
+      trailing: GestureDetector(
+        child: Text(
+          'Favorites',
+          style: TextStyle(
+            color: CupertinoTheme.of(context).primaryColor,
+            fontSize: 17,
+            fontFamily: 'SF Pro',
+          ),
+        ),
+        onTap: () {
+          Modular.to.pushNamed('./favorites');
+        },
+      ),
       child: Column(
         children: [
           Expanded(
             child: Observer(
               builder: (context) => Column(
                 children: [
-                  (store.characters.info?.pages != null)
-                      ? Text(
-                          "${store.currentPage}/${store.characters.info?.pages}")
-                      : const Text('???'),
-                  const SizedBox(height: MarginPattern.medium),
                   Expanded(child: buildState(store.pageState)),
                   const SizedBox(height: MarginPattern.medium),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(12),
-                                  topLeft: Radius.circular(12),
-                                ),
-                              ),
-                            ),
-                          ),
-                          onPressed: (store.prevButton)
-                              ? () async {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                  store.setCurrentPage(store.currentPage - 1);
-                                  await store.getCharacters();
+                      CupertinoButton(
+                        color: CupertinoColors.activeBlue,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: PaddingPattern.big,
+                        ),
+                        onPressed: (store.prevButton)
+                            ? () async {
+                                _scrollController.animateTo(
+                                  _scrollController.position.minScrollExtent,
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.fastOutSlowIn,
+                                );
+                                store.setCurrentPage(store.currentPage - 1);
+                                store.setPageState(LoadingState());
+                                await store.getCharacters();
+                                if (store.pageState is LoadingState) {
+                                  store.setPageState(SuccessState());
                                 }
-                              : null,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.chevron_left),
-                              Text('Prev'),
-                            ],
-                          ),
+                              }
+                            : null,
+                        child: Row(
+                          children: const [
+                            Icon(CupertinoIcons.chevron_left),
+                            Text('Prev'),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(12),
-                                  topRight: Radius.circular(12),
-                                ),
-                              ),
-                            ),
-                          ),
-                          onPressed: (store.nextButton)
-                              ? () async {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                  store.setCurrentPage(store.currentPage + 1);
-                                  await store.getCharacters();
+                      (store.characters.info?.pages != null)
+                          ? Text(
+                              "${store.currentPage}/${store.characters.info?.pages}")
+                          : const Text('???'),
+                      CupertinoButton(
+                        color: CupertinoColors.activeBlue,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: PaddingPattern.big,
+                        ),
+                        onPressed: (store.nextButton)
+                            ? () async {
+                                _scrollController.animateTo(
+                                  _scrollController.position.minScrollExtent,
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.fastOutSlowIn,
+                                );
+                                store.setCurrentPage(store.currentPage + 1);
+                                store.setPageState(LoadingState());
+                                await store.getCharacters();
+                                if (store.pageState is LoadingState) {
+                                  store.setPageState(SuccessState());
                                 }
-                              : null,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text('Next'),
-                              Icon(Icons.chevron_right),
-                            ],
-                          ),
+                              }
+                            : null,
+                        child: Row(
+                          children: const [
+                            Text('Next'),
+                            Icon(CupertinoIcons.chevron_right),
+                          ],
                         ),
                       ),
                     ],

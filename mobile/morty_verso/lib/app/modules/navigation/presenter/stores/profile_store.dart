@@ -6,14 +6,14 @@ import 'package:mobx/mobx.dart';
 import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/modules/characters/domain/usecases/get_favorite_characters.dart';
 
-part 'home_store.g.dart';
+part 'profile_store.g.dart';
 
-class HomeStore = _HomeStoreBase with _$HomeStore;
+class ProfileStore = _ProfileStoreBase with _$ProfileStore;
 
-abstract class _HomeStoreBase with Store {
+abstract class _ProfileStoreBase with Store {
   final UCGetFavoriteCharacters getFavoriteCharacters;
 
-  _HomeStoreBase(this.getFavoriteCharacters);
+  _ProfileStoreBase(this.getFavoriteCharacters);
 
   @observable
   PageState pageState = StartState();
@@ -25,6 +25,18 @@ abstract class _HomeStoreBase with Store {
   @action
   setFavoriteCharactersIdList(List<String> value) =>
       favoriteCharactersIdList = value;
+
+      @observable
+  List<String> favoritePlanetsIdList = [];
+  @action
+  setFavoritePlanetsIdList(List<String> value) =>
+      favoritePlanetsIdList = value;
+
+      @observable
+  List<String> favoriteEpisodesIdList = [];
+  @action
+  setFavoriteEpisodesIdList(List<String> value) =>
+      favoriteEpisodesIdList = value;
 
   @action
   Future<void> startStore() async {

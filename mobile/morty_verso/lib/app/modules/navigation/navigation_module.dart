@@ -1,24 +1,19 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/modules/navigation/presenter/pages/morty_verso_page.dart';
 
-import '../characters/characters_module.dart';
 import '../settings/settings_module.dart';
-import 'presenter/pages/home_page.dart';
+import 'presenter/pages/profile_page.dart';
 import 'presenter/pages/pdf_preview_page.dart';
 import 'presenter/pages/splash_page.dart';
 import 'presenter/pages/start_page.dart';
-import 'presenter/stores/home_store.dart';
+import 'presenter/stores/profile_store.dart';
 import 'presenter/stores/pdf_preview_store.dart';
 
 class NavigationModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind.factory((i) => HomeStore(i())),
+    Bind.factory((i) => ProfileStore(i())),
     Bind.factory((i) => PdfPreviewStore(getMultipleCharacters: i())),
-  ];
-
-  @override
-  List<Module> imports = [
-    CharactersModule(),
   ];
 
   @override
@@ -30,18 +25,15 @@ class NavigationModule extends Module {
       children: [
         ChildRoute(
           '/profile',
-          child: (context, args) => const HomePage(),
-          transition: TransitionType.noTransition,
+          child: (_, __) => const ProfilePage(),
         ),
-        ModuleRoute(
+        ChildRoute(
           '/morty_verso',
-          module: CharactersModule(),
-          transition: TransitionType.noTransition,
+          child: (_, __) => const MortyVersoPage(),
         ),
         ModuleRoute(
           '/settings',
           module: SettingsModule(),
-          transition: TransitionType.noTransition,
         ),
       ],
     ),

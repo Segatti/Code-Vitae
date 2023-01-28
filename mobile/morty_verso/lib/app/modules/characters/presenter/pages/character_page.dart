@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
-import 'package:morty_verso/app/core/presenter/widgets/view/app_bar_widget.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 
 import '../stores/character_store.dart';
@@ -39,7 +38,7 @@ class _CharacterPageState extends State<CharacterPage> {
       );
     } else if (pageState is LoadingState) {
       return const Center(
-        child: RepaintBoundary(child: CircularProgressIndicator()),
+        child: RepaintBoundary(child: CupertinoActivityIndicator()),
       );
     } else if (pageState is ErrorState) {
       return const Center(
@@ -69,9 +68,9 @@ class _CharacterPageState extends State<CharacterPage> {
                               ),
                             ),
                             placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator()),
+                                child: CupertinoActivityIndicator()),
                             errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                const Icon(CupertinoIcons.xmark_circle),
                           ),
                         ),
                       );
@@ -103,15 +102,13 @@ class _CharacterPageState extends State<CharacterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Scaffold(
-        appBar: AppBarWidget(title: store.character.name ?? ''),
-        body: BasePageWidget(
-            title: 'Character',
-            child: Observer(builder: (context) {
-              return buildState(store.pageState);
-            })),
-      );
-    });
+    return BasePageWidget(
+      title: 'Character',
+      child: Observer(
+        builder: (context) {
+          return buildState(store.pageState);
+        },
+      ),
+    );
   }
 }
