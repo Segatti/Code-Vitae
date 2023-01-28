@@ -52,7 +52,11 @@ class CharactersModule extends Module {
 
   @override
   final List<ModularRoute> routes = [
-    ChildRoute('/', child: (_, __) => const AllCharactersPage()),
+    ChildRoute(
+      '/',
+      child: (_, __) => const AllCharactersPage(),
+      transition: TransitionType.rightToLeft,
+    ),
     ChildRoute(
       '/character/:id',
       child: (_, args) => CharacterPage(

@@ -9,11 +9,13 @@ class BasePageWidget extends StatefulWidget {
   final String title;
   final Widget child;
   final Widget? trailing;
+  final EdgeInsets? padding;
   const BasePageWidget({
     super.key,
     required this.title,
     required this.child,
     this.trailing,
+    this.padding,
   });
 
   @override
@@ -67,10 +69,11 @@ class _BasePageWidgetState extends State<BasePageWidget> {
                   fit: BoxFit.cover,
                 ),
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: PaddingPattern.small,
-                vertical: PaddingPattern.medium,
-              ),
+              padding: widget.padding ??
+                  const EdgeInsets.symmetric(
+                    horizontal: PaddingPattern.small,
+                    vertical: PaddingPattern.medium,
+                  ),
               child: SafeArea(
                 child: SizedBox(
                   width: double.maxFinite,

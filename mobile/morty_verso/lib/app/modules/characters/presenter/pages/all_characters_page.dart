@@ -48,7 +48,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
         child: Text('Error: Problems with the dimensional portal'),
       );
     } else {
-      return ListView.separated(
+      return ListView.builder(
         controller: _scrollController,
         itemBuilder: (_, index) {
           Character character =
@@ -71,17 +71,6 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
             isFavorite: isFavorite,
           );
         },
-        separatorBuilder: (_, __) {
-          return Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: MarginPattern.small,
-            ),
-            child: Container(
-              color: CupertinoColors.systemYellow,
-              height: 2,
-            ),
-          );
-        },
         itemCount: store.characters.results?.length ?? 0,
       );
     }
@@ -94,6 +83,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
 
     return BasePageWidget(
       title: 'Characters',
+      padding: EdgeInsets.zero,
       trailing: GestureDetector(
         child: Text(
           'Favorites',
@@ -114,69 +104,79 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
               builder: (context) => Column(
                 children: [
                   Expanded(child: buildState(store.pageState)),
-                  const SizedBox(height: MarginPattern.medium),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CupertinoButton(
-                        color: CupertinoColors.activeBlue,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: PaddingPattern.big,
-                        ),
-                        onPressed: (store.prevButton)
-                            ? () async {
-                                _scrollController.animateTo(
-                                  _scrollController.position.minScrollExtent,
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.fastOutSlowIn,
-                                );
-                                store.setCurrentPage(store.currentPage - 1);
-                                store.setPageState(LoadingState());
-                                await store.getCharacters();
-                                if (store.pageState is LoadingState) {
-                                  store.setPageState(SuccessState());
+                  Container(
+                    color: CupertinoColors.black.withOpacity(.25),
+                    height: 1,
+                    width: double.maxFinite,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: PaddingPattern.small,
+                      vertical: PaddingPattern.medium,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CupertinoButton(
+                          color: CupertinoColors.activeBlue,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: PaddingPattern.big,
+                          ),
+                          onPressed: (store.prevButton)
+                              ? () async {
+                                  _scrollController.animateTo(
+                                    _scrollController.position.minScrollExtent,
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.fastOutSlowIn,
+                                  );
+                                  store.setCurrentPage(store.currentPage - 1);
+                                  store.setPageState(LoadingState());
+                                  await store.getCharacters();
+                                  if (store.pageState is LoadingState) {
+                                    store.setPageState(SuccessState());
+                                  }
                                 }
-                              }
-                            : null,
-                        child: Row(
-                          children: const [
-                            Icon(CupertinoIcons.chevron_left),
-                            Text('Prev'),
-                          ],
+                              : null,
+                          child: Row(
+                            children: const [
+                              Icon(CupertinoIcons.chevron_left),
+                              Text('Prev'),
+                            ],
+                          ),
                         ),
-                      ),
-                      (store.characters.info?.pages != null)
-                          ? Text(
-                              "${store.currentPage}/${store.characters.info?.pages}")
-                          : const Text('???'),
-                      CupertinoButton(
-                        color: CupertinoColors.activeBlue,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: PaddingPattern.big,
-                        ),
-                        onPressed: (store.nextButton)
-                            ? () async {
-                                _scrollController.animateTo(
-                                  _scrollController.position.minScrollExtent,
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.fastOutSlowIn,
-                                );
-                                store.setCurrentPage(store.currentPage + 1);
-                                store.setPageState(LoadingState());
-                                await store.getCharacters();
-                                if (store.pageState is LoadingState) {
-                                  store.setPageState(SuccessState());
+                        (store.characters.info?.pages != null)
+                            ? Text(
+                                "${store.currentPage}/${store.characters.info?.pages}")
+                            : const Text('???'),
+                        CupertinoButton(
+                          color: CupertinoColors.activeBlue,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: PaddingPattern.big,
+                          ),
+                          onPressed: (store.nextButton)
+                              ? () async {
+                                  _scrollController.animateTo(
+                                    _scrollController.position.minScrollExtent,
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.fastOutSlowIn,
+                                  );
+                                  store.setCurrentPage(store.currentPage + 1);
+                                  store.setPageState(LoadingState());
+                                  await store.getCharacters();
+                                  if (store.pageState is LoadingState) {
+                                    store.setPageState(SuccessState());
+                                  }
                                 }
-                              }
-                            : null,
-                        child: Row(
-                          children: const [
-                            Text('Next'),
-                            Icon(CupertinoIcons.chevron_right),
-                          ],
+                              : null,
+                          child: Row(
+                            children: const [
+                              Text('Next'),
+                              Icon(CupertinoIcons.chevron_right),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
