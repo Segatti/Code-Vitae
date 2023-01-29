@@ -19,6 +19,7 @@ class CharacterPage extends StatefulWidget {
 
 class _CharacterPageState extends State<CharacterPage> {
   late CharacterStore store;
+  late CupertinoThemeData theme;
 
   @override
   void initState() {
@@ -54,23 +55,27 @@ class _CharacterPageState extends State<CharacterPage> {
                   child: LayoutBuilder(
                     builder: (_, constrains) {
                       return Center(
-                        child: SizedBox(
-                          height: constrains.maxWidth * 0.5,
-                          width: constrains.maxWidth * 0.5,
-                          child: CachedNetworkImage(
-                            imageUrl: store.character.image ?? '',
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: SizedBox(
+                            height: constrains.maxWidth * 0.5,
+                            width: constrains.maxWidth * 0.5,
+                            child: CachedNetworkImage(
+                              imageUrl: store.character.image ?? '',
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
+                              placeholder: (context, url) => const Center(
+                                  child: CupertinoActivityIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(CupertinoIcons.xmark_circle),
                             ),
-                            placeholder: (context, url) => const Center(
-                                child: CupertinoActivityIndicator()),
-                            errorWidget: (context, url, error) =>
-                                const Icon(CupertinoIcons.xmark_circle),
                           ),
                         ),
                       );
@@ -80,20 +85,46 @@ class _CharacterPageState extends State<CharacterPage> {
               ],
             ),
             const SizedBox(height: PaddingPattern.big),
-            TextInfo(keyValue: 'Name', value: store.character.name ?? ''),
-            const SizedBox(height: PaddingPattern.small),
+            TextInfo(
+              keyValue: 'Name',
+              value: store.character.name ?? '',
+              top: true,
+            ),
+            Container(
+              height: 1,
+              width: double.maxFinite,
+              color: theme.scaffoldBackgroundColor,
+            ),
             TextInfo(keyValue: 'Species', value: store.character.species ?? ''),
-            const SizedBox(height: PaddingPattern.small),
+            Container(
+              height: 1,
+              width: double.maxFinite,
+              color: theme.scaffoldBackgroundColor,
+            ),
             TextInfo(keyValue: 'Gender', value: store.character.gender ?? ''),
-            const SizedBox(height: PaddingPattern.small),
+            Container(
+              height: 1,
+              width: double.maxFinite,
+              color: theme.scaffoldBackgroundColor,
+            ),
             TextInfo(keyValue: 'Status', value: store.character.status ?? ''),
-            const SizedBox(height: PaddingPattern.small),
+            Container(
+              height: 1,
+              width: double.maxFinite,
+              color: theme.scaffoldBackgroundColor,
+            ),
             TextInfo(
                 keyValue: 'Origin', value: store.character.origin?.name ?? ''),
-            const SizedBox(height: PaddingPattern.small),
+            Container(
+              height: 1,
+              width: double.maxFinite,
+              color: theme.scaffoldBackgroundColor,
+            ),
             TextInfo(
-                keyValue: 'Location',
-                value: store.character.location?.name ?? ''),
+              keyValue: 'Location',
+              value: store.character.location?.name ?? '',
+              bottom: true,
+            ),
           ],
         ),
       );
@@ -102,13 +133,21 @@ class _CharacterPageState extends State<CharacterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePageWidget(
-      title: 'Character',
-      child: Observer(
-        builder: (context) {
-          return buildState(store.pageState);
-        },
-      ),
-    );
+    theme = CupertinoTheme.of(context);
+
+    return Observer(builder: (context) {
+      return BasePageWidget(
+        title: store.character.name ?? '',
+        padding: const EdgeInsets.symmetric(
+          horizontal: PaddingPattern.small,
+          vertical: PaddingPattern.big,
+        ),
+        child: Observer(
+          builder: (context) {
+            return buildState(store.pageState);
+          },
+        ),
+      );
+    });
   }
 }
