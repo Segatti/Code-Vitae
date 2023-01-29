@@ -56,6 +56,7 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
   Widget build(BuildContext context) {
     return BasePageWidget(
         title: 'PDF Preview',
+        padding: EdgeInsets.zero,
         child: Observer(builder: (context) {
           return buildState(store.pageState);
         }));
