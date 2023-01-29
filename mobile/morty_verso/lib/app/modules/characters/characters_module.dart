@@ -62,6 +62,7 @@ class CharactersModule extends Module {
       child: (_, args) => CharacterPage(
         id: int.parse(args.params['id']),
       ),
+      transition: TransitionType.rightToLeft,
     ),
   ];
 }

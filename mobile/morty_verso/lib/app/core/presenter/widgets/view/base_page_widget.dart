@@ -10,12 +10,14 @@ class BasePageWidget extends StatefulWidget {
   final Widget child;
   final Widget? trailing;
   final EdgeInsets? padding;
+  final ScrollPhysics? scrollPhysics;
   const BasePageWidget({
     super.key,
     required this.title,
     required this.child,
     this.trailing,
     this.padding,
+    this.scrollPhysics,
   });
 
   @override
@@ -41,8 +43,11 @@ class _BasePageWidgetState extends State<BasePageWidget> {
     return Observer(builder: (context) {
       return CupertinoPageScaffold(
         child: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder: (_, __) => <Widget>[
+          child: CustomScrollView(
+            shrinkWrap: true,
+            physics:
+                widget.scrollPhysics ?? const NeverScrollableScrollPhysics(),
+            slivers: <Widget>[
               CupertinoSliverNavigationBar(
                 previousPageTitle: 'Back',
                 border: const Border(
@@ -59,28 +64,30 @@ class _BasePageWidgetState extends State<BasePageWidget> {
                   ),
                 ),
               ),
-            ],
-            body: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: ExactAssetImage(store.themeIsDark
-                      ? 'assets/images/body_background_dark.png'
-                      : 'assets/images/body_background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              padding: widget.padding ??
-                  const EdgeInsets.symmetric(
-                    horizontal: PaddingPattern.small,
-                    vertical: PaddingPattern.medium,
+              SliverFillRemaining(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: ExactAssetImage(store.themeIsDark
+                          ? 'assets/images/body_background_dark.png'
+                          : 'assets/images/body_background.png'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-              child: SafeArea(
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: widget.child,
+                  padding: widget.padding ??
+                      const EdgeInsets.symmetric(
+                        horizontal: PaddingPattern.small,
+                        vertical: PaddingPattern.medium,
+                      ),
+                  child: SafeArea(
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      child: widget.child,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
       );

@@ -5,7 +5,6 @@ import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
-import '../../../../core/domain/patterns/margin_pattern.dart';
 import '../../domain/entities/character.dart';
 import '../stores/all_characters_store.dart';
 import '../widgets/card_character.dart';

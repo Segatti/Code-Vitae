@@ -36,6 +36,7 @@ class _CardCharacterState extends State<CardCharacter> {
           context: context,
           builder: (context) => SafeArea(
             child: CupertinoActionSheet(
+              title: const Text('What do you want to do?'),
               actions: [
                 CupertinoActionSheetAction(
                   onPressed: () {
@@ -61,7 +62,10 @@ class _CardCharacterState extends State<CardCharacter> {
                 onPressed: () {
                   Modular.to.pop();
                 },
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: CupertinoColors.systemRed),
+                ),
               ),
             ),
           ),
