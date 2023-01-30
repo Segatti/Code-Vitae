@@ -9,6 +9,7 @@ import 'domain/usecases/theme/get_theme.dart';
 import 'domain/usecases/theme/set_theme.dart';
 import 'infra/repositories/theme_repository.dart';
 import 'infra/services/local_storage_service.dart';
+import 'presenter/stores/favorite_store.dart';
 import 'presenter/widgets/view/stores/bottom_navigation_bar_store.dart';
 
 class CoreModule extends Module {
@@ -33,6 +34,8 @@ class CoreModule extends Module {
 
     // Stores
     Bind.factory<BottomNavigationBarStore>((i) => BottomNavigationBarStore(),
+        export: true),
+    Bind.factory<FavoriteStore>((i) => FavoriteStore(i(), i(), i(), i()),
         export: true),
 
     // Dependecy

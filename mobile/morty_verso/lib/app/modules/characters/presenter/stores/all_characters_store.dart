@@ -74,7 +74,7 @@ abstract class _AllCharactersStoreBase with Store {
 
   @action
   Future<void> getFavoriteCharactersLocalStorage() async {
-    final response = await getFavoriteCharacters('favorite_characters');
+    final response = await getFavoriteCharacters();
     await response.fold(
       (l) async {
         setPageState(ErrorState());

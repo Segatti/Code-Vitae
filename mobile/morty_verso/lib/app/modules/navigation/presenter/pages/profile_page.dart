@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     } else {
       return ProfileFavorite(
         characters: store.favoriteCharactersIdList,
-        planets: store.favoritePlanetsIdList,
+        locations: store.favoriteLocationsIdList,
         episodes: store.favoriteEpisodesIdList,
         generatePDF: () {
           Modular.to.pushNamed('/pdf', arguments: {

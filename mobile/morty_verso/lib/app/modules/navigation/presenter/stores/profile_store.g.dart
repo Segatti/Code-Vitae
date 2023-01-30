@@ -42,20 +42,20 @@ mixin _$ProfileStore on _ProfileStoreBase, Store {
     });
   }
 
-  late final _$favoritePlanetsIdListAtom =
-      Atom(name: '_ProfileStoreBase.favoritePlanetsIdList', context: context);
+  late final _$favoriteLocationsIdListAtom =
+      Atom(name: '_ProfileStoreBase.favoriteLocationsIdList', context: context);
 
   @override
-  List<String> get favoritePlanetsIdList {
-    _$favoritePlanetsIdListAtom.reportRead();
-    return super.favoritePlanetsIdList;
+  List<String> get favoriteLocationsIdList {
+    _$favoriteLocationsIdListAtom.reportRead();
+    return super.favoriteLocationsIdList;
   }
 
   @override
-  set favoritePlanetsIdList(List<String> value) {
-    _$favoritePlanetsIdListAtom.reportWrite(value, super.favoritePlanetsIdList,
-        () {
-      super.favoritePlanetsIdList = value;
+  set favoriteLocationsIdList(List<String> value) {
+    _$favoriteLocationsIdListAtom
+        .reportWrite(value, super.favoriteLocationsIdList, () {
+      super.favoriteLocationsIdList = value;
     });
   }
 
@@ -120,11 +120,11 @@ mixin _$ProfileStore on _ProfileStoreBase, Store {
   }
 
   @override
-  dynamic setFavoritePlanetsIdList(List<String> value) {
+  dynamic setFavoriteLocationsIdList(List<String> value) {
     final _$actionInfo = _$_ProfileStoreBaseActionController.startAction(
-        name: '_ProfileStoreBase.setFavoritePlanetsIdList');
+        name: '_ProfileStoreBase.setFavoriteLocationsIdList');
     try {
-      return super.setFavoritePlanetsIdList(value);
+      return super.setFavoriteLocationsIdList(value);
     } finally {
       _$_ProfileStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -146,7 +146,7 @@ mixin _$ProfileStore on _ProfileStoreBase, Store {
     return '''
 pageState: ${pageState},
 favoriteCharactersIdList: ${favoriteCharactersIdList},
-favoritePlanetsIdList: ${favoritePlanetsIdList},
+favoriteLocationsIdList: ${favoriteLocationsIdList},
 favoriteEpisodesIdList: ${favoriteEpisodesIdList}
     ''';
   }

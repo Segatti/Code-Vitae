@@ -6,13 +6,13 @@ import '../../../../core/domain/patterns/padding_pattern.dart';
 
 class ProfileFavorite extends StatefulWidget {
   final List<String> characters;
-  final List<String> planets;
+  final List<String> locations;
   final List<String> episodes;
   final Function? generatePDF;
   const ProfileFavorite({
     super.key,
     required this.characters,
-    required this.planets,
+    required this.locations,
     required this.episodes,
     this.generatePDF,
   });
@@ -106,7 +106,7 @@ class _ProfileFavoriteState extends State<ProfileFavorite> {
                       Padding(
                         padding: const EdgeInsets.all(PaddingPattern.small),
                         child: TextWidget(
-                          text: widget.planets.length.toString(),
+                          text: widget.locations.length.toString(),
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),

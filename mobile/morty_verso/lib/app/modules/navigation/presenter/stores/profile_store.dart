@@ -26,13 +26,13 @@ abstract class _ProfileStoreBase with Store {
   setFavoriteCharactersIdList(List<String> value) =>
       favoriteCharactersIdList = value;
 
-      @observable
-  List<String> favoritePlanetsIdList = [];
+  @observable
+  List<String> favoriteLocationsIdList = [];
   @action
-  setFavoritePlanetsIdList(List<String> value) =>
-      favoritePlanetsIdList = value;
+  setFavoriteLocationsIdList(List<String> value) =>
+      favoriteLocationsIdList = value;
 
-      @observable
+  @observable
   List<String> favoriteEpisodesIdList = [];
   @action
   setFavoriteEpisodesIdList(List<String> value) =>
@@ -49,7 +49,7 @@ abstract class _ProfileStoreBase with Store {
 
   @action
   Future<void> getFavoriteCharactersLocalStorage() async {
-    final result = await getFavoriteCharacters('favorite_characters');
+    final result = await getFavoriteCharacters();
     await result.fold(
       (l) async {
         setPageState(ErrorState());

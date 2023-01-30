@@ -1,32 +1,27 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:morty_verso/app/core/domain/patterns/margin_pattern.dart';
 import 'package:morty_verso/app/core/utils/strings.dart';
 
 import '../../../../core/domain/patterns/padding_pattern.dart';
-import '../../domain/entities/character.dart';
+import '../../domain/entities/location.dart';
 
-class CardCharacter extends StatefulWidget {
-  final Character character;
+class CardLocation extends StatefulWidget {
+  final Location location;
   final Function? onTap;
   final bool isFavorite;
-  final bool location;
-  const CardCharacter({
-    super.key,
-    required this.character,
-    this.onTap,
-    required this.isFavorite,
-    this.location = false,
-  });
+  const CardLocation(
+      {super.key,
+      required this.location,
+      this.onTap,
+      required this.isFavorite});
 
   @override
-  State<CardCharacter> createState() => _CardCharacterState();
+  State<CardLocation> createState() => _CardLocationState();
 }
 
-class _CardCharacterState extends State<CardCharacter> {
+class _CardLocationState extends State<CardLocation> {
   late CupertinoThemeData theme;
 
   @override
@@ -45,9 +40,13 @@ class _CardCharacterState extends State<CardCharacter> {
                   onPressed: () {
                     Modular.to.pop();
                     Modular.to.pushNamed(
-                        '/characters/character/${widget.character.id}');
+                      './residents',
+                      arguments: {
+                        ""
+                      }
+                    );
                   },
-                  child: const Text('More details'),
+                  child: const Text('Show residents'),
                 ),
                 CupertinoActionSheetAction(
                   onPressed: () async {
@@ -94,52 +93,35 @@ class _CardCharacterState extends State<CardCharacter> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(13),
-              child: SizedBox(
-                width: 100,
-                height: 100,
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    (widget.isFavorite || widget.location)
-                        ? Colors.transparent
-                        : Colors.grey,
-                    BlendMode.saturation,
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.character.image ?? '',
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    placeholder: (context, url) =>
-                        const Center(child: CupertinoActivityIndicator()),
-                    errorWidget: (context, url, error) =>
-                        const Center(child: Icon(CupertinoIcons.xmark_circle)),
-                  ),
+              child: Center(
+                child: Icon(
+                  CupertinoIcons.placemark,
+                  size: 50,
+                  color: widget.isFavorite
+                      ? CupertinoColors.activeBlue
+                      : CupertinoColors.inactiveGray,
                 ),
               ),
             ),
-            const SizedBox(width: PaddingPattern.medium),
-            Container(
-              height: 100,
-              width: 1,
-              color: theme.textTheme.textStyle.color?.withOpacity(.25),
-            ),
-            const SizedBox(width: PaddingPattern.medium),
             Expanded(
-              child: SizedBox(
-                height: 100,
+              child: Container(
+                padding: const EdgeInsets.only(left: PaddingPattern.medium),
+                margin: const EdgeInsets.only(left: MarginPattern.medium),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: theme.textTheme.textStyle.color!.withOpacity(.25),
+                    ),
+                  ),
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoSizeText(
                       validText(
-                          "${widget.character.name}${widget.isFavorite ? ' ☆' : ''}"),
-                      maxLines: 2,
+                          "${widget.location.name}${widget.isFavorite ? ' ☆' : ''}"),
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 18,
@@ -151,15 +133,15 @@ class _CardCharacterState extends State<CardCharacter> {
                     ),
                     const SizedBox(height: PaddingPattern.small),
                     AutoSizeText(
-                      validText(
-                          "Origin: ${widget.character.origin?.name ?? ''}"),
-                      maxLines: 2,
+                      validText("Type: ${widget.location.type ?? ''}"),
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: PaddingPattern.small),
                     AutoSizeText(
-                      validText("Species: ${widget.character.species ?? ''}"),
-                      maxLines: 2,
+                      validText(
+                          "Characters: ${widget.location.residents?.length ?? '0'}"),
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],

@@ -40,11 +40,11 @@ class MortyVersoPage extends StatelessWidget {
                     },
                   ),
                   CupertinoListTile(
-                    title: const TextWidget(text: 'Planets', fontSize: 17),
+                    title: const TextWidget(text: 'Locations', fontSize: 17),
                     backgroundColor: theme.barBackgroundColor,
                     trailing: const CupertinoListTileChevron(),
                     onTap: () {
-                      Modular.to.pushNamed('/characters/');
+                      Modular.to.pushNamed('/locations/');
                     },
                   ),
                   CupertinoListTile(

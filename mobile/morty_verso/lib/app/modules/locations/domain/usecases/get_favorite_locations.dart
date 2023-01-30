@@ -6,32 +6,32 @@ import 'package:morty_verso/app/core/domain/usecases/get_value_local_storage.dar
 import '../../../../core/domain/errors/failure.dart';
 import '../../../../core/domain/errors/local_storage_error.dart';
 
-abstract class IUCGetFavoriteCharacters {
+abstract class IUCGetFavoriteLocations {
   Future<Either<Failure, List<String>>> call();
 }
 
-class UCGetFavoriteCharacters implements IUCGetFavoriteCharacters {
+class UCGetFavoriteLocations implements IUCGetFavoriteLocations {
   final IUCGetValueLocalStorage getValueLocalStorage;
 
-  const UCGetFavoriteCharacters({required this.getValueLocalStorage});
+  const UCGetFavoriteLocations({required this.getValueLocalStorage});
 
   @override
   Future<Either<Failure, List<String>>> call() async {
     try {
-      final result = await getValueLocalStorage('favorite_characters');
-      List<String> characterIdList = [];
+      final result = await getValueLocalStorage('favorite_locations');
+      List<String> locationIdList = [];
       return result.fold(
         (l) => Left(l),
         (r) {
           if (r != null) {
-            characterIdList =
+            locationIdList =
                 (json.decode(r) as List).map((e) => e.toString()).toList();
           }
-          return Right(characterIdList);
+          return Right(locationIdList);
         },
       );
     } catch (e) {
-      return Left(ItemValueError('UCGetFavoriteCharacters - ItemValueError'));
+      return Left(ItemValueError('UCGetFavoriteLocations - ItemValueError'));
     }
   }
 }

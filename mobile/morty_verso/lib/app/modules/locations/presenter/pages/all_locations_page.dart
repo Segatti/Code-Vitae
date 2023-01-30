@@ -5,26 +5,26 @@ import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
-import '../../domain/entities/character.dart';
-import '../stores/all_characters_store.dart';
-import '../widgets/card_character.dart';
+import '../../domain/entities/location.dart';
+import '../stores/all_locations_store.dart';
+import '../widgets/card_location.dart';
 
-class AllCharactersPage extends StatefulWidget {
-  const AllCharactersPage({super.key});
+class AllLocationsPage extends StatefulWidget {
+  const AllLocationsPage({super.key});
 
   @override
-  State<AllCharactersPage> createState() => _AllCharactersPageState();
+  State<AllLocationsPage> createState() => _AllLocationsPageState();
 }
 
-class _AllCharactersPageState extends State<AllCharactersPage> {
-  late AllCharactersStore store;
+class _AllLocationsPageState extends State<AllLocationsPage> {
+  late AllLocationsStore store;
   final ScrollController _scrollController = ScrollController();
   late CupertinoThemeData theme;
   late TextStyle textStyleTheme;
 
   @override
   void initState() {
-    store = Modular.get<AllCharactersStore>();
+    store = Modular.get<AllLocationsStore>();
     _init();
     super.initState();
   }
@@ -50,27 +50,27 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
       return ListView.builder(
         controller: _scrollController,
         itemBuilder: (_, index) {
-          Character character =
-              store.characters.results?[index] ?? const Character();
+          Location location =
+              store.locations.results?[index] ?? const Location();
           bool isFavorite =
-              store.favoriteCharactersIdList.contains(character.id.toString());
-          return CardCharacter(
-            character: character,
+              store.favoriteLocationsIdList.contains(location.id.toString());
+          return CardLocation(
+            location: location,
             onTap: () async {
-              String characterId =
-                  store.characters.results![index].id.toString();
-              List<String> characterList =
-                  store.favoriteCharactersIdList.map((e) => e).toList();
+              String locationId =
+                  store.locations.results![index].id.toString();
+              List<String> locationList =
+                  store.favoriteLocationsIdList.map((e) => e).toList();
               (isFavorite)
-                  ? characterList.remove(characterId)
-                  : characterList.add(characterId);
-              await store.setFavoriteCharactersIdList(characterList);
-              await store.saveFavoriteCharactersLocalStorage();
+                  ? locationList.remove(locationId)
+                  : locationList.add(locationId);
+              await store.setFavoriteLocationsIdList(locationList);
+              await store.saveFavoriteLocationsLocalStorage();
             },
             isFavorite: isFavorite,
           );
         },
-        itemCount: store.characters.results?.length ?? 0,
+        itemCount: store.locations.results?.length ?? 0,
       );
     }
   }
@@ -81,7 +81,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
     textStyleTheme = theme.textTheme.textStyle;
 
     return BasePageWidget(
-      title: 'Characters',
+      title: 'Locations',
       padding: EdgeInsets.zero,
       trailing: GestureDetector(
         child: Text(
@@ -93,7 +93,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
           ),
         ),
         onTap: () {
-          Modular.to.pushNamed('/favorites/characters');
+          Modular.to.pushNamed('/favorites/locations');
         },
       ),
       child: Column(
@@ -130,7 +130,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
                                   );
                                   store.setCurrentPage(store.currentPage - 1);
                                   store.setPageState(LoadingState());
-                                  await store.getCharacters();
+                                  await store.getLocations();
                                   if (store.pageState is LoadingState) {
                                     store.setPageState(SuccessState());
                                   }
@@ -143,9 +143,9 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
                             ],
                           ),
                         ),
-                        (store.characters.info?.pages != null)
+                        (store.locations.info?.pages != null)
                             ? Text(
-                                "${store.currentPage}/${store.characters.info?.pages}")
+                                "${store.currentPage}/${store.locations.info?.pages}")
                             : const Text('???'),
                         CupertinoButton(
                           color: CupertinoColors.activeBlue,
@@ -161,7 +161,7 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
                                   );
                                   store.setCurrentPage(store.currentPage + 1);
                                   store.setPageState(LoadingState());
-                                  await store.getCharacters();
+                                  await store.getLocations();
                                   if (store.pageState is LoadingState) {
                                     store.setPageState(SuccessState());
                                   }
