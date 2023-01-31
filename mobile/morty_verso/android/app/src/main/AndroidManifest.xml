@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.morty_verso">
    <application
-        android:label="morty_verso"
+        android:label="Morty Verso"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
