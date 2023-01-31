@@ -94,6 +94,26 @@ mixin _$ProfileStore on _ProfileStoreBase, Store {
         .run(() => super.getFavoriteCharactersLocalStorage());
   }
 
+  late final _$getFavoriteLocationsLocalStorageAsyncAction = AsyncAction(
+      '_ProfileStoreBase.getFavoriteLocationsLocalStorage',
+      context: context);
+
+  @override
+  Future<void> getFavoriteLocationsLocalStorage() {
+    return _$getFavoriteLocationsLocalStorageAsyncAction
+        .run(() => super.getFavoriteLocationsLocalStorage());
+  }
+
+  late final _$getFavoriteEpisodesLocalStorageAsyncAction = AsyncAction(
+      '_ProfileStoreBase.getFavoriteEpisodesLocalStorage',
+      context: context);
+
+  @override
+  Future<void> getFavoriteEpisodesLocalStorage() {
+    return _$getFavoriteEpisodesLocalStorageAsyncAction
+        .run(() => super.getFavoriteEpisodesLocalStorage());
+  }
+
   late final _$_ProfileStoreBaseActionController =
       ActionController(name: '_ProfileStoreBase', context: context);
 

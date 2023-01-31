@@ -3,8 +3,11 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:mobx/mobx.dart';
-import 'package:morty_verso/app/core/domain/entities/page_states.dart';
-import 'package:morty_verso/app/modules/characters/domain/usecases/get_favorite_characters.dart';
+
+import '../../../../core/domain/entities/page_states.dart';
+import '../../../characters/domain/usecases/get_favorite_characters.dart';
+import '../../../episodes/domain/usecases/get_favorite_episodes.dart';
+import '../../../locations/domain/usecases/get_favorite_locations.dart';
 
 part 'profile_store.g.dart';
 
@@ -12,8 +15,14 @@ class ProfileStore = _ProfileStoreBase with _$ProfileStore;
 
 abstract class _ProfileStoreBase with Store {
   final UCGetFavoriteCharacters getFavoriteCharacters;
+  final UCGetFavoriteLocations getFavoriteLocations;
+  final UCGetFavoriteEpisodes getFavoriteEpisodes;
 
-  _ProfileStoreBase(this.getFavoriteCharacters);
+  _ProfileStoreBase(
+    this.getFavoriteCharacters,
+    this.getFavoriteLocations,
+    this.getFavoriteEpisodes,
+  );
 
   @observable
   PageState pageState = StartState();
@@ -44,6 +53,8 @@ abstract class _ProfileStoreBase with Store {
     await localStorage.ready;
     setPageState(LoadingState());
     await getFavoriteCharactersLocalStorage();
+    await getFavoriteLocationsLocalStorage();
+    await getFavoriteEpisodesLocalStorage();
     setPageState(SuccessState());
   }
 
@@ -56,6 +67,32 @@ abstract class _ProfileStoreBase with Store {
       },
       (r) async {
         setFavoriteCharactersIdList(r);
+      },
+    );
+  }
+
+  @action
+  Future<void> getFavoriteLocationsLocalStorage() async {
+    final result = await getFavoriteLocations();
+    await result.fold(
+      (l) async {
+        setPageState(ErrorState());
+      },
+      (r) async {
+        setFavoriteLocationsIdList(r);
+      },
+    );
+  }
+
+  @action
+  Future<void> getFavoriteEpisodesLocalStorage() async {
+    final result = await getFavoriteEpisodes();
+    await result.fold(
+      (l) async {
+        setPageState(ErrorState());
+      },
+      (r) async {
+        setFavoriteEpisodesIdList(r);
       },
     );
   }

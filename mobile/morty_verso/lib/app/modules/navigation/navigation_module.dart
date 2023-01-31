@@ -12,7 +12,7 @@ import 'presenter/stores/pdf_preview_store.dart';
 class NavigationModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind.factory((i) => ProfileStore(i())),
+    Bind.factory((i) => ProfileStore(i(), i(), i())),
     Bind.factory((i) => PdfPreviewStore(getMultipleCharacters: i())),
   ];
 
