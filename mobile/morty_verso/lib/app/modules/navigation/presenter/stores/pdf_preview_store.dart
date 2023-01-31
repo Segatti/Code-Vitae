@@ -64,39 +64,44 @@ abstract class _PdfPreviewStoreBase with Store {
     List<String> episodesIdList,
   ) async {
     setPageState(LoadingState());
-    final resultCharacters = await getMultipleCharacters(
-        charactersIdList.map((e) => int.parse(e)).toList());
+    if (charactersIdList.isNotEmpty) {
+      final resultCharacters = await getMultipleCharacters(
+          charactersIdList.map((e) => int.parse(e)).toList());
 
-    await resultCharacters.fold(
-      (l) => setPageState(ErrorState()),
-      (r) {
-        setCharactersList(r);
-      },
-    );
+      await resultCharacters.fold(
+        (l) => setPageState(ErrorState()),
+        (r) {
+          setCharactersList(r);
+        },
+      );
+    }
 
-    final resultLocations = await getMultipleLocations(
-        locationsIdList.map((e) => int.parse(e)).toList());
+    if (locationsIdList.isNotEmpty) {
+      final resultLocations = await getMultipleLocations(
+          locationsIdList.map((e) => int.parse(e)).toList());
 
-    await resultLocations.fold(
-      (l) => setPageState(ErrorState()),
-      (r) {
-        setLocationsList(r);
-      },
-    );
+      await resultLocations.fold(
+        (l) => setPageState(ErrorState()),
+        (r) {
+          setLocationsList(r);
+        },
+      );
+    }
 
-    final resultEpisodes = await getMultipleEpisodes(
-        episodesIdList.map((e) => int.parse(e)).toList());
+    if (episodesIdList.isNotEmpty) {
+      final resultEpisodes = await getMultipleEpisodes(
+          episodesIdList.map((e) => int.parse(e)).toList());
 
-    await resultEpisodes.fold(
-      (l) => setPageState(ErrorState()),
-      (r) {
-        setEpisodesList(r);
-      },
-    );
+      await resultEpisodes.fold(
+        (l) => setPageState(ErrorState()),
+        (r) {
+          setEpisodesList(r);
+        },
+      );
+    }
 
     if (pageState is LoadingState) {
       const PdfColor green = PdfColor.fromInt(0xff9ce5d0);
-      const PdfColor white = PdfColor.fromInt(0xffFFFFFF);
 
       var myTheme = pw.ThemeData.withFont(
         base: pw.Font.ttf(
