@@ -37,18 +37,19 @@ class _CardEpisodeState extends State<CardEpisode> {
             child: CupertinoActionSheet(
               title: const Text('What do you want to do?'),
               actions: [
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    Modular.to.pop();
-                    Modular.to.pushNamed('./characters', arguments: {
-                      "characters_ids": widget.episode.characters
-                          ?.map((e) => int.parse(e.split('/').last))
-                          .toList(),
-                      "episode_name": widget.episode.name,
-                    });
-                  },
-                  child: const Text('Show characters'),
-                ),
+                if (widget.episode.characters?.isNotEmpty ?? false)
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      Modular.to.pop();
+                      Modular.to.pushNamed('./characters', arguments: {
+                        "characters_ids": widget.episode.characters
+                            ?.map((e) => int.parse(e.split('/').last))
+                            .toList(),
+                        "episode_name": widget.episode.name,
+                      });
+                    },
+                    child: const Text('Show characters'),
+                  ),
                 CupertinoActionSheetAction(
                   onPressed: () async {
                     if (widget.onTap is Function) {

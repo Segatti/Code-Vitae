@@ -40,6 +40,7 @@ class AppModule extends Module {
     ChildRoute(
       '/favorites/:type',
       child: (context, args) => FavoritePage(favoriteType: args.params['type']),
+      transition: TransitionType.rightToLeft,
     )
   ];
 }

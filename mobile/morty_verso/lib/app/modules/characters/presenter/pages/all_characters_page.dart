@@ -83,19 +83,25 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
     return BasePageWidget(
       title: 'Characters',
       padding: EdgeInsets.zero,
-      trailing: GestureDetector(
-        child: Text(
-          'Favorites',
-          style: TextStyle(
-            color: CupertinoTheme.of(context).primaryColor,
-            fontSize: 17,
-            fontFamily: 'SF Pro',
+      trailing: Observer(builder: (context) {
+        return GestureDetector(
+          onTap: (store.favoriteCharactersIdList.isNotEmpty)
+              ? () {
+                  Modular.to.pushNamed('/favorites/characters');
+                }
+              : null,
+          child: Text(
+            'Favorites',
+            style: TextStyle(
+              color: (store.favoriteCharactersIdList.isNotEmpty)
+                  ? CupertinoTheme.of(context).primaryColor
+                  : CupertinoColors.inactiveGray,
+              fontSize: 17,
+              fontFamily: 'SF Pro',
+            ),
           ),
-        ),
-        onTap: () {
-          Modular.to.pushNamed('/favorites/characters');
-        },
-      ),
+        );
+      }),
       child: Column(
         children: [
           Expanded(

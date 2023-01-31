@@ -36,18 +36,19 @@ class _CardLocationState extends State<CardLocation> {
             child: CupertinoActionSheet(
               title: const Text('What do you want to do?'),
               actions: [
-                CupertinoActionSheetAction(
-                  onPressed: () {
-                    Modular.to.pop();
-                    Modular.to.pushNamed('./residents', arguments: {
-                      "residents_ids": widget.location.residents
-                          ?.map((e) => int.parse(e.split('/').last))
-                          .toList(),
-                      "location_name": widget.location.name,
-                    });
-                  },
-                  child: const Text('Show residents'),
-                ),
+                if (widget.location.residents?.isNotEmpty ?? false)
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      Modular.to.pop();
+                      Modular.to.pushNamed('./residents', arguments: {
+                        "residents_ids": widget.location.residents
+                            ?.map((e) => int.parse(e.split('/').last))
+                            .toList(),
+                        "location_name": widget.location.name,
+                      });
+                    },
+                    child: const Text('Show residents'),
+                  ),
                 CupertinoActionSheetAction(
                   onPressed: () async {
                     if (widget.onTap is Function) {

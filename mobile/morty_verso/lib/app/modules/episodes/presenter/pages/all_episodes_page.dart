@@ -50,15 +50,13 @@ class _AllEpisodesPageState extends State<AllEpisodesPage> {
       return ListView.builder(
         controller: _scrollController,
         itemBuilder: (_, index) {
-          Episode episode =
-              store.episodes.results?[index] ?? const Episode();
+          Episode episode = store.episodes.results?[index] ?? const Episode();
           bool isFavorite =
               store.favoriteEpisodesIdList.contains(episode.id.toString());
           return CardEpisode(
             episode: episode,
             onTap: () async {
-              String episodeId =
-                  store.episodes.results![index].id.toString();
+              String episodeId = store.episodes.results![index].id.toString();
               List<String> episodeList =
                   store.favoriteEpisodesIdList.map((e) => e).toList();
               (isFavorite)
@@ -83,19 +81,25 @@ class _AllEpisodesPageState extends State<AllEpisodesPage> {
     return BasePageWidget(
       title: 'Episodes',
       padding: EdgeInsets.zero,
-      trailing: GestureDetector(
-        child: Text(
-          'Favorites',
-          style: TextStyle(
-            color: CupertinoTheme.of(context).primaryColor,
-            fontSize: 17,
-            fontFamily: 'SF Pro',
+      trailing: Observer(builder: (context) {
+        return GestureDetector(
+          onTap: (store.favoriteEpisodesIdList.isNotEmpty)
+              ? () {
+                  Modular.to.pushNamed('/favorites/episodes');
+                }
+              : null,
+          child: Text(
+            'Favorites',
+            style: TextStyle(
+              color: (store.favoriteEpisodesIdList.isNotEmpty)
+                  ? CupertinoTheme.of(context).primaryColor
+                  : CupertinoColors.inactiveGray,
+              fontSize: 17,
+              fontFamily: 'SF Pro',
+            ),
           ),
-        ),
-        onTap: () {
-          Modular.to.pushNamed('/favorites/episodes');
-        },
-      ),
+        );
+      }),
       child: Column(
         children: [
           Expanded(

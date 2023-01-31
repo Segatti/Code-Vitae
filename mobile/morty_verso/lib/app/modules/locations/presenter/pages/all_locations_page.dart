@@ -57,8 +57,7 @@ class _AllLocationsPageState extends State<AllLocationsPage> {
           return CardLocation(
             location: location,
             onTap: () async {
-              String locationId =
-                  store.locations.results![index].id.toString();
+              String locationId = store.locations.results![index].id.toString();
               List<String> locationList =
                   store.favoriteLocationsIdList.map((e) => e).toList();
               (isFavorite)
@@ -83,19 +82,25 @@ class _AllLocationsPageState extends State<AllLocationsPage> {
     return BasePageWidget(
       title: 'Locations',
       padding: EdgeInsets.zero,
-      trailing: GestureDetector(
-        child: Text(
-          'Favorites',
-          style: TextStyle(
-            color: CupertinoTheme.of(context).primaryColor,
-            fontSize: 17,
-            fontFamily: 'SF Pro',
+      trailing: Observer(builder: (context) {
+        return GestureDetector(
+          onTap: (store.favoriteLocationsIdList.isNotEmpty)
+              ? () {
+                  Modular.to.pushNamed('/favorites/locations');
+                }
+              : null,
+          child: Text(
+            'Favorites',
+            style: TextStyle(
+              color: (store.favoriteLocationsIdList.isNotEmpty)
+                  ? CupertinoTheme.of(context).primaryColor
+                  : CupertinoColors.inactiveGray,
+              fontSize: 17,
+              fontFamily: 'SF Pro',
+            ),
           ),
-        ),
-        onTap: () {
-          Modular.to.pushNamed('/favorites/locations');
-        },
-      ),
+        );
+      }),
       child: Column(
         children: [
           Expanded(
