@@ -37,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return BasePageWidget(
       title: 'Settings',
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             decoration: BoxDecoration(
@@ -87,22 +88,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   )
                 ]),
             child: Column(
-              children: const [
-                TextWidget(
+              children: [
+                const TextWidget(
                   text: 'Credits',
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: PaddingPattern.small),
-                TextWidget(
+                const SizedBox(height: PaddingPattern.small),
+                const TextWidget(
                   text: 'Developer: Vittor Feitosa',
                   fontSize: 12,
                 ),
-                SizedBox(height: PaddingPattern.small),
-                TextWidget(
+                const SizedBox(height: PaddingPattern.small),
+                const TextWidget(
                   text: 'API: https://rickandmortyapi.com/',
                   fontSize: 12,
                 ),
+                const SizedBox(height: PaddingPattern.medium),
+                Text("Version: ${dotenv.env['VERSION']}"),
               ],
             ),
           ),
