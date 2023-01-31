@@ -29,9 +29,9 @@ class EpisodesModule extends Module {
 
     // Use cases
     Bind.singleton<IUCGetAllEpisodes>(
-        (i) => UCGetAllEpisodes(EpisodeRepository: i())),
+        (i) => UCGetAllEpisodes(episodeRepository: i())),
     Bind.singleton<IUCGetOneEpisode>(
-        (i) => UCGetOneEpisode(EpisodeRepository: i())),
+        (i) => UCGetOneEpisode(episodeRepository: i())),
     Bind.singleton<IUCGetFavoriteEpisodes>(
       (i) => UCGetFavoriteEpisodes(getValueLocalStorage: i()),
       export: true,
@@ -39,7 +39,7 @@ class EpisodesModule extends Module {
     Bind.singleton<IUCSetFavoriteEpisodes>(
         (i) => UCSetFavoriteEpisodes(setValueLocalStorage: i())),
     Bind.singleton<IUCGetMultipleEpisodes>(
-        (i) => UCGetMultipleEpisodes(EpisodeRepository: i()),
+        (i) => UCGetMultipleEpisodes(episodeRepository: i()),
         export: true),
 
     // Stores

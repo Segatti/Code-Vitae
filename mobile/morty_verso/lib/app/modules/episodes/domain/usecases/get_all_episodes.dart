@@ -10,10 +10,10 @@ abstract class IUCGetAllEpisodes {
 }
 
 class UCGetAllEpisodes implements IUCGetAllEpisodes {
-  final IEpisodeRepository EpisodeRepository;
+  final IEpisodeRepository episodeRepository;
 
   const UCGetAllEpisodes({
-    required this.EpisodeRepository,
+    required this.episodeRepository,
   });
 
   @override
@@ -21,7 +21,7 @@ class UCGetAllEpisodes implements IUCGetAllEpisodes {
     if (page < 0) {
       return Left(InvalidInput('UCGetAllEpisodes - InvalidInput'));
     } else {
-      final response = await EpisodeRepository.getAll(page);
+      final response = await episodeRepository.getAll(page);
       return response.fold(
         (error) => Left(error),
         (response) => (response.results?.isEmpty ?? true)

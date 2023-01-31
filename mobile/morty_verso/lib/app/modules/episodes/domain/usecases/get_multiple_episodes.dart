@@ -10,10 +10,10 @@ abstract class IUCGetMultipleEpisodes {
 }
 
 class UCGetMultipleEpisodes implements IUCGetMultipleEpisodes {
-  final IEpisodeRepository EpisodeRepository;
+  final IEpisodeRepository episodeRepository;
 
   const UCGetMultipleEpisodes({
-    required this.EpisodeRepository,
+    required this.episodeRepository,
   });
 
   @override
@@ -21,7 +21,7 @@ class UCGetMultipleEpisodes implements IUCGetMultipleEpisodes {
     if (ids.isEmpty) {
       return Left(InvalidInput('UCGetMultipleEpisodes - InvalidInput'));
     } else {
-      final response = await EpisodeRepository.getMultiple(ids);
+      final response = await episodeRepository.getMultiple(ids);
       return response.fold(
         (error) => Left(error),
         (response) => Right(response),

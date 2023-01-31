@@ -13,7 +13,7 @@ class NavigationModule extends Module {
   @override
   final List<Bind> binds = [
     Bind.factory((i) => ProfileStore(i(), i(), i())),
-    Bind.factory((i) => PdfPreviewStore(getMultipleCharacters: i())),
+    Bind.factory((i) => PdfPreviewStore(i(), i(), i())),
   ];
 
   @override
@@ -37,8 +37,13 @@ class NavigationModule extends Module {
         ),
       ],
     ),
-    ChildRoute('/pdf',
-        child: (_, args) =>
-            PdfPreviewPage(charactersIdList: args.data['characters_id']))
+    ChildRoute(
+      '/pdf',
+      child: (_, args) => PdfPreviewPage(
+        charactersIdList: args.data['characters_id'],
+        episodesIdList: args.data['locations_id'],
+        locationsIdList: args.data['episodes_id'],
+      ),
+    )
   ];
 }

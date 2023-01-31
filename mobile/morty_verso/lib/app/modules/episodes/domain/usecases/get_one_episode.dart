@@ -10,10 +10,10 @@ abstract class IUCGetOneEpisode {
 }
 
 class UCGetOneEpisode implements IUCGetOneEpisode {
-  final IEpisodeRepository EpisodeRepository;
+  final IEpisodeRepository episodeRepository;
 
   const UCGetOneEpisode({
-    required this.EpisodeRepository,
+    required this.episodeRepository,
   });
 
   @override
@@ -21,7 +21,7 @@ class UCGetOneEpisode implements IUCGetOneEpisode {
     if (id < 0) {
       return Left(InvalidInput('UCGetOneEpisode - InvalidInput'));
     } else {
-      final response = await EpisodeRepository.getOne(id);
+      final response = await episodeRepository.getOne(id);
       return response.fold(
         (error) => Left(error),
         (response) => Right(response),

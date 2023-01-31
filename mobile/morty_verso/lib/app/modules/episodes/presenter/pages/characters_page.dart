@@ -51,9 +51,9 @@ class _CharactersPageState extends State<CharactersPage> {
       );
     } else {
       return ListView.builder(
-        itemCount: store.Characters.length,
+        itemCount: store.characters.length,
         itemBuilder: (context, index) {
-          Character character = store.Characters[index];
+          Character character = store.characters[index];
           return CardCharacter(
             character: character,
             isFavorite: false,

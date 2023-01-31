@@ -54,6 +54,8 @@ class _ProfilePageState extends State<ProfilePage> {
         generatePDF: () {
           Modular.to.pushNamed('/pdf', arguments: {
             "characters_id": store.favoriteCharactersIdList,
+            "locations_id": store.favoriteLocationsIdList,
+            "episodes_id": store.favoriteEpisodesIdList,
           });
         },
       );

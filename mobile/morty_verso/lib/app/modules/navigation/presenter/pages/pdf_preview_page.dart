@@ -9,7 +9,14 @@ import '../stores/pdf_preview_store.dart';
 
 class PdfPreviewPage extends StatefulWidget {
   final List<String> charactersIdList;
-  const PdfPreviewPage({super.key, required this.charactersIdList});
+  final List<String> locationsIdList;
+  final List<String> episodesIdList;
+  const PdfPreviewPage({
+    super.key,
+    required this.charactersIdList,
+    required this.locationsIdList,
+    required this.episodesIdList,
+  });
 
   @override
   State<PdfPreviewPage> createState() => _PdfPreviewPageState();
@@ -26,7 +33,11 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
   }
 
   Future _init() async {
-    await store.startStore(widget.charactersIdList);
+    await store.startStore(
+      widget.charactersIdList,
+      widget.locationsIdList,
+      widget.episodesIdList,
+    );
   }
 
   Widget buildState(PageState pageState) {
@@ -55,10 +66,13 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
   @override
   Widget build(BuildContext context) {
     return BasePageWidget(
-        title: 'PDF Preview',
-        padding: EdgeInsets.zero,
-        child: Observer(builder: (context) {
+      title: 'PDF Preview',
+      padding: EdgeInsets.zero,
+      child: Observer(
+        builder: (context) {
           return buildState(store.pageState);
-        }));
+        },
+      ),
+    );
   }
 }

@@ -25,6 +25,38 @@ mixin _$PdfPreviewStore on _PdfPreviewStoreBase, Store {
     });
   }
 
+  late final _$locationsListAtom =
+      Atom(name: '_PdfPreviewStoreBase.locationsList', context: context);
+
+  @override
+  List<Location> get locationsList {
+    _$locationsListAtom.reportRead();
+    return super.locationsList;
+  }
+
+  @override
+  set locationsList(List<Location> value) {
+    _$locationsListAtom.reportWrite(value, super.locationsList, () {
+      super.locationsList = value;
+    });
+  }
+
+  late final _$episodesListAtom =
+      Atom(name: '_PdfPreviewStoreBase.episodesList', context: context);
+
+  @override
+  List<Episode> get episodesList {
+    _$episodesListAtom.reportRead();
+    return super.episodesList;
+  }
+
+  @override
+  set episodesList(List<Episode> value) {
+    _$episodesListAtom.reportWrite(value, super.episodesList, () {
+      super.episodesList = value;
+    });
+  }
+
   late final _$pageStateAtom =
       Atom(name: '_PdfPreviewStoreBase.pageState', context: context);
 
@@ -61,9 +93,10 @@ mixin _$PdfPreviewStore on _PdfPreviewStoreBase, Store {
       AsyncAction('_PdfPreviewStoreBase.startStore', context: context);
 
   @override
-  Future<void> startStore(List<String> charactersIdList) {
-    return _$startStoreAsyncAction
-        .run(() => super.startStore(charactersIdList));
+  Future<void> startStore(List<String> charactersIdList,
+      List<String> locationsIdList, List<String> episodesIdList) {
+    return _$startStoreAsyncAction.run(() =>
+        super.startStore(charactersIdList, locationsIdList, episodesIdList));
   }
 
   late final _$_PdfPreviewStoreBaseActionController =
@@ -75,6 +108,28 @@ mixin _$PdfPreviewStore on _PdfPreviewStoreBase, Store {
         name: '_PdfPreviewStoreBase.setCharactersList');
     try {
       return super.setCharactersList(value);
+    } finally {
+      _$_PdfPreviewStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setLocationsList(List<Location> value) {
+    final _$actionInfo = _$_PdfPreviewStoreBaseActionController.startAction(
+        name: '_PdfPreviewStoreBase.setLocationsList');
+    try {
+      return super.setLocationsList(value);
+    } finally {
+      _$_PdfPreviewStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setEpisodesList(List<Episode> value) {
+    final _$actionInfo = _$_PdfPreviewStoreBaseActionController.startAction(
+        name: '_PdfPreviewStoreBase.setEpisodesList');
+    try {
+      return super.setEpisodesList(value);
     } finally {
       _$_PdfPreviewStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -106,6 +161,8 @@ mixin _$PdfPreviewStore on _PdfPreviewStoreBase, Store {
   String toString() {
     return '''
 charactersList: ${charactersList},
+locationsList: ${locationsList},
+episodesList: ${episodesList},
 pageState: ${pageState},
 pdf: ${pdf}
     ''';

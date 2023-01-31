@@ -20,9 +20,9 @@ abstract class _CharactersStoreBase with Store {
   setPageState(PageState value) => pageState = value;
 
   @observable
-  List<Character> Characters = [];
+  List<Character> characters = [];
   @action
-  setCharacters(List<Character> value) => Characters = value;
+  setCharacters(List<Character> value) => characters = value;
 
   @action
   Future<void> startStore(List<int> ids) async {

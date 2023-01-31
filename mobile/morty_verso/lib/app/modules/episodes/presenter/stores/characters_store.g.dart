@@ -25,19 +25,19 @@ mixin _$CharactersStore on _CharactersStoreBase, Store {
     });
   }
 
-  late final _$CharactersAtom =
-      Atom(name: '_CharactersStoreBase.Characters', context: context);
+  late final _$charactersAtom =
+      Atom(name: '_CharactersStoreBase.characters', context: context);
 
   @override
-  List<Character> get Characters {
-    _$CharactersAtom.reportRead();
-    return super.Characters;
+  List<Character> get characters {
+    _$charactersAtom.reportRead();
+    return super.characters;
   }
 
   @override
-  set Characters(List<Character> value) {
-    _$CharactersAtom.reportWrite(value, super.Characters, () {
-      super.Characters = value;
+  set characters(List<Character> value) {
+    _$charactersAtom.reportWrite(value, super.characters, () {
+      super.characters = value;
     });
   }
 
@@ -86,7 +86,7 @@ mixin _$CharactersStore on _CharactersStoreBase, Store {
   String toString() {
     return '''
 pageState: ${pageState},
-Characters: ${Characters}
+characters: ${characters}
     ''';
   }
 }
