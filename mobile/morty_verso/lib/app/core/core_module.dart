@@ -35,7 +35,8 @@ class CoreModule extends Module {
     // Stores
     Bind.factory<BottomNavigationBarStore>((i) => BottomNavigationBarStore(),
         export: true),
-    Bind.factory<FavoriteStore>((i) => FavoriteStore(i(), i(), i(), i()),
+    Bind.factory<FavoriteStore>(
+        (i) => FavoriteStore(i(), i(), i(), i(), i(), i()),
         export: true),
 
     // Dependecy

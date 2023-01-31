@@ -5,6 +5,8 @@ import 'package:mobx/mobx.dart';
 
 import '../../../modules/characters/domain/usecases/get_favorite_characters.dart';
 import '../../../modules/characters/domain/usecases/get_multiple_characters.dart';
+import '../../../modules/episodes/domain/usecases/get_favorite_episodes.dart';
+import '../../../modules/episodes/domain/usecases/get_multiple_episodes.dart';
 import '../../../modules/locations/domain/usecases/get_favorite_locations.dart';
 import '../../../modules/locations/domain/usecases/get_multiple_locations.dart';
 import '../../domain/entities/favorite_item.dart';
@@ -18,12 +20,16 @@ abstract class _FavoriteStoreBase with Store {
   final IUCGetFavoriteLocations getFavoriteLocations;
   final IUCGetMultipleCharacters getMultipleCharacters;
   final IUCGetMultipleLocations getMultipleLocations;
+  final IUCGetFavoriteEpisodes getFavoriteEpisodes;
+  final IUCGetMultipleEpisodes getMultipleEpisodes;
 
   _FavoriteStoreBase(
     this.getFavoriteCharacters,
     this.getMultipleCharacters,
     this.getFavoriteLocations,
     this.getMultipleLocations,
+    this.getFavoriteEpisodes,
+    this.getMultipleEpisodes,
   );
 
   @observable
@@ -94,6 +100,35 @@ abstract class _FavoriteStoreBase with Store {
                           title: e.name ?? '',
                           info1: "Type: ${e.type ?? ''}",
                           info2: "Characters: ${e.residents?.length ?? '0'}",
+                          image: '',
+                          icon: const Icon(CupertinoIcons.placemark, size: 50),
+                        ))
+                    .toList());
+              },
+            );
+          },
+        );
+        break;
+      case 'episodes':
+        final response = await getFavoriteEpisodes();
+        await response.fold(
+          (l) async {
+            setPageState(ErrorState());
+          },
+          (r) async {
+            setfavoritesIdList(r);
+            final response =
+                await getMultipleEpisodes(r.map((e) => int.parse(e)).toList());
+            await response.fold(
+              (l) async {
+                setPageState(ErrorState());
+              },
+              (r) async {
+                setFavoriteItemsList(r
+                    .map((e) => FavoriteItem(
+                          title: "${e.episode} - ${e.name}",
+                          info1: "Air date: ${e.airDate ?? ''}",
+                          info2: "Characters: ${e.characters?.length ?? '0'}",
                           image: '',
                           icon: const Icon(CupertinoIcons.placemark, size: 50),
                         ))

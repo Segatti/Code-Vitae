@@ -1,4 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:morty_verso/app/modules/episodes/locations_module.dart';
 import 'package:morty_verso/app/modules/locations/locations_module.dart';
 
 import 'app_store.dart';
@@ -18,6 +19,7 @@ class AppModule extends Module {
     CoreModule(),
     CharactersModule(),
     LocationsModule(),
+    EpisodesModule(),
   ];
 
   @override
@@ -30,6 +32,10 @@ class AppModule extends Module {
     ModuleRoute(
       '/locations',
       module: LocationsModule(),
+    ),
+    ModuleRoute(
+      '/episodes',
+      module: EpisodesModule(),
     ),
     ChildRoute(
       '/favorites/:type',

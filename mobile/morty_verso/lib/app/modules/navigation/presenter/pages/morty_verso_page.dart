@@ -52,7 +52,7 @@ class MortyVersoPage extends StatelessWidget {
                     backgroundColor: theme.barBackgroundColor,
                     trailing: const CupertinoListTileChevron(),
                     onTap: () {
-                      Modular.to.pushNamed('/characters/');
+                      Modular.to.pushNamed('/episodes/');
                     },
                   ),
                 ],
