@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: library_private_types_in_public_api
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
 import 'package:morty_verso/app/core/domain/entities/page_states.dart';
