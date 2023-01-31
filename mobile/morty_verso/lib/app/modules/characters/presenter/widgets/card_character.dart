@@ -49,17 +49,18 @@ class _CardCharacterState extends State<CardCharacter> {
                   },
                   child: const Text('More details'),
                 ),
-                CupertinoActionSheetAction(
-                  onPressed: () async {
-                    if (widget.onTap is Function) {
-                      await widget.onTap!();
-                      Modular.to.pop();
-                    }
-                  },
-                  child: widget.isFavorite
-                      ? const Text('Unmark favorite')
-                      : const Text('Mark favorite'),
-                ),
+                if (!widget.location)
+                  CupertinoActionSheetAction(
+                    onPressed: () async {
+                      if (widget.onTap is Function) {
+                        await widget.onTap!();
+                        Modular.to.pop();
+                      }
+                    },
+                    child: widget.isFavorite
+                        ? const Text('Unmark favorite')
+                        : const Text('Mark favorite'),
+                  ),
               ],
               cancelButton: CupertinoActionSheetAction(
                 onPressed: () {

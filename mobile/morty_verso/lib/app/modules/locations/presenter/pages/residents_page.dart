@@ -69,19 +69,14 @@ class _ResidentsPageState extends State<ResidentsPage> {
   Widget build(BuildContext context) {
     theme = CupertinoTheme.of(context);
 
-    return Observer(builder: (context) {
-      return BasePageWidget(
-        title: widget.locationName,
-        padding: const EdgeInsets.symmetric(
-          horizontal: PaddingPattern.small,
-          vertical: PaddingPattern.big,
-        ),
-        child: Observer(
-          builder: (context) {
-            return buildState(store.pageState);
-          },
-        ),
-      );
-    });
+    return BasePageWidget(
+      title: widget.locationName,
+      padding: EdgeInsets.zero,
+      child: Observer(
+        builder: (context) {
+          return buildState(store.pageState);
+        },
+      ),
+    );
   }
 }

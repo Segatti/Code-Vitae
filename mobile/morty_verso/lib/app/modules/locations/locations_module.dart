@@ -58,9 +58,9 @@ class LocationsModule extends Module {
       transition: TransitionType.rightToLeft,
     ),
     ChildRoute(
-      '/residets',
+      '/residents',
       child: (_, args) => ResidentsPage(
-        ids: args.data['location_id'],
+        ids: args.data['residents_ids'],
         locationName: args.data['location_name'],
       ),
       transition: TransitionType.rightToLeft,

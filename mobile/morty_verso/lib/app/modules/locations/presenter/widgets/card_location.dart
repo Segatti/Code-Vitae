@@ -39,12 +39,12 @@ class _CardLocationState extends State<CardLocation> {
                 CupertinoActionSheetAction(
                   onPressed: () {
                     Modular.to.pop();
-                    Modular.to.pushNamed(
-                      './residents',
-                      arguments: {
-                        ""
-                      }
-                    );
+                    Modular.to.pushNamed('./residents', arguments: {
+                      "residents_ids": widget.location.residents
+                          ?.map((e) => int.parse(e.split('/').last))
+                          .toList(),
+                      "location_name": widget.location.name,
+                    });
                   },
                   child: const Text('Show residents'),
                 ),
