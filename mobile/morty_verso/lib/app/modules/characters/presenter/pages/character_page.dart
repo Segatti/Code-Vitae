@@ -5,6 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/build_state_widget.dart';
 
 import '../stores/character_store.dart';
 import '../widgets/text_info.dart';
@@ -32,105 +33,6 @@ class _CharacterPageState extends State<CharacterPage> {
     await store.startStore(widget.id);
   }
 
-  Widget buildState(PageState pageState) {
-    if (pageState is StartState) {
-      return const Center(
-        child: Text('Starting dimensional portal...'),
-      );
-    } else if (pageState is LoadingState) {
-      return const Center(
-        child: RepaintBoundary(child: CupertinoActivityIndicator()),
-      );
-    } else if (pageState is ErrorState) {
-      return const Center(
-        child: Text('Error: Problems with the dimensional portal'),
-      );
-    } else {
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (_, constrains) {
-                      return Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(13),
-                          child: SizedBox(
-                            height: constrains.maxWidth * 0.5,
-                            width: constrains.maxWidth * 0.5,
-                            child: CachedNetworkImage(
-                              imageUrl: store.character.image ?? '',
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              placeholder: (context, url) => const Center(
-                                  child: CupertinoActivityIndicator()),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(CupertinoIcons.xmark_circle),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: PaddingPattern.big),
-            TextInfo(
-              keyValue: 'Name',
-              value: store.character.name ?? '',
-              top: true,
-            ),
-            Container(
-              height: 1,
-              width: double.maxFinite,
-              color: theme.scaffoldBackgroundColor,
-            ),
-            TextInfo(keyValue: 'Species', value: store.character.species ?? ''),
-            Container(
-              height: 1,
-              width: double.maxFinite,
-              color: theme.scaffoldBackgroundColor,
-            ),
-            TextInfo(keyValue: 'Gender', value: store.character.gender ?? ''),
-            Container(
-              height: 1,
-              width: double.maxFinite,
-              color: theme.scaffoldBackgroundColor,
-            ),
-            TextInfo(keyValue: 'Status', value: store.character.status ?? ''),
-            Container(
-              height: 1,
-              width: double.maxFinite,
-              color: theme.scaffoldBackgroundColor,
-            ),
-            TextInfo(
-                keyValue: 'Origin', value: store.character.origin?.name ?? ''),
-            Container(
-              height: 1,
-              width: double.maxFinite,
-              color: theme.scaffoldBackgroundColor,
-            ),
-            TextInfo(
-              keyValue: 'Location',
-              value: store.character.location?.name ?? '',
-              bottom: true,
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     theme = CupertinoTheme.of(context);
@@ -144,7 +46,101 @@ class _CharacterPageState extends State<CharacterPage> {
         ),
         child: Observer(
           builder: (context) {
-            return buildState(store.pageState);
+            return BuildStateWidget(
+              pageState: store.pageState,
+              widgetSuccessState: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (_, constrains) {
+                              return Center(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(13),
+                                  child: SizedBox(
+                                    height: constrains.maxWidth * 0.5,
+                                    width: constrains.maxWidth * 0.5,
+                                    child: CachedNetworkImage(
+                                      imageUrl: store.character.image ?? '',
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                              child:
+                                                  CupertinoActivityIndicator()),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(
+                                              CupertinoIcons.xmark_circle),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: PaddingPattern.big),
+                    TextInfo(
+                      keyValue: 'Name',
+                      value: store.character.name ?? '',
+                      top: true,
+                    ),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: theme.scaffoldBackgroundColor,
+                    ),
+                    TextInfo(
+                        keyValue: 'Species',
+                        value: store.character.species ?? ''),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: theme.scaffoldBackgroundColor,
+                    ),
+                    TextInfo(
+                        keyValue: 'Gender',
+                        value: store.character.gender ?? ''),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: theme.scaffoldBackgroundColor,
+                    ),
+                    TextInfo(
+                        keyValue: 'Status',
+                        value: store.character.status ?? ''),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: theme.scaffoldBackgroundColor,
+                    ),
+                    TextInfo(
+                        keyValue: 'Origin',
+                        value: store.character.origin?.name ?? ''),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: theme.scaffoldBackgroundColor,
+                    ),
+                    TextInfo(
+                      keyValue: 'Location',
+                      value: store.character.location?.name ?? '',
+                      bottom: true,
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         ),
       );

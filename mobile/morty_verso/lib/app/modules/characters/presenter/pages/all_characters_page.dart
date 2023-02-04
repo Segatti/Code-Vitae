@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/build_state_widget.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/paginacao_widget.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
 import '../../domain/entities/character.dart';
@@ -31,48 +32,6 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
 
   Future _init() async {
     await store.startStore();
-  }
-
-  Widget buildState(PageState pageState) {
-    if (pageState is StartState) {
-      return const Center(
-        child: Text('Starting dimensional portal...'),
-      );
-    } else if (pageState is LoadingState) {
-      return const Center(
-        child: RepaintBoundary(child: CupertinoActivityIndicator()),
-      );
-    } else if (pageState is ErrorState) {
-      return const Center(
-        child: Text('Error: Problems with the dimensional portal'),
-      );
-    } else {
-      return ListView.builder(
-        controller: _scrollController,
-        itemBuilder: (_, index) {
-          Character character =
-              store.characters.results?[index] ?? const Character();
-          bool isFavorite =
-              store.favoriteCharactersIdList.contains(character.id.toString());
-          return CardCharacter(
-            character: character,
-            onTap: () async {
-              String characterId =
-                  store.characters.results![index].id.toString();
-              List<String> characterList =
-                  store.favoriteCharactersIdList.map((e) => e).toList();
-              (isFavorite)
-                  ? characterList.remove(characterId)
-                  : characterList.add(characterId);
-              await store.setFavoriteCharactersIdList(characterList);
-              await store.saveFavoriteCharactersLocalStorage();
-            },
-            isFavorite: isFavorite,
-          );
-        },
-        itemCount: store.characters.results?.length ?? 0,
-      );
-    }
   }
 
   @override
@@ -108,80 +67,76 @@ class _AllCharactersPageState extends State<AllCharactersPage> {
             child: Observer(
               builder: (context) => Column(
                 children: [
-                  Expanded(child: buildState(store.pageState)),
-                  Container(
-                    color: CupertinoColors.black.withOpacity(.25),
-                    height: 1,
-                    width: double.maxFinite,
+                  Expanded(
+                    child: BuildStateWidget(
+                      pageState: store.pageState,
+                      widgetSuccessState: ListView.builder(
+                        controller: _scrollController,
+                        itemBuilder: (_, index) {
+                          Character character =
+                              store.characters.results?[index] ??
+                                  const Character();
+                          bool isFavorite = store.favoriteCharactersIdList
+                              .contains(character.id.toString());
+                          return CardCharacter(
+                            character: character,
+                            onTap: () async {
+                              String characterId = store
+                                  .characters.results![index].id
+                                  .toString();
+                              List<String> characterList = store
+                                  .favoriteCharactersIdList
+                                  .map((e) => e)
+                                  .toList();
+                              (isFavorite)
+                                  ? characterList.remove(characterId)
+                                  : characterList.add(characterId);
+                              await store
+                                  .setFavoriteCharactersIdList(characterList);
+                              await store.saveFavoriteCharactersLocalStorage();
+                            },
+                            isFavorite: isFavorite,
+                          );
+                        },
+                        itemCount: store.characters.results?.length ?? 0,
+                      ),
+                    ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: PaddingPattern.small,
-                      vertical: PaddingPattern.medium,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CupertinoButton(
-                          color: CupertinoColors.activeBlue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: PaddingPattern.big,
-                          ),
-                          onPressed: (store.prevButton)
-                              ? () async {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                  store.setCurrentPage(store.currentPage - 1);
-                                  store.setPageState(LoadingState());
-                                  await store.getCharacters();
-                                  if (store.pageState is LoadingState) {
-                                    store.setPageState(SuccessState());
-                                  }
-                                }
-                              : null,
-                          child: Row(
-                            children: const [
-                              Icon(CupertinoIcons.chevron_left),
-                              Text('Prev'),
-                            ],
-                          ),
-                        ),
-                        (store.characters.info?.pages != null)
-                            ? Text(
-                                "${store.currentPage}/${store.characters.info?.pages}")
-                            : const Text('???'),
-                        CupertinoButton(
-                          color: CupertinoColors.activeBlue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: PaddingPattern.big,
-                          ),
-                          onPressed: (store.nextButton)
-                              ? () async {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                  store.setCurrentPage(store.currentPage + 1);
-                                  store.setPageState(LoadingState());
-                                  await store.getCharacters();
-                                  if (store.pageState is LoadingState) {
-                                    store.setPageState(SuccessState());
-                                  }
-                                }
-                              : null,
-                          child: Row(
-                            children: const [
-                              Text('Next'),
-                              Icon(CupertinoIcons.chevron_right),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  PaginacaoWidget(
+                    scrollController: _scrollController,
+                    numberPage: store.characters.info?.pages != null
+                        ? "${store.currentPage}/${store.characters.info?.pages}"
+                        : "???",
+                    onTapPrevButton: (store.prevButton)
+                        ? () async {
+                            _scrollController.animateTo(
+                              _scrollController.position.minScrollExtent,
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.fastOutSlowIn,
+                            );
+                            store.setCurrentPage(store.currentPage - 1);
+                            store.setPageState(LoadingState());
+                            await store.getCharacters();
+                            if (store.pageState is LoadingState) {
+                              store.setPageState(SuccessState());
+                            }
+                          }
+                        : null,
+                    onTapNextButton: (store.nextButton)
+                        ? () async {
+                            _scrollController.animateTo(
+                              _scrollController.position.minScrollExtent,
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.fastOutSlowIn,
+                            );
+                            store.setCurrentPage(store.currentPage + 1);
+                            store.setPageState(LoadingState());
+                            await store.getCharacters();
+                            if (store.pageState is LoadingState) {
+                              store.setPageState(SuccessState());
+                            }
+                          }
+                        : null,
                   ),
                 ],
               ),
