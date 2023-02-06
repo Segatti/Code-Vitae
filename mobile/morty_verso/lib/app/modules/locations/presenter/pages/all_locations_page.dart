@@ -5,6 +5,8 @@ import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
+import '../../../../core/presenter/widgets/view/build_state_widget.dart';
+import '../../../../core/presenter/widgets/view/paginacao_widget.dart';
 import '../../domain/entities/location.dart';
 import '../stores/all_locations_store.dart';
 import '../widgets/card_location.dart';
@@ -31,47 +33,6 @@ class _AllLocationsPageState extends State<AllLocationsPage> {
 
   Future _init() async {
     await store.startStore();
-  }
-
-  Widget buildState(PageState pageState) {
-    if (pageState is StartState) {
-      return const Center(
-        child: Text('Starting dimensional portal...'),
-      );
-    } else if (pageState is LoadingState) {
-      return const Center(
-        child: RepaintBoundary(child: CupertinoActivityIndicator()),
-      );
-    } else if (pageState is ErrorState) {
-      return const Center(
-        child: Text('Error: Problems with the dimensional portal'),
-      );
-    } else {
-      return ListView.builder(
-        controller: _scrollController,
-        itemBuilder: (_, index) {
-          Location location =
-              store.locations.results?[index] ?? const Location();
-          bool isFavorite =
-              store.favoriteLocationsIdList.contains(location.id.toString());
-          return CardLocation(
-            location: location,
-            onTap: () async {
-              String locationId = store.locations.results![index].id.toString();
-              List<String> locationList =
-                  store.favoriteLocationsIdList.map((e) => e).toList();
-              (isFavorite)
-                  ? locationList.remove(locationId)
-                  : locationList.add(locationId);
-              await store.setFavoriteLocationsIdList(locationList);
-              await store.saveFavoriteLocationsLocalStorage();
-            },
-            isFavorite: isFavorite,
-          );
-        },
-        itemCount: store.locations.results?.length ?? 0,
-      );
-    }
   }
 
   @override
@@ -107,80 +68,74 @@ class _AllLocationsPageState extends State<AllLocationsPage> {
             child: Observer(
               builder: (context) => Column(
                 children: [
-                  Expanded(child: buildState(store.pageState)),
-                  Container(
-                    color: CupertinoColors.black.withOpacity(.25),
-                    height: 1,
-                    width: double.maxFinite,
+                  Expanded(
+                    child: BuildStateWidget(
+                      pageState: store.pageState,
+                      widgetSuccessState: ListView.builder(
+                        controller: _scrollController,
+                        itemBuilder: (_, index) {
+                          Location location = store.locations.results?[index] ??
+                              const Location();
+                          bool isFavorite = store.favoriteLocationsIdList
+                              .contains(location.id.toString());
+                          return CardLocation(
+                            location: location,
+                            onTap: () async {
+                              String locationId =
+                                  store.locations.results![index].id.toString();
+                              List<String> locationList = store
+                                  .favoriteLocationsIdList
+                                  .map((e) => e)
+                                  .toList();
+                              (isFavorite)
+                                  ? locationList.remove(locationId)
+                                  : locationList.add(locationId);
+                              await store
+                                  .setFavoriteLocationsIdList(locationList);
+                              await store.saveFavoriteLocationsLocalStorage();
+                            },
+                            isFavorite: isFavorite,
+                          );
+                        },
+                        itemCount: store.locations.results?.length ?? 0,
+                      ),
+                    ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: PaddingPattern.small,
-                      vertical: PaddingPattern.medium,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CupertinoButton(
-                          color: CupertinoColors.activeBlue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: PaddingPattern.big,
-                          ),
-                          onPressed: (store.prevButton)
-                              ? () async {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                  store.setCurrentPage(store.currentPage - 1);
-                                  store.setPageState(LoadingState());
-                                  await store.getLocations();
-                                  if (store.pageState is LoadingState) {
-                                    store.setPageState(SuccessState());
-                                  }
-                                }
-                              : null,
-                          child: Row(
-                            children: const [
-                              Icon(CupertinoIcons.chevron_left),
-                              Text('Prev'),
-                            ],
-                          ),
-                        ),
-                        (store.locations.info?.pages != null)
-                            ? Text(
-                                "${store.currentPage}/${store.locations.info?.pages}")
-                            : const Text('???'),
-                        CupertinoButton(
-                          color: CupertinoColors.activeBlue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: PaddingPattern.big,
-                          ),
-                          onPressed: (store.nextButton)
-                              ? () async {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                  store.setCurrentPage(store.currentPage + 1);
-                                  store.setPageState(LoadingState());
-                                  await store.getLocations();
-                                  if (store.pageState is LoadingState) {
-                                    store.setPageState(SuccessState());
-                                  }
-                                }
-                              : null,
-                          child: Row(
-                            children: const [
-                              Text('Next'),
-                              Icon(CupertinoIcons.chevron_right),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  PaginacaoWidget(
+                    scrollController: _scrollController,
+                    numberPage: store.locations.info?.pages != null
+                        ? "${store.currentPage}/${store.locations.info?.pages}"
+                        : "???",
+                    onTapPrevButton: (store.prevButton)
+                        ? () async {
+                            _scrollController.animateTo(
+                              _scrollController.position.minScrollExtent,
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.fastOutSlowIn,
+                            );
+                            store.setCurrentPage(store.currentPage - 1);
+                            store.setPageState(LoadingState());
+                            await store.getLocations();
+                            if (store.pageState is LoadingState) {
+                              store.setPageState(SuccessState());
+                            }
+                          }
+                        : null,
+                    onTapNextButton: (store.nextButton)
+                        ? () async {
+                            _scrollController.animateTo(
+                              _scrollController.position.minScrollExtent,
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.fastOutSlowIn,
+                            );
+                            store.setCurrentPage(store.currentPage + 1);
+                            store.setPageState(LoadingState());
+                            await store.getLocations();
+                            if (store.pageState is LoadingState) {
+                              store.setPageState(SuccessState());
+                            }
+                          }
+                        : null,
                   ),
                 ],
               ),

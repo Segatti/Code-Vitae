@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/build_state_widget.dart';
 import 'package:printing/printing.dart';
 
 import '../../../../core/domain/entities/page_states.dart';
@@ -40,29 +41,6 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
     );
   }
 
-  Widget buildState(PageState pageState) {
-    if (pageState is StartState) {
-      return const Center(
-        child: Text('Starting dimensional portal...'),
-      );
-    } else if (pageState is LoadingState) {
-      return const Center(
-        child: RepaintBoundary(child: CupertinoActivityIndicator()),
-      );
-    } else if (pageState is ErrorState) {
-      return const Center(
-        child: Text('Error: Problems with the dimensional portal'),
-      );
-    } else {
-      // TODO: Buscar uma forma de otimizar o PDF (Olhar o Highlight Oversized Images)
-      return PdfPreview(
-        build: (format) async => store.pdf,
-        canDebug: false,
-        canChangeOrientation: false,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BasePageWidget(
@@ -70,7 +48,14 @@ class _PdfPreviewPageState extends State<PdfPreviewPage> {
       padding: EdgeInsets.zero,
       child: Observer(
         builder: (context) {
-          return buildState(store.pageState);
+          return BuildStateWidget(
+            pageState: store.pageState,
+            widgetSuccessState: PdfPreview(
+              build: (format) async => store.pdf,
+              canDebug: false,
+              canChangeOrientation: false,
+            ),
+          );
         },
       ),
     );

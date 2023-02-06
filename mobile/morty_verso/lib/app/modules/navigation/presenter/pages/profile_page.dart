@@ -7,6 +7,7 @@ import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 import 'package:morty_verso/app/core/domain/patterns/padding_pattern.dart';
 import 'package:morty_verso/app/core/presenter/widgets/general/text_widget.dart';
 import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dart';
+import 'package:morty_verso/app/core/presenter/widgets/view/build_state_widget.dart';
 import '../stores/profile_store.dart';
 import '../widgets/profile_favorite.dart';
 
@@ -31,35 +32,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future _init() async {
     await store.startStore();
-  }
-
-  Widget buildState(PageState pageState) {
-    if (pageState is StartState) {
-      return const Center(
-        child: Text('Starting dimensional portal...'),
-      );
-    } else if (pageState is LoadingState) {
-      return const Center(
-        child: RepaintBoundary(child: CupertinoActivityIndicator()),
-      );
-    } else if (pageState is ErrorState) {
-      return const Center(
-        child: Text('Error: Problems with the dimensional portal'),
-      );
-    } else {
-      return ProfileFavorite(
-        characters: store.favoriteCharactersIdList,
-        locations: store.favoriteLocationsIdList,
-        episodes: store.favoriteEpisodesIdList,
-        generatePDF: () {
-          Modular.to.pushNamed('/pdf', arguments: {
-            "characters_id": store.favoriteCharactersIdList,
-            "locations_id": store.favoriteLocationsIdList,
-            "episodes_id": store.favoriteEpisodesIdList,
-          });
-        },
-      );
-    }
   }
 
   @override
@@ -105,7 +77,21 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: PaddingPattern.medium),
           Observer(builder: (context) {
-            return buildState(store.pageState);
+            return BuildStateWidget(
+              pageState: store.pageState,
+              widgetSuccessState: ProfileFavorite(
+                characters: store.favoriteCharactersIdList,
+                locations: store.favoriteLocationsIdList,
+                episodes: store.favoriteEpisodesIdList,
+                generatePDF: () {
+                  Modular.to.pushNamed('/pdf', arguments: {
+                    "characters_id": store.favoriteCharactersIdList,
+                    "locations_id": store.favoriteLocationsIdList,
+                    "episodes_id": store.favoriteEpisodesIdList,
+                  });
+                },
+              ),
+            );
           }),
         ],
       ),

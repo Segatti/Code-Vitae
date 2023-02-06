@@ -6,6 +6,7 @@ import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dar
 import 'package:morty_verso/app/modules/characters/domain/entities/character.dart';
 import 'package:morty_verso/app/modules/characters/presenter/widgets/card_character.dart';
 
+import '../../../../core/presenter/widgets/view/build_state_widget.dart';
 import '../stores/residents_store.dart';
 
 class ResidentsPage extends StatefulWidget {
@@ -36,34 +37,6 @@ class _ResidentsPageState extends State<ResidentsPage> {
     await store.startStore(widget.ids);
   }
 
-  Widget buildState(PageState pageState) {
-    if (pageState is StartState) {
-      return const Center(
-        child: Text('Starting dimensional portal...'),
-      );
-    } else if (pageState is LoadingState) {
-      return const Center(
-        child: RepaintBoundary(child: CupertinoActivityIndicator()),
-      );
-    } else if (pageState is ErrorState) {
-      return const Center(
-        child: Text('Error: Problems with the dimensional portal'),
-      );
-    } else {
-      return ListView.builder(
-        itemCount: store.residents.length,
-        itemBuilder: (context, index) {
-          Character character = store.residents[index];
-          return CardCharacter(
-            character: character,
-            isFavorite: false,
-            location: true,
-          );
-        },
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     theme = CupertinoTheme.of(context);
@@ -73,7 +46,20 @@ class _ResidentsPageState extends State<ResidentsPage> {
       padding: EdgeInsets.zero,
       child: Observer(
         builder: (context) {
-          return buildState(store.pageState);
+          return BuildStateWidget(
+            pageState: store.pageState,
+            widgetSuccessState: ListView.builder(
+              itemCount: store.residents.length,
+              itemBuilder: (context, index) {
+                Character character = store.residents[index];
+                return CardCharacter(
+                  character: character,
+                  isFavorite: false,
+                  location: true,
+                );
+              },
+            ),
+          );
         },
       ),
     );
