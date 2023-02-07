@@ -17,6 +17,7 @@ class AppModule extends Module {
   @override
   List<Module> imports = [
     CoreModule(),
+    // TODO: Verificar porque esses módulos não estão funcionando sem importar antes
     CharactersModule(),
     LocationsModule(),
     EpisodesModule(),
