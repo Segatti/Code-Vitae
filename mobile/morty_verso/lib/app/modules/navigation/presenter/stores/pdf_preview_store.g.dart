@@ -73,22 +73,6 @@ mixin _$PdfPreviewStore on _PdfPreviewStoreBase, Store {
     });
   }
 
-  late final _$pdfAtom =
-      Atom(name: '_PdfPreviewStoreBase.pdf', context: context);
-
-  @override
-  Uint8List get pdf {
-    _$pdfAtom.reportRead();
-    return super.pdf;
-  }
-
-  @override
-  set pdf(Uint8List value) {
-    _$pdfAtom.reportWrite(value, super.pdf, () {
-      super.pdf = value;
-    });
-  }
-
   late final _$startStoreAsyncAction =
       AsyncAction('_PdfPreviewStoreBase.startStore', context: context);
 
@@ -147,24 +131,12 @@ mixin _$PdfPreviewStore on _PdfPreviewStoreBase, Store {
   }
 
   @override
-  dynamic setPdf(Uint8List value) {
-    final _$actionInfo = _$_PdfPreviewStoreBaseActionController.startAction(
-        name: '_PdfPreviewStoreBase.setPdf');
-    try {
-      return super.setPdf(value);
-    } finally {
-      _$_PdfPreviewStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 charactersList: ${charactersList},
 locationsList: ${locationsList},
 episodesList: ${episodesList},
-pageState: ${pageState},
-pdf: ${pdf}
+pageState: ${pageState}
     ''';
   }
 }

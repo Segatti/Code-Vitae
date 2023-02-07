@@ -164,9 +164,13 @@ class _ProfileFavoriteState extends State<ProfileFavorite> {
                       'Share favorites',
                       style: TextStyle(
                         fontSize: FontPattern.small,
+                        color: CupertinoColors.white,
                       ),
                     ),
-                    const Icon(CupertinoIcons.share),
+                    const Icon(
+                      CupertinoIcons.share,
+                      color: CupertinoColors.white,
+                    ),
                   ],
                 ),
               ),
