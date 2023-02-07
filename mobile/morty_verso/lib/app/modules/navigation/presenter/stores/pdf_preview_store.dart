@@ -148,7 +148,7 @@ abstract class _PdfPreviewStoreBase with Store {
 
         CardEpisodePdf cardEpisodePdf = CardEpisodePdf(episode, netImage);
 
-        widgetLocationList.add(cardEpisodePdf.create());
+        widgetEpisodeList.add(cardEpisodePdf.create());
       }
 
       doc.addPage(
@@ -188,7 +188,7 @@ abstract class _PdfPreviewStoreBase with Store {
                         pw.Column(
                           children: [
                             pw.Center(
-                              child: pw.Text('Charactes'),
+                              child: pw.Text('Characters'),
                             ),
                             pw.SizedBox(height: PaddingPattern.small),
                             for (var widget in widgetCharacterList) widget,

@@ -41,8 +41,8 @@ class NavigationModule extends Module {
       '/pdf',
       child: (_, args) => PdfPreviewPage(
         charactersIdList: args.data['characters_id'],
-        episodesIdList: args.data['locations_id'],
-        locationsIdList: args.data['episodes_id'],
+        locationsIdList: args.data['locations_id'],
+        episodesIdList: args.data['episodes_id'],
       ),
     )
   ];
