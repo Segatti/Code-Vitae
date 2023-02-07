@@ -7,23 +7,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:modular_test/modular_test.dart';
+import 'package:morty_verso/app/app_module.dart';
 import 'package:morty_verso/app/modules/characters/characters_module.dart';
 import 'package:morty_verso/app/modules/characters/domain/entities/character.dart';
 import 'package:morty_verso/app/modules/characters/domain/entities/characters.dart';
 import 'package:morty_verso/app/modules/characters/domain/usecases/get_all_characters.dart';
 import 'package:morty_verso/app/modules/characters/domain/usecases/get_one_character.dart';
+import 'package:morty_verso/app/modules/characters/external/rick_morty_api/rick_morty_datasource.dart';
+import 'package:morty_verso/app/modules/characters/infra/repositories/character_repository.dart';
 
 import '../../utils/json_response.dart';
 import 'characters_module_test.mocks.dart';
 
-@GenerateMocks([Dio])
+@GenerateMocks([Dio, CharacterRepository, RickMortyDatasource])
 void main() {
   final dio = MockDio();
 
-  initModule(
-    CharactersModule(),
+  initModules(
+    [
+      AppModule(),
+      CharactersModule(),
+    ],
     replaceBinds: [
-      Bind.singleton((i) => dio),
+      Bind.singleton<Dio>((i) => dio),
     ],
   );
 
