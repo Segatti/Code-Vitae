@@ -5,7 +5,6 @@ import 'package:morty_verso/app/core/presenter/widgets/view/base_page_widget.dar
 import 'package:morty_verso/app/core/presenter/widgets/view/build_state_widget.dart';
 import 'package:printing/printing.dart';
 
-import '../../../../core/domain/entities/page_states.dart';
 import '../stores/pdf_preview_store.dart';
 
 class PdfPreviewPage extends StatefulWidget {

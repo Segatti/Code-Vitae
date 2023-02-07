@@ -43,7 +43,7 @@ class _PaginacaoWidgetState extends State<PaginacaoWidget> {
                   horizontal: PaddingPattern.big,
                 ),
                 onPressed: widget.onTapPrevButton != null
-                    ? widget.onTapPrevButton!()
+                    ? () => widget.onTapPrevButton!()
                     : null,
                 child: Row(
                   children: const [
@@ -59,7 +59,7 @@ class _PaginacaoWidgetState extends State<PaginacaoWidget> {
                   horizontal: PaddingPattern.big,
                 ),
                 onPressed: widget.onTapNextButton != null
-                    ? widget.onTapNextButton!()
+                    ? () => widget.onTapNextButton!()
                     : null,
                 child: Row(
                   children: const [

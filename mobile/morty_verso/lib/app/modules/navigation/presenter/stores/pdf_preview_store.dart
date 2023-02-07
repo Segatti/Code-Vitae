@@ -2,19 +2,21 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
-import 'package:morty_verso/app/core/domain/entities/page_states.dart';
-import 'package:morty_verso/app/modules/characters/domain/entities/character.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../../../core/domain/entities/page_states.dart';
 import '../../../../core/domain/patterns/padding_pattern.dart';
-import '../../../../core/utils/strings.dart';
+import '../../../characters/domain/entities/character.dart';
 import '../../../characters/domain/usecases/get_multiple_characters.dart';
 import '../../../episodes/domain/entities/episode.dart';
 import '../../../episodes/domain/usecases/get_multiple_episodes.dart';
 import '../../../locations/domain/entities/location.dart';
 import '../../../locations/domain/usecases/get_multiple_locations.dart';
+import '../widgets/pdf/card_character_pdf.dart';
+import '../widgets/pdf/card_episode_pdf.dart';
+import '../widgets/pdf/card_location_pdf.dart';
 
 part 'pdf_preview_store.g.dart';
 
@@ -117,67 +119,10 @@ abstract class _PdfPreviewStoreBase with Store {
 
       for (var character in charactersList) {
         final netImage = await networkImage(character.image!);
+        CardCharacterPdf cardCharacterPdf =
+            CardCharacterPdf(character, netImage);
 
-        widgetCharacterList.add(pw.Partition(
-            child: pw.Container(
-          decoration: pw.BoxDecoration(
-            color: PdfColor.fromHex('#000'),
-            border: pw.Border.all(
-              color: const PdfColor(0, 0, 0, 0),
-            ),
-            borderRadius: pw.BorderRadius.circular(12),
-          ),
-          child: pw.LayoutBuilder(
-            builder: (_, constrains) {
-              return pw.Row(
-                children: [
-                  pw.Container(
-                    padding: const pw.EdgeInsets.all(PaddingPattern.small),
-                    width: (constrains?.maxWidth ?? 0) * 0.3,
-                    height: (constrains?.maxWidth ?? 0) * 0.3,
-                    child: pw.Image(netImage),
-                  ),
-                  pw.Expanded(
-                    child: pw.Container(
-                      height: (constrains?.maxWidth ?? 0) * 0.3,
-                      padding: const pw.EdgeInsets.all(
-                        PaddingPattern.small,
-                      ),
-                      decoration: pw.BoxDecoration(
-                        color: PdfColor.fromHex('#FFF'),
-                        borderRadius: const pw.BorderRadius.only(
-                          bottomRight: pw.Radius.circular(12),
-                          topRight: pw.Radius.circular(12),
-                        ),
-                      ),
-                      child: pw.Column(
-                        mainAxisSize: pw.MainAxisSize.max,
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text(validText("${character.name}"),
-                              maxLines: 2,
-                              style: pw.TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: pw.FontWeight.bold)),
-                          pw.Text(
-                            validText(
-                                "Origin: ${character.origin?.name ?? ''}"),
-                            maxLines: 2,
-                          ),
-                          pw.Text(
-                            validText("Species: ${character.species ?? ''}"),
-                            maxLines: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        )));
+        widgetCharacterList.add(cardCharacterPdf.create());
       }
 
       List<pw.Widget> widgetLocationList = [];
@@ -189,66 +134,9 @@ abstract class _PdfPreviewStoreBase with Store {
               .asUint8List(),
         );
 
-        widgetLocationList.add(pw.Partition(
-            child: pw.Container(
-          decoration: pw.BoxDecoration(
-            color: PdfColor.fromHex('#000'),
-            border: pw.Border.all(
-              color: const PdfColor(0, 0, 0, 0),
-            ),
-            borderRadius: pw.BorderRadius.circular(12),
-          ),
-          child: pw.LayoutBuilder(
-            builder: (_, constrains) {
-              return pw.Row(
-                children: [
-                  pw.Container(
-                    padding: const pw.EdgeInsets.all(PaddingPattern.small),
-                    width: (constrains?.maxWidth ?? 0) * 0.2,
-                    height: (constrains?.maxWidth ?? 0) * 0.2,
-                    child: pw.Image(netImage),
-                  ),
-                  pw.Expanded(
-                    child: pw.Container(
-                      height: (constrains?.maxWidth ?? 0) * 0.3,
-                      padding: const pw.EdgeInsets.all(
-                        PaddingPattern.small,
-                      ),
-                      decoration: pw.BoxDecoration(
-                        color: PdfColor.fromHex('#FFF'),
-                        borderRadius: const pw.BorderRadius.only(
-                          bottomRight: pw.Radius.circular(12),
-                          topRight: pw.Radius.circular(12),
-                        ),
-                      ),
-                      child: pw.Column(
-                        mainAxisSize: pw.MainAxisSize.max,
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text(validText("${location.name}"),
-                              maxLines: 2,
-                              style: pw.TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: pw.FontWeight.bold)),
-                          pw.Text(
-                            validText("Type: ${location.type ?? ''}"),
-                            maxLines: 2,
-                          ),
-                          pw.Text(
-                            validText(
-                                "Residents: ${location.residents?.length ?? '0'}"),
-                            maxLines: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        )));
+        CardLocationPdf cardLocationPdf = CardLocationPdf(location, netImage);
+
+        widgetLocationList.add(cardLocationPdf.create());
       }
 
       List<pw.Widget> widgetEpisodeList = [];
@@ -258,67 +146,9 @@ abstract class _PdfPreviewStoreBase with Store {
           (await rootBundle.load('assets/icons/play.png')).buffer.asUint8List(),
         );
 
-        widgetEpisodeList.add(pw.Partition(
-            child: pw.Container(
-          decoration: pw.BoxDecoration(
-            color: PdfColor.fromHex('#000'),
-            border: pw.Border.all(
-              color: const PdfColor(0, 0, 0, 0),
-            ),
-            borderRadius: pw.BorderRadius.circular(12),
-          ),
-          child: pw.LayoutBuilder(
-            builder: (_, constrains) {
-              return pw.Row(
-                children: [
-                  pw.Container(
-                    padding: const pw.EdgeInsets.all(PaddingPattern.small),
-                    width: (constrains?.maxWidth ?? 0) * 0.2,
-                    height: (constrains?.maxWidth ?? 0) * 0.2,
-                    child: pw.Image(netImage),
-                  ),
-                  pw.Expanded(
-                    child: pw.Container(
-                      height: (constrains?.maxWidth ?? 0) * 0.3,
-                      padding: const pw.EdgeInsets.all(
-                        PaddingPattern.small,
-                      ),
-                      decoration: pw.BoxDecoration(
-                        color: PdfColor.fromHex('#FFF'),
-                        borderRadius: const pw.BorderRadius.only(
-                          bottomRight: pw.Radius.circular(12),
-                          topRight: pw.Radius.circular(12),
-                        ),
-                      ),
-                      child: pw.Column(
-                        mainAxisSize: pw.MainAxisSize.max,
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text(
-                              validText("${episode.episode} - ${episode.name}"),
-                              maxLines: 2,
-                              style: pw.TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: pw.FontWeight.bold)),
-                          pw.Text(
-                            validText("Air date: ${episode.airDate ?? ''}"),
-                            maxLines: 2,
-                          ),
-                          pw.Text(
-                            validText(
-                                "Characters: ${episode.characters?.length ?? '0'}"),
-                            maxLines: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        )));
+        CardEpisodePdf cardEpisodePdf = CardEpisodePdf(episode, netImage);
+
+        widgetLocationList.add(cardEpisodePdf.create());
       }
 
       doc.addPage(
