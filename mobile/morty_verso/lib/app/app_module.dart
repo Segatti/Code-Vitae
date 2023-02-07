@@ -18,6 +18,7 @@ class AppModule extends Module {
   List<Module> imports = [
     CoreModule(),
     // TODO: Verificar porque esses módulos não estão funcionando sem importar antes
+    // FIX: Esse problema esta afetando os teste!
     CharactersModule(),
     LocationsModule(),
     EpisodesModule(),
