@@ -817,7 +817,7 @@ ServerSignature Off
     # Force compression for mangled `Accept-Encoding` request headers
     #
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
-    # https://calendar.perfplanet.com/2010/pushing-beyond-gzipping/
+    # https://calendar.perfLocation.com/2010/pushing-beyond-gzipping/
 
     <IfModule mod_setenvif.c>
         <IfModule mod_headers.c>

@@ -1,4 +1,4 @@
-package com.example.morty_verso
+package com.vittor.morty_verso
 
 import io.flutter.embedding.android.FlutterActivity
 
