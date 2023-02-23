@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                                 if (timer?.isActive ?? false) timer?.cancel();
                                 timer = Timer(const Duration(milliseconds: 500),
                                     () {
-                                  print('entrando');
+                                  Modular.to.navigate("/main/");
                                 });
                               },
                               onFocus: (isFocused) {
