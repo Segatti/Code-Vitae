@@ -41,6 +41,8 @@ dependencies:
   dpad_container: ^2.0.3
   dotted_border: ^2.0.0+3
   cached_network_image: ^3.2.3
+  intl: ^0.18.0
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

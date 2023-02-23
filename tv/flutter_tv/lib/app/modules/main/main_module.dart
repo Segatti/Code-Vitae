@@ -6,10 +6,14 @@ import 'presenter/stores/main_store.dart';
 class MainModule extends Module {
   @override
   List<Bind> get binds => [
-    Bind.factory<MainStore>((i) => MainStore()),
-  ];
+        Bind.factory<MainStore>((i) => MainStore()),
+      ];
   @override
   List<ModularRoute> get routes => [
-        ChildRoute('/', child: (context, args) => const MainPage()),
+        ChildRoute(
+          '/',
+          child: (context, args) => const MainPage(),
+          transition: TransitionType.rightToLeft,
+        ),
       ];
 }
