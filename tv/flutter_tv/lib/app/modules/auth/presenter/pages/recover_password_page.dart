@@ -5,34 +5,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../stores/login_store.dart';
+import '../stores/recover_password_store.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RecoverPasswordPage extends StatefulWidget {
+  const RecoverPasswordPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RecoverPasswordPage> createState() => _RecoverPasswordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  late LoginStore store;
+class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
+  late RecoverPasswordStore store;
   FocusNode focusEmail = FocusNode();
-  FocusNode focusSenha = FocusNode();
-  FocusNode focusEntrar = FocusNode();
-  FocusNode focusCadastrar = FocusNode();
-  FocusNode focusRecuperarSenha = FocusNode();
+  FocusNode focusEnviar = FocusNode();
+  FocusNode focusVoltar = FocusNode();
 
   Color corAzulClaro = const Color(0xFFD1F7FF);
   Color corLaranjaPrimaria = const Color(0xFFE1724F);
 
   TextEditingController emailController = TextEditingController(text: "");
-  TextEditingController senhaController = TextEditingController(text: "");
 
   Timer? timer;
 
   @override
   void initState() {
-    store = Modular.get<LoginStore>();
+    store = Modular.get<RecoverPasswordStore>();
     _init();
     super.initState();
   }
@@ -45,14 +42,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _init() async {
     await store.startStore();
-  }
-
-  String generateTextSenha(int lenghtSenha) {
-    String senhaOculta = "";
-    for (int i = 0; i < lenghtSenha; i++) {
-      senhaOculta += "*";
-    }
-    return senhaOculta;
   }
 
   @override
@@ -97,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Conta Flutter TV',
+                      'Recuperar senha',
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Montserrat',
@@ -172,82 +161,16 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Expanded(
                           child: Observer(builder: (context) {
-                            return Container(
-                              height: 44,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: store.focusSenha
-                                      ? corLaranjaPrimaria
-                                      : corAzulClaro,
-                                  width: 3,
-                                ),
-                              ),
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    store.setClickSenha(true);
-                                    focusSenha.requestFocus();
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusSenha(isFocused);
-                                },
-                                child: store.clickSenha
-                                    ? TextField(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: senhaController,
-                                        focusNode: focusSenha,
-                                        onEditingComplete: () {
-                                          store.setClickSenha(false);
-                                          store.setSenha(senhaController.text);
-                                        },
-                                        obscureText: true,
-                                      )
-                                    : Text(
-                                        store.senha.isEmpty
-                                            ? "Senha"
-                                            : generateTextSenha(
-                                                store.senha.length,
-                                              ),
-                                        style: TextStyle(
-                                          color: store.focusSenha
-                                              ? Colors.amber
-                                              : Colors.white,
-                                        ),
-                                      ),
-                              ),
-                            );
-                          }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Observer(builder: (context) {
                             return DpadContainer(
                               onClick: () {
                                 if (timer?.isActive ?? false) timer?.cancel();
                                 timer = Timer(const Duration(milliseconds: 500),
                                     () {
-                                  print('entrando');
+                                  print('cadastrar');
                                 });
                               },
                               onFocus: (isFocused) {
-                                store.setFocusEntrar(isFocused);
+                                store.setFocusEnviar(isFocused);
                               },
                               child: ElevatedButton(
                                 style: ButtonStyle(
@@ -266,9 +189,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {},
                                 child: Text(
-                                  "Entrar",
+                                  "Enviar",
                                   style: TextStyle(
-                                    color: store.focusEntrar
+                                    color: store.focusEnviar
                                         ? Colors.amber
                                         : Colors.white,
                                   ),
@@ -285,11 +208,11 @@ class _LoginPageState extends State<LoginPage> {
                                 if (timer?.isActive ?? false) timer?.cancel();
                                 timer = Timer(const Duration(milliseconds: 500),
                                     () {
-                                  Modular.to.pushNamed('./sign');
+                                  Modular.to.pop();
                                 });
                               },
                               onFocus: (isFocused) {
-                                store.setFocusCriarConta(isFocused);
+                                store.setFocusVoltar(isFocused);
                               },
                               child: ElevatedButton(
                                 style: ButtonStyle(
@@ -308,41 +231,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {},
                                 child: Text(
-                                  "Cadastrar",
+                                  "Voltar",
                                   style: TextStyle(
-                                    color: store.focusCriarConta
-                                        ? Colors.amber
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Observer(builder: (context) {
-                            return Container(
-                              alignment: Alignment.center,
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    Modular.to.pushNamed('./recover');
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusRecuperarSenha(isFocused);
-                                },
-                                child: Text(
-                                  "Recuperar senha",
-                                  style: TextStyle(
-                                    color: store.focusRecuperarSenha
+                                    color: store.focusVoltar
                                         ? Colors.amber
                                         : Colors.white,
                                   ),

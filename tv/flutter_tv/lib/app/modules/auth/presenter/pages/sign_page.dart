@@ -5,34 +5,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../stores/login_store.dart';
+import '../stores/sign_store.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignPage extends StatefulWidget {
+  const SignPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignPage> createState() => _SignPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  late LoginStore store;
+class _SignPageState extends State<SignPage> {
+  late SignStore store;
   FocusNode focusEmail = FocusNode();
   FocusNode focusSenha = FocusNode();
-  FocusNode focusEntrar = FocusNode();
+  FocusNode focusConfirmarSenha = FocusNode();
   FocusNode focusCadastrar = FocusNode();
-  FocusNode focusRecuperarSenha = FocusNode();
+  FocusNode focusVoltar = FocusNode();
 
   Color corAzulClaro = const Color(0xFFD1F7FF);
   Color corLaranjaPrimaria = const Color(0xFFE1724F);
 
   TextEditingController emailController = TextEditingController(text: "");
   TextEditingController senhaController = TextEditingController(text: "");
+  TextEditingController confirmarSenhaController =
+      TextEditingController(text: "");
 
   Timer? timer;
 
   @override
   void initState() {
-    store = Modular.get<LoginStore>();
+    store = Modular.get<SignStore>();
     _init();
     super.initState();
   }
@@ -97,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Conta Flutter TV',
+                      'Criar Conta',
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Montserrat',
@@ -233,7 +235,74 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Observer(builder: (context) {
+                            return Container(
+                              height: 44,
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: store.focusConfirmarSenha
+                                      ? corLaranjaPrimaria
+                                      : corAzulClaro,
+                                  width: 3,
+                                ),
+                              ),
+                              child: DpadContainer(
+                                onClick: () {
+                                  if (timer?.isActive ?? false) timer?.cancel();
+                                  timer = Timer(
+                                      const Duration(milliseconds: 500), () {
+                                    store.setClickConfirmarSenha(true);
+                                    focusConfirmarSenha.requestFocus();
+                                  });
+                                },
+                                onFocus: (isFocused) {
+                                  store.setFocusConfirmarSenha(isFocused);
+                                },
+                                child: store.clickConfirmarSenha
+                                    ? TextField(
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: confirmarSenhaController,
+                                        focusNode: focusConfirmarSenha,
+                                        onEditingComplete: () {
+                                          store.setClickConfirmarSenha(false);
+                                          store.setConfirmarSenha(
+                                              confirmarSenhaController.text);
+                                        },
+                                        obscureText: true,
+                                      )
+                                    : Text(
+                                        store.confirmarSenha.isEmpty
+                                            ? "Confirmar senha"
+                                            : generateTextSenha(
+                                                store.confirmarSenha.length,
+                                              ),
+                                        style: TextStyle(
+                                          color: store.focusConfirmarSenha
+                                              ? Colors.amber
+                                              : Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
@@ -243,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
                                 if (timer?.isActive ?? false) timer?.cancel();
                                 timer = Timer(const Duration(milliseconds: 500),
                                     () {
-                                  print('entrando');
+                                  print('cadastrar');
                                 });
                               },
                               onFocus: (isFocused) {
@@ -266,7 +335,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {},
                                 child: Text(
-                                  "Entrar",
+                                  "Cadastrar",
                                   style: TextStyle(
                                     color: store.focusEntrar
                                         ? Colors.amber
@@ -285,7 +354,7 @@ class _LoginPageState extends State<LoginPage> {
                                 if (timer?.isActive ?? false) timer?.cancel();
                                 timer = Timer(const Duration(milliseconds: 500),
                                     () {
-                                  Modular.to.pushNamed('./sign');
+                                  Modular.to.pop();
                                 });
                               },
                               onFocus: (isFocused) {
@@ -308,41 +377,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {},
                                 child: Text(
-                                  "Cadastrar",
+                                  "Voltar",
                                   style: TextStyle(
                                     color: store.focusCriarConta
-                                        ? Colors.amber
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Observer(builder: (context) {
-                            return Container(
-                              alignment: Alignment.center,
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    Modular.to.pushNamed('./recover');
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusRecuperarSenha(isFocused);
-                                },
-                                child: Text(
-                                  "Recuperar senha",
-                                  style: TextStyle(
-                                    color: store.focusRecuperarSenha
                                         ? Colors.amber
                                         : Colors.white,
                                   ),

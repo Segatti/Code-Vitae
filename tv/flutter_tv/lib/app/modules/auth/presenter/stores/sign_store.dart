@@ -1,17 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
-part 'login_store.g.dart';
+part 'sign_store.g.dart';
 
-class LoginStore = _LoginStoreBase with _$LoginStore;
+class SignStore = _SignStoreBase with _$SignStore;
 
-abstract class _LoginStoreBase with Store {
-  @observable
-  bool userIsLogged = false;
-  @action
-  setUserIsLogged(bool value) => userIsLogged = value;
-
+abstract class _SignStoreBase with Store {
   @observable
   bool focusEmail = false;
   @action
@@ -44,6 +38,22 @@ abstract class _LoginStoreBase with Store {
   bool clickSenha = false;
   @action
   setClickSenha(bool value) => clickSenha = value;
+
+  @observable
+  bool focusConfirmarSenha = false;
+  @action
+  setFocusConfirmarSenha(bool value) => focusConfirmarSenha = value;
+
+  @observable
+  String confirmarSenha = "";
+  @action
+  setConfirmarSenha(String value) => confirmarSenha = value;
+  
+
+  @observable
+  bool clickConfirmarSenha = false;
+  @action
+  setClickConfirmarSenha(bool value) => clickConfirmarSenha = value;
   
 
   @observable
@@ -55,15 +65,7 @@ abstract class _LoginStoreBase with Store {
   bool focusCriarConta = false;
   @action
   setFocusCriarConta(bool value) => focusCriarConta = value;
-
-  @observable
-  bool focusRecuperarSenha = false;
-  @action
-  setFocusRecuperarSenha(bool value) => focusRecuperarSenha = value;
-
+  
   @action
   Future<void> startStore() async {}
-
-  @action
-  Future<void> login() async {}
 }

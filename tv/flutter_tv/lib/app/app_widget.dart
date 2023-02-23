@@ -7,20 +7,15 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shortcuts(
-      shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
-      },
-      child: MaterialApp.router(
-        title: "Flutter TV",
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Montserrat',
-        ),
-        debugShowCheckedModeBanner: false,
-        routeInformationParser: Modular.routeInformationParser,
-        routerDelegate: Modular.routerDelegate,
+    return MaterialApp.router(
+      title: "Flutter TV",
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Montserrat',
       ),
+      debugShowCheckedModeBanner: false,
+      routeInformationParser: Modular.routeInformationParser,
+      routerDelegate: Modular.routerDelegate,
     );
   }
 }

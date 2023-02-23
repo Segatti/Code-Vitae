@@ -41,6 +41,38 @@ mixin _$LoginStore on _LoginStoreBase, Store {
     });
   }
 
+  late final _$emailAtom =
+      Atom(name: '_LoginStoreBase.email', context: context);
+
+  @override
+  String get email {
+    _$emailAtom.reportRead();
+    return super.email;
+  }
+
+  @override
+  set email(String value) {
+    _$emailAtom.reportWrite(value, super.email, () {
+      super.email = value;
+    });
+  }
+
+  late final _$clickEmailAtom =
+      Atom(name: '_LoginStoreBase.clickEmail', context: context);
+
+  @override
+  bool get clickEmail {
+    _$clickEmailAtom.reportRead();
+    return super.clickEmail;
+  }
+
+  @override
+  set clickEmail(bool value) {
+    _$clickEmailAtom.reportWrite(value, super.clickEmail, () {
+      super.clickEmail = value;
+    });
+  }
+
   late final _$focusSenhaAtom =
       Atom(name: '_LoginStoreBase.focusSenha', context: context);
 
@@ -54,6 +86,38 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   set focusSenha(bool value) {
     _$focusSenhaAtom.reportWrite(value, super.focusSenha, () {
       super.focusSenha = value;
+    });
+  }
+
+  late final _$senhaAtom =
+      Atom(name: '_LoginStoreBase.senha', context: context);
+
+  @override
+  String get senha {
+    _$senhaAtom.reportRead();
+    return super.senha;
+  }
+
+  @override
+  set senha(String value) {
+    _$senhaAtom.reportWrite(value, super.senha, () {
+      super.senha = value;
+    });
+  }
+
+  late final _$clickSenhaAtom =
+      Atom(name: '_LoginStoreBase.clickSenha', context: context);
+
+  @override
+  bool get clickSenha {
+    _$clickSenhaAtom.reportRead();
+    return super.clickSenha;
+  }
+
+  @override
+  set clickSenha(bool value) {
+    _$clickSenhaAtom.reportWrite(value, super.clickSenha, () {
+      super.clickSenha = value;
     });
   }
 
@@ -147,11 +211,55 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
+  dynamic setEmail(String value) {
+    final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
+        name: '_LoginStoreBase.setEmail');
+    try {
+      return super.setEmail(value);
+    } finally {
+      _$_LoginStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setClickEmail(bool value) {
+    final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
+        name: '_LoginStoreBase.setClickEmail');
+    try {
+      return super.setClickEmail(value);
+    } finally {
+      _$_LoginStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setFocusSenha(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setFocusSenha');
     try {
       return super.setFocusSenha(value);
+    } finally {
+      _$_LoginStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setSenha(String value) {
+    final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
+        name: '_LoginStoreBase.setSenha');
+    try {
+      return super.setSenha(value);
+    } finally {
+      _$_LoginStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setClickSenha(bool value) {
+    final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
+        name: '_LoginStoreBase.setClickSenha');
+    try {
+      return super.setClickSenha(value);
     } finally {
       _$_LoginStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -195,7 +303,11 @@ mixin _$LoginStore on _LoginStoreBase, Store {
     return '''
 userIsLogged: ${userIsLogged},
 focusEmail: ${focusEmail},
+email: ${email},
+clickEmail: ${clickEmail},
 focusSenha: ${focusSenha},
+senha: ${senha},
+clickSenha: ${clickSenha},
 focusEntrar: ${focusEntrar},
 focusCriarConta: ${focusCriarConta},
 focusRecuperarSenha: ${focusRecuperarSenha}
