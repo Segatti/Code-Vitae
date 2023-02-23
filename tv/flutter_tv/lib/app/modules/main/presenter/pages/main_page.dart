@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_tv/app/modules/main/presenter/stores/main_store.dart';
-import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
