@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     {
       "name": "Aladin",
       "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.elo7.com.br%2Fbig-poster-filme-aladdin-2019-lo01-tamanho-90x60-cm%2Fdp%2FF6DFED&psig=AOvVaw1XhxFqfHeNJFkQg3B_3sTv&ust=1677246042946000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOjglMfiq_0CFQAAAAAdAAAAABAD",
+          "https://img.elo7.com.br/product/zoom/2747CBC/big-poster-filme-aladdin-2019-lo01-tamanho-90x60-cm-nerd.jpg",
       "premiere_date": "2018-12-10",
       "classification": "L",
       "director": "Desconhecido",
@@ -42,7 +42,7 @@ class _MainPageState extends State<MainPage> {
     {
       "name": "Capitã Marvel",
       "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.elo7.com.br%2Fbig-poster-filme-capita-marvel-tamanho-90x60-cm%2Fdp%2FDF057F&psig=AOvVaw1XhxFqfHeNJFkQg3B_3sTv&ust=1677246042946000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOjglMfiq_0CFQAAAAAdAAAAABAS",
+          "https://img.elo7.com.br/product/zoom/23646C7/big-poster-filme-capita-marvel-tamanho-90x60-cm-presente-geek.jpg",
       "premiere_date": "2020-12-18",
       "classification": "16",
       "director": "Disney",
@@ -52,7 +52,7 @@ class _MainPageState extends State<MainPage> {
     {
       "name": "Batman",
       "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fmarriedgames.com.br%2Fnoticias%2Fthe-batman%2F&psig=AOvVaw1XhxFqfHeNJFkQg3B_3sTv&ust=1677246042946000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOjglMfiq_0CFQAAAAAdAAAAABAm",
+          "https://img.elo7.com.br/product/zoom/3FBA809/big-poster-filme-batman-2022-90x60-cm-lo002-poster-batman.jpg",
       "premiere_date": "2022-12-18",
       "classification": "18",
       "director": "DC",
@@ -62,7 +62,7 @@ class _MainPageState extends State<MainPage> {
     {
       "name": "Senhor dos aneis",
       "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.showmetech.com.br%2Fposteres-de-filmes-alta-resolucao%2F&psig=AOvVaw1XhxFqfHeNJFkQg3B_3sTv&ust=1677246042946000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOjglMfiq_0CFQAAAAAdAAAAABA6",
+          "https://img.elo7.com.br/product/zoom/269274A/poster-o-senhor-dos-aneis-a-sociedade-do-anel-lo04-90x60-cm-presente-geek.jpg",
       "premiere_date": "2002-12-18",
       "classification": "14",
       "director": "Desconhecido",
@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
     {
       "name": "Bacurau",
       "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fmedium.com%2Frevista-bravo%2Fo-cartaz-de-cinema-como-obra-de-arte-231b2d395043&psig=AOvVaw1XhxFqfHeNJFkQg3B_3sTv&ust=1677246042946000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOjglMfiq_0CFQAAAAAdAAAAABBO",
+          "https://br.web.img3.acsta.net/r_1920_1080/pictures/19/07/23/23/24/0636548.jpg",
       "premiere_date": "2018-12-18",
       "classification": "18",
       "director": "Desconhecido",
@@ -82,53 +82,13 @@ class _MainPageState extends State<MainPage> {
     {
       "name": "Uncharted",
       "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Ftecmasters.com.br%2Ffilme-uncharted-poster-imagens-ineditas%2F&psig=AOvVaw1XhxFqfHeNJFkQg3B_3sTv&ust=1677246042946000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOjglMfiq_0CFQAAAAAdAAAAABBs",
+          "https://img.elo7.com.br/product/zoom/3FBBEF2/big-poster-filme-uncharted-2022-90x60-cm-lo002-poster-de-filme.jpg",
       "premiere_date": "2022-12-18",
       "classification": "14",
       "director": "Tom",
       "additional": [],
       "type_movie": ["favorite", "action"],
-    },
-    {
-      "name": "Avatar",
-      "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.elo7.com.br%2Fbig-poster-filme-avatar-o-caminho-da-agua-90x60-cm-lo002%2Fdp%2F1B052A2&psig=AOvVaw0--48RAFHTI5FKBM2din9h&ust=1677246015159000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCPDc87riq_0CFQAAAAAdAAAAABAD",
-      "premiere_date": "2009-12-18",
-      "classification": "14",
-      "director": "James Cameron",
-      "additional": ["Oscar"],
-      "type_movie": ["favorite", "action"],
-    },
-    {
-      "name": "Avatar",
-      "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.elo7.com.br%2Fbig-poster-filme-avatar-o-caminho-da-agua-90x60-cm-lo002%2Fdp%2F1B052A2&psig=AOvVaw0--48RAFHTI5FKBM2din9h&ust=1677246015159000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCPDc87riq_0CFQAAAAAdAAAAABAD",
-      "premiere_date": "2009-12-18",
-      "classification": "14",
-      "director": "James Cameron",
-      "additional": ["Oscar"],
-      "type_movie": ["favorite", "action"],
-    },
-    {
-      "name": "Avatar",
-      "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.elo7.com.br%2Fbig-poster-filme-avatar-o-caminho-da-agua-90x60-cm-lo002%2Fdp%2F1B052A2&psig=AOvVaw0--48RAFHTI5FKBM2din9h&ust=1677246015159000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCPDc87riq_0CFQAAAAAdAAAAABAD",
-      "premiere_date": "2009-12-18",
-      "classification": "14",
-      "director": "James Cameron",
-      "additional": ["Oscar"],
-      "type_movie": ["favorite", "action"],
-    },
-    {
-      "name": "Avatar",
-      "poster":
-          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.elo7.com.br%2Fbig-poster-filme-avatar-o-caminho-da-agua-90x60-cm-lo002%2Fdp%2F1B052A2&psig=AOvVaw0--48RAFHTI5FKBM2din9h&ust=1677246015159000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCPDc87riq_0CFQAAAAAdAAAAABAD",
-      "premiere_date": "2009-12-18",
-      "classification": "14",
-      "director": "James Cameron",
-      "additional": ["Oscar"],
-      "type_movie": ["favorite", "action"],
-    },
+    }
   ];
 
   @override
