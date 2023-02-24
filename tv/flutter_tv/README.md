@@ -1,16 +1,11 @@
-# flutter_tv
+# Flutter TV
 
-A new Flutter project.
+Este mini projeto é um desafio proposto por uma empresa para avaliar as capacidades dos candidatos de utilizar o Flutter para desenvolvimento de uma app para Android TV. O documento com as intruções pode ser encontrado na pasta docs.
 
-## Getting Started
+## O que foi utilizado?
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ - Figma (Design)
+ - Flutter Modular
+ - MobX
+ - Cache (Imagens da Web)
+ - DPad Container (Trabalha melhor com o uso do controle)

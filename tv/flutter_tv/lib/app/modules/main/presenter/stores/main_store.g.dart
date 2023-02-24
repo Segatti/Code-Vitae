@@ -25,30 +25,6 @@ mixin _$MainStore on _MainStoreBase, Store {
     });
   }
 
-  late final _$listFocusAtom =
-      Atom(name: '_MainStoreBase.listFocus', context: context);
-
-  @override
-  String? get listFocus {
-    _$listFocusAtom.reportRead();
-    return super.listFocus;
-  }
-
-  @override
-  set listFocus(String? value) {
-    _$listFocusAtom.reportWrite(value, super.listFocus, () {
-      super.listFocus = value;
-    });
-  }
-
-  late final _$startStoreAsyncAction =
-      AsyncAction('_MainStoreBase.startStore', context: context);
-
-  @override
-  Future<void> startStore() {
-    return _$startStoreAsyncAction.run(() => super.startStore());
-  }
-
   late final _$_MainStoreBaseActionController =
       ActionController(name: '_MainStoreBase', context: context);
 
@@ -64,21 +40,9 @@ mixin _$MainStore on _MainStoreBase, Store {
   }
 
   @override
-  dynamic setListFocus(String value) {
-    final _$actionInfo = _$_MainStoreBaseActionController.startAction(
-        name: '_MainStoreBase.setListFocus');
-    try {
-      return super.setListFocus(value);
-    } finally {
-      _$_MainStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
-itemFocus: ${itemFocus},
-listFocus: ${listFocus}
+itemFocus: ${itemFocus}
     ''';
   }
 }

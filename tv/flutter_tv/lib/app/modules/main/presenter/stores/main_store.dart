@@ -12,14 +12,4 @@ abstract class _MainStoreBase with Store {
   int? itemFocus;
   @action
   setItemFocus(int value) => itemFocus = value;
-
-  @observable
-  String? listFocus;
-  @action
-  setListFocus(String value) => listFocus = value;
-  
-  
-
-  @action
-  Future<void> startStore() async {}
 }

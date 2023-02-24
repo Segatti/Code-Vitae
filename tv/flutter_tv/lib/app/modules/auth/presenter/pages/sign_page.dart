@@ -4,8 +4,12 @@ import 'package:dpad_container/dpad_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_tv/app/modules/auth/presenter/widgets/buttons/button_primary.dart';
+import 'package:flutter_tv/app/modules/auth/presenter/widgets/buttons/button_secundary.dart';
+import 'package:flutter_tv/app/modules/auth/presenter/widgets/input_form.dart';
 
 import '../stores/sign_store.dart';
+import '../widgets/logo_presenter.dart';
 
 class SignPage extends StatefulWidget {
   const SignPage({super.key});
@@ -65,30 +69,7 @@ class _SignPageState extends State<SignPage> {
         color: const Color(0xFF01012B),
         child: Row(
           children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 64),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 90,
-                      width: 90,
-                      child: Image.asset('assets/icons/logo.png'),
-                    ),
-                    const SizedBox(height: 32),
-                    const Text(
-                      "A melhor plataforma de streaming para sua família.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            const Expanded(child: LogoPresenter()),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(32),
@@ -102,7 +83,6 @@ class _SignPageState extends State<SignPage> {
                       'Criar Conta',
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: 'Montserrat',
                         fontSize: 32,
                       ),
                     ),
@@ -110,62 +90,12 @@ class _SignPageState extends State<SignPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return Container(
-                              height: 44,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: store.focusEmail
-                                      ? corLaranjaPrimaria
-                                      : corAzulClaro,
-                                  width: 3,
-                                ),
-                              ),
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    store.setClickEmail(true);
-                                    focusEmail.requestFocus();
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusEmail(isFocused);
-                                },
-                                child: store.clickEmail
-                                    ? TextField(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: emailController,
-                                        focusNode: focusEmail,
-                                        onEditingComplete: () {
-                                          store.setClickEmail(false);
-                                          store.setEmail(emailController.text);
-                                        },
-                                      )
-                                    : Text(
-                                        store.email.isEmpty
-                                            ? "Email"
-                                            : store.email,
-                                        style: TextStyle(
-                                          color: store.focusEmail
-                                              ? Colors.amber
-                                              : Colors.white,
-                                        ),
-                                      ),
-                              ),
-                            );
-                          }),
+                          child: InputForm(
+                            saveValue: (String value) {
+                              store.setEmail(value);
+                            },
+                            title: "Email",
+                          ),
                         ),
                       ],
                     ),
@@ -173,65 +103,13 @@ class _SignPageState extends State<SignPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return Container(
-                              height: 44,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: store.focusSenha
-                                      ? corLaranjaPrimaria
-                                      : corAzulClaro,
-                                  width: 3,
-                                ),
-                              ),
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    store.setClickSenha(true);
-                                    focusSenha.requestFocus();
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusSenha(isFocused);
-                                },
-                                child: store.clickSenha
-                                    ? TextField(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: senhaController,
-                                        focusNode: focusSenha,
-                                        onEditingComplete: () {
-                                          store.setClickSenha(false);
-                                          store.setSenha(senhaController.text);
-                                        },
-                                        obscureText: true,
-                                      )
-                                    : Text(
-                                        store.senha.isEmpty
-                                            ? "Senha"
-                                            : generateTextSenha(
-                                                store.senha.length,
-                                              ),
-                                        style: TextStyle(
-                                          color: store.focusSenha
-                                              ? Colors.amber
-                                              : Colors.white,
-                                        ),
-                                      ),
-                              ),
-                            );
-                          }),
+                          child: InputForm(
+                            obscureText: true,
+                            saveValue: (String value) {
+                              store.setSenha(value);
+                            },
+                            title: "Senha",
+                          ),
                         ),
                       ],
                     ),
@@ -239,66 +117,13 @@ class _SignPageState extends State<SignPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return Container(
-                              height: 44,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: store.focusConfirmarSenha
-                                      ? corLaranjaPrimaria
-                                      : corAzulClaro,
-                                  width: 3,
-                                ),
-                              ),
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    store.setClickConfirmarSenha(true);
-                                    focusConfirmarSenha.requestFocus();
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusConfirmarSenha(isFocused);
-                                },
-                                child: store.clickConfirmarSenha
-                                    ? TextField(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: confirmarSenhaController,
-                                        focusNode: focusConfirmarSenha,
-                                        onEditingComplete: () {
-                                          store.setClickConfirmarSenha(false);
-                                          store.setConfirmarSenha(
-                                              confirmarSenhaController.text);
-                                        },
-                                        obscureText: true,
-                                      )
-                                    : Text(
-                                        store.confirmarSenha.isEmpty
-                                            ? "Confirmar senha"
-                                            : generateTextSenha(
-                                                store.confirmarSenha.length,
-                                              ),
-                                        style: TextStyle(
-                                          color: store.focusConfirmarSenha
-                                              ? Colors.amber
-                                              : Colors.white,
-                                        ),
-                                      ),
-                              ),
-                            );
-                          }),
+                          child: InputForm(
+                            obscureText: true,
+                            saveValue: (String value) {
+                              store.setConfirmarSenha(value);
+                            },
+                            title: "Confirmar senha",
+                          ),
                         ),
                       ],
                     ),
@@ -306,87 +131,21 @@ class _SignPageState extends State<SignPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return DpadContainer(
-                              onClick: () {
-                                if (timer?.isActive ?? false) timer?.cancel();
-                                timer = Timer(const Duration(milliseconds: 500),
-                                    () {
-                                  print('cadastrar');
-                                });
-                              },
-                              onFocus: (isFocused) {
-                                store.setFocusEntrar(isFocused);
-                              },
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      corLaranjaPrimaria),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      side: BorderSide(
-                                        width: 3,
-                                        color: corLaranjaPrimaria,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "Cadastrar",
-                                  style: TextStyle(
-                                    color: store.focusEntrar
-                                        ? Colors.amber
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
+                          child: ButtonPrimary(
+                            title: "Cadastrar",
+                            onClick: () {
+                              Modular.to.pop();
+                            },
+                          ),
                         ),
                         const SizedBox(width: 32),
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return DpadContainer(
-                              onClick: () {
-                                if (timer?.isActive ?? false) timer?.cancel();
-                                timer = Timer(const Duration(milliseconds: 500),
-                                    () {
-                                  Modular.to.pop();
-                                });
-                              },
-                              onFocus: (isFocused) {
-                                store.setFocusCriarConta(isFocused);
-                              },
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      side: BorderSide(
-                                        width: 3,
-                                        color: corLaranjaPrimaria,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "Voltar",
-                                  style: TextStyle(
-                                    color: store.focusCriarConta
-                                        ? Colors.amber
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
+                          child: ButtonSecundary(
+                            title: "Voltar",
+                            onClick: () {
+                              Modular.to.pop();
+                            },
+                          ),
                         ),
                       ],
                     ),

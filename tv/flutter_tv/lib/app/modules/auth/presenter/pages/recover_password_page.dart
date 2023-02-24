@@ -4,8 +4,12 @@ import 'package:dpad_container/dpad_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_tv/app/modules/auth/presenter/widgets/buttons/button_secundary.dart';
 
 import '../stores/recover_password_store.dart';
+import '../widgets/buttons/button_primary.dart';
+import '../widgets/input_form.dart';
+import '../widgets/logo_presenter.dart';
 
 class RecoverPasswordPage extends StatefulWidget {
   const RecoverPasswordPage({super.key});
@@ -52,30 +56,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
         color: const Color(0xFF01012B),
         child: Row(
           children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 64),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 90,
-                      width: 90,
-                      child: Image.asset('assets/icons/logo.png'),
-                    ),
-                    const SizedBox(height: 32),
-                    const Text(
-                      "A melhor plataforma de streaming para sua família.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            const Expanded(child: LogoPresenter()),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(32),
@@ -89,7 +70,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                       'Recuperar senha',
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: 'Montserrat',
                         fontSize: 32,
                       ),
                     ),
@@ -97,62 +77,12 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return Container(
-                              height: 44,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: store.focusEmail
-                                      ? corLaranjaPrimaria
-                                      : corAzulClaro,
-                                  width: 3,
-                                ),
-                              ),
-                              child: DpadContainer(
-                                onClick: () {
-                                  if (timer?.isActive ?? false) timer?.cancel();
-                                  timer = Timer(
-                                      const Duration(milliseconds: 500), () {
-                                    store.setClickEmail(true);
-                                    focusEmail.requestFocus();
-                                  });
-                                },
-                                onFocus: (isFocused) {
-                                  store.setFocusEmail(isFocused);
-                                },
-                                child: store.clickEmail
-                                    ? TextField(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: emailController,
-                                        focusNode: focusEmail,
-                                        onEditingComplete: () {
-                                          store.setClickEmail(false);
-                                          store.setEmail(emailController.text);
-                                        },
-                                      )
-                                    : Text(
-                                        store.email.isEmpty
-                                            ? "Email"
-                                            : store.email,
-                                        style: TextStyle(
-                                          color: store.focusEmail
-                                              ? Colors.amber
-                                              : Colors.white,
-                                        ),
-                                      ),
-                              ),
-                            );
-                          }),
+                          child: InputForm(
+                            saveValue: (String value) {
+                              store.setEmail(value);
+                            },
+                            title: "Email",
+                          ),
                         ),
                       ],
                     ),
@@ -160,87 +90,21 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return DpadContainer(
-                              onClick: () {
-                                if (timer?.isActive ?? false) timer?.cancel();
-                                timer = Timer(const Duration(milliseconds: 500),
-                                    () {
-                                  print('cadastrar');
-                                });
-                              },
-                              onFocus: (isFocused) {
-                                store.setFocusEnviar(isFocused);
-                              },
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      corLaranjaPrimaria),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      side: BorderSide(
-                                        width: 3,
-                                        color: corLaranjaPrimaria,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "Enviar",
-                                  style: TextStyle(
-                                    color: store.focusEnviar
-                                        ? Colors.amber
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
+                          child: ButtonPrimary(
+                            title: 'Enviar',
+                            onClick: () {
+                              Modular.to.pop();
+                            },
+                          ),
                         ),
                         const SizedBox(width: 32),
                         Expanded(
-                          child: Observer(builder: (context) {
-                            return DpadContainer(
-                              onClick: () {
-                                if (timer?.isActive ?? false) timer?.cancel();
-                                timer = Timer(const Duration(milliseconds: 500),
-                                    () {
-                                  Modular.to.pop();
-                                });
-                              },
-                              onFocus: (isFocused) {
-                                store.setFocusVoltar(isFocused);
-                              },
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.transparent),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      side: BorderSide(
-                                        width: 3,
-                                        color: corLaranjaPrimaria,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  "Voltar",
-                                  style: TextStyle(
-                                    color: store.focusVoltar
-                                        ? Colors.amber
-                                        : Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
+                          child: ButtonSecundary(
+                            title: "Voltar",
+                            onClick: () {
+                              Modular.to.pop();
+                            },
+                          ),
                         ),
                       ],
                     ),
