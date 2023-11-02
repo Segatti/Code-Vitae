@@ -49,7 +49,6 @@ abstract class _FavoriteStoreBase with Store {
 
   @action
   Future<void> startStore(String favoriteType) async {
-    // TODO: Isso pode ser feito um caso de uso no futuro
     setPageState(LoadingState());
     switch (favoriteType) {
       case 'characters':

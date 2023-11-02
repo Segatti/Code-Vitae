@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:dpad_container/dpad_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_tv/app/modules/auth/presenter/widgets/buttons/button_primary.dart';
 import 'package:flutter_tv/app/modules/auth/presenter/widgets/buttons/button_secundary.dart';

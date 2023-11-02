@@ -45,8 +45,8 @@ class _PaginacaoWidgetState extends State<PaginacaoWidget> {
                 onPressed: widget.onTapPrevButton != null
                     ? () => widget.onTapPrevButton!()
                     : null,
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(CupertinoIcons.chevron_left),
                     Text('Prev'),
                   ],
@@ -61,8 +61,8 @@ class _PaginacaoWidgetState extends State<PaginacaoWidget> {
                 onPressed: widget.onTapNextButton != null
                     ? () => widget.onTapNextButton!()
                     : null,
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Text('Next'),
                     Icon(CupertinoIcons.chevron_right),
                   ],
