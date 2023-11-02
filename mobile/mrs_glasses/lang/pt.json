@@ -1,0 +1,6 @@
+{
+  "documentation": "documentação",
+  "changelog": "changelog",
+  "micro-framework for Flutter": "micro-framework para Flutter",
+  "hello": "olá {{name}}"
+}
