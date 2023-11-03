@@ -1,10 +1,15 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
+import 'modules/auth/ui/auth_module.dart';
+import 'modules/intro/intro_module.dart';
+
 class AppModule extends Module {
   @override
   void binds(Injector i) {}
 
   @override
   void routes(RouteManager r) {
+    r.module('/', module: IntroModule());
+    r.module('/auth', module: AuthModule());
   }
 }
