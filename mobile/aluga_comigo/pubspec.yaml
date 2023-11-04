@@ -20,6 +20,7 @@ dependencies:
   styled_text: ^8.1.0
   google_fonts: ^6.1.0
   animated_text_kit: ^4.2.2
+  delayed_display: ^2.0.0
 
 dev_dependencies:
   flutter_test:
