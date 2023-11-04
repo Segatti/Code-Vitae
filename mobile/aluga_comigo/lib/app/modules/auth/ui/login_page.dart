@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: 170,
-                    height: 140,
+                    height: 120,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,8 +55,8 @@ class LoginPage extends StatelessWidget {
                           pause: const Duration(milliseconds: 500),
                           animatedTexts: [
                             RotateAnimatedText(
-                              transitionHeight: 64,
-                              alignment: Alignment.topLeft,
+                              transitionHeight: 40,
+                              alignment: Alignment.centerLeft,
                               'uma Casa?',
                               textStyle: GoogleFonts.rubik(
                                 fontWeight: FontWeight.w500,
@@ -68,9 +68,9 @@ class LoginPage extends StatelessWidget {
                               ),
                             ),
                             RotateAnimatedText(
-                              transitionHeight: 64,
+                              transitionHeight: 40,
                               'um Apê?',
-                              alignment: Alignment.topLeft,
+                              alignment: Alignment.centerLeft,
                               textStyle: GoogleFonts.rubik(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 32,
@@ -85,6 +85,7 @@ class LoginPage extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: 300,
                     child: Column(
