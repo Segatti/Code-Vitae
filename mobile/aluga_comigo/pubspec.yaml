@@ -19,6 +19,7 @@ dependencies:
   flutter_svg: ^2.0.9
   styled_text: ^8.1.0
   google_fonts: ^6.1.0
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:

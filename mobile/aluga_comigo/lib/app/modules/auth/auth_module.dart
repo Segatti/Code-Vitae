@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'login_page.dart';
+import 'ui/login_page.dart';
 
 class AuthModule extends Module {
   @override
