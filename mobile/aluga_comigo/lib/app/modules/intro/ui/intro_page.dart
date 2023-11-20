@@ -21,7 +21,7 @@ class _IntroPageState extends State<IntroPage> {
   List<String> titles = [
     "O aluguel apertou no final do mês?",
     "Precisando de alguem para dividir o aluguel?",
-    "Aqui você faz o seu  lar caber no seu bolso!",
+    "Aqui você vai resolver esses problemas!",
   ];
   List<String> icons = [
     "cash_fly.png",
@@ -200,7 +200,7 @@ class _IntroPageState extends State<IntroPage> {
                       ),
                       const SizedBox(height: 32),
                       SizedBox(
-                        width: 300,
+                        width: 330,
                         child: Text(
                           titles[index],
                           textAlign: TextAlign.center,
@@ -241,8 +241,9 @@ class _IntroPageState extends State<IntroPage> {
                 ],
               ),
             ),
-            crossFadeState:
-                index == 1 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: index == 1
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
           ),
           crossFadeState:
               index == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
