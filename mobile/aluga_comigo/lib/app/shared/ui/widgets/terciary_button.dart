@@ -48,7 +48,7 @@ class TerciaryButtonWidget extends StatelessWidget {
                     if (prefixIcon != null) const SizedBox(width: 16),
                     Text(
                       title,
-                      textScaleFactor: 1,
+                      textScaler: const TextScaler.linear(1),
                       style: GoogleFonts.rubik(
                         color: colorTitle,
                         fontSize: 16,

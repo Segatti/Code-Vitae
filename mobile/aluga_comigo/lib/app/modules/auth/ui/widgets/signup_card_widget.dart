@@ -22,7 +22,7 @@ class SignupCardWidget extends StatelessWidget {
           children: [
             Text(
               "O que você busca?",
-              textScaleFactor: 1,
+              textScaler: const TextScaler.linear(1),
               style: GoogleFonts.rubik(
                 color: Colors.white,
                 fontSize: 24,

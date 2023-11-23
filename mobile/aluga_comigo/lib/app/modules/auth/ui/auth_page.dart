@@ -54,7 +54,7 @@ class _AuthPageState extends State<AuthPage> {
                           slidingBeginOffset: const Offset(0.0, -0.35),
                           child: Text(
                             "Aluga",
-                            textScaleFactor: 1,
+                            textScaler: const TextScaler.linear(1),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w500,
                               fontSize: 32,
@@ -69,7 +69,7 @@ class _AuthPageState extends State<AuthPage> {
                           slidingBeginOffset: const Offset(0.0, -0.35),
                           child: Text(
                             "Comigo",
-                            textScaleFactor: 1,
+                            textScaler: const TextScaler.linear(1),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w500,
                               fontSize: 32,
