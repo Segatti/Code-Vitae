@@ -1,3 +1,4 @@
+import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,20 +21,17 @@ class PrimaryButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        height: height,
-        width: width,
-        padding: padding,
-        decoration: const BoxDecoration(
-          color: Color(0xFFDF924B),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            splashColor: colorTapEffect,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: ChicletAnimatedButton(
+            onPressed: onTap,
+            height: height,
+            width: width,
+            padding: padding,
+            backgroundColor: const Color(0xFFDF924B),
+            borderRadius: 50,
             child: Center(
               child: Text(
                 title,
@@ -47,7 +45,7 @@ class PrimaryButtonWidget extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
