@@ -35,6 +35,7 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
   Widget build(BuildContext context) {
     return PageView(
       controller: _controller,
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 32),
