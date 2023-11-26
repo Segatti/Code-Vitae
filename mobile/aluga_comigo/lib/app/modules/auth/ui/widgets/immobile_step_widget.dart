@@ -1,7 +1,3 @@
-import 'package:aluga_comigo/app/modules/auth/interactor/DTOs/user_signup_dto.dart';
-import 'package:aluga_comigo/app/modules/auth/interactor/enums/user_skill.dart';
-import 'package:aluga_comigo/app/modules/auth/interactor/models/select_item.dart';
-import 'package:aluga_comigo/app/modules/auth/ui/widgets/pill_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
@@ -10,26 +6,30 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 
+import '../../interactor/DTOs/immobile_signup_dto.dart';
+import '../../interactor/enums/type_immobile.dart';
 import 'card_auth_widget.dart';
 
-class UserStepWidget extends StatefulWidget {
+class ImmobileStepWidget extends StatefulWidget {
   final VoidCallback backPage;
-  const UserStepWidget({super.key, required this.backPage});
+  const ImmobileStepWidget({super.key, required this.backPage});
 
   @override
-  State<UserStepWidget> createState() => _UserStepWidgetState();
+  State<ImmobileStepWidget> createState() => _ImmobileStepWidgetState();
 }
 
-class _UserStepWidgetState extends State<UserStepWidget> {
+class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   final CarouselController _controller = CarouselController();
   int indexCarousel = 0;
-  UserSignupDTO _userSignupDTO = const UserSignupDTO();
+  ImmobileSignupDTO _immobileSignupDTO = const ImmobileSignupDTO();
   bool acceptTerms = false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _cepController = TextEditingController();
+  final TextEditingController _valueController = TextEditingController();
 
   void backPage() {
     if (indexCarousel == 0) {
@@ -199,7 +199,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
           CarouselSlider(
             carouselController: _controller,
             options: CarouselOptions(
-              height: 280.0,
+              height: 270.0,
               aspectRatio: 1,
               enableInfiniteScroll: false,
               scrollPhysics: const NeverScrollableScrollPhysics(),
@@ -226,6 +226,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       children: [
                         TextFormField(
                           controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -234,7 +235,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               fontSize: 18,
                             ),
                             contentPadding: const EdgeInsets.only(
-                                left: 24.0, bottom: 8.0, top: 8.0),
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
@@ -248,6 +252,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                         const Gap(16),
                         TextFormField(
                           controller: _passwordController,
+                          keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -276,39 +281,69 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: backPage,
-                          borderRadius: 50,
-                          backgroundColor: Colors.red,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.red),
+                          ),
+                          child: const Text(
                             "Voltar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: () {
-                            _userSignupDTO = _userSignupDTO.copyWith(
+                            _immobileSignupDTO = _immobileSignupDTO.copyWith(
                               email: _emailController.text,
                               password: _passwordController.text,
                             );
 
                             nextPage();
                           },
-                          borderRadius: 50,
-                          backgroundColor: Colors.green,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.green),
+                          ),
+                          child: const Text(
                             "Confirmar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -337,6 +372,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       children: [
                         TextFormField(
                           controller: _nameController,
+                          keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -359,6 +395,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                         const Gap(16),
                         TextFormField(
                           controller: _phoneController,
+                          keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -377,7 +414,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               borderRadius: BorderRadius.circular(25.7),
                             ),
                           ),
-                          obscureText: true,
                         ),
                       ],
                     ),
@@ -387,39 +423,68 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: backPage,
-                          borderRadius: 50,
-                          backgroundColor: Colors.red,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.red),
+                          ),
+                          child: const Text(
                             "Voltar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: () {
-                            _userSignupDTO = _userSignupDTO.copyWith(
+                            _immobileSignupDTO = _immobileSignupDTO.copyWith(
                               name: _nameController.text,
                               phone: _phoneController.text,
                             );
-
                             nextPage();
                           },
-                          borderRadius: 50,
-                          backgroundColor: Colors.green,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.green),
+                          ),
+                          child: const Text(
                             "Confirmar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -431,9 +496,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
               ),
               CardAuthWidget(
                 children: [
-                  const Spacer(),
                   Text(
-                    "Habilidades",
+                    "Dados do Imóvel",
                     textScaler: const TextScaler.linear(1),
                     style: GoogleFonts.rubik(
                       color: Colors.white,
@@ -442,142 +506,191 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ),
                   ),
                   const Gap(16),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.cucaMaster,
-                              ),
-                              selectItem: const SelectItem(
-                                title: "Mestre Cuca",
-                                value: UserSkill.cucaMaster,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
+                  Form(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _cepController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'Cep',
+                            hintStyle: GoogleFonts.rubik(
+                              fontSize: 18,
                             ),
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.ninjaInSweeping,
-                              ),
-                              selectItem: const SelectItem(
-                                title: "Ninja em varrer",
-                                value: UserSkill.ninjaInSweeping,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
+                            contentPadding: const EdgeInsets.only(
+                                left: 24.0, bottom: 8.0, top: 8.0),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
                             ),
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.laundryOperator,
-                              ),
-                              selectItem: const SelectItem(
-                                title: "Operador de roupa suja",
-                                value: UserSkill.laundryOperator,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
                             ),
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.humanDishwasher,
-                              ),
-                              selectItem: const SelectItem(
-                                title: "Lava-louça humano",
-                                value: UserSkill.humanDishwasher,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                        const Gap(16),
+                        SizedBox(
+                          height: 50,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _valueController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Valor',
+                                    hintStyle: GoogleFonts.rubik(
+                                      fontSize: 18,
+                                    ),
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 24.0, bottom: 8.0, top: 8.0),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          const BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(25.7),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          const BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(25.7),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const Gap(16),
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: DropdownButton<TypeImmobile>(
+                                    itemHeight: 50,
+                                    isExpanded: true,
+                                    hint: Center(
+                                      child: Text(
+                                        "Tipo",
+                                        style: GoogleFonts.rubik(
+                                          color: Colors.black54,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.all(8),
+                                    underline: const SizedBox.shrink(),
+                                    borderRadius: BorderRadius.circular(40),
+                                    value: _immobileSignupDTO.typeImmobile,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _immobileSignupDTO =
+                                            _immobileSignupDTO.copyWith(
+                                          typeImmobile:
+                                              value ?? TypeImmobile.none,
+                                        );
+                                      });
+                                    },
+                                    items: const [
+                                      DropdownMenuItem(
+                                        value: TypeImmobile.house,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Casa",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: TypeImmobile.apartment,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Apartamento",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
                   const Gap(16),
+                  const Spacer(),
                   Row(
                     children: [
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: backPage,
-                          borderRadius: 50,
-                          backgroundColor: Colors.red,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.red),
+                          ),
+                          child: const Text(
                             "Voltar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ChicletAnimatedButton(
-                          onPressed: nextPage,
-                          borderRadius: 50,
-                          backgroundColor: Colors.green,
-                          child: Text(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _immobileSignupDTO = _immobileSignupDTO.copyWith(
+                              cep: _cepController.text,
+                              value: num.tryParse(_valueController.text),
+                            );
+                            nextPage();
+                          },
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.green),
+                          ),
+                          child: const Text(
                             "Confirmar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -591,7 +704,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                 children: [
                   const Spacer(),
                   Text(
-                    "Uma fotinha básica!",
+                    "Uma fotinha do imóvel!",
                     textScaler: const TextScaler.linear(1),
                     style: GoogleFonts.rubik(
                       color: Colors.white,
@@ -639,32 +752,62 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: backPage,
-                          borderRadius: 50,
-                          backgroundColor: Colors.red,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.red),
+                          ),
+                          child: const Text(
                             "Voltar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ChicletAnimatedButton(
+                        child: ElevatedButton(
                           onPressed: nextPage,
-                          borderRadius: 50,
-                          backgroundColor: Colors.green,
-                          child: Text(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(
+                              GoogleFonts.rubik(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 50),
+                            ),
+                            backgroundColor:
+                                const MaterialStatePropertyAll(Colors.green),
+                          ),
+                          child: const Text(
                             "Confirmar",
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),

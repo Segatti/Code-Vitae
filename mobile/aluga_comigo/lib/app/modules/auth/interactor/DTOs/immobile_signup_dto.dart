@@ -13,7 +13,7 @@ class ImmobileSignupDTO {
   final String? phone;
   final String? cep;
   final num? value;
-  final TypeImmobile typeImmobile;
+  final TypeImmobile? typeImmobile;
   final List<String>? photos;
 
   const ImmobileSignupDTO({
@@ -24,7 +24,7 @@ class ImmobileSignupDTO {
     this.phone,
     this.cep,
     this.value,
-    this.typeImmobile = TypeImmobile.none,
+    this.typeImmobile,
     this.photos,
   });
 
@@ -61,7 +61,7 @@ class ImmobileSignupDTO {
       'phone': phone,
       'cep': cep,
       'value': value,
-      'typeImmobile': typeImmobile.name,
+      'typeImmobile': typeImmobile?.name,
       'photos': photos,
     };
   }

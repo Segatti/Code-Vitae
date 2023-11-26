@@ -1,3 +1,4 @@
+import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -82,62 +83,32 @@ class LoginCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: backPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.red),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.red,
+                          child: Text(
                             "Voltar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: backPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.green),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.green,
+                          child: Text(
                             "Entrar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),

@@ -5,11 +5,13 @@ import '../../interactor/models/select_item.dart';
 
 class PillWidget extends StatefulWidget {
   final SelectItem selectItem;
+  final bool? initialValue;
   final Function(bool isSelected, SelectItem value) onTap;
   const PillWidget({
     super.key,
     required this.selectItem,
     required this.onTap,
+    this.initialValue = false,
   });
 
   @override
@@ -18,6 +20,12 @@ class PillWidget extends StatefulWidget {
 
 class _PillWidgetState extends State<PillWidget> {
   bool isSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = widget.initialValue ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {

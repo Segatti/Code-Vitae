@@ -1,8 +1,10 @@
+import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../shared/ui/widgets/terciary_button.dart';
+import 'immobile_step_widget.dart';
 import 'user_step_widget.dart';
 
 class SignupCardWidget extends StatefulWidget {
@@ -91,31 +93,16 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
                     Row(
                       children: [
                         Expanded(
-                          child: ElevatedButton(
+                          child: ChicletAnimatedButton(
                             onPressed: widget.backPage,
-                            style: ButtonStyle(
-                              textStyle: MaterialStatePropertyAll(
-                                GoogleFonts.rubik(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                              ),
-                              minimumSize: const MaterialStatePropertyAll(
-                                Size(double.infinity, 50),
-                              ),
-                              backgroundColor:
-                                  const MaterialStatePropertyAll(Colors.red),
-                            ),
-                            child: const Text(
+                            borderRadius: 50,
+                            backgroundColor: Colors.red,
+                            child: Text(
                               "Voltar",
-                              style: TextStyle(
+                              style: GoogleFonts.rubik(
                                 color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -130,79 +117,7 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
         ),
         (isUserAccount ?? true)
             ? UserStepWidget(backPage: backPage)
-            : Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xFF2C29A3),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                width: 330,
-                child: Column(
-                  children: [
-                    Text(
-                      "Imovel",
-                      textScaler: const TextScaler.linear(1),
-                      style: GoogleFonts.rubik(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const Gap(16),
-                    TerciaryButtonWidget(
-                      onTap: () {},
-                      title: "Encontrar pessoa/casa",
-                      colorTitle: Colors.black,
-                      colorInside: Colors.white,
-                    ),
-                    const Gap(16),
-                    TerciaryButtonWidget(
-                      onTap: () {},
-                      title: "Alugar minha casa",
-                      colorTitle: Colors.black,
-                      colorInside: Colors.white,
-                    ),
-                    const Gap(16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              backPage();
-                            },
-                            style: ButtonStyle(
-                              textStyle: MaterialStatePropertyAll(
-                                GoogleFonts.rubik(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                              ),
-                              minimumSize: const MaterialStatePropertyAll(
-                                Size(double.infinity, 50),
-                              ),
-                              backgroundColor:
-                                  const MaterialStatePropertyAll(Colors.red),
-                            ),
-                            child: const Text(
-                              "Voltar",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            : ImmobileStepWidget(backPage: backPage),
       ],
     );
   }
