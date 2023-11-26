@@ -281,38 +281,23 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: backPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.red),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.red,
+                          child: Text(
                             "Voltar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: () {
                             _immobileSignupDTO = _immobileSignupDTO.copyWith(
                               email: _emailController.text,
@@ -321,29 +306,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
 
                             nextPage();
                           },
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.green),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.green,
+                          child: Text(
                             "Confirmar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -423,38 +393,23 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: backPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.red),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.red,
+                          child: Text(
                             "Voltar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: () {
                             _immobileSignupDTO = _immobileSignupDTO.copyWith(
                               name: _nameController.text,
@@ -462,29 +417,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             );
                             nextPage();
                           },
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.green),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.green,
+                          child: Text(
                             "Confirmar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -629,38 +569,23 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: backPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.red),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.red,
+                          child: Text(
                             "Voltar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: () {
                             _immobileSignupDTO = _immobileSignupDTO.copyWith(
                               cep: _cepController.text,
@@ -668,29 +593,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             );
                             nextPage();
                           },
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.green),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.green,
+                          child: Text(
                             "Confirmar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -752,62 +662,32 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: backPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.red),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.red,
+                          child: Text(
                             "Voltar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ChicletAnimatedButton(
                           onPressed: nextPage,
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(
-                              GoogleFonts.rubik(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            minimumSize: const MaterialStatePropertyAll(
-                              Size(double.infinity, 50),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.green),
-                          ),
-                          child: const Text(
+                          borderRadius: 50,
+                          backgroundColor: Colors.green,
+                          child: Text(
                             "Confirmar",
-                            style: TextStyle(
+                            style: GoogleFonts.rubik(
                               color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),

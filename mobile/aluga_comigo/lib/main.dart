@@ -11,10 +11,11 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(statusBarColor: Colors.black),
-  );
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+  // SystemChrome.setSystemUIOverlayStyle(
+  //   const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  // );
+
   runApp(
     ModularApp(
       module: AppModule(),

@@ -40,79 +40,77 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    color: const Color(0xFF2C29A3),
-                  ),
-                ),
-                const Divider(
-                  color: Colors.white,
-                  height: 2,
-                ),
-                Expanded(
-                  child: Container(
-                    color: const Color(0xFFDF924B),
-                  ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.fastOutSlowIn,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(borderLogo),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(20, 20),
-                      blurRadius: 40,
-                      color: Colors.black.withOpacity(.25),
-                    ),
-                    BoxShadow(
-                      offset: const Offset(-20, -20),
-                      blurRadius: 40,
-                      color: Colors.white.withOpacity(.25),
-                    ),
-                  ],
-                ),
-                height: widthContainer,
-                width: widthContainer,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset("assets/icons/logo.svg"),
-                    Visibility(
-                      visible: showTitle,
-                      child: StyledText(
-                        text: "Aluga<orange>Comigo</orange>",
-                        textScaleFactor: 1,
-                        style: GoogleFonts.rubik(
-                          color: const Color(0xFF2C29A3),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        tags: {
-                          'orange': StyledTextTag(
-                            style: const TextStyle(
-                              color: Color(0xFFDF924B),
-                            ),
-                          ),
-                        },
-                      ),
-                    )
-                  ],
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                child: Container(
+                  color: const Color(0xFF2C29A3),
                 ),
               ),
+              const Divider(
+                color: Colors.white,
+                height: 2,
+              ),
+              Expanded(
+                child: Container(
+                  color: const Color(0xFFDF924B),
+                ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.fastOutSlowIn,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderLogo),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(20, 20),
+                    blurRadius: 40,
+                    color: Colors.black.withOpacity(.25),
+                  ),
+                  BoxShadow(
+                    offset: const Offset(-20, -20),
+                    blurRadius: 40,
+                    color: Colors.white.withOpacity(.25),
+                  ),
+                ],
+              ),
+              height: widthContainer,
+              width: widthContainer,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset("assets/icons/logo.svg"),
+                  Visibility(
+                    visible: showTitle,
+                    child: StyledText(
+                      text: "Aluga<orange>Comigo</orange>",
+                      textScaleFactor: 1,
+                      style: GoogleFonts.rubik(
+                        color: const Color(0xFF2C29A3),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      tags: {
+                        'orange': StyledTextTag(
+                          style: const TextStyle(
+                            color: Color(0xFFDF924B),
+                          ),
+                        ),
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
