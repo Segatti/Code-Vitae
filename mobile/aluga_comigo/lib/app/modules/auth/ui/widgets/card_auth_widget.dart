@@ -12,7 +12,7 @@ class CardAuthWidget extends StatelessWidget {
         color: const Color(0xFF2C29A3),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-      width: 330,
+      margin: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         children: children,
       ),

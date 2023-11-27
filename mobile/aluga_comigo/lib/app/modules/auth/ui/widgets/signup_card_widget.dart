@@ -61,7 +61,7 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
                       textScaler: const TextScaler.linear(1),
                       style: GoogleFonts.rubik(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
