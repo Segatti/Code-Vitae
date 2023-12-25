@@ -26,6 +26,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   chiclet: ^1.1.0
   expandable_page_view: ^1.0.17
+  just_the_tooltip: ^0.0.12
 
 dev_dependencies:
   flutter_test:

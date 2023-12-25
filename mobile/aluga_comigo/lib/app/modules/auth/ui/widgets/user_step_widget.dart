@@ -6,6 +6,7 @@ import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 
@@ -244,15 +245,14 @@ class _UserStepWidgetState extends State<UserStepWidget> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          flex: 3,
+        SizedBox(
+          height: 267,
           child: PageView(
             controller: _controller,
             physics: const NeverScrollableScrollPhysics(),
             children: [
               CardAuthWidget(
                 children: [
-                  const Spacer(),
                   Text(
                     "Dados de acesso",
                     textScaler: const TextScaler.linear(1),
@@ -263,7 +263,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ),
                   ),
                   const Gap(16),
-                  const Spacer(),
                   Form(
                     key: _formKey,
                     child: Column(
@@ -279,7 +278,9 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               }
                             }
                           },
-                          validator: (text) {
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (String? text) {
                             String data = text?.trim() ?? '';
                             if (data.isEmpty) {
                               return "* Campo obrigatório";
@@ -292,9 +293,31 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
+                            errorStyle: const TextStyle(
+                              fontSize: 0,
+                            ),
+                            isDense: true,
                             hintText: 'Email',
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
+                            ),
+                            suffixIcon: JustTheTooltip(
+                              backgroundColor: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'Deve ser um email válido!',
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              isModal: true,
+                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -306,7 +329,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
                             ),
-                            errorBorder: UnderlineInputBorder(
+                            errorBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Colors.red,
                                 width: 3,
@@ -344,12 +367,36 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             }
                             return null;
                           },
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
+                            isDense: true,
                             hintText: 'Senha',
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
+                            ),
+                            errorStyle: const TextStyle(
+                              fontSize: 0,
+                            ),
+                            suffixIcon: JustTheTooltip(
+                              backgroundColor: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'Mínimo 7 caracteres',
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              isModal: true,
+                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -361,7 +408,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
                             ),
-                            errorBorder: UnderlineInputBorder(
+                            errorBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Colors.red,
                                 width: 3,
@@ -381,7 +428,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ],
                     ),
                   ),
-                  const Spacer(),
                   const Gap(16),
                   Row(
                     children: [
@@ -431,12 +477,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
-                  const Spacer(),
                 ],
               ),
               CardAuthWidget(
                 children: [
-                  const Spacer(),
                   Text(
                     "Dados pessoais",
                     textScaler: const TextScaler.linear(1),
@@ -447,7 +491,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ),
                   ),
                   const Gap(16),
-                  const Spacer(),
                   Form(
                     key: _formKey2,
                     child: Column(
@@ -456,7 +499,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           controller: _nameController,
                           onChanged: (_) {
                             if (haveError) {
-                              if (_formKey.currentState?.validate() ?? false) {
+                              if (_formKey2.currentState?.validate() ?? false) {
                                 setState(() {
                                   haveError = false;
                                 });
@@ -470,12 +513,36 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             }
                             return null;
                           },
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.name,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
                             hintText: 'Nome Completo',
+                            isDense: true,
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
+                            ),
+                            errorStyle: const TextStyle(
+                              fontSize: 0,
+                            ),
+                            suffixIcon: JustTheTooltip(
+                              backgroundColor: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'Campo obrigatório',
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              isModal: true,
+                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -487,7 +554,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
                             ),
-                            errorBorder: UnderlineInputBorder(
+                            errorBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Colors.red,
                                 width: 3,
@@ -508,31 +575,55 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           controller: _phoneController,
                           onChanged: (_) {
                             if (haveError) {
-                              if (_formKey.currentState?.validate() ?? false) {
+                              if (_formKey2.currentState?.validate() ?? false) {
                                 setState(() {
                                   haveError = false;
                                 });
                               }
                             }
                           },
+                          keyboardType: TextInputType.phone,
                           validator: (text) {
                             String data = text?.trim() ?? '';
                             if (data.isEmpty) {
                               return "* Campo obrigatório";
                             }
-                            if (data.length < 11) {
+                            if (data.length != 11) {
                               return "Número invalido. Ex: XX 9XXXX XXXX";
                             }
                             return null;
                           },
                           maxLength: 11,
+                          textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
                             filled: true,
+                            isDense: true,
                             fillColor: Colors.white,
                             counter: const SizedBox.shrink(),
                             hintText: 'Telefone',
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
+                            ),
+                            errorStyle: const TextStyle(
+                              fontSize: 0,
+                            ),
+                            suffixIcon: JustTheTooltip(
+                              backgroundColor: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  '(DDD) 9XXXX XXXX',
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              isModal: true,
+                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -544,7 +635,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
                             ),
-                            errorBorder: UnderlineInputBorder(
+                            errorBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Colors.red,
                                 width: 3,
@@ -563,8 +654,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  const Gap(16),
+                  const Gap(8),
                   Row(
                     children: [
                       Expanded(
@@ -613,12 +703,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
-                  const Spacer(),
                 ],
               ),
               CardAuthWidget(
                 children: [
-                  const Spacer(),
                   Text(
                     "Habilidades",
                     textScaler: const TextScaler.linear(1),
@@ -629,7 +717,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ),
                   ),
                   const Gap(16),
-                  const Spacer(),
                   Row(
                     children: [
                       Expanded(
@@ -734,7 +821,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
-                  const Spacer(),
                   const Gap(16),
                   Row(
                     children: [
@@ -771,12 +857,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
-                  const Spacer(),
                 ],
               ),
               CardAuthWidget(
                 children: [
-                  const Spacer(),
                   Text(
                     "Uma fotinha básica!",
                     textScaler: const TextScaler.linear(1),
@@ -822,7 +906,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ],
                   ),
                   const Spacer(),
-                  const Gap(16),
+                  const Gap(16),  
                   Row(
                     children: [
                       Expanded(
@@ -858,7 +942,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
-                  const Spacer(),
                 ],
               ),
             ],
