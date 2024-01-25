@@ -11,7 +11,9 @@ class _SplashPageState extends State<SplashPage> {
   Future _init() async {
     await Future.delayed(Durations.extralong4);
     // Verificar se tem login
-    if(mounted) Navigator.of(context).pushNamed("/menu");
+    if (mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil("/menu", (_) => false);
+    }
   }
 
   @override
@@ -25,7 +27,11 @@ class _SplashPageState extends State<SplashPage> {
     return Container(
       color: Colors.black,
       child: Center(
-        child: Image.asset("assets/images/logo_app.png"),
+        child: Image.asset(
+          "assets/images/logo_app.png",
+          width: 100,
+          height: 100,
+        ),
       ),
     );
   }
