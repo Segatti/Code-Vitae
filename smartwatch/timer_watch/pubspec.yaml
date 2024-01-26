@@ -15,6 +15,8 @@ dependencies:
   icons_launcher: ^2.1.7
   wear: 
     path: /home/segatti/Documentos/Git/Lib/Flutter/flutter_wear_plugin
+  gap: ^3.0.1
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
