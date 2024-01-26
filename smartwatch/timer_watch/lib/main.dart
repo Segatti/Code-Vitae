@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           colorScheme: mode == WearMode.active
               ? const ColorScheme.dark(
-                  //
                   primary: Color(0xFF00B5FF),
                 )
               : const ColorScheme.dark(
