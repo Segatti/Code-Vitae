@@ -14,7 +14,7 @@ class MenuPage extends StatelessWidget {
         children: [
           MenuItem(
             title: "Treinos",
-            onTap: () => Navigator.of(context).pushNamed("/training"),
+            onTap: () => Navigator.of(context).pushNamed("/trainings"),
             icon: Icons.fitness_center,
           ),
           MenuItem(
