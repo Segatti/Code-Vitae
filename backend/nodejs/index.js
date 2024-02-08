@@ -1,29 +1,19 @@
-const http = require("http");
-const fs = require("fs");
-const read = require("readline");
+const express = require("express");
+const path = require("path");
 
-// const hostname = "127.0.0.1";
-// const port = 3000;
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader("Content-Type", "text/plain");
-//   res.end("Hello World!");
-// });
+const app = express();
 
-// server.listen(port, hostname, () => {
-//   console.log("Servidor rodando!");
-// });
+app.engine("html", require("ejs").renderFile);
+app.set("view engine", "html");
+// Config onde está os assets
+app.use("/public", express.static(path.join(__dirname, "public")));
+// Config onde está as views
+app.set("views", path.join(__dirname, "/views"));
 
-const rl = read.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+app.get("/", (req, res) => {
+  res.render("index", { nome: "Vittor" });
 });
 
-rl.question("Qual seu nome? ", (value) => {
-  console.log("Seu nome é " + value);
-});
-
-rl.on("close", () => {
-  console.log("adeus!");
-  process.exit(0);
+app.listen(5000, () => {
+  console.log("Server rodando");
 });
