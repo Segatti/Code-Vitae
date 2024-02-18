@@ -1,5 +1,6 @@
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -100,7 +101,9 @@ class LoginCardWidget extends StatelessWidget {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed: backPage,
+                          onPressed: () {
+                            Modular.to.navigate("/start/");
+                          },
                           borderRadius: 50,
                           backgroundColor: Colors.green,
                           child: Text(
