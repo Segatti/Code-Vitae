@@ -102,7 +102,7 @@ class LoginCardWidget extends StatelessWidget {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed: () {
-                            Modular.to.navigate("/start/");
+                            Modular.to.navigate("/start/customers/");
                           },
                           borderRadius: 50,
                           backgroundColor: Colors.green,
