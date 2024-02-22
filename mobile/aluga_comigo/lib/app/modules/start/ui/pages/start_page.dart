@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
@@ -42,7 +40,9 @@ class _StartPageState extends State<StartPage>
     return Scaffold(
       body: SliderDrawer(
         key: _drawerKey,
+        useGestures: false,
         sliderOpenSize: 80,
+        isDraggable: false,
         appBar: SliderAppBar(
           drawerIconSize: 35,
           appBarColor: Colors.white,

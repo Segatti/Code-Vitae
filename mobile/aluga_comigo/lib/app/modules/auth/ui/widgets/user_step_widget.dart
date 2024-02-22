@@ -211,7 +211,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               Expanded(
                                 child: ChicletAnimatedButton(
                                   onPressed: () {
-                                    print("criar conta");
                                   },
                                   borderRadius: 50,
                                   backgroundColor: Colors.green,
