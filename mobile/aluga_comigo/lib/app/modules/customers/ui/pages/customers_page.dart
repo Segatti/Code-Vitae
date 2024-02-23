@@ -277,20 +277,311 @@ class _CustomersPageState extends State<CustomersPage> {
                         ],
                       ),
                       child: Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(16),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Nome"),
-                            const Text("Descrição completa"),
-                            const SizedBox(
-                              height: 200,
-                              width: double.infinity,
+                            // Text(
+                            //   "Nome",
+                            //   style: GoogleFonts.rubik(
+                            //     color: Colors.black,
+                            //     fontSize: 32,
+                            //     fontWeight: FontWeight.w500,
+                            //     height: 1,
+                            //   ),
+                            // ),
+                            Text(
+                              "Descrição completa",
+                              style: GoogleFonts.rubik(
+                                color: Colors.grey,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                flipController.toggleCard();
-                              },
-                              child: const Text("Voltar"),
+                            const Gap(4),
+                            Expanded(
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Gap(8),
+                                      Text(
+                                        "dataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ",
+                                        maxLines: null,
+                                      ),
+                                      Gap(8),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Gap(8),
+                            Row(
+                              children: [
+                                const Text("Tarefas Domésticas"),
+                                const Gap(16),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: Colors.orange,
+                                    fixedSize: const Size(100, 0),
+                                  ),
+                                  onPressed: () {},
+                                  child: Text(
+                                    "Ver",
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                      // fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(8),
+                            Row(
+                              children: [
+                                const Text("Imóvel desejado"),
+                                const Gap(8),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    "Todos",
+                                    style: GoogleFonts.rubik(),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Gap(8),
+                            Row(
+                              children: [
+                                const Text("Buscando imóvel até"),
+                                const Gap(8),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    "R\$ 1500,00",
+                                    style: GoogleFonts.rubik(),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Gap(8),
+                            Row(
+                              children: [
+                                const Text("Estilo de vida"),
+                                const Gap(8),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    "Festeiro",
+                                    style: GoogleFonts.rubik(),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Gap(8),
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Divider(
+                                    thickness: 2,
+                                  ),
+                                ),
+                                Gap(8),
+                                Text("Habilidades"),
+                                Gap(8),
+                                Expanded(
+                                  child: Divider(
+                                    thickness: 2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(8),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Row(
+                                      children: [
+                                        Text("Mestre cuca"),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Row(
+                                      children: [
+                                        Text("Mestre cuca"),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Row(
+                                      children: [
+                                        Text("Mestre cuca"),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Row(
+                                      children: [
+                                        Text("Mestre cuca"),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Row(
+                                      children: [
+                                        Text("Mestre cuca"),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0,
+                                      backgroundColor: Colors.white,
+                                      side: const BorderSide(
+                                        width: 3,
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      flipController.toggleCard();
+                                    },
+                                    child: Text(
+                                      "Voltar",
+                                      style: GoogleFonts.rubik(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
