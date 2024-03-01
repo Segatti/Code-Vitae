@@ -195,6 +195,9 @@ class _StartPageState extends State<StartPage>
                               case 1:
                                 Modular.to.navigate("/start/houses/");
                                 break;
+                              case 2:
+                                Modular.to.navigate("/start/likes/");
+                                break;
                               default:
                             }
                           },
