@@ -4,6 +4,10 @@ import 'package:flutter_modular/flutter_modular.dart';
 class CustomersModule extends Module {
   @override
   void routes(RouteManager r) {
-    r.child("/", child: (context) => const CustomersPage());
+    r.child(
+      "/",
+      child: (context) => const CustomersPage(),
+      transition: TransitionType.upToDown,
+    );
   }
 }

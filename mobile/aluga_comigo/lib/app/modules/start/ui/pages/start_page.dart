@@ -46,7 +46,7 @@ class _StartPageState extends State<StartPage>
         appBar: SliderAppBar(
           drawerIconSize: 35,
           appBarColor: Colors.white,
-          drawerIconColor: Colors.grey,
+          drawerIconColor: const Color.fromRGBO(158, 158, 158, 1),
           title: SvgPicture.asset(
             "assets/icons/logo.svg",
             width: 40,
@@ -62,90 +62,96 @@ class _StartPageState extends State<StartPage>
         ),
         slider: Container(
           color: const Color(0xFF2C29A3),
-          padding: const EdgeInsets.only(top: 32, bottom: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1),
-                  borderRadius: BorderRadius.circular(10),
+          padding: const EdgeInsets.only(
+            top: 8,
+            bottom: 16,
+          ),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.abc,
+                    size: 35,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.abc,
-                  size: 35,
+                const Gap(6),
+                const SizedBox(
+                  width: 35,
+                  child: Divider(
+                    color: Colors.white,
+                    thickness: 1,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 35,
-                child: Divider(
-                  color: Colors.white,
-                  thickness: 1,
+                const Gap(16),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
-              ),
-              const Gap(16),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 35,
+                const Gap(16),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.shield,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
-              ),
-              const Gap(16),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.shield,
-                  color: Colors.white,
-                  size: 35,
+                const Gap(16),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.list_alt,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
-              ),
-              const Gap(16),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.list_alt,
-                  color: Colors.white,
-                  size: 35,
+                const Gap(16),
+                IconButton(
+                  tooltip: "Teste",
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.photo_outlined,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
-              ),
-              const Gap(16),
-              IconButton(
-                tooltip: "Teste",
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.photo_outlined,
-                  color: Colors.white,
-                  size: 35,
+                const Gap(16),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.store,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
-              ),
-              const Gap(16),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.store,
-                  color: Colors.white,
-                  size: 35,
+                const Spacer(),
+                const SizedBox(
+                  width: 35,
+                  child: Divider(
+                    color: Colors.white,
+                    thickness: 1,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              const SizedBox(
-                width: 35,
-                child: Divider(
-                  color: Colors.white,
-                  thickness: 1,
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.exit_to_app,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.exit_to_app,
-                  color: Colors.white,
-                  size: 35,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         child: Column(
@@ -171,7 +177,7 @@ class _StartPageState extends State<StartPage>
                         removeTop: true,
                         child: SnakeNavigationBar.color(
                           snakeViewColor: Colors.transparent,
-                          shadowColor: Colors.black,
+                          shadowColor: const Color.fromARGB(255, 170, 110, 110),
                           elevation: 10,
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(50)),
