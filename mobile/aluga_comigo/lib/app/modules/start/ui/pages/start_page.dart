@@ -180,8 +180,18 @@ class _StartPageState extends State<StartPage>
                           selectedItemColor: Colors.amber,
                           unselectedItemColor: Colors.blueGrey,
                           currentIndex: indexNavigationBar,
-                          onTap: (index) =>
-                              setState(() => indexNavigationBar = index),
+                          onTap: (index) {
+                            setState(() => indexNavigationBar = index);
+                            switch (index) {
+                              case 0:
+                                Modular.to.navigate("/start/customers/");
+                                break;
+                              case 1:
+                                Modular.to.navigate("/start/houses/");
+                                break;
+                              default:
+                            }
+                          },
                           items: const [
                             BottomNavigationBarItem(
                               icon: Icon(
