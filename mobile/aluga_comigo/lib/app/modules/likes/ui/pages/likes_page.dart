@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class LikesPage extends StatefulWidget {
@@ -45,11 +43,11 @@ class _LikesPageState extends State<LikesPage> {
             ),
             expandedAlignment: Alignment.topLeft,
             children: [
-              Divider(
+              const Divider(
                 height: 1,
                 thickness: 2,
               ),
-              Gap(16),
+              const Gap(16),
               LayoutBuilder(builder: (context, constraints) {
                 return Wrap(
                   alignment: WrapAlignment.start,
@@ -101,7 +99,7 @@ class _LikesPageState extends State<LikesPage> {
                   ],
                 );
               }),
-              Gap(16),
+              const Gap(16),
             ],
           ),
         ),
