@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/modules/chats/chats_module.dart';
 import 'package:aluga_comigo/app/modules/customers/customers_module.dart';
 import 'package:aluga_comigo/app/modules/houses/houses_module.dart';
 import 'package:aluga_comigo/app/modules/likes/likes_module.dart';
@@ -14,6 +15,7 @@ class StartModule extends Module {
         ModuleRoute("/customers", module: CustomersModule()),
         ModuleRoute("/houses", module: HousesModule()),
         ModuleRoute("/likes", module: LikesModule()),
+        ModuleRoute("/chats", module: ChatsModule()),
       ],
     );
   }
