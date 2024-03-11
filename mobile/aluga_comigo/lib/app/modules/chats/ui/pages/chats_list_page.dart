@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/modules/chats/ui/pages/contact_list_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -89,6 +90,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                       ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(20),
+                                        borderSide: BorderSide.none,
                                       ),
                                       labelStyle: GoogleFonts.rubik(
                                         color: Colors.white,
@@ -212,6 +214,24 @@ class _ChatsListPageState extends State<ChatsListPage> {
                         height: 60,
                         width: double.infinity,
                         child: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                useSafeArea: true,
+                                useRootNavigator: true,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20),
+                                  ),
+                                ),
+                                builder: (context) {
+                                  return const FractionallySizedBox(
+                                    heightFactor: 0.9,
+                                    child: ContactListPage(),
+                                  );
+                                });
+                          },
                           child: Center(
                             child: Text(
                               "Iniciar Conversa",
