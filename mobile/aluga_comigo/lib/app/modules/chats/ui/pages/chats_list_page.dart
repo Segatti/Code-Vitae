@@ -1,6 +1,9 @@
+import 'package:aluga_comigo/app/modules/chats/interactor/enums/home_type.dart';
+import 'package:aluga_comigo/app/modules/chats/interactor/models/contact.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/pages/contact_list_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -109,95 +112,116 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                   shrinkWrap: true,
                                   itemCount: tabSelected == 0 ? 10 : 5,
                                   padding: EdgeInsets.zero,
-                                  itemBuilder: (context, index) => Container(
-                                    width: double.infinity,
-                                    height: 55,
-                                    color: Colors.white,
-                                    padding:
-                                        const EdgeInsetsDirectional.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WP2MsbDRCViQDfYrBBElK0lOlMdPdtlvnw&usqp=CAU",
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
+                                  itemBuilder: (context, index) =>
+                                      GestureDetector(
+                                    onTap: () {
+                                      Modular.to.pushNamed(
+                                        "./chat",
+                                        arguments: {
+                                          "idChat": "1",
+                                          "contact": Contact(
+                                            name: "Vittor",
+                                            birthday: DateTime.now(),
+                                            homeType: HomeType.house,
+                                            photo:
+                                                "https://clinicaunix.com.br/wp-content/uploads/2019/12/5-pontos-saude-do-homem.jpg",
                                           ),
-                                        ),
-                                        const Gap(8),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Text(
-                                                          "Ana",
-                                                          style:
-                                                              GoogleFonts.rubik(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                        const Gap(8),
-                                                        Visibility(
-                                                          visible: true,
-                                                          child: Text(
-                                                            "NOVO",
+                                        },
+                                        forRoot: true,
+                                      );
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 55,
+                                      color: Colors.white,
+                                      padding:
+                                          const EdgeInsetsDirectional.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WP2MsbDRCViQDfYrBBElK0lOlMdPdtlvnw&usqp=CAU",
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          const Gap(8),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            "Ana",
                                                             style: GoogleFonts
                                                                 .rubik(
-                                                              fontSize: 12,
-                                                              color:
-                                                                  Colors.purple,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .bold,
+                                                                      .w500,
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const Gap(8),
-                                                  Text(
-                                                    "Há 5 minutos",
-                                                    style: GoogleFonts.rubik(
-                                                      color: Colors.black54,
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      "Como vamos dividir as tarefas de casa? Eu gosto...",
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts.rubik(
-                                                        fontSize: 12,
+                                                          const Gap(8),
+                                                          Visibility(
+                                                            visible: true,
+                                                            child: Text(
+                                                              "NOVO",
+                                                              style: GoogleFonts
+                                                                  .rubik(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .purple,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                    const Gap(8),
+                                                    Text(
+                                                      "Há 5 minutos",
+                                                      style: GoogleFonts.rubik(
+                                                        color: Colors.black54,
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        "Como vamos dividir as tarefas de casa? Eu gosto...",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.rubik(
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   separatorBuilder: (context, index) =>

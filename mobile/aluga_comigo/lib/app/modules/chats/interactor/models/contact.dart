@@ -33,7 +33,7 @@ class Contact {
     return <String, dynamic>{
       'name': name,
       'photo': photo,
-      'birthday': birthday?.millisecondsSinceEpoch,
+      'birthday': birthday?.toIso8601String(),
       'homeType': homeType?.name,
     };
   }
@@ -43,11 +43,10 @@ class Contact {
       name: map['name'] != null ? map['name'] as String : null,
       photo: map['photo'] != null ? map['photo'] as String : null,
       birthday: map['birthday'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['birthday'] as int)
+          ? DateTime.parse(map['birthday'] as String)
           : null,
-      homeType: map['homeType'] != null
-          ? HomeType.getType(map['homeType'])
-          : null,
+      homeType:
+          map['homeType'] != null ? HomeType.getType(map['homeType']) : null,
     );
   }
 
