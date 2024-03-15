@@ -6,6 +6,7 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Modular.setInitialRoute("/start/customers/");
     return MaterialApp.router(
       title: 'Aluga Comigo',
       theme: ThemeData.light(),
