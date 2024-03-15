@@ -1,5 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 
+import 'ui/pages/history_likes_page.dart';
 import 'ui/pages/likes_page.dart';
 
 class LikesModule extends Module {
@@ -9,6 +10,11 @@ class LikesModule extends Module {
       "/",
       child: (context) => const LikesPage(),
       transition: TransitionType.upToDown,
+    );
+    r.child(
+      "/history",
+      child: (context) => const HistoryLikesPage(),
+      transition: TransitionType.rightToLeft,
     );
   }
 }

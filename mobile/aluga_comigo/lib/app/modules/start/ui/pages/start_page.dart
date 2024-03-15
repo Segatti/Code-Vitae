@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
@@ -99,7 +98,6 @@ class _StartPageState extends State<StartPage>
                     IconButton(
                       onPressed: () {
                         Modular.to.pushNamed("/config/profile");
-
                       },
                       tooltip: "Perfil",
                       icon: const Icon(
@@ -124,7 +122,6 @@ class _StartPageState extends State<StartPage>
                     IconButton(
                       onPressed: () {
                         Modular.to.pushNamed("/quest/");
-
                       },
                       tooltip: "Missões",
                       icon: const Icon(
@@ -136,7 +133,12 @@ class _StartPageState extends State<StartPage>
                     const Gap(16),
                     IconButton(
                       tooltip: "Histórico",
-                      onPressed: () {},
+                      onPressed: () {
+                        Modular.to.pushNamed(
+                          "/start/likes/history",
+                          forRoot: true,
+                        );
+                      },
                       icon: const Icon(
                         Icons.photo_outlined,
                         color: Colors.white,
@@ -145,7 +147,9 @@ class _StartPageState extends State<StartPage>
                     ),
                     const Gap(16),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Modular.to.pushNamed("/store/");
+                      },
                       tooltip: "Loja",
                       icon: const Icon(
                         Icons.store,
