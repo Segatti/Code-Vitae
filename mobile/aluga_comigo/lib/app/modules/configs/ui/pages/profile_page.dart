@@ -1,7 +1,9 @@
 import 'package:aluga_comigo/app/shared/ui/widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dart_date/dart_date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,6 +15,45 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  DateTime date = DateTime.now();
+
+  void _showDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          child: SizedBox(
+            height: 200,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(child: child),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: PrimaryButtonWidget(
+                    height: 50,
+                    borderRadius: 10,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      // Salvar
+                    },
+                    title: "Confirmar",
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,24 +233,35 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             const Gap(16),
                             Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color(0xFFEFEFEF),
-                                ),
-                                child: TextFormField(
-                                  controller:
-                                      TextEditingController(text: "16/07/1998"),
-                                  style: GoogleFonts.rubik(
-                                    height: 1,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showDialog(
+                                    CupertinoDatePicker(
+                                      initialDateTime: date,
+                                      maximumDate: DateTime.now(),
+                                      mode: CupertinoDatePickerMode.date,
+                                      onDateTimeChanged: (DateTime newDate) {
+                                        setState(() => date = newDate);
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
                                   ),
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: const Color(0xFFEFEFEF),
+                                  ),
+                                  child: Text(
+                                    date.format("dd/MM/yyyy"),
+                                    style: GoogleFonts.rubik(
+                                      height: 1,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 ),
@@ -519,7 +571,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           title: "Habilidades",
                           onTap: () {},
                           color: const Color(0xFF2C29A3),
-                          width: double.infinity,
                           borderRadius: 10,
                         ),
                         const Gap(16),
@@ -527,14 +578,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           title: "Tarefas Domésticas",
                           onTap: () {},
                           color: const Color(0xFF2C29A3),
-                          width: double.infinity,
                           borderRadius: 10,
                         ),
                         const Gap(16),
                         PrimaryButtonWidget(
                           title: "Salvar",
                           onTap: () {},
-                          width: double.infinity,
                           borderRadius: 10,
                         ),
                         const Gap(16),

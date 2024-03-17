@@ -6,7 +6,6 @@ class PrimaryButtonWidget extends StatelessWidget {
   final VoidCallback onTap;
   final String title;
   final double height;
-  final double? width;
   final EdgeInsetsGeometry? padding;
   final Color color;
   final double borderRadius;
@@ -17,7 +16,6 @@ class PrimaryButtonWidget extends StatelessWidget {
     this.height = 50,
     this.color = const Color(0xFFDF924B),
     this.borderRadius = 50,
-    this.width,
     this.padding,
   });
 
@@ -30,7 +28,6 @@ class PrimaryButtonWidget extends StatelessWidget {
           child: ChicletAnimatedButton(
             onPressed: onTap,
             height: height,
-            width: width,
             padding: padding,
             backgroundColor: color,
             borderRadius: borderRadius,
