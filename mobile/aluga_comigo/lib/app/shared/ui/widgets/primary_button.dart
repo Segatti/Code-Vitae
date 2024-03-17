@@ -8,13 +8,15 @@ class PrimaryButtonWidget extends StatelessWidget {
   final double height;
   final double? width;
   final EdgeInsetsGeometry? padding;
-  final Color colorTapEffect;
+  final Color color;
+  final double borderRadius;
   const PrimaryButtonWidget({
     super.key,
     required this.onTap,
     required this.title,
     this.height = 50,
-    this.colorTapEffect = Colors.orange,
+    this.color = const Color(0xFFDF924B),
+    this.borderRadius = 50,
     this.width,
     this.padding,
   });
@@ -30,8 +32,8 @@ class PrimaryButtonWidget extends StatelessWidget {
             height: height,
             width: width,
             padding: padding,
-            backgroundColor: const Color(0xFFDF924B),
-            borderRadius: 50,
+            backgroundColor: color,
+            borderRadius: borderRadius,
             child: Center(
               child: Text(
                 title,
