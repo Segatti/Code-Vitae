@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
@@ -81,9 +82,15 @@ class _StartPageState extends State<StartPage>
                         border: Border.all(color: Colors.white, width: 1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
-                        Icons.abc,
-                        size: 35,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WP2MsbDRCViQDfYrBBElK0lOlMdPdtlvnw&usqp=CAU",
+                          height: 35,
+                          width: 35,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const Gap(6),
