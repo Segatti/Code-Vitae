@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -218,7 +219,9 @@ class _IntroPageState extends State<IntroPage> {
                   children: [
                     Center(
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
+                          final storage = Modular.get<SecureStorageService>();
+                         await  storage.setData(StorageKey.intro, false.toString());
                           Modular.to.navigate("/auth/");
                         },
                         child: Container(

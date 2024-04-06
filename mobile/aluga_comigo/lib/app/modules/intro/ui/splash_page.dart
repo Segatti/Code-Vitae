@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:styled_text/styled_text.dart';
 
+import '../../../shared/data/services/secure_storage_service.dart';
+
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -28,8 +30,14 @@ class _SplashPageState extends State<SplashPage> {
         });
         Future.delayed(
           const Duration(seconds: 1),
-          () {
-            Modular.to.navigate("/intro");
+          () async {
+            final storage = Modular.get<SecureStorageService>();
+            final showIntro = await storage.getData(StorageKey.intro);
+            if (showIntro == "false") {
+              Modular.to.navigate("/auth/");
+            } else {
+              Modular.to.navigate("/intro");
+            }
           },
         );
       },

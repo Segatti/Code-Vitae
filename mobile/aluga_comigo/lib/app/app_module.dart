@@ -9,9 +9,6 @@ import 'modules/quests/quest_module.dart';
 
 class AppModule extends Module {
   @override
-  void binds(Injector i) {}
-
-  @override
   void routes(RouteManager r) {
     r.module('/', module: IntroModule());
     r.module('/auth', module: AuthModule());
