@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "429982705456",
+    "project_id": "aluga-comigo",
+    "storage_bucket": "aluga-comigo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429982705456:android:370025498c399239cb8af5",
+        "android_client_info": {
+          "package_name": "com.vittor.aluga_comigo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCc1f-Mq41oDdDkAu15SCAcVmiPzWe_KE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
