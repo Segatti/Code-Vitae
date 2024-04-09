@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '429982705456',
     projectId: 'aluga-comigo',
     authDomain: 'aluga-comigo.firebaseapp.com',
+    databaseURL: 'https://aluga-comigo-default-rtdb.firebaseio.com',
     storageBucket: 'aluga-comigo.appspot.com',
     measurementId: 'G-4WXLHS8H5F',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:429982705456:android:370025498c399239cb8af5',
     messagingSenderId: '429982705456',
     projectId: 'aluga-comigo',
+    databaseURL: 'https://aluga-comigo-default-rtdb.firebaseio.com',
     storageBucket: 'aluga-comigo.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:429982705456:ios:ed012e6f6fb878e5cb8af5',
     messagingSenderId: '429982705456',
     projectId: 'aluga-comigo',
+    databaseURL: 'https://aluga-comigo-default-rtdb.firebaseio.com',
     storageBucket: 'aluga-comigo.appspot.com',
     iosBundleId: 'com.vittor.alugaComigo',
   );
@@ -75,6 +78,7 @@ class DefaultFirebaseOptions {
     appId: '1:429982705456:ios:97e5cc2b4ce7a7efcb8af5',
     messagingSenderId: '429982705456',
     projectId: 'aluga-comigo',
+    databaseURL: 'https://aluga-comigo-default-rtdb.firebaseio.com',
     storageBucket: 'aluga-comigo.appspot.com',
     iosBundleId: 'com.vittor.alugaComigo.RunnerTests',
   );

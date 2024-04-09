@@ -4,12 +4,16 @@ import 'package:aluga_comigo/app/modules/auth/interactor/models/select_item.dart
 import 'package:aluga_comigo/app/modules/auth/ui/widgets/pill_widget.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 
+import '../../../../shared/data/services/firebase_auth_service.dart';
+import '../../../../shared/data/services/firebase_database_service.dart';
+import '../../../../shared/data/services/secure_storage_service.dart';
 import 'card_auth_widget.dart';
 
 class UserStepWidget extends StatefulWidget {
@@ -210,7 +214,46 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               const Gap(8),
                               Expanded(
                                 child: ChicletAnimatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    final auth =
+                                        Modular.get<FirebaseAuthService>();
+                                    final database =
+                                        Modular.get<FirebaseDatabaseService>();
+                                    final storage =
+                                        Modular.get<SecureStorageService>();
+
+                                    final response = await auth.createUser(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    );
+
+                                    response.fold(
+                                      (l) => notificationError(
+                                        "Error - ${l.code}",
+                                        l.message ?? '',
+                                      ),
+                                      (r) async {
+                                        await storage.setData(
+                                          StorageKey.userEmail,
+                                          _emailController.text,
+                                        );
+
+                                        await storage.setData(
+                                          StorageKey.userPassword,
+                                          _passwordController.text,
+                                        );
+
+                                        await database.create(
+                                          FirebaseDataTables.users,
+                                          {
+                                            r.user!.uid: _userSignupDTO.toMap(),
+                                          },
+                                        );
+
+                                        Modular.to
+                                            .navigate("/start/customers/");
+                                      },
+                                    );
                                   },
                                   borderRadius: 50,
                                   backgroundColor: Colors.green,
@@ -905,7 +948,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ],
                   ),
                   const Spacer(),
-                  const Gap(16),  
+                  const Gap(16),
                   Row(
                     children: [
                       Expanded(

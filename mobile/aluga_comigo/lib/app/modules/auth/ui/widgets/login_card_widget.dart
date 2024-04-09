@@ -1,8 +1,11 @@
+import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../shared/data/services/firebase_auth_service.dart';
 
 class LoginCardWidget extends StatelessWidget {
   final VoidCallback backPage;
@@ -10,6 +13,35 @@ class LoginCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController email = TextEditingController();
+    final TextEditingController password = TextEditingController();
+
+    Future login(String email, String password) async {
+      final service = Modular.get<FirebaseAuthService>();
+      final storage = Modular.get<SecureStorageService>();
+      final response = await service.login(email, password);
+      response.fold(
+        (l) {
+          showDialog(
+            context: context,
+            builder: (context) => SimpleDialog(
+              title: Text("Error - ${l.code}"),
+              children: [
+                Center(
+                  child: Text(l.message.toString()),
+                ),
+              ],
+            ),
+          );
+        },
+        (r) async {
+          await storage.setData(StorageKey.userEmail, email);
+          await storage.setData(StorageKey.userPassword, password);
+          Modular.to.navigate("/start/customers/");
+        },
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -39,6 +71,7 @@ class LoginCardWidget extends StatelessWidget {
                   ),
                   const Gap(16),
                   TextFormField(
+                    controller: email,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -60,6 +93,7 @@ class LoginCardWidget extends StatelessWidget {
                   ),
                   const Gap(16),
                   TextFormField(
+                    controller: password,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -102,7 +136,7 @@ class LoginCardWidget extends StatelessWidget {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed: () {
-                            Modular.to.navigate("/start/customers/");
+                            login(email.text, password.text);
                           },
                           borderRadius: 50,
                           backgroundColor: Colors.green,

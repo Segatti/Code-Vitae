@@ -21,6 +21,7 @@ class _AuthPageState extends State<AuthPage> {
   bool? haveAccount;
   Color color = const Color(0xFF2C29A3);
   final PageController _controller = PageController();
+  bool showAnimation = true;
 
   void backPage() {
     setState(() {
@@ -37,6 +38,16 @@ class _AuthPageState extends State<AuthPage> {
       duration: Durations.short4,
       curve: Curves.linear,
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        showAnimation = false;
+      });
+    });
   }
 
   @override
@@ -145,8 +156,9 @@ class _AuthPageState extends State<AuthPage> {
                             children: [
                               DelayedDisplay(
                                 delay: Duration(
-                                  milliseconds:
-                                      initialDuration.inMilliseconds + 2500,
+                                  milliseconds: (showAnimation)
+                                      ? initialDuration.inMilliseconds + 2500
+                                      : 0,
                                 ),
                                 slidingBeginOffset: const Offset(0.0, -0.35),
                                 child: PrimaryButtonWidget(
@@ -162,8 +174,9 @@ class _AuthPageState extends State<AuthPage> {
                               const SizedBox(height: 16),
                               DelayedDisplay(
                                 delay: Duration(
-                                  milliseconds:
-                                      initialDuration.inMilliseconds + 2500,
+                                  milliseconds: (showAnimation)
+                                      ? initialDuration.inMilliseconds + 2500
+                                      : 0,
                                 ),
                                 slidingBeginOffset: const Offset(0.0, -0.35),
                                 child: SecondaryButtonWidget(
