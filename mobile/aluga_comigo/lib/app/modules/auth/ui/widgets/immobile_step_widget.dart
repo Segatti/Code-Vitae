@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../shared/data/services/camera_service.dart';
 import '../../../../shared/data/services/firebase_auth_service.dart';
@@ -156,7 +158,13 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             children: [
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    launchUrl(
+                                      Uri.parse(
+                                          "https://drive.google.com/file/d/1Ob1x0-bLgEiZs7RYAqF7NfY2sNR51rBc/view?usp=drive_link"),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  },
                                   child: Container(
                                     height: 50,
                                     alignment: Alignment.center,
@@ -233,6 +241,8 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                         Modular.get<FirebaseAuthService>();
                                     final database =
                                         Modular.get<FirebaseDatabaseService>();
+                                    final databasePhoto =
+                                        Modular.get<FirebaseStorageService>();
                                     final storage =
                                         Modular.get<SecureStorageService>();
 
@@ -247,23 +257,32 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                         l.message ?? '',
                                       ),
                                       (r) async {
-                                        await storage.setData(
-                                          StorageKey.userEmail,
-                                          _emailController.text,
-                                        );
-
-                                        await storage.setData(
-                                          StorageKey.userPassword,
-                                          _passwordController.text,
-                                        );
-
-                                        await database.create(
-                                          FirebaseDataTables.houses,
-                                          {
-                                            r.user!.uid:
-                                                _immobileSignupDTO.toMap(),
-                                          },
-                                        );
+                                        await Future.wait([
+                                          storage.setData(
+                                            StorageKey.userEmail,
+                                            _emailController.text,
+                                          ),
+                                          storage.setData(
+                                            StorageKey.userPassword,
+                                            _passwordController.text,
+                                          ),
+                                          databasePhoto.upload(
+                                            FirebaseStorageTables.houses,
+                                            "${r.user!.uid}/1",
+                                            File(
+                                              _immobileSignupDTO.photos!.first,
+                                            ),
+                                          ),
+                                          database.create(
+                                            FirebaseDataTables.houses,
+                                            {
+                                              r.user!.uid:
+                                                  _immobileSignupDTO.toMap(
+                                                toDatabase: true,
+                                              ),
+                                            },
+                                          ),
+                                        ]);
 
                                         Modular.to
                                             .navigate("/start/customers/");

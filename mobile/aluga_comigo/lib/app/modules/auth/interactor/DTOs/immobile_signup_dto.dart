@@ -52,17 +52,17 @@ class ImmobileSignupDTO {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool toDatabase = false}) {
     return <String, dynamic>{
-      'typeUser': typeUser.name,
-      'email': email,
-      'password': password,
+      if (!toDatabase) 'typeUser': typeUser.name,
+      if (!toDatabase) 'email': email,
+      if (!toDatabase) 'password': password,
       'name': name,
       'phone': phone,
       'cep': cep,
       'value': value,
       'typeImmobile': typeImmobile?.name,
-      'photos': photos,
+      if (!toDatabase) 'photos': photos,
     };
   }
 

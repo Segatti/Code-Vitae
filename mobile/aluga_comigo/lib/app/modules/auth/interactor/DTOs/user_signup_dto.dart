@@ -44,15 +44,15 @@ class UserSignupDTO {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool toDatabase = false}) {
     return <String, dynamic>{
-      'typeUser': typeUser.name,
-      'email': email,
-      'password': password,
+      if (!toDatabase) 'typeUser': typeUser.name,
+      if (!toDatabase) 'email': email,
+      if (!toDatabase) 'password': password,
       'name': name,
       'phone': phone,
       'skills': skills?.map((x) => x.name).toList(),
-      'photos': photos,
+      if (!toDatabase) 'photos': photos,
     };
   }
 
