@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:aluga_comigo/app/modules/auth/interactor/DTOs/user_signup_dto.dart';
 import 'package:aluga_comigo/app/modules/auth/interactor/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/auth/interactor/models/select_item.dart';
 import 'package:aluga_comigo/app/modules/auth/ui/widgets/pill_widget.dart';
+import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
@@ -38,6 +42,17 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final service = Modular.get<CameraService>();
+
+  Future<void> getImage(ImageSource imageSource) async {
+    final result = await service.getImage(imageSource);
+    if (result != null) {
+      _userSignupDTO = _userSignupDTO.copyWith(
+        photos: [result.path],
+      );
+      setState(() {});
+    }
+  }
 
   void notificationError(String title, String message) {
     showDialog(
@@ -884,9 +899,15 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed: nextPage,
+                          onPressed:
+                              (_userSignupDTO.skills?.isNotEmpty ?? false)
+                                  ? nextPage
+                                  : null,
                           borderRadius: 50,
-                          backgroundColor: Colors.green,
+                          backgroundColor:
+                              (_userSignupDTO.skills?.isNotEmpty ?? false)
+                                  ? Colors.green
+                                  : Colors.grey,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(
@@ -914,39 +935,89 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                   ),
                   const Gap(16),
                   const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+                  (_userSignupDTO.photos?.isNotEmpty ?? false)
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              width: 80,
+                              height: 80,
+                              child: Image.file(
+                                File(_userSignupDTO.photos!.first),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const Gap(16),
+                            GestureDetector(
+                              onTap: () {
+                                _userSignupDTO = _userSignupDTO.copyWith(
+                                  photos: [],
+                                );
+                                setState(() {});
+                              },
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.red,
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                getImage(ImageSource.camera);
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Color(0xFF4B98DF),
+                                    size: 50,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                getImage(ImageSource.gallery);
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.photo_camera_back_rounded,
+                                    color: Color(0xFF4B98DF),
+                                    size: 50,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        padding: const EdgeInsets.all(16),
-                        child: const Center(
-                          child: Icon(
-                            Icons.camera_alt,
-                            color: Color(0xFF4B98DF),
-                            size: 50,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: const Center(
-                          child: Icon(
-                            Icons.photo_camera_back_rounded,
-                            color: Color(0xFF4B98DF),
-                            size: 50,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   const Spacer(),
                   const Gap(16),
                   Row(
@@ -969,9 +1040,15 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed: nextPage,
+                          onPressed:
+                              (_userSignupDTO.photos?.isNotEmpty ?? false)
+                                  ? nextPage
+                                  : null,
                           borderRadius: 50,
-                          backgroundColor: Colors.green,
+                          backgroundColor:
+                              (_userSignupDTO.photos?.isNotEmpty ?? false)
+                                  ? Colors.green
+                                  : Colors.grey,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(

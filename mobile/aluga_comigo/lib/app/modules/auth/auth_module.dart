@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/shared/core_module.dart';
+import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/firebase_auth_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -17,6 +18,7 @@ class AuthModule extends Module {
     i.addSingleton(FirebaseAuthService.new);
     i.addSingleton(FirebaseDatabaseService.new);
     i.addSingleton(SecureStorageService.new);
+    i.addSingleton(CameraService.new);
   }
 
   @override
