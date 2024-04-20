@@ -258,14 +258,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                       _passwordController.text,
                                     );
 
-                                    if (context.mounted) Navigator.pop(context);
-
                                     response.fold(
-                                      (l) => {
+                                      (l) {
+                                        Navigator.pop(context);
+
                                         notificationError(
                                           "Error - ${l.code}",
                                           l.message ?? '',
-                                        )
+                                        );
                                       },
                                       (r) async {
                                         await Future.wait([

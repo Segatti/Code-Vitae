@@ -259,13 +259,14 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                       _passwordController.text,
                                     );
 
-                                    if (context.mounted) Navigator.pop(context);
-
                                     response.fold(
-                                      (l) => notificationError(
-                                        "Error - ${l.code}",
-                                        l.message ?? '',
-                                      ),
+                                      (l) {
+                                        Navigator.pop(context);
+                                        notificationError(
+                                          "Error - ${l.code}",
+                                          l.message ?? '',
+                                        );
+                                      },
                                       (r) async {
                                         await Future.wait([
                                           storage.setData(
