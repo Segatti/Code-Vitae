@@ -17,6 +17,7 @@ import '../../../../shared/data/services/camera_service.dart';
 import '../../../../shared/data/services/firebase_auth_service.dart';
 import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../../shared/data/services/secure_storage_service.dart';
+import '../../../../shared/ui/widgets/popups/loading_popup.dart';
 import '../../interactor/DTOs/immobile_signup_dto.dart';
 import '../../interactor/enums/type_immobile.dart';
 import 'card_auth_widget.dart';
@@ -237,6 +238,12 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                               Expanded(
                                 child: ChicletAnimatedButton(
                                   onPressed: () async {
+                                    showAdaptiveDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (context) =>
+                                          const LoadingPopup(),
+                                    );
                                     final auth =
                                         Modular.get<FirebaseAuthService>();
                                     final database =
@@ -251,11 +258,15 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                       _passwordController.text,
                                     );
 
+                                    if (context.mounted) Navigator.pop(context);
+
                                     response.fold(
-                                      (l) => notificationError(
-                                        "Error - ${l.code}",
-                                        l.message ?? '',
-                                      ),
+                                      (l) => {
+                                        notificationError(
+                                          "Error - ${l.code}",
+                                          l.message ?? '',
+                                        )
+                                      },
                                       (r) async {
                                         await Future.wait([
                                           storage.setData(

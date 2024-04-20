@@ -6,6 +6,7 @@ import 'package:aluga_comigo/app/modules/auth/interactor/models/select_item.dart
 import 'package:aluga_comigo/app/modules/auth/ui/widgets/pill_widget.dart';
 import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
+import 'package:aluga_comigo/app/shared/ui/widgets/popups/loading_popup.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -238,6 +239,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               Expanded(
                                 child: ChicletAnimatedButton(
                                   onPressed: () async {
+                                    showAdaptiveDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (context) =>
+                                          const LoadingPopup(),
+                                    );
                                     final auth =
                                         Modular.get<FirebaseAuthService>();
                                     final database =
@@ -251,6 +258,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                       _emailController.text,
                                       _passwordController.text,
                                     );
+
+                                    if (context.mounted) Navigator.pop(context);
 
                                     response.fold(
                                       (l) => notificationError(
