@@ -30,6 +30,7 @@ class _CustomersPageState extends State<CustomersPage> {
                   SwipeDirection.right,
                   SwipeDirection.up,
                 },
+                stackClipBehaviour: Clip.none,
                 builder: (context, properties) {
                   final flipController = FlipCardController();
                   return FlipCard(

@@ -4,8 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 enum StorageKey {
   intro,
-  userEmail,
-  userPassword,
+  user,
 }
 
 class SecureStorageService {

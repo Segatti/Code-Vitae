@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:aluga_comigo/app/shared/interactor/models/errors/firebase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../interactor/models/errors/firebase.dart';
+
 enum FirebaseStorageTables {
   users,
-  houses,
+  immobile,
 }
 
 class FirebaseStorageService {

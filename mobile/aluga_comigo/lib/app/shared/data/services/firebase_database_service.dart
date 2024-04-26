@@ -6,7 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 enum FirebaseDataTables {
   users,
-  houses,
+  immobile,
 }
 
 class FirebaseDatabaseService {

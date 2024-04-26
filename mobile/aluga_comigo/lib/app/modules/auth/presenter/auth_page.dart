@@ -1,11 +1,18 @@
-import 'package:aluga_comigo/app/modules/auth/ui/widgets/login_card_widget.dart';
-import 'package:aluga_comigo/app/modules/auth/ui/widgets/signup_card_widget.dart';
+import 'dart:convert';
+
+import 'package:aluga_comigo/app/modules/auth/domain/states/auth_state.dart';
+import 'package:aluga_comigo/app/modules/auth/presenter/cubits/auth_cubit.dart';
+import 'package:aluga_comigo/app/modules/auth/presenter/widgets/login_card_widget.dart';
+import 'package:aluga_comigo/app/modules/auth/presenter/widgets/signup_card_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../shared/data/services/secure_storage_service.dart';
+import '../../../shared/ui/widgets/popups/loading_popup.dart';
 import '../../../shared/ui/widgets/primary_button.dart';
 import '../../../shared/ui/widgets/secondary_button.dart';
 
@@ -22,6 +29,8 @@ class _AuthPageState extends State<AuthPage> {
   Color color = const Color(0xFF2C29A3);
   final PageController _controller = PageController();
   bool showAnimation = true;
+  final cubit = Modular.get<AuthCubit>();
+  final storage = Modular.get<SecureStorageService>();
 
   void backPage() {
     setState(() {
@@ -37,6 +46,52 @@ class _AuthPageState extends State<AuthPage> {
     _controller.nextPage(
       duration: Durations.short4,
       curve: Curves.linear,
+    );
+  }
+
+  void notificationError(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (_) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.red,
+                width: 5,
+              ),
+            ),
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.all(32),
+            child: Column(
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.rubik(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                Text(
+                  message,
+                  style: GoogleFonts.rubik(
+                    fontSize: 18,
+                    color: Colors.black,
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -196,6 +251,35 @@ class _AuthPageState extends State<AuthPage> {
                         (haveAccount ?? true)
                             ? LoginCardWidget(
                                 backPage: backPage,
+                                login: (email, password) async {
+                                  showAdaptiveDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) => const LoadingPopup(),
+                                  );
+
+                                  await cubit.login(email, password);
+                                  var state = cubit.state;
+
+                                  if (state is SuccessState) {
+                                    await storage.setData(
+                                      StorageKey.user,
+                                      jsonEncode({
+                                        "email": state.user.email,
+                                        "password": state.user.password,
+                                        "typeUser": state.user.typeUser.name,
+                                        "photo": state.user.photo,
+                                      }),
+                                    );
+                                    Modular.to.navigate("/start/customers/");
+                                  } else if (state is ErrorState) {
+                                    if (context.mounted) Navigator.pop(context);
+                                    notificationError(
+                                      "Error - ${state.code}",
+                                      state.message,
+                                    );
+                                  }
+                                },
                               )
                             : SignupCardWidget(
                                 backPage: backPage,

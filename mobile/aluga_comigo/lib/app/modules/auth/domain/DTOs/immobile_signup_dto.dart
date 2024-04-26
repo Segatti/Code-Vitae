@@ -54,7 +54,7 @@ class ImmobileSignupDTO {
 
   Map<String, dynamic> toMap({bool toDatabase = false}) {
     return <String, dynamic>{
-      if (!toDatabase) 'typeUser': typeUser.name,
+      'typeUser': typeUser.name,
       if (!toDatabase) 'email': email,
       if (!toDatabase) 'password': password,
       'name': name,
@@ -62,7 +62,7 @@ class ImmobileSignupDTO {
       'cep': cep,
       'value': value,
       'typeImmobile': typeImmobile?.name,
-      if (!toDatabase) 'photos': photos,
+      'photos': photos,
     };
   }
 

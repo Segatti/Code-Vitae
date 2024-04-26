@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../interactor/models/select_item.dart';
+import '../../domain/models/select_item.dart';
 
 class PillWidget extends StatefulWidget {
   final SelectItem selectItem;

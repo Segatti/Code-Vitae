@@ -75,4 +75,24 @@ class FirebaseAuthService {
       }
     }
   }
+
+  Future<Either<FirebaseAuthException, void>> recoverPassword(
+    String email,
+  ) async {
+    try {
+      await _firebase.sendPasswordResetEmail(email: email);
+      return const Right(null);
+    } catch (exception) {
+      if (exception is FirebaseAuthException) {
+        return Left(exception);
+      } else {
+        return Left(
+          FirebaseAuthException(
+            code: "-1",
+            message: exception.toString(),
+          ),
+        );
+      }
+    }
+  }
 }

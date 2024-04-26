@@ -1,12 +1,7 @@
 import 'dart:io';
 
-import 'package:aluga_comigo/app/modules/auth/interactor/DTOs/user_signup_dto.dart';
-import 'package:aluga_comigo/app/modules/auth/interactor/enums/user_skill.dart';
-import 'package:aluga_comigo/app/modules/auth/interactor/models/select_item.dart';
-import 'package:aluga_comigo/app/modules/auth/ui/widgets/pill_widget.dart';
-import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
-import 'package:aluga_comigo/app/shared/ui/widgets/popups/loading_popup.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,39 +13,46 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../shared/data/services/camera_service.dart';
 import '../../../../shared/data/services/firebase_auth_service.dart';
 import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../../shared/data/services/secure_storage_service.dart';
+import '../../../../shared/ui/widgets/popups/loading_popup.dart';
+import '../../domain/DTOs/immobile_signup_dto.dart';
+import '../../domain/enums/type_immobile.dart';
 import 'card_auth_widget.dart';
 
-class UserStepWidget extends StatefulWidget {
+class ImmobileStepWidget extends StatefulWidget {
   final VoidCallback backPage;
-  const UserStepWidget({super.key, required this.backPage});
+  const ImmobileStepWidget({super.key, required this.backPage});
 
   @override
-  State<UserStepWidget> createState() => _UserStepWidgetState();
+  State<ImmobileStepWidget> createState() => _ImmobileStepWidgetState();
 }
 
-class _UserStepWidgetState extends State<UserStepWidget> {
-  final PageController _controller = PageController();
+class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
+  final CarouselController _controller = CarouselController();
   int indexCarousel = 0;
-  UserSignupDTO _userSignupDTO = const UserSignupDTO();
+  ImmobileSignupDTO _immobileSignupDTO = const ImmobileSignupDTO();
   bool acceptTerms = false;
   bool haveError = false;
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
+  final _formKey3 = GlobalKey<FormState>();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _cepController = TextEditingController();
+  final TextEditingController _valueController = TextEditingController();
   final service = Modular.get<CameraService>();
 
   Future<void> getImage(ImageSource imageSource) async {
     final result = await service.getImage(imageSource);
     if (result != null) {
-      _userSignupDTO = _userSignupDTO.copyWith(
+      _immobileSignupDTO = _immobileSignupDTO.copyWith(
         photos: [result.path],
       );
       setState(() {});
@@ -101,21 +103,18 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   }
 
   void backPage() {
-    FocusManager.instance.primaryFocus?.unfocus();
     if (indexCarousel == 0) {
       widget.backPage();
     } else {
-      _controller.previousPage(
-          duration: Durations.medium1, curve: Curves.linear);
+      _controller.previousPage();
       indexCarousel--;
     }
     setState(() {});
   }
 
   void nextPage() {
-    FocusManager.instance.primaryFocus?.unfocus();
     if (indexCarousel < 3) {
-      _controller.nextPage(duration: Durations.medium1, curve: Curves.linear);
+      _controller.nextPage();
       indexCarousel++;
       setState(() {});
     } else {
@@ -262,38 +261,50 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                     response.fold(
                                       (l) {
                                         Navigator.pop(context);
+
                                         notificationError(
                                           "Error - ${l.code}",
                                           l.message ?? '',
                                         );
                                       },
                                       (r) async {
-                                        await Future.wait([
-                                          storage.setData(
-                                            StorageKey.userEmail,
-                                            _emailController.text,
-                                          ),
-                                          storage.setData(
-                                            StorageKey.userPassword,
-                                            _passwordController.text,
-                                          ),
-                                          databasePhoto.upload(
-                                            FirebaseStorageTables.users,
-                                            "${r.user!.uid}/1",
-                                            File(_userSignupDTO.photos!.first),
-                                          ),
-                                          database.create(
-                                            FirebaseDataTables.users,
-                                            {
-                                              r.user!.uid: _userSignupDTO.toMap(
-                                                toDatabase: true,
-                                              ),
-                                            },
-                                          ),
-                                        ]);
+                                        var responsePhoto =
+                                            await databasePhoto.upload(
+                                          FirebaseStorageTables.users,
+                                          "${r.user!.uid}/1",
+                                          File(
+                                              _immobileSignupDTO.photos!.first),
+                                        );
 
-                                        Modular.to
-                                            .navigate("/start/customers/");
+                                        await responsePhoto.fold((l) {
+                                          Navigator.pop(context);
+                                          notificationError(
+                                            "Error - ${l.code}",
+                                            l.msg,
+                                          );
+                                        }, (r2) async {
+                                          var immobileDTO =
+                                              _immobileSignupDTO.copyWith(
+                                            photos: [r2],
+                                          );
+                                          await Future.wait([
+                                            storage.setData(
+                                              StorageKey.user,
+                                              _emailController.text,
+                                            ),
+                                            database.create(
+                                              FirebaseDataTables.users,
+                                              {
+                                                r.user!.uid: immobileDTO.toMap(
+                                                  toDatabase: true,
+                                                ),
+                                              },
+                                            ),
+                                          ]);
+
+                                          Modular.to
+                                              .navigate("/start/customers/");
+                                        });
                                       },
                                     );
                                   },
@@ -326,27 +337,35 @@ class _UserStepWidgetState extends State<UserStepWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          height: 267,
-          child: PageView(
-            controller: _controller,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
+    return ClipRRect(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CarouselSlider(
+            carouselController: _controller,
+            options: CarouselOptions(
+              height: 270.0,
+              aspectRatio: 1,
+              enableInfiniteScroll: false,
+              scrollPhysics: const NeverScrollableScrollPhysics(),
+              viewportFraction: 1,
+              animateToClosest: true,
+            ),
+            items: [
               CardAuthWidget(
                 children: [
+                  const Spacer(),
                   Text(
                     "Dados de acesso",
                     textScaler: const TextScaler.linear(1),
                     style: GoogleFonts.rubik(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   const Gap(16),
+                  const Spacer(),
                   Form(
                     key: _formKey,
                     child: Column(
@@ -512,6 +531,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ],
                     ),
                   ),
+                  const Spacer(),
                   const Gap(16),
                   Row(
                     children: [
@@ -535,7 +555,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                         child: ChicletAnimatedButton(
                           onPressed: () {
                             if (_formKey.currentState?.validate() ?? false) {
-                              _userSignupDTO = _userSignupDTO.copyWith(
+                              _immobileSignupDTO = _immobileSignupDTO.copyWith(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
@@ -561,20 +581,23 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
+                  const Spacer(),
                 ],
               ),
               CardAuthWidget(
                 children: [
+                  const Spacer(),
                   Text(
                     "Dados pessoais",
                     textScaler: const TextScaler.linear(1),
                     style: GoogleFonts.rubik(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   const Gap(16),
+                  const Spacer(),
                   Form(
                     key: _formKey2,
                     child: Column(
@@ -761,11 +784,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                         child: ChicletAnimatedButton(
                           onPressed: () {
                             if (_formKey2.currentState?.validate() ?? false) {
-                              _userSignupDTO = _userSignupDTO.copyWith(
+                              _immobileSignupDTO = _immobileSignupDTO.copyWith(
                                 name: _nameController.text,
                                 phone: _phoneController.text,
                               );
-
                               nextPage();
                             } else {
                               setState(() {
@@ -787,12 +809,13 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
+                  const Spacer(),
                 ],
               ),
               CardAuthWidget(
                 children: [
                   Text(
-                    "Habilidades",
+                    "Dados do Imóvel",
                     textScaler: const TextScaler.linear(1),
                     style: GoogleFonts.rubik(
                       color: Colors.white,
@@ -801,111 +824,276 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     ),
                   ),
                   const Gap(16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
+                  Form(
+                    key: _formKey3,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _cepController,
+                          onChanged: (_) {
+                            if (haveError) {
+                              if (_formKey3.currentState?.validate() ?? false) {
+                                setState(() {
+                                  haveError = false;
+                                });
+                              }
+                            }
+                          },
+                          keyboardType: TextInputType.number,
+                          validator: (text) {
+                            String data = text?.trim() ?? '';
+                            if (data.isEmpty) {
+                              return "* Campo obrigatório";
+                            }
+                            if (data.length != 8) {
+                              return "Número invalido. Ex: XXXXX-XXX";
+                            }
+                            return null;
+                          },
+                          maxLength: 8,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            filled: true,
+                            isDense: true,
+                            fillColor: Colors.white,
+                            counter: const SizedBox.shrink(),
+                            hintText: 'CEP',
+                            hintStyle: GoogleFonts.rubik(
+                              fontSize: 18,
+                            ),
+                            errorStyle: const TextStyle(
+                              fontSize: 0,
+                            ),
+                            suffixIcon: JustTheTooltip(
+                              backgroundColor: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                              content: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'XXXXX-XXX',
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              isModal: true,
+                              child: const Icon(Icons.help),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                                left: 24.0, bottom: 8.0, top: 8.0),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                          ),
+                        ),
+                        const Gap(8),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.cucaMaster,
+                            Expanded(
+                              child: TextFormField(
+                                controller: _valueController,
+                                onChanged: (_) {
+                                  if (haveError) {
+                                    if (_formKey3.currentState?.validate() ??
+                                        false) {
+                                      setState(() {
+                                        haveError = false;
+                                      });
+                                    }
+                                  }
+                                },
+                                keyboardType: TextInputType.number,
+                                validator: (text) {
+                                  String data = text?.trim() ?? '';
+                                  if (data.isEmpty) {
+                                    return "* Campo obrigatório";
+                                  }
+                                  if (double.parse(data) <= 0) {
+                                    return "Número invalido.";
+                                  }
+                                  return null;
+                                },
+                                textAlignVertical: TextAlignVertical.center,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  isDense: true,
+                                  fillColor: Colors.white,
+                                  counter: const SizedBox.shrink(),
+                                  hintText: 'Valor',
+                                  hintStyle: GoogleFonts.rubik(
+                                    fontSize: 18,
+                                  ),
+                                  errorStyle: const TextStyle(
+                                    fontSize: 0,
+                                  ),
+                                  suffixIcon: JustTheTooltip(
+                                    backgroundColor: Colors.black,
+                                    borderRadius: BorderRadius.circular(20),
+                                    content: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      child: Text(
+                                        'R\$ XXXX,XX',
+                                        style: GoogleFonts.rubik(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    isModal: true,
+                                    child: const Icon(Icons.help),
+                                  ),
+                                  contentPadding: const EdgeInsets.only(
+                                      left: 24.0, bottom: 8.0, top: 8.0),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                ),
                               ),
-                              selectItem: const SelectItem(
-                                title: "Mestre Cuca",
-                                value: UserSkill.cucaMaster,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
                             ),
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.ninjaInSweeping,
+                            const Gap(16),
+                            Expanded(
+                              child: DropdownButtonFormField<TypeImmobile>(
+                                isExpanded: true,
+                                isDense: true,
+                                validator: (value) {
+                                  if (value == null) {
+                                    return "* Campo obrigatório";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'Tipo',
+                                  hintStyle: GoogleFonts.rubik(
+                                    fontSize: 18,
+                                  ),
+                                  errorStyle: const TextStyle(
+                                    fontSize: 0,
+                                  ),
+                                  contentPadding: const EdgeInsets.only(
+                                    left: 24.0,
+                                    bottom: 8.0,
+                                    top: 8.0,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(40),
+                                value: _immobileSignupDTO.typeImmobile,
+                                onChanged: (value) {
+                                  if (haveError) {
+                                    if (_formKey3.currentState?.validate() ??
+                                        false) {
+                                      setState(() {
+                                        haveError = false;
+                                      });
+                                    }
+                                  }
+                                  setState(() {
+                                    _immobileSignupDTO =
+                                        _immobileSignupDTO.copyWith(
+                                      typeImmobile: value ?? TypeImmobile.none,
+                                    );
+                                  });
+                                },
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: TypeImmobile.house,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Casa",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: TypeImmobile.apartment,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Apartamento",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              selectItem: const SelectItem(
-                                title: "Ninja em varrer",
-                                value: UserSkill.ninjaInSweeping,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
-                            ),
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.laundryOperator,
-                              ),
-                              selectItem: const SelectItem(
-                                title: "Operador de roupa suja",
-                                value: UserSkill.laundryOperator,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
-                            ),
-                            PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
-                                UserSkill.humanDishwasher,
-                              ),
-                              selectItem: const SelectItem(
-                                title: "Lava-louça humano",
-                                value: UserSkill.humanDishwasher,
-                              ),
-                              onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
-                                if (isSelected) {
-                                  skills.add(value.value as UserSkill);
-                                } else {
-                                  skills.remove(value.value as UserSkill);
-                                }
-                                setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
-                                });
-                              },
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Gap(16),
+                  const Gap(8),
                   Row(
                     children: [
                       Expanded(
@@ -926,15 +1114,21 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed:
-                              (_userSignupDTO.skills?.isNotEmpty ?? false)
-                                  ? nextPage
-                                  : null,
+                          onPressed: () {
+                            if (_formKey3.currentState?.validate() ?? false) {
+                              _immobileSignupDTO = _immobileSignupDTO.copyWith(
+                                cep: _cepController.text,
+                                value: num.tryParse(_valueController.text),
+                              );
+                              nextPage();
+                            } else {
+                              setState(() {
+                                haveError = true;
+                              });
+                            }
+                          },
                           borderRadius: 50,
-                          backgroundColor:
-                              (_userSignupDTO.skills?.isNotEmpty ?? false)
-                                  ? Colors.green
-                                  : Colors.grey,
+                          backgroundColor: Colors.green,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(
@@ -947,12 +1141,14 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
+                  const Spacer(),
                 ],
               ),
               CardAuthWidget(
                 children: [
+                  const Spacer(),
                   Text(
-                    "Uma fotinha básica!",
+                    "Uma fotinha do imóvel!",
                     textScaler: const TextScaler.linear(1),
                     style: GoogleFonts.rubik(
                       color: Colors.white,
@@ -962,7 +1158,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                   ),
                   const Gap(16),
                   const Spacer(),
-                  (_userSignupDTO.photos?.isNotEmpty ?? false)
+                  (_immobileSignupDTO.photos?.isNotEmpty ?? false)
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -975,14 +1171,15 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               width: 80,
                               height: 80,
                               child: Image.file(
-                                File(_userSignupDTO.photos!.first),
+                                File(_immobileSignupDTO.photos!.first),
                                 fit: BoxFit.cover,
                               ),
                             ),
                             const Gap(16),
                             GestureDetector(
                               onTap: () {
-                                _userSignupDTO = _userSignupDTO.copyWith(
+                                _immobileSignupDTO =
+                                    _immobileSignupDTO.copyWith(
                                   photos: [],
                                 );
                                 setState(() {});
@@ -1068,12 +1265,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed:
-                              (_userSignupDTO.photos?.isNotEmpty ?? false)
+                              (_immobileSignupDTO.photos?.isNotEmpty ?? false)
                                   ? nextPage
                                   : null,
                           borderRadius: 50,
                           backgroundColor:
-                              (_userSignupDTO.photos?.isNotEmpty ?? false)
+                              (_immobileSignupDTO.photos?.isNotEmpty ?? false)
                                   ? Colors.green
                                   : Colors.grey,
                           child: Text(
@@ -1088,24 +1285,19 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       ),
                     ],
                   ),
+                  const Spacer(),
                 ],
               ),
             ],
           ),
-        ),
-        const Gap(16),
-        Expanded(
-          flex: 1,
-          child: Container(
-            alignment: Alignment.topCenter,
-            child: AnimatedSmoothIndicator(
-              activeIndex: indexCarousel,
-              count: 4,
-              effect: const WormEffect(),
-            ),
-          ),
-        )
-      ],
+          const Gap(16),
+          AnimatedSmoothIndicator(
+            activeIndex: indexCarousel,
+            count: 4,
+            effect: const WormEffect(),
+          )
+        ],
+      ),
     );
   }
 }
