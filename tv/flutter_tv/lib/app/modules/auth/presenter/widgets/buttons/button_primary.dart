@@ -37,8 +37,8 @@ class _ButtonPrimaryState extends State<ButtonPrimary> {
       },
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(ColorPattern.primaryColor),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          backgroundColor: WidgetStateProperty.all(ColorPattern.primaryColor),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.zero,
               side: BorderSide(
