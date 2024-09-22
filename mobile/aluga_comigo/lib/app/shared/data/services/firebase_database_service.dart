@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:aluga_comigo/app/shared/interactor/models/errors/firebase.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 enum FirebaseDataTables {
   users,
@@ -10,19 +10,18 @@ enum FirebaseDataTables {
 }
 
 class FirebaseDatabaseService {
-  final FirebaseDatabase _firebase;
+  final FirebaseFirestore _firebase;
 
-  FirebaseDatabaseService(this._firebase) {
-    _firebase.setPersistenceEnabled(true);
-  }
+  FirebaseDatabaseService(this._firebase);
 
   Future<Either<FirebaseDatabaseError, void>> create(
     FirebaseDataTables table,
     Map<String, dynamic> data,
   ) async {
     try {
-      DatabaseReference ref = _firebase.ref(table.name);
-      await ref.set(data);
+      var id = data.remove('id');
+      var ref = _firebase.collection(table.name);
+      await ref.doc(id).set(data);
       return const Right(null);
     } catch (exception) {
       final error = FirebaseDatabaseError(
@@ -38,9 +37,9 @@ class FirebaseDatabaseService {
     String path,
   ) async {
     try {
-      DatabaseReference ref = _firebase.ref(table.name);
-      final data = await ref.child(path).get();
-      return Right(data.value);
+      var ref = _firebase.collection(table.name);
+      final data = await ref.doc(path).get();
+      return Right(data.data());
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),
@@ -50,13 +49,18 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<Either<FirebaseDatabaseError, Stream<DatabaseEvent>>> listen(
+  Future<Either<FirebaseDatabaseError, Stream>> listen(
     FirebaseDataTables table,
     String? path,
   ) async {
     try {
-      DatabaseReference ref = _firebase.ref("${table.name}/${path ?? ''}");
-      return Right(ref.onValue);
+      if (path != null) {
+        var ref = _firebase.collection(table.name).doc(path).snapshots();
+        return Right(ref);
+      } else {
+        var ref = _firebase.collection(table.name).snapshots();
+        return Right(ref);
+      }
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),
@@ -72,8 +76,8 @@ class FirebaseDatabaseService {
     Map<String, dynamic> data,
   ) async {
     try {
-      DatabaseReference ref = _firebase.ref("${table.name}/$path");
-      await ref.update(data);
+      var ref = _firebase.collection(table.name).doc(path);
+      await ref.set(data);
       return const Right(null);
     } catch (exception) {
       final error = FirebaseDatabaseError(
@@ -89,8 +93,8 @@ class FirebaseDatabaseService {
     String path,
   ) async {
     try {
-      DatabaseReference ref = _firebase.ref("${table.name}/$path");
-      await ref.remove();
+      var ref = _firebase.collection(table.name).doc(path);
+      await ref.delete();
       return const Right(null);
     } catch (exception) {
       final error = FirebaseDatabaseError(

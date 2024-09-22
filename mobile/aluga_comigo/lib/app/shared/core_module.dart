@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,7 +11,7 @@ class CoreModule extends Module {
     i.addSingleton<FlutterSecureStorage>(FlutterSecureStorage.new);
     i.addSingleton<FirebaseAuth>(() => FirebaseAuth.instance);
     i.addSingleton<FirebaseStorage>(() => FirebaseStorage.instance);
-    i.addSingleton<FirebaseDatabase>(() => FirebaseDatabase.instance);
+    i.addSingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
     i.addSingleton<ImagePicker>(ImagePicker.new);
   }
 }

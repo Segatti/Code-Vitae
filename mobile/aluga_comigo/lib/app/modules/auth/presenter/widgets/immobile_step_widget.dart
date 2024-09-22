@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
-import 'package:flutter/material.dart' hide CarouselController;
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,22 +31,22 @@ class ImmobileStepWidget extends StatefulWidget {
 }
 
 class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
-  final CarouselController _controller = CarouselController();
-  int indexCarousel = 0;
-  ImmobileSignupDTO _immobileSignupDTO = const ImmobileSignupDTO();
-  bool acceptTerms = false;
-  bool haveError = false;
+  final _controller = CarouselSliderController();
+  var indexCarousel = 0;
+  var _immobileSignupDTO = const ImmobileSignupDTO();
+  var acceptTerms = false;
+  var haveError = false;
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   final _formKey3 = GlobalKey<FormState>();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _cepController = TextEditingController();
-  final TextEditingController _valueController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _cepController = TextEditingController();
+  final _valueController = TextEditingController();
   final service = Modular.get<CameraService>();
 
   Future<void> getImage(ImageSource imageSource) async {
