@@ -1,6 +1,6 @@
 import 'package:aluga_comigo/app/modules/auth/domain/usecases/recover_password_user.dart';
-import 'package:aluga_comigo/app/modules/auth/infra/datasources/auth_datasource.dart';
-import 'package:aluga_comigo/app/modules/auth/infra/repositories/auth_repository.dart';
+import 'package:aluga_comigo/app/modules/auth/data/interfaces/auth_datasource.dart';
+import 'package:aluga_comigo/app/modules/auth/data/repositories/auth_repository.dart';
 import 'package:aluga_comigo/app/shared/core_module.dart';
 import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/firebase_auth_service.dart';
@@ -13,9 +13,9 @@ import 'domain/repositories/auth_repository.dart';
 import 'domain/usecases/login_user.dart';
 import 'domain/usecases/signup_immobile.dart';
 import 'domain/usecases/signup_user.dart';
-import 'external/datasources/auth_firebase_datasource.dart';
+import 'data/datasources/auth_firebase_datasource.dart';
 import 'presenter/auth_page.dart';
-import 'presenter/cubits/auth_cubit.dart';
+import 'presenter/controllers/auth_controller.dart';
 
 class AuthModule extends Module {
   @override
@@ -43,7 +43,8 @@ class AuthModule extends Module {
     i.addLazySingleton<ISignupImmobile>(SignupImmobile.new);
     i.addLazySingleton<IRecoverPasswordUser>(RecoverPasswordUser.new);
 
-    i.add(AuthCubit.new);
+    // Stores
+    i.add<IAuthController>(AuthController.new);
   }
 
   @override

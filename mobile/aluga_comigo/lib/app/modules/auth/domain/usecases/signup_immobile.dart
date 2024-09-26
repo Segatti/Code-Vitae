@@ -1,9 +1,10 @@
-import '../entities/inputs/signup_immobile_input.dart';
+import '../../../../shared/domain/typedefs/returns.dart';
+import '../entities/inputs/signup_input.dart';
+import '../entities/user.dart';
 import '../repositories/auth_repository.dart';
-import '../states/auth_state.dart';
 
 abstract class ISignupImmobile {
-  Future<AuthState> call(SignupImmobileInput input);
+  Future<Return<User>> call(SignupImmobileInput input);
 }
 
 class SignupImmobile implements ISignupImmobile {
@@ -12,7 +13,7 @@ class SignupImmobile implements ISignupImmobile {
   const SignupImmobile(this.repository);
 
   @override
-  Future<AuthState> call(SignupImmobileInput input) async {
+  Future<Return<User>> call(SignupImmobileInput input) async {
     return await repository.signupImmobile(input);
   }
 }

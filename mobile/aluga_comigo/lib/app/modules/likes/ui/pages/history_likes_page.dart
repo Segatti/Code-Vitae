@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../shared/ui/widgets/tabs.dart';
+import '../../../../shared/presenter/widgets/tabs.dart';
 
 class HistoryLikesPage extends StatefulWidget {
   const HistoryLikesPage({super.key});

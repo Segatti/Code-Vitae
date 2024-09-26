@@ -1,8 +1,8 @@
+import '../../../../shared/domain/typedefs/returns.dart';
 import '../repositories/auth_repository.dart';
-import '../states/auth_state.dart';
 
 abstract class IRecoverPasswordUser {
-  Future<AuthState> call(String input);
+  Future<Return<bool>> call(String input);
 }
 
 class RecoverPasswordUser implements IRecoverPasswordUser {
@@ -11,7 +11,7 @@ class RecoverPasswordUser implements IRecoverPasswordUser {
   const RecoverPasswordUser(this.repository);
 
   @override
-  Future<AuthState> call(String input) async {
+  Future<Return<bool>> call(String input) async {
     return await repository.recoverPassword(input);
   }
 }

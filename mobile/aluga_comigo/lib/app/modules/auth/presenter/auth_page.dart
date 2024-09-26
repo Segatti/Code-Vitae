@@ -1,9 +1,3 @@
-import 'dart:convert';
-
-import 'package:aluga_comigo/app/modules/auth/domain/states/auth_state.dart';
-import 'package:aluga_comigo/app/modules/auth/presenter/cubits/auth_cubit.dart';
-import 'package:aluga_comigo/app/modules/auth/presenter/widgets/login_card_widget.dart';
-import 'package:aluga_comigo/app/modules/auth/presenter/widgets/signup_card_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +6,13 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../shared/data/services/secure_storage_service.dart';
-import '../../../shared/ui/widgets/popups/loading_popup.dart';
-import '../../../shared/ui/widgets/primary_button.dart';
-import '../../../shared/ui/widgets/secondary_button.dart';
+import '../../../shared/presenter/widgets/popups/loading_popup.dart';
+import '../../../shared/presenter/widgets/primary_button.dart';
+import '../../../shared/presenter/widgets/secondary_button.dart';
+import '../domain/entities/inputs/login_input.dart';
+import 'controllers/auth_controller.dart';
+import 'widgets/login_card_widget.dart';
+import 'widgets/signup_card_widget.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -29,7 +27,7 @@ class _AuthPageState extends State<AuthPage> {
   Color color = const Color(0xFF2C29A3);
   final PageController _controller = PageController();
   bool showAnimation = true;
-  final cubit = Modular.get<AuthCubit>();
+  final controller = Modular.get<IAuthController>();
   final storage = Modular.get<SecureStorageService>();
 
   void backPage() {
@@ -258,31 +256,41 @@ class _AuthPageState extends State<AuthPage> {
                                     builder: (context) => const LoadingPopup(),
                                   );
 
-                                  await cubit.login(email, password);
-                                  var state = cubit.state;
+                                  var input = LoginInput(email, password);
 
-                                  if (state is SuccessState) {
-                                    await storage.setData(
-                                      StorageKey.user,
-                                      jsonEncode({
-                                        "email": state.user.email,
-                                        "password": state.user.password,
-                                        "typeUser": state.user.typeUser.name,
-                                        "photo": state.user.photo,
-                                      }),
-                                    );
+                                  var result = await controller.login(input);
+
+                                  if (result) {
                                     Modular.to.navigate("/start/customers/");
-                                  } else if (state is ErrorState) {
+                                  } else {
                                     if (context.mounted) Navigator.pop(context);
                                     notificationError(
-                                      "Error - ${state.code}",
-                                      state.message,
+                                      "Falha no Login",
+                                      controller.errorMessage,
                                     );
                                   }
                                 },
                               )
                             : SignupCardWidget(
                                 backPage: backPage,
+                                signup: (input) async {
+                                  showAdaptiveDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) => const LoadingPopup(),
+                                  );
+
+                                  var result = await controller.signup(input);
+                                  if (result) {
+                                    Modular.to.navigate("/start/customers/");
+                                  } else {
+                                    if (context.mounted) Navigator.pop(context);
+                                    notificationError(
+                                      "Falha no Cadastro",
+                                      controller.errorMessage,
+                                    );
+                                  }
+                                },
                               )
                       ],
                     ),

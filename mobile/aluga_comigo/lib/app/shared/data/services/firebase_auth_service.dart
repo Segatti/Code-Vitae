@@ -1,12 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../domain/entities/failures.dart';
+import '../../domain/typedefs/returns.dart';
+
 class FirebaseAuthService {
   final FirebaseAuth _firebase;
 
   const FirebaseAuthService(this._firebase);
 
-  Future<Either<FirebaseAuthException, UserCredential>> login(
+  Future<Return<UserCredential>> login(
     String email,
     String password,
   ) async {
@@ -17,20 +20,13 @@ class FirebaseAuthService {
       );
       return Right(data);
     } catch (exception) {
-      if (exception is FirebaseAuthException) {
-        return Left(exception);
-      } else {
-        return Left(
-          FirebaseAuthException(
-            code: "-1",
-            message: exception.toString(),
-          ),
-        );
-      }
+      return Left(
+        FailureDatasource(message: exception.toString()),
+      );
     }
   }
 
-  Future<Either<FirebaseAuthException, UserCredential>> createUser(
+  Future<Return<UserCredential>> createUser(
     String email,
     String password,
   ) async {
@@ -42,57 +38,38 @@ class FirebaseAuthService {
       );
       return Right(data);
     } catch (exception) {
-      if (exception is FirebaseAuthException) {
-        return Left(exception);
-      } else {
-        return Left(
-          FirebaseAuthException(
-            code: "-1",
-            message: exception.toString(),
-          ),
-        );
-      }
+      return Left(
+        FailureDatasource(message: exception.toString()),
+      );
     }
   }
 
-  Future<Either<FirebaseAuthException, void>> logout(
+  Future<Return<bool>> logout(
     String email,
     String password,
   ) async {
     try {
       await _firebase.signOut();
-      return const Right(null);
+      return const Right(true);
     } catch (exception) {
-      if (exception is FirebaseAuthException) {
-        return Left(exception);
-      } else {
-        return Left(
-          FirebaseAuthException(
-            code: "-1",
-            message: exception.toString(),
-          ),
-        );
-      }
+      return Left(
+        FailureDatasource(
+          message: exception.toString(),
+        ),
+      );
     }
   }
 
-  Future<Either<FirebaseAuthException, void>> recoverPassword(
+  Future<Return<bool>> recoverPassword(
     String email,
   ) async {
     try {
       await _firebase.sendPasswordResetEmail(email: email);
-      return const Right(null);
+      return const Right(true);
     } catch (exception) {
-      if (exception is FirebaseAuthException) {
-        return Left(exception);
-      } else {
-        return Left(
-          FirebaseAuthException(
-            code: "-1",
-            message: exception.toString(),
-          ),
-        );
-      }
+      return Left(
+        FailureDatasource(message: exception.toString()),
+      );
     }
   }
 }

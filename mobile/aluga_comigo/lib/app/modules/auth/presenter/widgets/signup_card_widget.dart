@@ -3,13 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../shared/ui/widgets/terciary_button.dart';
+import '../../../../shared/presenter/widgets/terciary_button.dart';
+import '../../domain/entities/inputs/signup_input.dart';
 import 'immobile_step_widget.dart';
 import 'user_step_widget.dart';
 
 class SignupCardWidget extends StatefulWidget {
   final VoidCallback backPage;
-  const SignupCardWidget({super.key, required this.backPage});
+  final Function(SignupInput input) signup;
+  const SignupCardWidget({
+    super.key,
+    required this.backPage,
+    required this.signup,
+  });
 
   @override
   State<SignupCardWidget> createState() => _SignupCardWidgetState();
@@ -116,8 +122,14 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
           ),
         ),
         (isUserAccount ?? true)
-            ? UserStepWidget(backPage: backPage)
-            : ImmobileStepWidget(backPage: backPage),
+            ? UserStepWidget(
+                backPage: backPage,
+                signup: widget.signup,
+              )
+            : ImmobileStepWidget(
+                backPage: backPage,
+                signup: widget.signup,
+              ),
       ],
     );
   }

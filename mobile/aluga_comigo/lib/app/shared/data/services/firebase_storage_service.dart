@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../../interactor/models/errors/firebase.dart';
+import '../../domain/models/errors/firebase.dart';
 
 enum FirebaseStorageTables {
   users,

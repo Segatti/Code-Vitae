@@ -1,4 +1,4 @@
-import 'package:aluga_comigo/app/shared/interactor/constants/icons_figma.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/icons_figma.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:gap/gap.dart';

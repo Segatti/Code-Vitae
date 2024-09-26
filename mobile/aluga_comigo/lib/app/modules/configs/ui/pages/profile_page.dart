@@ -1,4 +1,4 @@
-import 'package:aluga_comigo/app/shared/ui/widgets/primary_button.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aluga_comigo/app/shared/interactor/models/errors/firebase.dart';
+import 'package:aluga_comigo/app/shared/domain/models/errors/firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 

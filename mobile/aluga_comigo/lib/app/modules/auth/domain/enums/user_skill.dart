@@ -3,14 +3,14 @@ enum UserSkill {
   cucaMaster,
   ninjaInSweeping,
   humanDishwasher,
-  laundryOperator,
-}
+  laundryOperator;
 
-UserSkill getUserSkill(String value) {
-  for (var item in UserSkill.values) {
-    if (item.name == value) {
-      return item;
+  static UserSkill get(String value) {
+    for (var item in UserSkill.values) {
+      if (item.name == value) {
+        return item;
+      }
     }
+    return UserSkill.none;
   }
-  return UserSkill.none;
 }

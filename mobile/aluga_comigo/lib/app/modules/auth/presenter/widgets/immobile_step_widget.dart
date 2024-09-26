@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
+import 'package:aluga_comigo/app/modules/auth/domain/entities/inputs/signup_input.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
@@ -14,17 +14,17 @@ import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../shared/data/services/camera_service.dart';
-import '../../../../shared/data/services/firebase_auth_service.dart';
-import '../../../../shared/data/services/firebase_database_service.dart';
-import '../../../../shared/data/services/secure_storage_service.dart';
-import '../../../../shared/ui/widgets/popups/loading_popup.dart';
-import '../../domain/DTOs/immobile_signup_dto.dart';
 import '../../domain/enums/type_immobile.dart';
 import 'card_auth_widget.dart';
 
 class ImmobileStepWidget extends StatefulWidget {
   final VoidCallback backPage;
-  const ImmobileStepWidget({super.key, required this.backPage});
+  final Function(SignupInput input) signup;
+  const ImmobileStepWidget({
+    super.key,
+    required this.backPage,
+    required this.signup,
+  });
 
   @override
   State<ImmobileStepWidget> createState() => _ImmobileStepWidgetState();
@@ -33,7 +33,7 @@ class ImmobileStepWidget extends StatefulWidget {
 class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   final _controller = CarouselSliderController();
   var indexCarousel = 0;
-  var _immobileSignupDTO = const ImmobileSignupDTO();
+  final _immobileInput = SignupImmobileInput();
   var acceptTerms = false;
   var haveError = false;
 
@@ -52,9 +52,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   Future<void> getImage(ImageSource imageSource) async {
     final result = await service.getImage(imageSource);
     if (result != null) {
-      _immobileSignupDTO = _immobileSignupDTO.copyWith(
-        photos: [result.path],
-      );
+      _immobileInput.photo = result.path;
       setState(() {});
     }
   }
@@ -238,78 +236,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                               Expanded(
                                 child: ChicletAnimatedButton(
                                   onPressed: () async {
-                                    showAdaptiveDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder: (context) =>
-                                          const LoadingPopup(),
-                                    );
-                                    final auth =
-                                        Modular.get<FirebaseAuthService>();
-                                    final database =
-                                        Modular.get<FirebaseDatabaseService>();
-                                    final databasePhoto =
-                                        Modular.get<FirebaseStorageService>();
-                                    final storage =
-                                        Modular.get<SecureStorageService>();
-
-                                    final response = await auth.createUser(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                    );
-
-                                    response.fold(
-                                      (l) {
-                                        Navigator.pop(context);
-
-                                        notificationError(
-                                          "Error - ${l.code}",
-                                          l.message ?? '',
-                                        );
-                                      },
-                                      (r) async {
-                                        var responsePhoto =
-                                            await databasePhoto.upload(
-                                          FirebaseStorageTables.users,
-                                          "${r.user!.uid}/1",
-                                          File(
-                                              _immobileSignupDTO.photos!.first),
-                                        );
-
-                                        await responsePhoto.fold((l) {
-                                          Navigator.pop(context);
-                                          notificationError(
-                                            "Error - ${l.code}",
-                                            l.msg,
-                                          );
-                                        }, (r2) async {
-                                          var immobileDTO =
-                                              _immobileSignupDTO.copyWith(
-                                            photos: [r2],
-                                          );
-                                          await Future.wait([
-                                            storage.setData(
-                                              StorageKey.user,
-                                              _emailController.text,
-                                            ),
-                                            database.create(
-                                              FirebaseDataTables.users,
-                                              {
-                                                r.user!.uid: immobileDTO.toMap(
-                                                  toDatabase: true,
-                                                ),
-                                              },
-                                            ),
-                                          ]);
-
-                                          Modular.to
-                                              .navigate("/start/customers/");
-                                        });
-                                      },
-                                    );
+                                    if (acceptTerms == true) {
+                                      await widget.signup(_immobileInput);
+                                    }
                                   },
                                   borderRadius: 50,
-                                  backgroundColor: Colors.green,
+                                  backgroundColor: (acceptTerms == true)
+                                      ? Colors.green
+                                      : Colors.grey,
                                   child: Text(
                                     "Confirmar",
                                     style: GoogleFonts.rubik(
@@ -555,11 +489,9 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                         child: ChicletAnimatedButton(
                           onPressed: () {
                             if (_formKey.currentState?.validate() ?? false) {
-                              _immobileSignupDTO = _immobileSignupDTO.copyWith(
-                                email: _emailController.text,
-                                password: _passwordController.text,
-                              );
-
+                              _immobileInput.email = _emailController.text;
+                              _immobileInput.password =
+                                  _passwordController.text;
                               nextPage();
                             } else {
                               setState(() {
@@ -784,10 +716,8 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                         child: ChicletAnimatedButton(
                           onPressed: () {
                             if (_formKey2.currentState?.validate() ?? false) {
-                              _immobileSignupDTO = _immobileSignupDTO.copyWith(
-                                name: _nameController.text,
-                                phone: _phoneController.text,
-                              );
+                              _immobileInput.name = _nameController.text;
+                              _immobileInput.phone = _phoneController.text;
                               nextPage();
                             } else {
                               setState(() {
@@ -1008,13 +938,16 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                     return null;
                                   }
                                 },
+                                alignment: Alignment.center,
+                                hint: Text(
+                                  'Tipo',
+                                  style: GoogleFonts.rubik(
+                                    fontSize: 18,
+                                  ),
+                                ),
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: Colors.white,
-                                  hintText: 'Tipo',
-                                  hintStyle: GoogleFonts.rubik(
-                                    fontSize: 18,
-                                  ),
                                   errorStyle: const TextStyle(
                                     fontSize: 0,
                                   ),
@@ -1049,7 +982,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                   ),
                                 ),
                                 borderRadius: BorderRadius.circular(40),
-                                value: _immobileSignupDTO.typeImmobile,
+                                value: _immobileInput.typeImmobile,
                                 onChanged: (value) {
                                   if (haveError) {
                                     if (_formKey3.currentState?.validate() ??
@@ -1060,10 +993,8 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                     }
                                   }
                                   setState(() {
-                                    _immobileSignupDTO =
-                                        _immobileSignupDTO.copyWith(
-                                      typeImmobile: value ?? TypeImmobile.none,
-                                    );
+                                    _immobileInput.typeImmobile =
+                                        value ?? TypeImmobile.none;
                                   });
                                 },
                                 items: const [
@@ -1115,11 +1046,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed: () {
-                            if (_formKey3.currentState?.validate() ?? false) {
-                              _immobileSignupDTO = _immobileSignupDTO.copyWith(
-                                cep: _cepController.text,
-                                value: num.tryParse(_valueController.text),
-                              );
+                            if ((_formKey3.currentState?.validate() ?? false) &&
+                                _immobileInput.typeImmobile !=
+                                    TypeImmobile.none) {
+                              _immobileInput.cep = _cepController.text;
+                              _immobileInput.value = num.tryParse(
+                                    _valueController.text,
+                                  ) ??
+                                  0;
                               nextPage();
                             } else {
                               setState(() {
@@ -1158,7 +1092,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                   ),
                   const Gap(16),
                   const Spacer(),
-                  (_immobileSignupDTO.photos?.isNotEmpty ?? false)
+                  (_immobileInput.photo.isNotEmpty)
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -1171,17 +1105,14 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                               width: 80,
                               height: 80,
                               child: Image.file(
-                                File(_immobileSignupDTO.photos!.first),
+                                File(_immobileInput.photo),
                                 fit: BoxFit.cover,
                               ),
                             ),
                             const Gap(16),
                             GestureDetector(
                               onTap: () {
-                                _immobileSignupDTO =
-                                    _immobileSignupDTO.copyWith(
-                                  photos: [],
-                                );
+                                _immobileInput.photo = "";
                                 setState(() {});
                               },
                               child: Container(
@@ -1264,15 +1195,13 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed:
-                              (_immobileSignupDTO.photos?.isNotEmpty ?? false)
-                                  ? nextPage
-                                  : null,
+                          onPressed: (_immobileInput.photo.isNotEmpty)
+                              ? nextPage
+                              : null,
                           borderRadius: 50,
-                          backgroundColor:
-                              (_immobileSignupDTO.photos?.isNotEmpty ?? false)
-                                  ? Colors.green
-                                  : Colors.grey,
+                          backgroundColor: (_immobileInput.photo.isNotEmpty)
+                              ? Colors.green
+                              : Colors.grey,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(

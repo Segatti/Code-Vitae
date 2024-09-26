@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:aluga_comigo/app/modules/auth/domain/DTOs/user_signup_dto.dart';
+import 'package:aluga_comigo/app/modules/auth/domain/entities/inputs/signup_input.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/models/select_item.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/widgets/pill_widget.dart';
 import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
-import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
-import 'package:aluga_comigo/app/shared/ui/widgets/popups/loading_popup.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,14 +16,16 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../shared/data/services/firebase_auth_service.dart';
-import '../../../../shared/data/services/firebase_database_service.dart';
-import '../../../../shared/data/services/secure_storage_service.dart';
 import 'card_auth_widget.dart';
 
 class UserStepWidget extends StatefulWidget {
   final VoidCallback backPage;
-  const UserStepWidget({super.key, required this.backPage});
+  final Function(SignupInput input) signup;
+  const UserStepWidget({
+    super.key,
+    required this.backPage,
+    required this.signup,
+  });
 
   @override
   State<UserStepWidget> createState() => _UserStepWidgetState();
@@ -33,10 +33,10 @@ class UserStepWidget extends StatefulWidget {
 
 class _UserStepWidgetState extends State<UserStepWidget> {
   final PageController _controller = PageController();
-  int indexCarousel = 0;
-  UserSignupDTO _userSignupDTO = const UserSignupDTO();
-  bool acceptTerms = false;
-  bool haveError = false;
+  var indexCarousel = 0;
+  final _userInput = SignupUserInput();
+  var acceptTerms = false;
+  var haveError = false;
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -50,9 +50,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   Future<void> getImage(ImageSource imageSource) async {
     final result = await service.getImage(imageSource);
     if (result != null) {
-      _userSignupDTO = _userSignupDTO.copyWith(
-        photos: [result.path],
-      );
+      _userInput.photo = result.path;
       setState(() {});
     }
   }
@@ -239,75 +237,14 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               Expanded(
                                 child: ChicletAnimatedButton(
                                   onPressed: () async {
-                                    showAdaptiveDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder: (context) =>
-                                          const LoadingPopup(),
-                                    );
-                                    final auth =
-                                        Modular.get<FirebaseAuthService>();
-                                    final database =
-                                        Modular.get<FirebaseDatabaseService>();
-                                    final databasePhoto =
-                                        Modular.get<FirebaseStorageService>();
-                                    final storage =
-                                        Modular.get<SecureStorageService>();
-
-                                    final response = await auth.createUser(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                    );
-
-                                    response.fold(
-                                      (l) {
-                                        Navigator.pop(context);
-                                        notificationError(
-                                          "Error - ${l.code}",
-                                          l.message ?? '',
-                                        );
-                                      },
-                                      (r) async {
-                                        var responsePhoto =
-                                            await databasePhoto.upload(
-                                          FirebaseStorageTables.users,
-                                          "${r.user!.uid}/1",
-                                          File(_userSignupDTO.photos!.first),
-                                        );
-
-                                        await responsePhoto.fold((l) {
-                                          Navigator.pop(context);
-                                          notificationError(
-                                            "Error - ${l.code}",
-                                            l.msg,
-                                          );
-                                        }, (r2) async {
-                                          var userDTO = _userSignupDTO.copyWith(
-                                            photos: [r2],
-                                          );
-                                          await Future.wait([
-                                            storage.setData(
-                                              StorageKey.user,
-                                              _emailController.text,
-                                            ),
-                                            database.create(
-                                              FirebaseDataTables.users,
-                                              {
-                                                r.user!.uid: userDTO.toMap(
-                                                  toDatabase: true,
-                                                ),
-                                              },
-                                            ),
-                                          ]);
-
-                                          Modular.to
-                                              .navigate("/start/customers/");
-                                        });
-                                      },
-                                    );
+                                    if (acceptTerms) {
+                                      await widget.signup(_userInput);
+                                    }
                                   },
                                   borderRadius: 50,
-                                  backgroundColor: Colors.green,
+                                  backgroundColor: (acceptTerms)
+                                      ? Colors.green
+                                      : Colors.grey,
                                   child: Text(
                                     "Confirmar",
                                     style: GoogleFonts.rubik(
@@ -544,11 +481,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                         child: ChicletAnimatedButton(
                           onPressed: () {
                             if (_formKey.currentState?.validate() ?? false) {
-                              _userSignupDTO = _userSignupDTO.copyWith(
-                                email: _emailController.text,
-                                password: _passwordController.text,
-                              );
-
+                              _userInput.email = _emailController.text;
+                              _userInput.password = _passwordController.text;
                               nextPage();
                             } else {
                               setState(() {
@@ -770,11 +704,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                         child: ChicletAnimatedButton(
                           onPressed: () {
                             if (_formKey2.currentState?.validate() ?? false) {
-                              _userSignupDTO = _userSignupDTO.copyWith(
-                                name: _nameController.text,
-                                phone: _phoneController.text,
-                              );
-
+                              _userInput.name = _nameController.text;
+                              _userInput.phone = _phoneController.text;
                               nextPage();
                             } else {
                               setState(() {
@@ -818,7 +749,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           runSpacing: 8,
                           children: [
                             PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
+                              initialValue: _userInput.skills.contains(
                                 UserSkill.cucaMaster,
                               ),
                               selectItem: const SelectItem(
@@ -826,22 +757,19 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                 value: UserSkill.cucaMaster,
                               ),
                               onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
+                                var skills = _userInput.skills.toList();
                                 if (isSelected) {
                                   skills.add(value.value as UserSkill);
                                 } else {
                                   skills.remove(value.value as UserSkill);
                                 }
                                 setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
+                                  _userInput.skills = skills;
                                 });
                               },
                             ),
                             PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
+                              initialValue: _userInput.skills.contains(
                                 UserSkill.ninjaInSweeping,
                               ),
                               selectItem: const SelectItem(
@@ -849,22 +777,19 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                 value: UserSkill.ninjaInSweeping,
                               ),
                               onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
+                                var skills = _userInput.skills.toList();
                                 if (isSelected) {
                                   skills.add(value.value as UserSkill);
                                 } else {
                                   skills.remove(value.value as UserSkill);
                                 }
                                 setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
+                                  _userInput.skills = skills;
                                 });
                               },
                             ),
                             PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
+                              initialValue: _userInput.skills.contains(
                                 UserSkill.laundryOperator,
                               ),
                               selectItem: const SelectItem(
@@ -872,22 +797,19 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                 value: UserSkill.laundryOperator,
                               ),
                               onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
+                                var skills = _userInput.skills.toList();
                                 if (isSelected) {
                                   skills.add(value.value as UserSkill);
                                 } else {
                                   skills.remove(value.value as UserSkill);
                                 }
                                 setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
+                                  _userInput.skills = skills;
                                 });
                               },
                             ),
                             PillWidget(
-                              initialValue: _userSignupDTO.skills?.contains(
+                              initialValue: _userInput.skills.contains(
                                 UserSkill.humanDishwasher,
                               ),
                               selectItem: const SelectItem(
@@ -895,17 +817,14 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                 value: UserSkill.humanDishwasher,
                               ),
                               onTap: (isSelected, value) {
-                                List<UserSkill> skills =
-                                    _userSignupDTO.skills ?? [];
+                                var skills = _userInput.skills.toList();
                                 if (isSelected) {
                                   skills.add(value.value as UserSkill);
                                 } else {
                                   skills.remove(value.value as UserSkill);
                                 }
                                 setState(() {
-                                  _userSignupDTO = _userSignupDTO.copyWith(
-                                    skills: skills,
-                                  );
+                                  _userInput.skills = skills;
                                 });
                               },
                             ),
@@ -936,14 +855,11 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed:
-                              (_userSignupDTO.skills?.isNotEmpty ?? false)
-                                  ? nextPage
-                                  : null,
+                              (_userInput.skills.isNotEmpty) ? nextPage : null,
                           borderRadius: 50,
-                          backgroundColor:
-                              (_userSignupDTO.skills?.isNotEmpty ?? false)
-                                  ? Colors.green
-                                  : Colors.grey,
+                          backgroundColor: (_userInput.skills.isNotEmpty)
+                              ? Colors.green
+                              : Colors.grey,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(
@@ -971,7 +887,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                   ),
                   const Gap(16),
                   const Spacer(),
-                  (_userSignupDTO.photos?.isNotEmpty ?? false)
+                  (_userInput.photo.isNotEmpty)
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -984,16 +900,14 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               width: 80,
                               height: 80,
                               child: Image.file(
-                                File(_userSignupDTO.photos!.first),
+                                File(_userInput.photo),
                                 fit: BoxFit.cover,
                               ),
                             ),
                             const Gap(16),
                             GestureDetector(
                               onTap: () {
-                                _userSignupDTO = _userSignupDTO.copyWith(
-                                  photos: [],
-                                );
+                                _userInput.photo = "";
                                 setState(() {});
                               },
                               child: Container(
@@ -1077,14 +991,11 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed:
-                              (_userSignupDTO.photos?.isNotEmpty ?? false)
-                                  ? nextPage
-                                  : null,
+                              (_userInput.photo.isNotEmpty) ? nextPage : null,
                           borderRadius: 50,
-                          backgroundColor:
-                              (_userSignupDTO.photos?.isNotEmpty ?? false)
-                                  ? Colors.green
-                                  : Colors.grey,
+                          backgroundColor: (_userInput.photo.isNotEmpty)
+                              ? Colors.green
+                              : Colors.grey,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(

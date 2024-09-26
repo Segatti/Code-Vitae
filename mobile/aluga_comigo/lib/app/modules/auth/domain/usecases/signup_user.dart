@@ -1,9 +1,10 @@
-import '../entities/inputs/signup_user_input.dart';
+import '../../../../shared/domain/typedefs/returns.dart';
+import '../entities/inputs/signup_input.dart';
+import '../entities/user.dart';
 import '../repositories/auth_repository.dart';
-import '../states/auth_state.dart';
 
 abstract class ISignupUser {
-  Future<AuthState> call(SignupUserInput input);
+  Future<Return<User>> call(SignupUserInput input);
 }
 
 class SignupUser implements ISignupUser {
@@ -12,7 +13,7 @@ class SignupUser implements ISignupUser {
   const SignupUser(this.repository);
 
   @override
-  Future<AuthState> call(SignupUserInput input) async {
+  Future<Return<User>> call(SignupUserInput input) async {
     return await repository.signupUser(input);
   }
 }
