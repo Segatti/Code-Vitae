@@ -20,7 +20,8 @@ class MortyVersoPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(13),
               boxShadow: [
                 BoxShadow(
-                  color: theme.textTheme.textStyle.color!.withOpacity(.25),
+                  color:
+                      theme.textTheme.textStyle.color!.withValues(alpha: .25),
                   offset: const Offset(0, 4),
                   blurRadius: 4,
                 )

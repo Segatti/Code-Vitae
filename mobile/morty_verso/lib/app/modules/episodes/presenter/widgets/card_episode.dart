@@ -79,14 +79,14 @@ class _CardEpisodeState extends State<CardEpisode> {
         margin: const EdgeInsets.all(MarginPattern.small),
         padding: const EdgeInsets.all(PaddingPattern.medium),
         decoration: BoxDecoration(
-            color: theme.barBackgroundColor.withOpacity(1),
+            color: theme.barBackgroundColor.withValues(alpha: 1),
             border: Border.all(
-              color: theme.textTheme.textStyle.color!.withOpacity(.25),
+              color: theme.textTheme.textStyle.color!.withValues(alpha: .25),
             ),
             borderRadius: BorderRadius.circular(13),
             boxShadow: [
               BoxShadow(
-                color: theme.textTheme.textStyle.color!.withOpacity(.25),
+                color: theme.textTheme.textStyle.color!.withValues(alpha: .25),
                 blurRadius: 4,
                 offset: const Offset(0, 4),
               ),
@@ -112,7 +112,8 @@ class _CardEpisodeState extends State<CardEpisode> {
                 decoration: BoxDecoration(
                   border: Border(
                     left: BorderSide(
-                      color: theme.textTheme.textStyle.color!.withOpacity(.25),
+                      color: theme.textTheme.textStyle.color!
+                          .withValues(alpha: .25),
                     ),
                   ),
                 ),

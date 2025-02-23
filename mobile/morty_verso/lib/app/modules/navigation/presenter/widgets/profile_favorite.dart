@@ -74,7 +74,7 @@ class _ProfileFavoriteState extends State<ProfileFavorite> {
                         child: Icon(
                           CupertinoIcons.person,
                           size: 50,
-                          color: CupertinoColors.black.withOpacity(.5),
+                          color: CupertinoColors.black.withValues(alpha: .5),
                         ),
                       ),
                       Padding(
@@ -100,7 +100,7 @@ class _ProfileFavoriteState extends State<ProfileFavorite> {
                         child: Icon(
                           CupertinoIcons.placemark,
                           size: 50,
-                          color: CupertinoColors.black.withOpacity(.5),
+                          color: CupertinoColors.black.withValues(alpha: .5),
                         ),
                       ),
                       Padding(
@@ -126,7 +126,7 @@ class _ProfileFavoriteState extends State<ProfileFavorite> {
                         child: Icon(
                           CupertinoIcons.play_circle,
                           size: 50,
-                          color: CupertinoColors.black.withOpacity(.5),
+                          color: CupertinoColors.black.withValues(alpha: .5),
                         ),
                       ),
                       Padding(

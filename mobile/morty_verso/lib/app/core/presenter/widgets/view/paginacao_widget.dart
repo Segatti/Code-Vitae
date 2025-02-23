@@ -25,7 +25,7 @@ class _PaginacaoWidgetState extends State<PaginacaoWidget> {
     return Column(
       children: [
         Container(
-          color: CupertinoColors.black.withOpacity(.25),
+          color: CupertinoColors.black.withValues(alpha: .25),
           height: 1,
           width: double.maxFinite,
         ),

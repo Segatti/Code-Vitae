@@ -14,9 +14,9 @@ class _IntroPageState extends State<IntroPage> {
   int index = 0;
   PageController pageController = PageController();
   List<Color> cores = [
-    const Color(0xFFDF924B).withOpacity(.8),
-    const Color(0xFF2C29A3).withOpacity(.8),
-    const Color(0xFFA7A7A7).withOpacity(.8),
+    const Color(0xFFDF924B).withValues(alpha: .8),
+    const Color(0xFF2C29A3).withValues(alpha: .8),
+    const Color(0xFFA7A7A7).withValues(alpha: .8),
   ];
 
   List<String> titles = [
@@ -90,7 +90,7 @@ class _IntroPageState extends State<IntroPage> {
                         height: 80,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(.5),
+                          color: Colors.white.withValues(alpha: .5),
                         ),
                         child: const Icon(
                           Icons.chevron_right,
@@ -161,7 +161,7 @@ class _IntroPageState extends State<IntroPage> {
                           height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(.5),
+                            color: Colors.white.withValues(alpha: .5),
                           ),
                           child: const Icon(
                             Icons.chevron_right,
@@ -221,7 +221,8 @@ class _IntroPageState extends State<IntroPage> {
                       child: InkWell(
                         onTap: () async {
                           final storage = Modular.get<SecureStorageService>();
-                         await  storage.setData(StorageKey.intro, false.toString());
+                          await storage.setData(
+                              StorageKey.intro, false.toString());
                           Modular.to.navigate("/auth/");
                         },
                         child: Container(
@@ -229,7 +230,7 @@ class _IntroPageState extends State<IntroPage> {
                           height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(.5),
+                            color: Colors.white.withValues(alpha: .5),
                           ),
                           child: const Icon(
                             Icons.chevron_right,

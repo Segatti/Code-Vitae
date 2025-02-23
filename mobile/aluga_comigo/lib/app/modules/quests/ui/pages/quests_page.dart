@@ -198,7 +198,7 @@ class _QuestsPageState extends State<QuestsPage> {
                                 child: Shimmer(
                                   child: Container(
                                     height: 50,
-                                    color: Colors.orange.withOpacity(.8),
+                                    color: Colors.orange.withValues(alpha: .8),
                                     child: Center(
                                       child: Text(
                                         "Receber Prêmio",
