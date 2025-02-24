@@ -56,7 +56,7 @@ class AuthFirebaseDatasource implements IAuthDatasource {
       (l) => throw l,
       (auth) async {
         final responseStorage = await storage.upload(
-          FirebaseStorageTables.immobile,
+          FirebaseStorageTables.users,
           auth.user!.uid,
           File(input.photo),
         );
@@ -65,21 +65,24 @@ class AuthFirebaseDatasource implements IAuthDatasource {
           (l) => throw l,
           (linkPhoto) async {
             await database.create(
-              FirebaseDataTables.immobile,
+              FirebaseDataTables.users,
               {
+                "id": auth.user!.uid,
                 "name": input.name,
                 "phone": input.phone,
                 "cep": input.cep,
                 "value": input.value,
+                "typeUser": TypeUser.immobile.name,
                 "typeImmobile": input.typeImmobile?.name,
                 "photos": [linkPhoto],
               },
             );
 
             return UserModel.fromMap({
+              "id": auth.user!.uid,
               "email": input.email,
               "password": input.password,
-              "typeUser": TypeUser.immobile,
+              "typeUser": TypeUser.immobile.name,
               "photo": linkPhoto,
             });
           },
@@ -106,17 +109,20 @@ class AuthFirebaseDatasource implements IAuthDatasource {
             await database.create(
               FirebaseDataTables.users,
               {
+                "id": auth.user!.uid,
                 "name": input.name,
                 "phone": input.phone,
+                "typeUser": input.typeUser.name,
                 "skills": input.skills,
                 "photos": [linkPhoto],
               },
             );
 
             return UserModel.fromMap({
+              "id": auth.user!.uid,
               "email": input.email,
               "password": input.password,
-              "typeUser": TypeUser.person,
+              "typeUser": TypeUser.person.name,
               "photo": linkPhoto,
             });
           },

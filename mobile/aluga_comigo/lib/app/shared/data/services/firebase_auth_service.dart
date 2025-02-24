@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import '../../domain/entities/failures.dart';
+import '../../domain/errors/firebase_error_handler.dart';
 import '../../domain/typedefs/returns.dart';
 
 class FirebaseAuthService {
@@ -19,6 +21,11 @@ class FirebaseAuthService {
         password: password,
       );
       return Right(data);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       return Left(
         FailureDatasource(message: exception.toString()),
@@ -37,6 +44,11 @@ class FirebaseAuthService {
         password: password,
       );
       return Right(data);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       return Left(
         FailureDatasource(message: exception.toString()),
@@ -51,6 +63,11 @@ class FirebaseAuthService {
     try {
       await _firebase.signOut();
       return const Right(true);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       return Left(
         FailureDatasource(
@@ -66,6 +83,11 @@ class FirebaseAuthService {
     try {
       await _firebase.sendPasswordResetEmail(email: email);
       return const Right(true);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       return Left(
         FailureDatasource(message: exception.toString()),

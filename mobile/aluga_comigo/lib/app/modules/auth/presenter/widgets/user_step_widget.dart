@@ -5,6 +5,8 @@ import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/models/select_item.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/widgets/pill_widget.dart';
 import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
+import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -331,23 +333,25 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'Deve ser um email válido!',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'Deve ser um email válido!',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -410,23 +414,25 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'Mínimo 7 caracteres',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'Mínimo 7 caracteres',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -553,23 +559,25 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'Campo obrigatório',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'Campo obrigatório',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -610,18 +618,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             }
                           },
                           keyboardType: TextInputType.phone,
-                          validator: (text) {
-                            String data = text?.trim() ?? '';
-                            if (data.isEmpty) {
-                              return "* Campo obrigatório";
-                            }
-                            if (data.length != 11) {
-                              return "Número invalido. Ex: XX 9XXXX XXXX";
-                            }
-                            return null;
-                          },
-                          maxLength: 11,
+                          validator: (text) =>
+                              ValidatorHelper.phone(text, false),
                           textAlignVertical: TextAlignVertical.center,
+                          inputFormatters: [PhoneFormatter()],
                           decoration: InputDecoration(
                             filled: true,
                             isDense: true,
@@ -634,23 +634,25 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  '(DDD) 9XXXX XXXX',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    '(DDD) 9XXXX XXXX',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -1018,10 +1020,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
           flex: 1,
           child: Container(
             alignment: Alignment.topCenter,
-            child: AnimatedSmoothIndicator(
-              activeIndex: indexCarousel,
-              count: 4,
-              effect: const WormEffect(),
+            child: RepaintBoundary(
+              child: AnimatedSmoothIndicator(
+                activeIndex: indexCarousel,
+                count: 4,
+                effect: const WormEffect(),
+              ),
             ),
           ),
         )

@@ -1,6 +1,11 @@
 import 'dart:io';
 
 import 'package:aluga_comigo/app/modules/auth/domain/entities/inputs/signup_input.dart';
+import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
+import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/formatters/cep_formatter.dart';
+import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dart';
+import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:flutter/material.dart';
@@ -338,23 +343,25 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'Deve ser um email válido!',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'Deve ser um email válido!',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -417,23 +424,25 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'Mínimo 7 caracteres',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'Mínimo 7 caracteres',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -565,23 +574,25 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'Campo obrigatório',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'Campo obrigatório',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -622,17 +633,9 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             }
                           },
                           keyboardType: TextInputType.phone,
-                          validator: (text) {
-                            String data = text?.trim() ?? '';
-                            if (data.isEmpty) {
-                              return "* Campo obrigatório";
-                            }
-                            if (data.length != 11) {
-                              return "Número invalido. Ex: XX 9XXXX XXXX";
-                            }
-                            return null;
-                          },
-                          maxLength: 11,
+                          validator: (text) =>
+                              ValidatorHelper.phone(text, false),
+                          inputFormatters: [PhoneFormatter()],
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
                             filled: true,
@@ -646,23 +649,25 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  '(DDD) 9XXXX XXXX',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    '(DDD) 9XXXX XXXX',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -759,7 +764,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                     child: Column(
                       children: [
                         TextFormField(
-                          controller: _cepController,
+                          controller: _valueController,
                           onChanged: (_) {
                             if (haveError) {
                               if (_formKey3.currentState?.validate() ?? false) {
@@ -775,42 +780,44 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             if (data.isEmpty) {
                               return "* Campo obrigatório";
                             }
-                            if (data.length != 8) {
-                              return "Número invalido. Ex: XXXXX-XXX";
+                            if ((data.moneyToNumber() ?? 0) <= 0) {
+                              return "Número invalido.";
                             }
                             return null;
                           },
-                          maxLength: 8,
                           textAlignVertical: TextAlignVertical.center,
+                          inputFormatters: [MoneyFormatter()],
                           decoration: InputDecoration(
                             filled: true,
                             isDense: true,
                             fillColor: Colors.white,
                             counter: const SizedBox.shrink(),
-                            hintText: 'CEP',
+                            hintText: 'Valor',
                             hintStyle: GoogleFonts.rubik(
                               fontSize: 18,
                             ),
                             errorStyle: const TextStyle(
                               fontSize: 0,
                             ),
-                            suffixIcon: JustTheTooltip(
-                              backgroundColor: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
-                              content: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Text(
-                                  'XXXXX-XXX',
-                                  style: GoogleFonts.rubik(
-                                    color: Colors.white,
+                            suffixIcon: RepaintBoundary(
+                              child: JustTheTooltip(
+                                backgroundColor: Colors.black,
+                                borderRadius: BorderRadius.circular(20),
+                                content: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: Text(
+                                    'R\$ XXXX,XX',
+                                    style: GoogleFonts.rubik(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                isModal: true,
+                                child: const Icon(Icons.help),
                               ),
-                              isModal: true,
-                              child: const Icon(Icons.help),
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 24.0, bottom: 8.0, top: 8.0),
@@ -844,7 +851,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                           children: [
                             Expanded(
                               child: TextFormField(
-                                controller: _valueController,
+                                controller: _cepController,
                                 onChanged: (_) {
                                   if (haveError) {
                                     if (_formKey3.currentState?.validate() ??
@@ -861,41 +868,44 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                   if (data.isEmpty) {
                                     return "* Campo obrigatório";
                                   }
-                                  if (double.parse(data) <= 0) {
-                                    return "Número invalido.";
+                                  if (data.length != 9) {
+                                    return "Número invalido. Ex: XXXXX-XXX";
                                   }
                                   return null;
                                 },
+                                inputFormatters: [CepFormatter()],
                                 textAlignVertical: TextAlignVertical.center,
                                 decoration: InputDecoration(
                                   filled: true,
                                   isDense: true,
                                   fillColor: Colors.white,
                                   counter: const SizedBox.shrink(),
-                                  hintText: 'Valor',
+                                  hintText: 'CEP',
                                   hintStyle: GoogleFonts.rubik(
                                     fontSize: 18,
                                   ),
                                   errorStyle: const TextStyle(
                                     fontSize: 0,
                                   ),
-                                  suffixIcon: JustTheTooltip(
-                                    backgroundColor: Colors.black,
-                                    borderRadius: BorderRadius.circular(20),
-                                    content: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      child: Text(
-                                        'R\$ XXXX,XX',
-                                        style: GoogleFonts.rubik(
-                                          color: Colors.white,
+                                  suffixIcon: RepaintBoundary(
+                                    child: JustTheTooltip(
+                                      backgroundColor: Colors.black,
+                                      borderRadius: BorderRadius.circular(20),
+                                      content: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        child: Text(
+                                          'XXXXX-XXX',
+                                          style: GoogleFonts.rubik(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
+                                      isModal: true,
+                                      child: const Icon(Icons.help),
                                     ),
-                                    isModal: true,
-                                    child: const Icon(Icons.help),
                                   ),
                                   contentPadding: const EdgeInsets.only(
                                       left: 24.0, bottom: 8.0, top: 8.0),
@@ -1050,10 +1060,8 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                 _immobileInput.typeImmobile !=
                                     TypeImmobile.none) {
                               _immobileInput.cep = _cepController.text;
-                              _immobileInput.value = num.tryParse(
-                                    _valueController.text,
-                                  ) ??
-                                  0;
+                              _immobileInput.value =
+                                  _valueController.text.moneyToNumber() ?? 0;
                               nextPage();
                             } else {
                               setState(() {

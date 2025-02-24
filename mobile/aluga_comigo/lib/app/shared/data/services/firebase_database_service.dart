@@ -3,10 +3,14 @@ import 'dart:async';
 import 'package:aluga_comigo/app/shared/domain/models/errors/firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
+
+import '../../domain/entities/failures.dart';
+import '../../domain/errors/firebase_error_handler.dart';
 
 enum FirebaseDataTables {
   users,
-  immobile,
+  chats,
 }
 
 class FirebaseDatabaseService {
@@ -23,6 +27,11 @@ class FirebaseDatabaseService {
       var ref = _firebase.collection(table.name);
       await ref.doc(id).set(data);
       return const Right(null);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),
@@ -40,6 +49,11 @@ class FirebaseDatabaseService {
       var ref = _firebase.collection(table.name);
       final data = await ref.doc(path).get();
       return Right(data.data());
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),
@@ -61,6 +75,11 @@ class FirebaseDatabaseService {
         var ref = _firebase.collection(table.name).snapshots();
         return Right(ref);
       }
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),
@@ -79,6 +98,11 @@ class FirebaseDatabaseService {
       var ref = _firebase.collection(table.name).doc(path);
       await ref.set(data);
       return const Right(null);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),
@@ -96,6 +120,11 @@ class FirebaseDatabaseService {
       var ref = _firebase.collection(table.name).doc(path);
       await ref.delete();
       return const Right(null);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       final error = FirebaseDatabaseError(
         msg: exception.toString(),

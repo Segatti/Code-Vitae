@@ -46,7 +46,7 @@ android {
     defaultConfig {
         applicationId "com.vittor.aluga_comigo"
         minSdkVersion 23
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

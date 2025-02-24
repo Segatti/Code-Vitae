@@ -4,12 +4,14 @@ import 'dart:convert';
 import '../../domain/enums/type_user.dart';
 
 class UserModel {
+  final String id;
   final String email;
   final String password;
   final TypeUser typeUser;
   final String photo;
 
   const UserModel({
+    this.id = "",
     this.email = "",
     this.password = "",
     this.typeUser = TypeUser.none,
@@ -18,6 +20,7 @@ class UserModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'email': email,
       'password': password,
       'typeUser': typeUser.name,
@@ -27,6 +30,7 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
+      id: map['id'] ?? "",
       email: map['email'] ?? "",
       password: map['password'] ?? "",
       typeUser: TypeUser.get(map['typeUser']),

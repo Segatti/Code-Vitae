@@ -1,4 +1,5 @@
 import 'package:chiclet/chiclet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +22,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
   final TextEditingController password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool haveError = false;
+  int tabSelected = 0;
 
   @override
   Widget build(BuildContext context) {

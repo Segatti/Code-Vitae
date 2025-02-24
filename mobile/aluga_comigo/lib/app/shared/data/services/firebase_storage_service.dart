@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
+import '../../domain/entities/failures.dart';
+import '../../domain/errors/firebase_error_handler.dart';
 import '../../domain/models/errors/firebase.dart';
 
 enum FirebaseStorageTables {
   users,
-  immobile,
 }
 
 class FirebaseStorageService {
@@ -31,6 +33,11 @@ class FirebaseStorageService {
       );
       final String link = await ref.getDownloadURL();
       return Right(link);
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
     } catch (exception) {
       final error = FirebaseStorageError(
         msg: exception.toString(),

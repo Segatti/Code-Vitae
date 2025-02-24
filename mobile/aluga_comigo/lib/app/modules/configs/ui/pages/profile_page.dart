@@ -1,10 +1,10 @@
 import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dart_date/dart_date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -255,7 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     color: const Color(0xFFEFEFEF),
                                   ),
                                   child: Text(
-                                    date.format("dd/MM/yyyy"),
+                                    DateFormat("dd/MM/yyyy").format(date),
                                     style: GoogleFonts.rubik(
                                       height: 1,
                                       color: Colors.black,

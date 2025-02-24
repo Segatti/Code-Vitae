@@ -1,6 +1,7 @@
 import 'package:aluga_comigo/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -17,6 +18,8 @@ void main() async {
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   // );
+
+  debugRepaintRainbowEnabled = true;
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

@@ -1,10 +1,11 @@
 import 'dart:ui';
 
 import 'package:aluga_comigo/app/modules/quests/interactor/enums/type_reward.dart';
-import 'package:dart_date/dart_date.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../interactor/models/quest.dart';
@@ -48,7 +49,7 @@ class _QuestsPageState extends State<QuestsPage> {
   @override
   void initState() {
     super.initState();
-    dayReset = DateTime.now().endOfISOWeek.addDays(1);
+    dayReset = DateTime.now().lastDayOfWeek.add(Duration(days: 1));
   }
 
   @override
@@ -93,7 +94,7 @@ class _QuestsPageState extends State<QuestsPage> {
               child: Column(
                 children: [
                   Text(
-                    "Missões reiniciam em: ${dayReset.format("dd/MM")} às 00:00",
+                    "Missões reiniciam em: ${DateFormat("dd/MM").format(dayReset)} às 00:00",
                     style: GoogleFonts.rubik(
                       color: const Color(0xFF777777),
                     ),

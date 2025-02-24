@@ -27,7 +27,7 @@ dependencies:
   just_the_tooltip: ^0.0.12
   flutter_snake_navigationbar: ^0.6.1
   responsive_framework: ^1.5.1
-  velocity_x: ^4.2.1
+  velocity_x: ^4.3.0
   flip_card: ^0.7.0
   dartx: ^1.2.0
   story_view: ^0.16.5
@@ -52,7 +52,7 @@ dependencies:
   blur: ^4.0.0
   auto_size_text: ^3.0.0
   custom_sliding_segmented_control: ^1.8.5
-  dart_date: ^1.4.0
+  # dart_date: ^1.4.0
   firebase_core: ^3.12.0
   firebase_auth: ^5.5.0
   firebase_storage: ^12.4.3
@@ -63,6 +63,7 @@ dependencies:
   equatable: ^2.0.7
   flutter_launcher_icons: ^0.14.3
   shimmer_animation: ^2.2.2
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
