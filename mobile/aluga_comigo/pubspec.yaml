@@ -33,9 +33,7 @@ dependencies:
   story_view: ^0.16.5
   wave: ^0.2.2
   dismissible_page: ^1.0.2
-  flutter_slider_drawer:
-    git:
-      url: git@github.com:Segatti/flutter_slider_drawer.git
+  flutter_slider_drawer: ^3.0.2
   swipable_stack: ^2.0.0
   quickalert: ^1.1.0
   flutter_secure_storage: ^9.2.4
@@ -75,9 +73,9 @@ flutter_launcher_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path_android: "assets/icons/logo.png"
-  image_path_ios: "assets/icons/logo.png"
-  adaptive_icon_foreground: "assets/icons/logo.png"
+  image_path_android: "assets/icons/logoApp.png"
+  image_path_ios: "assets/icons/logoApp.png"
+  adaptive_icon_foreground: "assets/icons/logoApp.png"
   adaptive_icon_background: "#FFFFFFFF"
 # dart run flutter_launcher_icons 
 
