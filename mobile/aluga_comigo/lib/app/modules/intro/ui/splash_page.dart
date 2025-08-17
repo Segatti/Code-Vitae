@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:styled_text/styled_text.dart';
 
 import '../../../shared/data/services/secure_storage_service.dart';
+import '../../auth/data/models/user_model.dart';
+import '../../auth/domain/entities/user.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -20,28 +23,28 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   void initState() {
-    Future.delayed(
-      const Duration(milliseconds: 1500),
-      () {
-        setState(() {
-          showTitle = false;
-          borderLogo = 80;
-          widthContainer = 100;
-        });
-        Future.delayed(
-          const Duration(seconds: 1),
-          () async {
-            final storage = Modular.get<SecureStorageService>();
-            final showIntro = await storage.getData(StorageKey.intro);
-            if (showIntro == "false") {
-              Modular.to.navigate("/auth/");
-            } else {
-              Modular.to.navigate("/intro");
-            }
-          },
-        );
-      },
-    );
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      setState(() {
+        showTitle = false;
+        borderLogo = 80;
+        widthContainer = 100;
+      });
+      Future.delayed(const Duration(seconds: 1), () async {
+        final storage = Modular.get<SecureStorageService>();
+        final showIntro = await storage.getData(StorageKey.intro);
+        if (showIntro == "false") {
+          var data = await storage.getData(StorageKey.user);
+          if (data != null) {
+            SessionService.setUser(User.fromModel(UserModel.fromJson(data)));
+            Modular.to.navigate("/start/customers");
+          } else {
+            Modular.to.navigate("/auth/");
+          }
+        } else {
+          Modular.to.navigate("/intro");
+        }
+      });
+    });
     super.initState();
   }
 
@@ -52,20 +55,9 @@ class _SplashPageState extends State<SplashPage> {
         children: [
           Column(
             children: [
-              Expanded(
-                child: Container(
-                  color: const Color(0xFF2C29A3),
-                ),
-              ),
-              const Divider(
-                color: Colors.white,
-                height: 2,
-              ),
-              Expanded(
-                child: Container(
-                  color: const Color(0xFFDF924B),
-                ),
-              ),
+              Expanded(child: Container(color: const Color(0xFF2C29A3))),
+              const Divider(color: Colors.white, height: 2),
+              Expanded(child: Container(color: const Color(0xFFDF924B))),
             ],
           ),
           Align(
@@ -108,13 +100,11 @@ class _SplashPageState extends State<SplashPage> {
                         ),
                         tags: {
                           'orange': StyledTextTag(
-                            style: const TextStyle(
-                              color: Color(0xFFDF924B),
-                            ),
+                            style: const TextStyle(color: Color(0xFFDF924B)),
                           ),
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

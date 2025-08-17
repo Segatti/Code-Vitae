@@ -6,6 +6,7 @@ class PrimaryButtonWidget extends StatelessWidget {
   final VoidCallback onTap;
   final String title;
   final double height;
+  final bool isLoading;
   final EdgeInsetsGeometry? padding;
   final Color color;
   final double borderRadius;
@@ -17,6 +18,7 @@ class PrimaryButtonWidget extends StatelessWidget {
     this.color = const Color(0xFFDF924B),
     this.borderRadius = 50,
     this.padding,
+    this.isLoading = false,
   });
 
   @override
@@ -26,21 +28,23 @@ class PrimaryButtonWidget extends StatelessWidget {
       children: [
         Expanded(
           child: ChicletAnimatedButton(
-            onPressed: onTap,
+            onPressed: isLoading ? null : onTap,
             height: height,
             padding: padding,
             backgroundColor: color,
             borderRadius: borderRadius,
             child: Center(
-              child: Text(
-                title,
-                textScaler: const TextScaler.linear(1),
-                style: GoogleFonts.rubik(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text(
+                      title,
+                      textScaler: const TextScaler.linear(1),
+                      style: GoogleFonts.rubik(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
           ),
         ),

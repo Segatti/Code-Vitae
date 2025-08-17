@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aluga_comigo/app/shared/domain/models/errors/firebase.dart';
+import 'package:aluga_comigo/app/shared/domain/typedefs/returns.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import '../../domain/errors/firebase_error_handler.dart';
 enum FirebaseDataTables {
   users,
   chats,
+  matchTo, // from user to person
+  matchFrom, // from person to user
 }
 
 class FirebaseDatabaseService {
@@ -18,12 +21,28 @@ class FirebaseDatabaseService {
 
   FirebaseDatabaseService(this._firebase);
 
+  CollectionReference<Json> getRef(FirebaseDataTables table) {
+    try {
+      var ref = _firebase.collection(table.name);
+      return ref;
+    } on FirebaseException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: FirebaseErrorHandler.getMessage(error.code),
+      );
+    } catch (exception) {
+      final error = FirebaseDatabaseError(message: exception.toString());
+
+      throw error;
+    }
+  }
+
   Future<Either<FirebaseDatabaseError, void>> create(
     FirebaseDataTables table,
     Map<String, dynamic> data,
   ) async {
     try {
-      var id = data.remove('id');
+      var id = data['id'];
       var ref = _firebase.collection(table.name);
       await ref.doc(id).set(data);
       return const Right(null);
@@ -33,31 +52,27 @@ class FirebaseDatabaseService {
         message: FirebaseErrorHandler.getMessage(error.code),
       );
     } catch (exception) {
-      final error = FirebaseDatabaseError(
-        msg: exception.toString(),
-      );
+      final error = FirebaseDatabaseError(message: exception.toString());
 
       return Left(error);
     }
   }
 
-  Future<Either<FirebaseDatabaseError, dynamic>> read(
+  Future<Either<FirebaseDatabaseError, Json>> read(
     FirebaseDataTables table,
     String path,
   ) async {
     try {
       var ref = _firebase.collection(table.name);
       final data = await ref.doc(path).get();
-      return Right(data.data());
+      return Right(data.data() ?? {});
     } on FirebaseException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
         message: FirebaseErrorHandler.getMessage(error.code),
       );
     } catch (exception) {
-      final error = FirebaseDatabaseError(
-        msg: exception.toString(),
-      );
+      final error = FirebaseDatabaseError(message: exception.toString());
 
       return Left(error);
     }
@@ -81,9 +96,7 @@ class FirebaseDatabaseService {
         message: FirebaseErrorHandler.getMessage(error.code),
       );
     } catch (exception) {
-      final error = FirebaseDatabaseError(
-        msg: exception.toString(),
-      );
+      final error = FirebaseDatabaseError(message: exception.toString());
 
       return Left(error);
     }
@@ -104,9 +117,7 @@ class FirebaseDatabaseService {
         message: FirebaseErrorHandler.getMessage(error.code),
       );
     } catch (exception) {
-      final error = FirebaseDatabaseError(
-        msg: exception.toString(),
-      );
+      final error = FirebaseDatabaseError(message: exception.toString());
 
       return Left(error);
     }
@@ -126,9 +137,7 @@ class FirebaseDatabaseService {
         message: FirebaseErrorHandler.getMessage(error.code),
       );
     } catch (exception) {
-      final error = FirebaseDatabaseError(
-        msg: exception.toString(),
-      );
+      final error = FirebaseDatabaseError(message: exception.toString());
 
       return Left(error);
     }

@@ -1,4 +1,4 @@
-import 'package:aluga_comigo/app/shared/domain/constants/icons_figma.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:gap/gap.dart';
@@ -105,7 +105,7 @@ class _StorePageState extends State<StorePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(16),
                                             child: Image.asset(
-                                              IconsFigma.superStar1,
+                                              IconsAsset.superStar1,
                                             ),
                                           ),
                                         ),
@@ -149,7 +149,7 @@ class _StorePageState extends State<StorePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(12),
                                             child: Image.asset(
-                                              IconsFigma.superStar2,
+                                              IconsAsset.superStar2,
                                             ),
                                           ),
                                         ),
@@ -193,7 +193,7 @@ class _StorePageState extends State<StorePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(8),
                                             child: Image.asset(
-                                              IconsFigma.superStar3,
+                                              IconsAsset.superStar3,
                                             ),
                                           ),
                                         ),
@@ -302,7 +302,7 @@ class _StorePageState extends State<StorePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(16),
                                             child: Image.asset(
-                                              IconsFigma.superChat1,
+                                              IconsAsset.superChat1,
                                             ),
                                           ),
                                         ),
@@ -346,7 +346,7 @@ class _StorePageState extends State<StorePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(12),
                                             child: Image.asset(
-                                              IconsFigma.superChat2,
+                                              IconsAsset.superChat2,
                                             ),
                                           ),
                                         ),
@@ -390,7 +390,7 @@ class _StorePageState extends State<StorePage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(8),
                                             child: Image.asset(
-                                              IconsFigma.superChat3,
+                                              IconsAsset.superChat3,
                                             ),
                                           ),
                                         ),

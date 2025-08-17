@@ -166,29 +166,31 @@ class _AuthPageState extends State<AuthPage> {
                                   initialDuration.inMilliseconds + 1000,
                             ),
                             slidingBeginOffset: const Offset(0.0, -0.35),
-                            child: AnimatedTextKit(
-                              repeatForever: true,
-                              pause: const Duration(milliseconds: 1000),
-                              animatedTexts: [
-                                TyperAnimatedText(
-                                  'uma Casa?',
-                                  speed: const Duration(milliseconds: 80),
-                                  textStyle: GoogleFonts.rubik(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 32,
-                                    color: Colors.grey,
+                            child: RepaintBoundary(
+                              child: AnimatedTextKit(
+                                repeatForever: true,
+                                pause: const Duration(milliseconds: 1000),
+                                animatedTexts: [
+                                  TyperAnimatedText(
+                                    'uma Casa?',
+                                    speed: const Duration(milliseconds: 80),
+                                    textStyle: GoogleFonts.rubik(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 32,
+                                      color: Colors.grey,
+                                    ),
                                   ),
-                                ),
-                                TyperAnimatedText(
-                                  'um Apê?',
-                                  speed: const Duration(milliseconds: 102),
-                                  textStyle: GoogleFonts.rubik(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 32,
-                                    color: Colors.grey,
+                                  TyperAnimatedText(
+                                    'um Apê?',
+                                    speed: const Duration(milliseconds: 102),
+                                    textStyle: GoogleFonts.rubik(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 32,
+                                      color: Colors.grey,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                           const Gap(32),

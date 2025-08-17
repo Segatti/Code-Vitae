@@ -1,9 +1,13 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 extension StringExtension on String {
   String removeDiacritics() {
-    var str = this;
-    var withDia =
+    String str = this;
+    final String withDia =
         'ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž';
-    var withoutDia =
+    final String withoutDia =
         'AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz';
 
     for (int i = 0; i < withDia.length; i++) {
@@ -13,14 +17,32 @@ extension StringExtension on String {
     return str;
   }
 
+  String limit(int limit) {
+    if (length > limit) {
+      return '${substring(0, limit - 3)}...';
+    } else {
+      return this;
+    }
+  }
+
   String removeSpecialCharactersAndSpaces() {
     // Expressão regular para manter apenas letras e números
     return replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
   }
 
+  String toFormat(TextInputFormatter formatter) {
+    return formatter
+        .formatEditUpdate(
+          TextEditingValue(text: this),
+          TextEditingValue(text: this),
+        )
+        .text;
+  }
+
   String getInitialName() {
-    if (isEmpty) return '';
-    List<String> words = trim().split(' ');
+    if (trim().isEmpty) return '';
+    final List<String> words = trim().split(' ');
+    words.removeWhere((String item) => item.trim().isEmpty);
     if (words.length == 1) return words[0][0].toUpperCase();
     return (words[0][0] + words[1][0]).toUpperCase();
   }
@@ -28,15 +50,15 @@ extension StringExtension on String {
   DateTime? toDateTimeFromTime() {
     if (isEmpty) return null;
     try {
-      DateTime now = DateTime.now();
+      final DateTime now = DateTime.now();
 
-      List<String> timeParts = split(':');
+      final List<String> timeParts = split(':');
       if (timeParts.length != 2) return null;
       if (timeParts.first.length != 2 || timeParts.last.length != 2) {
         return null;
       }
-      int hour = int.parse(timeParts[0]);
-      int minute = int.parse(timeParts[1]);
+      final int hour = int.parse(timeParts[0]);
+      final int minute = int.parse(timeParts[1]);
       if (hour >= 24 || minute >= 60) return null;
 
       return DateTime(now.year, now.month, now.day, hour, minute);
@@ -47,21 +69,21 @@ extension StringExtension on String {
 
   bool isValidDate({bool hasDay = true}) {
     if (isEmpty) return false;
-    var sDate = split("/");
+    final List<String> sDate = split('/');
     if ((sDate.length != 3 && hasDay) || (sDate.length != 2 && !hasDay)) {
       return false;
     }
     if (hasDay) {
-      var day = int.tryParse(sDate[0]) ?? 0;
-      var month = int.tryParse(sDate[1]) ?? 0;
-      var year = int.tryParse(sDate[2]) ?? 0;
+      final int day = int.tryParse(sDate[0]) ?? 0;
+      final int month = int.tryParse(sDate[1]) ?? 0;
+      final int year = int.tryParse(sDate[2]) ?? 0;
 
       if (day <= 0 || day > 31) return false;
       if (month <= 0 || month > 12) return false;
       if (year <= 0 || year.toString().length < 4) return false;
     } else {
-      var month = int.tryParse(sDate[0]) ?? 0;
-      var year = int.tryParse(sDate[1]) ?? 0;
+      final int month = int.tryParse(sDate[0]) ?? 0;
+      final int year = int.tryParse(sDate[1]) ?? 0;
 
       if (month <= 0 || month > 12) return false;
       if (year <= 0 || year.toString().length < 4) return false;
@@ -72,28 +94,74 @@ extension StringExtension on String {
 
   DateTime? toDate({bool hasDay = true}) {
     if (isEmpty) return null;
-    var sDate = split("/");
+    final List<String> sDate = split('/');
     if ((sDate.length != 3 && hasDay) || (sDate.length != 2 && !hasDay)) {
       return null;
     }
 
     if (hasDay) {
-      var day = int.tryParse(sDate[0]) ?? 0;
-      var month = int.tryParse(sDate[1]) ?? 0;
-      var year = int.tryParse(sDate[2]) ?? 0;
-      var date = DateTime(year, month, day);
+      final int day = int.tryParse(sDate[0]) ?? 0;
+      final int month = int.tryParse(sDate[1]) ?? 0;
+      final int year = int.tryParse(sDate[2]) ?? 0;
+      final DateTime date = DateTime(year, month, day);
       return date;
     } else {
-      var month = int.tryParse(sDate[0]) ?? 0;
-      var year = int.tryParse(sDate[1]) ?? 0;
-      var date = DateTime(year, month);
+      final int month = int.tryParse(sDate[0]) ?? 0;
+      final int year = int.tryParse(sDate[1]) ?? 0;
+      final DateTime date = DateTime(year, month);
       return date;
     }
   }
 
   num? moneyToNumber() {
     if (isEmpty) return null;
-    var data = substring(3).replaceAll(".", "").replaceAll(",", ".");
+    final String data = substring(3).replaceAll('.', '').replaceAll(',', '.');
     return num.tryParse(data);
+  }
+
+  String capitalizeSafe() {
+    if (trim().isEmpty) {
+      return '';
+    } else {
+      final List<String> words = split(' ');
+      words.removeWhere((String item) => item.trim().isEmpty);
+      final String text = words.join(' ');
+      return text.trim().capitalize;
+    }
+  }
+
+  String capitalizeFirstSafe() {
+    if (trim().isEmpty) {
+      return '';
+    } else {
+      final List<String> words = split(' ');
+      words.removeWhere((String item) => item.trim().isEmpty);
+      final String text = words.join(' ');
+      return text.trim().capitalizeFirst;
+    }
+  }
+}
+
+extension StringColor on String {
+  Color get colorFromHex {
+    return Colors.transparent.fromHex(this);
+  }
+}
+
+extension StringEmailMask on String {
+  String maskEmail() {
+    if (isEmpty) return '';
+
+    final List<String> parts = split('@');
+    if (parts.length != 2) return this;
+
+    final String username = parts[0];
+    final String domain = parts[1];
+
+    if (username.length <= 2) return this;
+
+    final String maskedUsername =
+        '${username[0]}${'*' * (username.length - 2)}${username[username.length - 1]}';
+    return '$maskedUsername@$domain';
   }
 }

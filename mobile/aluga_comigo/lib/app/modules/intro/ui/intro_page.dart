@@ -1,7 +1,10 @@
 import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/lotties_asset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -22,100 +25,30 @@ class _IntroPageState extends State<IntroPage> {
   List<String> titles = [
     "O aluguel apertou no final do mês?",
     "Precisando de alguem para dividir o aluguel?",
-    "Aqui você vai resolver esses problemas!",
+    "Aqui você encontra a pessoa ideal para alugar com você!\nUma casa ou um apê",
   ];
   List<String> icons = [
-    "cash_fly.png",
-    "keys.png",
-    "smile.png",
+    LottiesAsset.intro1,
+    LottiesAsset.intro2,
+    LottiesAsset.intro3,
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: AnimatedCrossFade(
-        duration: const Duration(seconds: 1),
-        firstChild: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/intro1.png"),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 64),
-                  Image.asset(
-                    "assets/images/${icons[index]}",
-                    height: 100,
-                    width: 100,
-                  ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      titles[index],
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.rubik(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          index++;
-                        });
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: .5),
-                        ),
-                        child: const Icon(
-                          Icons.chevron_right,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+      backgroundColor: AppColors.primaryBlue,
+      body: Container(
+        width: MediaQuery.sizeOf(context).width,
+        height: MediaQuery.sizeOf(context).height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: Colors.white,
         ),
-        secondChild: AnimatedCrossFade(
+        child: AnimatedCrossFade(
           duration: const Duration(seconds: 1),
-          firstChild: Container(
+          firstChild: SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/intro2.png"),
-                fit: BoxFit.fill,
-              ),
-            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,11 +58,7 @@ class _IntroPageState extends State<IntroPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 64),
-                    Image.asset(
-                      "assets/images/${icons[index]}",
-                      height: 100,
-                      width: 100,
-                    ),
+                    Lottie.asset(icons[index], height: 300, width: 300),
                     const SizedBox(height: 32),
                     SizedBox(
                       width: 300,
@@ -137,8 +66,8 @@ class _IntroPageState extends State<IntroPage> {
                         titles[index],
                         textAlign: TextAlign.center,
                         style: GoogleFonts.rubik(
-                          color: Colors.white,
-                          fontSize: 24,
+                          color: AppColors.primaryOrange,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -161,7 +90,7 @@ class _IntroPageState extends State<IntroPage> {
                           height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withValues(alpha: .5),
+                            color: AppColors.primaryBlue.withValues(alpha: .5),
                           ),
                           child: const Icon(
                             Icons.chevron_right,
@@ -175,80 +104,147 @@ class _IntroPageState extends State<IntroPage> {
               ],
             ),
           ),
-          secondChild: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/intro3.png"),
-                fit: BoxFit.fill,
+          secondChild: AnimatedCrossFade(
+            duration: const Duration(seconds: 1),
+            firstChild: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 64),
+                      Lottie.asset(icons[index], height: 300, width: 300),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: 300,
+                        child: Text(
+                          titles[index],
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.rubik(
+                            color: AppColors.primaryOrange,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              index++;
+                            });
+                          },
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.primaryBlue.withValues(
+                                alpha: .5,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.chevron_right,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 64),
-                    Image.asset(
-                      "assets/images/${icons[index]}",
-                      height: 100,
-                      width: 100,
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: 330,
-                      child: Text(
-                        titles[index],
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.rubik(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+            secondChild: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 64),
+                      SizedBox(
+                        width: 300,
+                        height: 300,
+                        child: Transform.scale(
+                          scale: 1.5,
+                          child: Lottie.asset(icons[index], fit: BoxFit.fill),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: InkWell(
-                        onTap: () async {
-                          final storage = Modular.get<SecureStorageService>();
-                          await storage.setData(
-                              StorageKey.intro, false.toString());
-                          Modular.to.navigate("/auth/");
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withValues(alpha: .5),
-                          ),
-                          child: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: 300,
+                        child: Text(
+                          titles[index],
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.rubik(
+                            color: AppColors.primaryOrange,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: InkWell(
+                          onTap: () async {
+                            final storage = Modular.get<SecureStorageService>();
+                            await storage.setData(
+                              StorageKey.intro,
+                              false.toString(),
+                            );
+                            Modular.to.navigate("/auth/");
+                          },
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.primaryBlue.withValues(
+                                alpha: .5,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.chevron_right,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
+            crossFadeState: index == 1
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
           ),
-          crossFadeState:
-              index == 1 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          crossFadeState: index == 0
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
         ),
-        crossFadeState:
-            index == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       ),
     );
   }

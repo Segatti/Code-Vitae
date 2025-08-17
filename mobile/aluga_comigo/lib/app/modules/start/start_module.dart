@@ -1,7 +1,7 @@
 import 'package:aluga_comigo/app/modules/chats/chats_module.dart';
-import 'package:aluga_comigo/app/modules/customers/customers_module.dart';
-import 'package:aluga_comigo/app/modules/houses/houses_module.dart';
-import 'package:aluga_comigo/app/modules/likes/likes_module.dart';
+import 'package:aluga_comigo/app/modules/customer/customer_module.dart';
+import 'package:aluga_comigo/app/modules/house/houses_module.dart';
+import 'package:aluga_comigo/app/modules/like/likes_module.dart';
 import 'package:aluga_comigo/app/modules/start/ui/pages/start_page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -12,7 +12,7 @@ class StartModule extends Module {
       "/",
       child: (_) => const StartPage(),
       children: [
-        ModuleRoute("/customers", module: CustomersModule()),
+        ModuleRoute("/customers", module: CustomerModule()),
         ModuleRoute("/houses", module: HousesModule()),
         ModuleRoute("/likes", module: LikesModule()),
         ModuleRoute("/chats", module: ChatsModule()),

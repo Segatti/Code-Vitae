@@ -1,3 +1,6 @@
+import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
+
+import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../../shared/domain/typedefs/returns.dart';
 import '../entities/inputs/login_input.dart';
 import '../entities/user.dart';
@@ -9,11 +12,24 @@ abstract class ILoginUser {
 
 class LoginUser implements ILoginUser {
   final IAuthRepository repository;
+  final SecureStorageService storage;
 
-  const LoginUser(this.repository);
+  const LoginUser(this.repository, this.storage);
 
   @override
   Future<Return<User>> call(LoginInput input) async {
-    return await repository.login(input);
+    final response = await repository.login(input);
+
+    response.fold(
+      (_) {
+        SessionService.clearUser();
+      },
+      (user) async {
+        SessionService.setUser(user);
+        await storage.setData(StorageKey.user, user.toJson());
+      },
+    );
+
+    return response;
   }
 }

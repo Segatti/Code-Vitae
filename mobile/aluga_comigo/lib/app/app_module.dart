@@ -3,9 +3,9 @@ import 'package:aluga_comigo/app/modules/store/store_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import 'modules/auth/auth_module.dart';
-import 'modules/configs/config_module.dart';
+import 'modules/config/config_module.dart';
 import 'modules/intro/intro_module.dart';
-import 'modules/quests/quest_module.dart';
+import 'modules/quest/quest_module.dart';
 
 class AppModule extends Module {
   @override

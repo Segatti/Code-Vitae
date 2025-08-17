@@ -40,7 +40,7 @@ class FirebaseStorageService {
       );
     } catch (exception) {
       final error = FirebaseStorageError(
-        msg: exception.toString(),
+        message: exception.toString(),
       );
 
       return Left(error);

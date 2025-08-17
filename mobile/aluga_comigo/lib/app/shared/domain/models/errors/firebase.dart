@@ -1,18 +1,17 @@
-abstract class FirebaseError {
-  final String? code;
-  final String msg;
+import '../../entities/failures.dart';
 
-  const FirebaseError({this.code, required this.msg});
+abstract class FirebaseError extends FailureDatasource {
+  FirebaseError({required super.message});
 }
 
 class FirebaseAuthError extends FirebaseError {
-  FirebaseAuthError({super.code, required super.msg});
+  FirebaseAuthError({required super.message});
 }
 
 class FirebaseDatabaseError extends FirebaseError {
-  FirebaseDatabaseError({super.code, required super.msg});
+  FirebaseDatabaseError({required super.message});
 }
 
 class FirebaseStorageError extends FirebaseError {
-  FirebaseStorageError({super.code, required super.msg});
+  FirebaseStorageError({required super.message});
 }

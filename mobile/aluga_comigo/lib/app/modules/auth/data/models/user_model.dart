@@ -9,6 +9,7 @@ class UserModel {
   final String password;
   final TypeUser typeUser;
   final String photo;
+  final String lastMatch;
 
   const UserModel({
     this.id = "",
@@ -16,6 +17,7 @@ class UserModel {
     this.password = "",
     this.typeUser = TypeUser.none,
     this.photo = "",
+    this.lastMatch = "",
   });
 
   Map<String, dynamic> toMap() {
@@ -24,7 +26,8 @@ class UserModel {
       'email': email,
       'password': password,
       'typeUser': typeUser.name,
-      'photo': photo,
+      'photos': [photo],
+      'lastMatch': lastMatch,
     };
   }
 
@@ -34,7 +37,8 @@ class UserModel {
       email: map['email'] ?? "",
       password: map['password'] ?? "",
       typeUser: TypeUser.get(map['typeUser']),
-      photo: map['photo'] ?? "",
+      photo: map['photos']?[0] ?? "",
+      lastMatch: map['lastMatch'] ?? "",
     );
   }
 
@@ -42,4 +46,20 @@ class UserModel {
 
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  UserModel copyWith({
+    String? email,
+    String? password,
+    String? photo,
+    String? lastMatch,
+  }) {
+    return UserModel(
+      id: id,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      typeUser: typeUser,
+      photo: photo ?? this.photo,
+      lastMatch: lastMatch ?? this.lastMatch,
+    );
+  }
 }
