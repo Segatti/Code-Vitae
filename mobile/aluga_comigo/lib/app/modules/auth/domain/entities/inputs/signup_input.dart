@@ -14,6 +14,8 @@ class SignupImmobileInput extends SignupInput {
   num value;
   TypeImmobile? typeImmobile;
   String photo;
+  String state;
+  String city;
 
   SignupImmobileInput({
     this.email = "",
@@ -25,6 +27,8 @@ class SignupImmobileInput extends SignupInput {
     this.value = 0,
     this.typeImmobile,
     this.photo = "",
+    this.state = "",
+    this.city = "",
   });
 }
 
@@ -36,6 +40,8 @@ class SignupUserInput extends SignupInput {
   String phone;
   List<UserSkill> skills;
   String photo;
+  String state;
+  String city;
 
   SignupUserInput({
     this.email = "",
@@ -45,5 +51,7 @@ class SignupUserInput extends SignupInput {
     this.phone = "",
     this.skills = const [],
     this.photo = "",
+    this.state = "",
+    this.city = "",
   });
 }

@@ -254,7 +254,7 @@ class _AuthPageState extends State<AuthPage> {
                                 login: (email, password) async {
                                   showAdaptiveDialog(
                                     context: context,
-                                    barrierDismissible: true,
+                                    barrierDismissible: false,
                                     builder: (context) => const LoadingPopup(),
                                   );
 
@@ -278,7 +278,7 @@ class _AuthPageState extends State<AuthPage> {
                                 signup: (input) async {
                                   showAdaptiveDialog(
                                     context: context,
-                                    barrierDismissible: true,
+                                    barrierDismissible: false,
                                     builder: (context) => const LoadingPopup(),
                                   );
 

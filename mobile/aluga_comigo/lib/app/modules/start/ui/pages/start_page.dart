@@ -1,4 +1,6 @@
+import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/location_permission_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
@@ -22,6 +25,8 @@ class _StartPageState extends State<StartPage>
     with SingleTickerProviderStateMixin {
   bool isMenuOpen = false;
   int indexNavigationBar = 0;
+  bool hasLocationPermission = false;
+  bool isCheckingPermission = true;
 
   late AnimationController _animationController;
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -33,6 +38,156 @@ class _StartPageState extends State<StartPage>
       vsync: this,
       duration: Durations.short4,
     );
+    _checkLocationPermission();
+  }
+
+  Future<void> _checkLocationPermission() async {
+    final status = await Permission.location.status;
+    setState(() {
+      hasLocationPermission = status.isGranted;
+      isCheckingPermission = false;
+    });
+
+    // Verificar perfil após a verificação de permissão
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkProfileComplete();
+      });
+    }
+  }
+
+  bool _isProfileComplete(Customer? customer) {
+    if (customer == null) return false;
+
+    return customer.name.isNotEmpty &&
+        customer.dateBirth.isNotEmpty &&
+        customer.photos.isNotEmpty &&
+        (customer.shortDescription.isNotEmpty ||
+            customer.longDescription.isNotEmpty) &&
+        customer.cityState.isNotEmpty &&
+        customer.phone.isNotEmpty &&
+        customer.gender.isNotEmpty;
+  }
+
+  Future<void> _showIncompleteProfileDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.info_outline,
+                  size: 64,
+                  color: Color(0XFFDF924B),
+                ),
+                const Gap(16),
+                Text(
+                  "Perfil Incompleto",
+                  style: GoogleFonts.rubik(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const Gap(16),
+                Text(
+                  "Você precisa completar seu perfil para visualizar os detalhes dos outros usuários.",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.rubik(fontSize: 16, color: Colors.black54),
+                ),
+                const Gap(24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.grey, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text(
+                          "Cancelar",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Modular.to.pushNamed("/config/profile");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0XFFDF924B),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text(
+                          "Preencher",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _checkProfileComplete() {
+    if (SessionService.customer == null) return;
+
+    final customer = Customer.fromModel(SessionService.customer!);
+    if (!_isProfileComplete(customer)) {
+      _showIncompleteProfileDialog();
+    }
+  }
+
+  Future<void> _requestLocationPermission() async {
+    final status = await Permission.location.request();
+    setState(() {
+      hasLocationPermission = status.isGranted;
+    });
+
+    // Verificar perfil após conceder permissão
+    if (mounted && hasLocationPermission) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkProfileComplete();
+      });
+    }
   }
 
   @override
@@ -57,7 +212,7 @@ class _StartPageState extends State<StartPage>
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: CachedNetworkImage(
-                  imageUrl: SessionService.user?.photo ?? "",
+                  imageUrl: SessionService.customer?.photos[0] ?? "",
                   height: 35,
                   width: 35,
                   fit: BoxFit.cover,
@@ -374,6 +529,16 @@ class _StartPageState extends State<StartPage>
 
   @override
   Widget build(BuildContext context) {
+    if (isCheckingPermission) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (!hasLocationPermission) {
+      return LocationPermissionWidget(
+        onRequestPermission: _requestLocationPermission,
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SliderDrawer(

@@ -1,4 +1,9 @@
+import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
+import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
+import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
+import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
+import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
@@ -8,6 +13,8 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
+import '../../../auth/domain/enums/user_desired_immobile.dart';
+import '../../../auth/domain/enums/user_life_style.dart';
 import '../controllers/customers_controller.dart';
 
 class CustomersPage extends StatefulWidget {
@@ -23,6 +30,163 @@ class _CustomersPageState extends State<CustomersPage> {
 
   void _listenController() {
     setState(() {});
+  }
+
+  int _calculateAge(String dateBirth) {
+    if (dateBirth.isEmpty) return 0;
+    final date = dateBirth.toDate();
+    if (date == null) return 0;
+    final now = DateTime.now();
+    int age = now.year - date.year;
+    if (now.month < date.month ||
+        (now.month == date.month && now.day < date.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  String _getSkillName(UserSkill skill) {
+    switch (skill) {
+      case UserSkill.cucaMaster:
+        return "Mestre cuca";
+      case UserSkill.ninjaInSweeping:
+        return "Ninja na vassoura";
+      case UserSkill.humanDishwasher:
+        return "Lava-louças humano";
+      case UserSkill.laundryOperator:
+        return "Operador de lavanderia";
+      case UserSkill.none:
+        return "";
+    }
+  }
+
+  // String _formatScore(double score) {
+  //   if (score == 0) return "0/5";
+  //   return "${score.toStringAsFixed(1)}/5";
+  // }
+
+  bool _isProfileComplete(Customer? customer) {
+    if (customer == null) return false;
+
+    return customer.name.isNotEmpty &&
+        customer.dateBirth.isNotEmpty &&
+        customer.photos.isNotEmpty &&
+        (customer.shortDescription.isNotEmpty ||
+            customer.longDescription.isNotEmpty) &&
+        customer.cityState.isNotEmpty &&
+        customer.phone.isNotEmpty &&
+        customer.gender.isNotEmpty;
+  }
+
+  Future<void> _showIncompleteProfileDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.info_outline,
+                  size: 64,
+                  color: Color(0XFFDF924B),
+                ),
+                const Gap(16),
+                Text(
+                  "Perfil Incompleto",
+                  style: GoogleFonts.rubik(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const Gap(16),
+                Text(
+                  "Você precisa completar seu perfil para visualizar os detalhes dos outros usuários.",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.rubik(fontSize: 16, color: Colors.black54),
+                ),
+                const Gap(24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.grey, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text(
+                          "Cancelar",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Modular.to.pushNamed("/config/profile");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0XFFDF924B),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text(
+                          "Preencher",
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<bool> _checkProfileAndShowDetails(
+    FlipCardController flipController,
+  ) async {
+    if (!_isProfileComplete(Customer.fromModel(SessionService.customer!))) {
+      await _showIncompleteProfileDialog();
+      return false;
+    }
+
+    // Se o perfil estiver completo, permite ver os detalhes
+    flipController.toggleCard();
+    return true;
   }
 
   @override
@@ -45,11 +209,13 @@ class _CustomersPageState extends State<CustomersPage> {
       listenable: controller,
       builder: (context, child) {
         var list = controller.customers.toList();
-        if (controller.loadingList.contains('getCustomers')) {
+
+        if (controller.loadingList.contains('getCustomers') ||
+            controller.loadingList.contains('initialize')) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (!controller.hasMore) {
+        if (list.isEmpty && !controller.hasMore) {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -67,6 +233,10 @@ class _CustomersPageState extends State<CustomersPage> {
               ],
             ),
           );
+        }
+
+        if (list.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
         }
 
         return Column(
@@ -146,45 +316,46 @@ class _CustomersPageState extends State<CustomersPage> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Container(
-                                          height: 30,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              40,
+                                        // Container(
+                                        //   height: 30,
+                                        //   padding: const EdgeInsets.symmetric(
+                                        //     horizontal: 8,
+                                        //   ),
+                                        //   decoration: BoxDecoration(
+                                        //     color: Colors.white,
+                                        //     borderRadius: BorderRadius.circular(
+                                        //       40,
+                                        //     ),
+                                        //   ),
+                                        //   child: Row(
+                                        //     children: [
+                                        //       Text(
+                                        //         _formatScore(customer.score),
+                                        //       ),
+                                        //       const Icon(
+                                        //         Icons.star,
+                                        //         color: Colors.amber,
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                        if (customer.cityState.isNotEmpty)
+                                          Container(
+                                            height: 30,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Center(
+                                              child: Text(customer.cityState),
                                             ),
                                           ),
-                                          child: const Row(
-                                            children: [
-                                              Text("4/5"),
-                                              Icon(
-                                                Icons.star,
-                                                color: Colors.amber,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 30,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: const Center(
-                                            child: Text("Cuiabá - MT"),
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -206,7 +377,7 @@ class _CustomersPageState extends State<CustomersPage> {
                                               CrossAxisAlignment.end,
                                           children: [
                                             Text(
-                                              customer.name.split(" ")[0],
+                                              customer.name.split(" ").first,
                                               style: GoogleFonts.rubik(
                                                 fontSize: 32,
                                                 fontWeight: FontWeight.w500,
@@ -214,27 +385,39 @@ class _CustomersPageState extends State<CustomersPage> {
                                               ),
                                             ),
                                             const Gap(12),
-                                            Text(
-                                              "18 anos",
-                                              style: GoogleFonts.rubik(
-                                                fontSize: 16,
-                                                color: Colors.black54,
+                                            Visibility(
+                                              visible:
+                                                  customer.dateBirth.isNotEmpty,
+                                              child: Text(
+                                                "${_calculateAge(customer.dateBirth)} anos",
+                                                style: GoogleFonts.rubik(
+                                                  fontSize: 16,
+                                                  color: Colors.black54,
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
                                         const Gap(4),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Descrição breve sobre mim....\nDescrição breve sobre mim....\nDescrição breve sobre mim....",
-                                              style: GoogleFonts.rubik(
-                                                fontSize: 16,
-                                                color: Colors.black54,
+                                        if (customer
+                                            .shortDescription
+                                            .isNotEmpty)
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  customer.shortDescription,
+                                                  style: GoogleFonts.rubik(
+                                                    fontSize: 16,
+                                                    color: Colors.black54,
+                                                  ),
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
+                                            ],
+                                          ),
                                         const Spacer(),
                                         Row(
                                           mainAxisAlignment:
@@ -248,69 +431,83 @@ class _CustomersPageState extends State<CustomersPage> {
                                                     Axis.horizontal,
                                                 child: Row(
                                                   children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        border: Border.all(
-                                                          color: Colors.grey,
-                                                          width: 2,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            horizontal: 8,
-                                                            vertical: 4,
+                                                    if (customer
+                                                            .desiredImmobile !=
+                                                        UserDesiredImmobile
+                                                            .none) ...[
+                                                      const Gap(8),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                            color: Colors.grey,
+                                                            width: 2,
                                                           ),
-                                                      height: 40,
-                                                      child: Center(
-                                                        child: Text(
-                                                          "Casa/Ap.",
-                                                          style:
-                                                              GoogleFonts.rubik(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                20,
                                                               ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    const Gap(8),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        border: Border.all(
-                                                          color: Colors.grey,
-                                                          width: 2,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
+                                                        height: 40,
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 8,
+                                                              vertical: 4,
                                                             ),
-                                                      ),
-                                                      height: 40,
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            horizontal: 8,
-                                                            vertical: 4,
+                                                        child: Center(
+                                                          child: Text(
+                                                            customer
+                                                                .desiredImmobile
+                                                                .title,
+                                                            style:
+                                                                GoogleFonts.rubik(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                ),
                                                           ),
-                                                      child: Center(
-                                                        child: Text(
-                                                          "R\$ 1500,00",
-                                                          style:
-                                                              GoogleFonts.rubik(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                    if (customer
+                                                            .priceMaxImmobile >
+                                                        0) ...[
+                                                      const Gap(8),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                            color: Colors.grey,
+                                                            width: 2,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                20,
                                                               ),
                                                         ),
+                                                        height: 40,
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 8,
+                                                              vertical: 4,
+                                                            ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            customer
+                                                                .priceMaxImmobile
+                                                                .toMoney(),
+                                                            style:
+                                                                GoogleFonts.rubik(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                ),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                     const Gap(8),
                                                   ],
                                                 ),
@@ -326,7 +523,9 @@ class _CustomersPageState extends State<CustomersPage> {
                                                 foregroundColor: Colors.amber,
                                               ),
                                               onPressed: () {
-                                                flipController.toggleCard();
+                                                _checkProfileAndShowDetails(
+                                                  flipController,
+                                                );
                                               },
                                               child: Text(
                                                 "Ver mais",
@@ -398,17 +597,23 @@ class _CustomersPageState extends State<CustomersPage> {
                                       color: Colors.grey.shade200,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: const SingleChildScrollView(
+                                    child: SingleChildScrollView(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Gap(8),
+                                          const Gap(8),
                                           Text(
-                                            "dataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ataaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaa a a a aaaa  a a  a a a  a aa ",
+                                            customer.longDescription.isNotEmpty
+                                                ? customer.longDescription
+                                                : customer.shortDescription,
                                             maxLines: null,
+                                            style: GoogleFonts.rubik(
+                                              fontSize: 14,
+                                              color: Colors.black87,
+                                            ),
                                           ),
-                                          Gap(8),
+                                          const Gap(8),
                                         ],
                                       ),
                                     ),
@@ -437,78 +642,92 @@ class _CustomersPageState extends State<CustomersPage> {
                                     ),
                                   ],
                                 ),
-                                const Gap(8),
-                                Row(
-                                  children: [
-                                    const Text("Imóvel desejado"),
-                                    const Gap(8),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.grey,
-                                          width: 2,
+                                if (customer.desiredImmobile !=
+                                    UserDesiredImmobile.none) ...[
+                                  const Gap(8),
+                                  Row(
+                                    children: [
+                                      const Text("Imóvel desejado"),
+                                      const Gap(8),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        child: Text(
+                                          customer.desiredImmobile.title,
+                                          style: GoogleFonts.rubik(),
                                         ),
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      child: Text(
-                                        "Todos",
-                                        style: GoogleFonts.rubik(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(8),
-                                Row(
-                                  children: [
-                                    const Text("Buscando imóvel até"),
-                                    const Gap(8),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.grey,
-                                          width: 2,
+                                    ],
+                                  ),
+                                ],
+                                if (customer.priceMaxImmobile > 0) ...[
+                                  const Gap(8),
+                                  Row(
+                                    children: [
+                                      const Text("Buscando imóvel até"),
+                                      const Gap(8),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        child: Text(
+                                          customer.priceMaxImmobile.toMoney(),
+                                          style: GoogleFonts.rubik(),
                                         ),
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      child: Text(
-                                        "R\$ 1500,00",
-                                        style: GoogleFonts.rubik(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(8),
-                                Row(
-                                  children: [
-                                    const Text("Estilo de vida"),
-                                    const Gap(8),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.grey,
-                                          width: 2,
+                                    ],
+                                  ),
+                                ],
+                                if (customer.lifeStyle !=
+                                    UserLifeStyle.none) ...[
+                                  const Gap(8),
+                                  Row(
+                                    children: [
+                                      const Text("Estilo de vida"),
+                                      const Gap(8),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        child: Text(
+                                          customer.lifeStyle.title,
+                                          style: GoogleFonts.rubik(),
                                         ),
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      child: Text(
-                                        "Festeiro",
-                                        style: GoogleFonts.rubik(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
                                 const Gap(8),
                                 const Row(
                                   children: [
@@ -519,134 +738,56 @@ class _CustomersPageState extends State<CustomersPage> {
                                     Expanded(child: Divider(thickness: 2)),
                                   ],
                                 ),
-                                const Gap(8),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: const Row(
-                                          children: [
-                                            Text("Mestre cuca"),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: const Row(
-                                          children: [
-                                            Text("Mestre cuca"),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: const Row(
-                                          children: [
-                                            Text("Mestre cuca"),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: const Row(
-                                          children: [
-                                            Text("Mestre cuca"),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: const Row(
-                                          children: [
-                                            Text("Mestre cuca"),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                if (customer.skills.isNotEmpty) ...[
+                                  const Gap(8),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: customer.skills
+                                          .where(
+                                            (skill) => skill != UserSkill.none,
+                                          )
+                                          .map((skill) {
+                                            final skillName = _getSkillName(
+                                              skill,
+                                            );
+                                            if (skillName.isEmpty)
+                                              return const SizedBox.shrink();
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Colors.grey,
+                                                    width: 2,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Text(skillName),
+                                                    const Icon(
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                      size: 16,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          })
+                                          .toList(),
+                                    ),
                                   ),
-                                ),
+                                ],
                                 const Gap(16),
                                 Row(
                                   children: [

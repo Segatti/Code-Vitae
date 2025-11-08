@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
+import '../../../../shared/data/services/session_service.dart';
 import '../../domain/usecases/get_profile.dart';
 import '../../domain/usecases/update_profile.dart';
 
@@ -44,8 +45,10 @@ class ProfileController extends IProfileController {
     final result = _getCustomerCommand.value;
     return result.when(
       data: (data) {
-        print(data.toJson());
-        customer = data;
+        customer = data.copyWith(
+          email: SessionService.customer!.email,
+          password: SessionService.customer!.password,
+        );
         notifyListeners();
         return true;
       },
@@ -70,6 +73,7 @@ class ProfileController extends IProfileController {
     notifyListeners();
 
     await _updateProfileCommand.execute(customer!);
+    SessionService.setCustomer(customer!);
     loadingList.remove('updateProfile');
     notifyListeners();
 
@@ -89,7 +93,7 @@ class ProfileController extends IProfileController {
     _updateProfileCommand.cancel();
     super.dispose();
   }
-  
+
   @override
   void updatePage() {
     notifyListeners();

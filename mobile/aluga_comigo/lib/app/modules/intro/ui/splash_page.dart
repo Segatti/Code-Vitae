@@ -1,4 +1,3 @@
-import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +6,8 @@ import 'package:styled_text/styled_text.dart';
 
 import '../../../shared/data/services/secure_storage_service.dart';
 import '../../auth/data/models/user_model.dart';
-import '../../auth/domain/entities/user.dart';
+import '../../auth/domain/entities/inputs/login_input.dart';
+import '../../auth/domain/usecases/login_user.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -31,12 +31,23 @@ class _SplashPageState extends State<SplashPage> {
       });
       Future.delayed(const Duration(seconds: 1), () async {
         final storage = Modular.get<SecureStorageService>();
+        final loginUser = Modular.get<ILoginUser>();
         final showIntro = await storage.getData(StorageKey.intro);
         if (showIntro == "false") {
           var data = await storage.getData(StorageKey.user);
           if (data != null) {
-            SessionService.setUser(User.fromModel(UserModel.fromJson(data)));
-            Modular.to.navigate("/start/customers");
+            final user = UserModel.fromJson(data);
+            final userLogged = await loginUser(
+              LoginInput(user.email, user.password),
+            );
+            userLogged.fold(
+              (error) {
+                Modular.to.navigate("/auth/");
+              },
+              (user) {
+                Modular.to.navigate("/start/customers");
+              },
+            );
           } else {
             Modular.to.navigate("/auth/");
           }

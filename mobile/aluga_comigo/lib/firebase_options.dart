@@ -60,12 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAcrkUb9bfIaeAn6EB5fJmvOIQgSOjEczM',
-    appId: '1:429982705456:ios:aa3e1f4b69defddccb8af5',
+    appId: '1:429982705456:ios:ed012e6f6fb878e5cb8af5',
     messagingSenderId: '429982705456',
     projectId: 'aluga-comigo',
     databaseURL: 'https://aluga-comigo-default-rtdb.firebaseio.com',
     storageBucket: 'aluga-comigo.appspot.com',
-    iosBundleId: 'com.example.alugaComigo',
+    iosBundleId: 'com.fluttercraft.alugaComigo',
   );
-
 }

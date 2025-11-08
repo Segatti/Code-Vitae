@@ -1,4 +1,4 @@
-package com.vittor.aluga_comigo
+package com.fluttercraft.alugaComigo
 
 import io.flutter.embedding.android.FlutterActivity
 

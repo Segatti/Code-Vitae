@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:aluga_comigo/app/shared/domain/extends/map_convert.dart';
 
 import '../../../auth/domain/enums/type_user.dart';
+import '../../../auth/domain/enums/user_desired_immobile.dart';
+import '../../../auth/domain/enums/user_life_style.dart';
 import '../../../auth/domain/enums/user_skill.dart';
 
 class CustomerModel {
@@ -21,8 +23,8 @@ class CustomerModel {
   final double score;
   final double priceMaxImmobile;
   final String cityState;
-  final String desiredImmobile;
-  final String lifeStyle;
+  final UserDesiredImmobile desiredImmobile;
+  final UserLifeStyle lifeStyle;
   final String gender;
 
   CustomerModel({
@@ -41,12 +43,15 @@ class CustomerModel {
     this.score = 0,
     this.priceMaxImmobile = 0,
     this.cityState = "",
-    this.desiredImmobile = "",
-    this.lifeStyle = "",
+    this.desiredImmobile = UserDesiredImmobile.none,
+    this.lifeStyle = UserLifeStyle.none,
     this.gender = "",
   });
 
   Map<String, dynamic> toMap() {
+    var splitCityState = cityState.split(' - ');
+    var city = splitCityState[0];
+    var state = splitCityState[1];
     return <String, dynamic>{
       'id': id,
       'email': email,
@@ -62,14 +67,18 @@ class CustomerModel {
       'longDescription': longDescription,
       'score': score,
       'priceMaxImmobile': priceMaxImmobile,
-      'cityState': cityState,
-      'desiredImmobile': desiredImmobile,
-      'lifeStyle': lifeStyle,
+      'city': city,
+      'state': state,
+      'desiredImmobile': desiredImmobile.name,
+      'lifeStyle': lifeStyle.name,
       'gender': gender,
     };
   }
 
   factory CustomerModel.fromMap(Map<String, dynamic> map) {
+    var city = map.getSafe<String>('city');
+    var state = map.getSafe<String>('state');
+    var cityState = '$city - $state';
     return CustomerModel(
       id: map.getSafe<String>('id'),
       email: map.getSafe<String>('email'),
@@ -77,7 +86,8 @@ class CustomerModel {
       typeUser: TypeUser.get(map.getSafe<String>('typeUser')),
       name: map.getSafe<String>('name'),
       phone: map.getSafe<String>('phone'),
-      skills: map.getList<String>('skills')
+      skills: map
+          .getList<String>('skills')
           .map((e) => UserSkill.get(e))
           .toList()
           .cast<UserSkill>(),
@@ -88,9 +98,11 @@ class CustomerModel {
       longDescription: map.getSafe<String>('longDescription'),
       score: map.getSafe<double>('score'),
       priceMaxImmobile: map.getSafe<double>('priceMaxImmobile'),
-      cityState: map.getSafe<String>('cityState'),
-      desiredImmobile: map.getSafe<String>('desiredImmobile'),
-      lifeStyle: map.getSafe<String>('lifeStyle'),
+      cityState: cityState,
+      desiredImmobile: UserDesiredImmobile.get(
+        map.getSafe<String>('desiredImmobile'),
+      ),
+      lifeStyle: UserLifeStyle.get(map.getSafe<String>('lifeStyle')),
       gender: map.getSafe<String>('gender'),
     );
   }
@@ -120,8 +132,8 @@ class CustomerModel {
     double? score,
     double? priceMaxImmobile,
     String? cityState,
-    String? desiredImmobile,
-    String? lifeStyle,
+    UserDesiredImmobile? desiredImmobile,
+    UserLifeStyle? lifeStyle,
     String? gender,
   }) {
     return CustomerModel(
@@ -141,7 +153,7 @@ class CustomerModel {
       priceMaxImmobile: priceMaxImmobile ?? this.priceMaxImmobile,
       cityState: cityState ?? this.cityState,
       desiredImmobile: desiredImmobile ?? this.desiredImmobile,
-      lifeStyle: lifeStyle ?? this.lifeStyle,
+      lifeStyle: lifeStyle ?? UserLifeStyle.none,
       gender: gender ?? this.gender,
     );
   }

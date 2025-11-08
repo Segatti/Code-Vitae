@@ -1,10 +1,11 @@
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../auth/data/models/user_model.dart';
-import '../../../auth/domain/entities/user.dart';
+import '../../../auth/domain/enums/type_user.dart';
 import '../../domain/entities/customer.dart';
 import '../../domain/enums/match_type.dart';
 import '../models/customer_model.dart';
@@ -24,23 +25,26 @@ class CustomerDatasource implements ICustomerDatasource {
   Future<Unit> matchCustomer(Customer customer, MatchType matchType) async {
     await database
         .getRef(FirebaseDataTables.users)
-        .doc(SessionService.user!.id)
+        .doc(SessionService.customer!.id)
         .collection(FirebaseDataTables.matchTo.name)
         .doc(customer.id)
-        .set({...customer.toMap(), 'matchType': matchType.name});
+        .set({
+          ...customer.toMap(),
+          'matchType': matchType.name,
+        }, SetOptions(merge: true));
 
     await database
         .getRef(FirebaseDataTables.users)
-        .doc(SessionService.user!.id)
-        .set({
-          'lastMatch': customer.id,
-        });
+        .doc(SessionService.customer!.id)
+        .set({'lastMatch': customer.id}, SetOptions(merge: true));
 
     final json = await storage.getData(StorageKey.user);
     final user = UserModel.fromJson(json!);
     final newUser = user.copyWith(lastMatch: customer.id);
     await storage.setData(StorageKey.user, newUser.toJson());
-    SessionService.user = User.fromModel(newUser);
+    SessionService.setCustomer(
+      SessionService.customer!.copyWith(lastMatch: customer.id),
+    );
 
     return unit;
   }
@@ -49,7 +53,7 @@ class CustomerDatasource implements ICustomerDatasource {
   Future<List<Customer>> getCustomers({String? startAfter}) async {
     var query = database
         .getRef(FirebaseDataTables.users)
-        // .where('typeUser', isEqualTo: TypeUser.person.name)
+        .where('typeUser', isEqualTo: TypeUser.person.name)
         .where('isActive', isEqualTo: true)
         .orderBy('id', descending: true)
         .limit(1);
@@ -61,9 +65,11 @@ class CustomerDatasource implements ICustomerDatasource {
     final data = await query.get();
     if (startAfter != null && data.docs.isNotEmpty) {
       final idLastMatch = data.docs.last.id;
-      await database.update(FirebaseDataTables.users, SessionService.user!.id, {
-        'lastMatch': idLastMatch,
-      });
+      await database.update(
+        FirebaseDataTables.users,
+        SessionService.customer!.id,
+        {'lastMatch': idLastMatch},
+      );
     }
 
     return data.docs

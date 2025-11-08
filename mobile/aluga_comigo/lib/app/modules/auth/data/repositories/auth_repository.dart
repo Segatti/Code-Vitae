@@ -4,6 +4,7 @@ import 'package:aluga_comigo/app/shared/domain/typedefs/returns.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../shared/data/services/session_service.dart';
 import '../../domain/entities/inputs/login_input.dart';
 import '../../domain/entities/inputs/signup_input.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -18,7 +19,15 @@ class AuthRepository implements IAuthRepository {
   Future<Return<User>> login(LoginInput input) async {
     try {
       final response = await datasource.login(input);
-      return Right(User.fromModel(response));
+      SessionService.setCustomer(response);
+      return Right(User(
+        id: response.id,
+        email: response.email,
+        password: response.password,
+        typeUser: response.typeUser,
+        photo: response.photos[0],
+        lastMatch: response.lastMatch,
+      ));
     } catch (e, s) {
       debugPrint(s.toString());
       if (e is Failure) {
@@ -52,7 +61,15 @@ class AuthRepository implements IAuthRepository {
   Future<Return<User>> signupImmobile(SignupImmobileInput input) async {
     try {
       final response = await datasource.signupImmobile(input);
-      return Right(User.fromModel(response));
+      SessionService.setCustomer(response);
+      return Right(User(
+        id: response.id,
+        email: response.email,
+        password: response.password,
+        typeUser: response.typeUser,
+        photo: response.photos[0],
+        lastMatch: response.lastMatch,
+      ));
     } catch (e, s) {
       debugPrint(s.toString());
       if (e is Failure) {
@@ -69,7 +86,15 @@ class AuthRepository implements IAuthRepository {
   Future<Return<User>> signupUser(SignupUserInput input) async {
     try {
       final response = await datasource.signupUser(input);
-      return Right(User.fromModel(response));
+      SessionService.setCustomer(response);
+      return Right(User(
+        id: response.id,
+        email: response.email,
+        password: response.password,
+        typeUser: response.typeUser,
+        photo: response.photos[0],
+        lastMatch: response.lastMatch,
+      ));
     } catch (e, s) {
       debugPrint(s.toString());
       if (e is Failure) {

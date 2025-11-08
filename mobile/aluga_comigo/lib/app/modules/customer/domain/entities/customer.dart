@@ -2,6 +2,8 @@ import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dar
 import 'package:equatable/equatable.dart';
 
 import '../../../auth/domain/enums/type_user.dart';
+import '../../../auth/domain/enums/user_desired_immobile.dart';
+import '../../../auth/domain/enums/user_life_style.dart';
 import '../../../auth/domain/enums/user_skill.dart';
 
 class Customer extends CustomerModel with EquatableMixin {
@@ -114,8 +116,8 @@ class Customer extends CustomerModel with EquatableMixin {
     double? score,
     double? priceMaxImmobile,
     String? cityState,
-    String? desiredImmobile,
-    String? lifeStyle,
+    UserDesiredImmobile? desiredImmobile,
+    UserLifeStyle? lifeStyle,
     String? gender,
   }) {
     return Customer(

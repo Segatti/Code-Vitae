@@ -33,8 +33,8 @@ class CustomersController extends ICustomersController {
     () => _getCustomers.call(
       startAfter: customers.isNotEmpty
           ? customers.last.id
-          : (SessionService.user!.lastMatch.isNotEmpty
-              ? SessionService.user!.lastMatch
+          : (SessionService.customer!.lastMatch.isNotEmpty
+              ? SessionService.customer!.lastMatch
               : null),
     ),
   );

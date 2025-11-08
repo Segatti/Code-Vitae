@@ -44,7 +44,8 @@ class FirebaseDatabaseService {
     try {
       var id = data['id'];
       var ref = _firebase.collection(table.name);
-      await ref.doc(id).set(data);
+      id ??= ref.doc().id;
+      await ref.doc(id).set({...data, 'id': id}, SetOptions(merge: true));
       return const Right(null);
     } on FirebaseException catch (error) {
       debugPrint(error.toString());
@@ -109,7 +110,7 @@ class FirebaseDatabaseService {
   ) async {
     try {
       var ref = _firebase.collection(table.name).doc(path);
-      await ref.set(data);
+      await ref.set(data, SetOptions(merge: true));
       return const Right(null);
     } on FirebaseException catch (error) {
       debugPrint(error.toString());

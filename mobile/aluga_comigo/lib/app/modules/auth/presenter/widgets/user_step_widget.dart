@@ -5,6 +5,7 @@ import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/models/select_item.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/widgets/pill_widget.dart';
 import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
+import 'package:aluga_comigo/app/shared/domain/consts/cities_and_states.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:chiclet/chiclet.dart';
@@ -42,12 +43,17 @@ class _UserStepWidgetState extends State<UserStepWidget> {
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
+  final _formKey3 = GlobalKey<FormState>();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final service = Modular.get<CameraService>();
+
+  String? _selectedState;
+  String? _selectedCity;
+  List<String> _availableCities = [];
 
   Future<void> getImage(ImageSource imageSource) async {
     final result = await service.getImage(imageSource);
@@ -68,10 +74,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: Colors.white,
-              border: Border.all(
-                color: Colors.red,
-                width: 5,
-              ),
+              border: Border.all(color: Colors.red, width: 5),
             ),
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.all(32),
@@ -87,10 +90,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                 ),
                 Text(
                   message,
-                  style: GoogleFonts.rubik(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
+                  style: GoogleFonts.rubik(fontSize: 18, color: Colors.black),
                 ),
               ],
             ),
@@ -106,7 +106,9 @@ class _UserStepWidgetState extends State<UserStepWidget> {
       widget.backPage();
     } else {
       _controller.previousPage(
-          duration: Durations.medium1, curve: Curves.linear);
+        duration: Durations.medium1,
+        curve: Curves.linear,
+      );
       indexCarousel--;
     }
     setState(() {});
@@ -114,7 +116,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
 
   void nextPage() {
     FocusManager.instance.primaryFocus?.unfocus();
-    if (indexCarousel < 3) {
+    if (indexCarousel < 4) {
       _controller.nextPage(duration: Durations.medium1, curve: Curves.linear);
       indexCarousel++;
       setState(() {});
@@ -126,144 +128,147 @@ class _UserStepWidgetState extends State<UserStepWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                StatefulBuilder(builder: (context, setState) {
-                  return Dialog(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
-                        border: Border.all(
-                          color: const Color(0xFF2C29A3),
-                          width: 5,
-                        ),
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          StyledText(
-                            text:
-                                "Ao confirmar você está aceitando os <orange>termos de uso do app</orange>!",
-                            style: GoogleFonts.rubik(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            tags: {
-                              "orange": StyledTextTag(
-                                style: const TextStyle(
-                                  color: Color(0xFFDF924B),
-                                ),
-                              )
-                            },
+                StatefulBuilder(
+                  builder: (context, setState) {
+                    return Dialog(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: const Color(0xFF2C29A3),
+                            width: 5,
                           ),
-                          const Gap(16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    launchUrl(
-                                      Uri.parse(
-                                          "https://drive.google.com/file/d/1Ob1x0-bLgEiZs7RYAqF7NfY2sNR51rBc/view?usp=drive_link"),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: const Color(0xFF2C29A3),
-                                        width: 4,
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            StyledText(
+                              text:
+                                  "Ao confirmar você está aceitando os <orange>termos de uso do app</orange>!",
+                              style: GoogleFonts.rubik(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              tags: {
+                                "orange": StyledTextTag(
+                                  style: const TextStyle(
+                                    color: Color(0xFFDF924B),
+                                  ),
+                                ),
+                              },
+                            ),
+                            const Gap(16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      launchUrl(
+                                        Uri.parse(
+                                          "https://drive.google.com/file/d/1Ob1x0-bLgEiZs7RYAqF7NfY2sNR51rBc/view?usp=drive_link",
+                                        ),
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          color: const Color(0xFF2C29A3),
+                                          width: 4,
+                                        ),
                                       ),
-                                    ),
-                                    child: Text(
-                                      "Leia aqui os Termos de Uso",
-                                      style: GoogleFonts.rubik(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
+                                      child: Text(
+                                        "Leia aqui os Termos de Uso",
+                                        style: GoogleFonts.rubik(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(8),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                acceptTerms = !acceptTerms;
-                              });
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Checkbox(
-                                  visualDensity: VisualDensity.compact,
-                                  value: acceptTerms,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      acceptTerms = value ?? false;
-                                    });
-                                  },
-                                ),
-                                const Text(
-                                  "Declaro que tenho 18 anos ou mais.",
                                 ),
                               ],
                             ),
-                          ),
-                          const Gap(16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ChicletAnimatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  borderRadius: 50,
-                                  backgroundColor: Colors.red,
-                                  child: Text(
-                                    "Cancelar",
-                                    style: GoogleFonts.rubik(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                            const Gap(8),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  acceptTerms = !acceptTerms;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Checkbox(
+                                    visualDensity: VisualDensity.compact,
+                                    value: acceptTerms,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        acceptTerms = value ?? false;
+                                      });
+                                    },
+                                  ),
+                                  const Text(
+                                    "Declaro que tenho 18 anos ou mais.",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ChicletAnimatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    borderRadius: 50,
+                                    backgroundColor: Colors.red,
+                                    child: Text(
+                                      "Cancelar",
+                                      style: GoogleFonts.rubik(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const Gap(8),
-                              Expanded(
-                                child: ChicletAnimatedButton(
-                                  onPressed: () async {
-                                    if (acceptTerms) {
-                                      await widget.signup(_userInput);
-                                    }
-                                  },
-                                  borderRadius: 50,
-                                  backgroundColor: (acceptTerms)
-                                      ? Colors.green
-                                      : Colors.grey,
-                                  child: Text(
-                                    "Confirmar",
-                                    style: GoogleFonts.rubik(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                const Gap(8),
+                                Expanded(
+                                  child: ChicletAnimatedButton(
+                                    onPressed: () async {
+                                      if (acceptTerms) {
+                                        await widget.signup(_userInput);
+                                      }
+                                    },
+                                    borderRadius: 50,
+                                    backgroundColor: (acceptTerms)
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    child: Text(
+                                      "Confirmar",
+                                      style: GoogleFonts.rubik(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  },
+                ),
               ],
             ),
           );
@@ -325,14 +330,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            errorStyle: const TextStyle(
-                              fontSize: 0,
-                            ),
+                            errorStyle: const TextStyle(fontSize: 0),
                             isDense: true,
                             hintText: 'Email',
-                            hintStyle: GoogleFonts.rubik(
-                              fontSize: 18,
-                            ),
+                            hintStyle: GoogleFonts.rubik(fontSize: 18),
                             suffixIcon: RepaintBoundary(
                               child: JustTheTooltip(
                                 backgroundColor: Colors.black,
@@ -354,7 +355,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               ),
                             ),
                             contentPadding: const EdgeInsets.only(
-                                left: 24.0, bottom: 8.0, top: 8.0),
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
@@ -408,12 +412,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             fillColor: Colors.white,
                             isDense: true,
                             hintText: 'Senha',
-                            hintStyle: GoogleFonts.rubik(
-                              fontSize: 18,
-                            ),
-                            errorStyle: const TextStyle(
-                              fontSize: 0,
-                            ),
+                            hintStyle: GoogleFonts.rubik(fontSize: 18),
+                            errorStyle: const TextStyle(fontSize: 0),
                             suffixIcon: RepaintBoundary(
                               child: JustTheTooltip(
                                 backgroundColor: Colors.black,
@@ -435,7 +435,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               ),
                             ),
                             contentPadding: const EdgeInsets.only(
-                                left: 24.0, bottom: 8.0, top: 8.0),
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
@@ -553,12 +556,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             fillColor: Colors.white,
                             hintText: 'Nome Completo',
                             isDense: true,
-                            hintStyle: GoogleFonts.rubik(
-                              fontSize: 18,
-                            ),
-                            errorStyle: const TextStyle(
-                              fontSize: 0,
-                            ),
+                            hintStyle: GoogleFonts.rubik(fontSize: 18),
+                            errorStyle: const TextStyle(fontSize: 0),
                             suffixIcon: RepaintBoundary(
                               child: JustTheTooltip(
                                 backgroundColor: Colors.black,
@@ -580,7 +579,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               ),
                             ),
                             contentPadding: const EdgeInsets.only(
-                                left: 24.0, bottom: 8.0, top: 8.0),
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
@@ -628,12 +630,8 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             fillColor: Colors.white,
                             counter: const SizedBox.shrink(),
                             hintText: 'Telefone',
-                            hintStyle: GoogleFonts.rubik(
-                              fontSize: 18,
-                            ),
-                            errorStyle: const TextStyle(
-                              fontSize: 0,
-                            ),
+                            hintStyle: GoogleFonts.rubik(fontSize: 18),
+                            errorStyle: const TextStyle(fontSize: 0),
                             suffixIcon: RepaintBoundary(
                               child: JustTheTooltip(
                                 backgroundColor: Colors.black,
@@ -655,7 +653,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               ),
                             ),
                             contentPadding: const EdgeInsets.only(
-                                left: 24.0, bottom: 8.0, top: 8.0),
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: const BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(25.7),
@@ -856,12 +857,239 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed:
-                              (_userInput.skills.isNotEmpty) ? nextPage : null,
+                          onPressed: (_userInput.skills.isNotEmpty)
+                              ? nextPage
+                              : null,
                           borderRadius: 50,
                           backgroundColor: (_userInput.skills.isNotEmpty)
                               ? Colors.green
                               : Colors.grey,
+                          child: Text(
+                            "Confirmar",
+                            style: GoogleFonts.rubik(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              CardAuthWidget(
+                children: [
+                  Text(
+                    "Endereço",
+                    textScaler: const TextScaler.linear(1),
+                    style: GoogleFonts.rubik(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const Gap(16),
+                  Form(
+                    key: _formKey3,
+                    child: Column(
+                      children: [
+                        DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "* Campo obrigatório";
+                            }
+                            return null;
+                          },
+                          alignment: Alignment.center,
+                          hint: Text(
+                            'Estado',
+                            style: GoogleFonts.rubik(fontSize: 18),
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            errorStyle: const TextStyle(fontSize: 0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                          ),
+                          borderRadius: BorderRadius.circular(40),
+                          initialValue: _selectedState,
+                          onChanged: (value) {
+                            if (haveError) {
+                              if (_formKey3.currentState?.validate() ?? false) {
+                                setState(() {
+                                  haveError = false;
+                                });
+                              }
+                            }
+                            setState(() {
+                              _selectedState = value;
+                              _selectedCity = null;
+                              _availableCities = [];
+                              if (value != null) {
+                                final stateData = estatesCitiesMap.firstWhere(
+                                  (state) => state["sigla"] == value,
+                                  orElse: () => {"cidades": []},
+                                );
+                                _availableCities = List<String>.from(
+                                  stateData["cidades"] ?? [],
+                                );
+                              }
+                            });
+                          },
+                          items: estatesCitiesMap.map((state) {
+                            return DropdownMenuItem<String>(
+                              value: state["sigla"],
+                              alignment: Alignment.center,
+                              child: Text(
+                                "${state["sigla"]} - ${state["nome"]}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const Gap(16),
+                        DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "* Campo obrigatório";
+                            }
+                            return null;
+                          },
+                          alignment: Alignment.center,
+                          hint: Text(
+                            'Cidade',
+                            style: GoogleFonts.rubik(fontSize: 18),
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            errorStyle: const TextStyle(fontSize: 0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 24.0,
+                              bottom: 8.0,
+                              top: 8.0,
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(25.7),
+                            ),
+                          ),
+                          borderRadius: BorderRadius.circular(40),
+                          initialValue: _selectedCity,
+                          onChanged: _selectedState == null
+                              ? null
+                              : (value) {
+                                  if (haveError) {
+                                    if (_formKey3.currentState?.validate() ??
+                                        false) {
+                                      setState(() {
+                                        haveError = false;
+                                      });
+                                    }
+                                  }
+                                  setState(() {
+                                    _selectedCity = value;
+                                  });
+                                },
+                          items: _availableCities.map((city) {
+                            return DropdownMenuItem<String>(
+                              value: city,
+                              alignment: Alignment.center,
+                              child: Text(
+                                city,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ChicletAnimatedButton(
+                          onPressed: backPage,
+                          borderRadius: 50,
+                          backgroundColor: Colors.red,
+                          child: Text(
+                            "Voltar",
+                            style: GoogleFonts.rubik(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: ChicletAnimatedButton(
+                          onPressed: () {
+                            if (_formKey3.currentState?.validate() ?? false) {
+                              _userInput.state = _selectedState ?? "";
+                              _userInput.city = _selectedCity ?? "";
+                              nextPage();
+                            } else {
+                              setState(() {
+                                haveError = true;
+                              });
+                            }
+                          },
+                          borderRadius: 50,
+                          backgroundColor: Colors.green,
                           child: Text(
                             "Confirmar",
                             style: GoogleFonts.rubik(
@@ -992,8 +1220,9 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed:
-                              (_userInput.photo.isNotEmpty) ? nextPage : null,
+                          onPressed: (_userInput.photo.isNotEmpty)
+                              ? nextPage
+                              : null,
                           borderRadius: 50,
                           backgroundColor: (_userInput.photo.isNotEmpty)
                               ? Colors.green
@@ -1023,12 +1252,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
             child: RepaintBoundary(
               child: AnimatedSmoothIndicator(
                 activeIndex: indexCarousel,
-                count: 4,
+                count: 5,
                 effect: const WormEffect(),
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

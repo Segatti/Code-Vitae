@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/modules/auth/auth_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../shared/core_module.dart';
@@ -9,6 +10,7 @@ class IntroModule extends Module {
   @override
   List<Module> get imports => [
         CoreModule(),
+        AuthModule(),
       ];
 
   @override

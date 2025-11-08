@@ -15,7 +15,7 @@ class GetProfile implements IGetProfile {
 
   @override
   AsyncResult<Customer> call() async {
-    final id = SessionService.user!.id;
+    final id = SessionService.customer!.id;
     return repository.getProfile(id);
   }
 }

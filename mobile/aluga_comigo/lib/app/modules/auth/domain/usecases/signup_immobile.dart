@@ -21,10 +21,9 @@ class SignupImmobile implements ISignupImmobile {
 
     response.fold(
       (_) {
-        SessionService.clearUser();
+        SessionService.clearCustomer();
       },
       (user) async {
-        SessionService.setUser(user);
         await storage.setData(StorageKey.user, user.toJson());
       },
     );

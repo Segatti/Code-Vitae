@@ -1,12 +1,12 @@
-import 'package:aluga_comigo/app/modules/auth/domain/entities/user.dart';
+import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 
 class SessionService {
-  static User? user;
-  static void setUser(User data) {
-    user = data;
+  static CustomerModel? customer;
+  static void setCustomer(CustomerModel data) {
+    customer = data;
   }
 
-  static void clearUser() {
-    user = null;
+  static void clearCustomer() {
+    customer = null;
   }
 }
