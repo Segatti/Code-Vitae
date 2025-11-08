@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aluga_comigo/app/modules/config/ui/controllers/profile_controller.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
@@ -14,6 +16,8 @@ import 'package:intl/intl.dart';
 
 import '../../../auth/domain/enums/user_desired_immobile.dart';
 import '../../../auth/domain/enums/user_life_style.dart';
+import '../../../auth/domain/enums/user_skill.dart';
+import '../../../customer/presenter/widgets/customer_flip_card.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -26,14 +30,155 @@ class _ProfilePageState extends State<ProfilePage> {
   final controller = Modular.get<IProfileController>();
   DateTime date = DateTime.now();
 
+  int _calculateAge(String dateBirth) {
+    if (dateBirth.isEmpty) return 0;
+    final date = dateBirth.toDate();
+    if (date == null) return 0;
+    final now = DateTime.now();
+    int age = now.year - date.year;
+    if (now.month < date.month ||
+        (now.month == date.month && now.day < date.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  String _getSkillName(UserSkill skill) {
+    switch (skill) {
+      case UserSkill.cucaMaster:
+        return "Mestre cuca";
+      case UserSkill.ninjaInSweeping:
+        return "Ninja na vassoura";
+      case UserSkill.humanDishwasher:
+        return "Lava-louças humano";
+      case UserSkill.laundryOperator:
+        return "Operador de lavanderia";
+      case UserSkill.none:
+        return "";
+    }
+  }
+
   @override
   void initState() {
     controller.initialize();
+    // Listener para mostrar mensagens de erro
+    controller.addListener(_handleError);
     super.initState();
+  }
+
+  void _handleError() {
+    final errorMsg = controller.errorMessage;
+    if (errorMsg != null && errorMsg.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && controller.errorMessage == errorMsg) {
+          _showErrorDialog(errorMsg);
+        }
+      });
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.all(32),
+            child: Column(
+              children: [
+                Text(
+                  'Atenção',
+                  style: GoogleFonts.rubik(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                const Gap(8),
+                Text(
+                  message,
+                  style: GoogleFonts.rubik(
+                    fontSize: 18,
+                    color: Colors.black,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const Gap(16),
+                PrimaryButtonWidget(
+                  title: 'OK',
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    controller.errorMessage = null;
+                    controller.updatePage();
+                  },
+                  borderRadius: 10,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showProfileDialog() {
+    if (controller.customer == null) return;
+
+    final customer = controller.customer!;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog.fullscreen(
+        backgroundColor: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: CustomerFlipCard(
+                customer: customer,
+                calculateAge: _calculateAge,
+                getSkillName: _getSkillName,
+              ),
+            ),
+            const Gap(16),
+            Row(
+              children: [
+                const Gap(16),
+                Expanded(
+                  child: PrimaryButtonWidget(
+                    title: "Fechar",
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+                const Gap(16),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   void dispose() {
+    controller.removeListener(_handleError);
     controller.dispose();
     super.dispose();
   }
@@ -114,7 +259,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showProfileDialog();
+                  },
                   child: Text(
                     "Visualizar",
                     style: GoogleFonts.rubik(
@@ -150,71 +297,179 @@ class _ProfilePageState extends State<ProfilePage> {
                             scrollDirection: Axis.horizontal,
                             children: [
                               const Gap(16),
-                              for (var photo
-                                  in controller.customer?.photos ?? [])
-                                Container(
-                                  width: 115,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.white24,
-                                        offset: Offset(-5, -5),
-                                        blurRadius: 20,
+                              // Botão de adicionar foto (sempre primeiro)
+                              if (controller.canAddMorePhotos)
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.selectPhotos();
+                                  },
+                                  child: Container(
+                                    height: 155,
+                                    width: 115,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.white24,
+                                          offset: Offset(-5, -5),
+                                          blurRadius: 20,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          offset: Offset(5, 5),
+                                          blurRadius: 20,
+                                        ),
+                                      ],
+                                      color: Colors.white,
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFFD9D9D9),
+                                        ),
+                                        padding: const EdgeInsets.all(8),
+                                        child: const Icon(
+                                          Icons.add,
+                                          color: Color(0xFF7C7C7C),
+                                        ),
                                       ),
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        offset: Offset(5, 5),
-                                        blurRadius: 20,
-                                      ),
-                                    ],
-                                    color: Colors.white,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: CachedNetworkImage(
-                                      imageUrl: photo,
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) =>
-                                          SizedBox.shrink(),
                                     ),
                                   ),
                                 ),
-                              const Gap(16),
-                              Container(
-                                height: 155,
-                                width: 115,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.white24,
-                                      offset: Offset(-5, -5),
-                                      blurRadius: 20,
+                              if (controller.canAddMorePhotos) const Gap(16),
+                              // Fotos salvas
+                              for (
+                                var i = 0;
+                                i < (controller.customer?.photos.length ?? 0);
+                                i++
+                              ) ...[
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Container(
+                                      width: 115,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.white24,
+                                            offset: Offset(-5, -5),
+                                            blurRadius: 20,
+                                          ),
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            offset: Offset(5, 5),
+                                            blurRadius: 20,
+                                          ),
+                                        ],
+                                        color: Colors.white,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              controller.customer!.photos[i],
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) =>
+                                              const SizedBox.shrink(),
+                                        ),
+                                      ),
                                     ),
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      offset: Offset(5, 5),
-                                      blurRadius: 20,
+                                    // Ícone X para deletar (sempre visível)
+                                    Positioned(
+                                      top: -8,
+                                      right: -8,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          controller.removePhoto(i);
+                                        },
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.red,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ],
-                                  color: Colors.white,
                                 ),
-                                child: Center(
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFFD9D9D9),
+                                const Gap(16),
+                              ],
+                              // Fotos selecionadas antes de salvar
+                              for (
+                                var i = 0;
+                                i < controller.selectedPhotos.length;
+                                i++
+                              ) ...[
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Container(
+                                      width: 115,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.white24,
+                                            offset: Offset(-5, -5),
+                                            blurRadius: 20,
+                                          ),
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            offset: Offset(5, 5),
+                                            blurRadius: 20,
+                                          ),
+                                        ],
+                                        color: Colors.white,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.file(
+                                          File(
+                                            controller.selectedPhotos[i].path,
+                                          ),
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  const SizedBox.shrink(),
+                                        ),
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.all(8),
-                                    child: const Icon(
-                                      Icons.add,
-                                      color: Color(0xFF7C7C7C),
+                                    // Ícone X para deletar foto selecionada
+                                    Positioned(
+                                      top: -8,
+                                      right: -8,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          controller.removeSelectedPhoto(i);
+                                        },
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.red,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ),
-                              const Gap(16),
+                                const Gap(16),
+                              ],
                             ],
                           ),
                         ),

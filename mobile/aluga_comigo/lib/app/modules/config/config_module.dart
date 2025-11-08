@@ -1,4 +1,6 @@
 import 'package:aluga_comigo/app/shared/core_module.dart';
+import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
+import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import 'data/datasources/profile_datasource.dart';
@@ -15,10 +17,21 @@ class ConfigModule extends Module {
 
   @override
   void binds(Injector i) {
+    // Services
+    i.addSingleton<CameraService>(CameraService.new);
+    i.addSingleton<FirebaseStorageService>(FirebaseStorageService.new);
+
+    // Datasource
     i.addSingleton<IProfileDatasource>(ProfileDatasource.new);
+    
+    // Repository
     i.addSingleton<IProfileRepository>(ProfileRepository.new);
+    
+    // Use cases
     i.addLazySingleton<IGetProfile>(GetProfile.new);
     i.addLazySingleton<IUpdateProfile>(UpdateProfile.new);
+    
+    // Controller
     i.add<IProfileController>(ProfileController.new);
   }
 
