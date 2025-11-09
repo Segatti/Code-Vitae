@@ -10,7 +10,10 @@ import '../../domain/enums/match_type.dart';
 import '../models/customer_model.dart';
 
 abstract interface class ICustomerDatasource {
-  Future<List<CustomerModel>> getCustomers({String? startAfter});
+  Future<List<CustomerModel>> getCustomers({
+    required TypeUser typeUser,
+    String? startAfter,
+  });
   Future<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
 }
 
@@ -26,7 +29,11 @@ class CustomerDatasource implements ICustomerDatasource {
     MatchType matchType,
   ) async {
     await database
-        .getRef(FirebaseDataTables.users)
+        .getRef(
+          customer.typeUser == TypeUser.person
+              ? FirebaseDataTables.users
+              : FirebaseDataTables.immobiles,
+        )
         .doc(SessionService.customer!.id)
         .collection(FirebaseDataTables.matchTo.name)
         .doc(customer.id)
@@ -36,7 +43,11 @@ class CustomerDatasource implements ICustomerDatasource {
         }, SetOptions(merge: true));
 
     await database
-        .getRef(FirebaseDataTables.users)
+        .getRef(
+          customer.typeUser == TypeUser.person
+              ? FirebaseDataTables.users
+              : FirebaseDataTables.immobiles,
+        )
         .doc(SessionService.customer!.id)
         .set({'lastMatch': customer.id}, SetOptions(merge: true));
 
@@ -60,10 +71,16 @@ class CustomerDatasource implements ICustomerDatasource {
   }
 
   @override
-  Future<List<CustomerModel>> getCustomers({String? startAfter}) async {
+  Future<List<CustomerModel>> getCustomers({
+    required TypeUser typeUser,
+    String? startAfter,
+  }) async {
     var query = database
-        .getRef(FirebaseDataTables.users)
-        .where('typeUser', isEqualTo: TypeUser.person.name)
+        .getRef(
+          typeUser == TypeUser.person
+              ? FirebaseDataTables.users
+              : FirebaseDataTables.immobiles,
+        )
         .where('isActive', isEqualTo: true)
         .orderBy('id', descending: true)
         .limit(1);

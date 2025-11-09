@@ -12,7 +12,7 @@ import 'package:swipable_stack/swipable_stack.dart';
 import '../../../auth/domain/enums/type_immobile.dart';
 import '../../data/models/customer_model.dart';
 import '../controllers/customers_controller.dart';
-import '../widgets/customer_flip_card.dart';
+import '../widgets/person_flip_card.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({super.key});
@@ -273,7 +273,7 @@ class _CustomersPageState extends State<CustomersPage> {
 
                       switch (customer) {
                         case PersonCustomerModel _:
-                          return CustomerFlipCard(
+                          return PersonFlipCard(
                             customer: customer,
                             calculateAge: _calculateAge,
                             getSkillName: _getSkillName,

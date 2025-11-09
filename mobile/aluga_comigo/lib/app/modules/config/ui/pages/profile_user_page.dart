@@ -21,7 +21,7 @@ import '../../../auth/domain/enums/user_skill.dart';
 import '../../../auth/domain/models/select_item.dart';
 import '../../../auth/presenter/widgets/pill_widget.dart';
 import '../../../customer/data/models/customer_model.dart';
-import '../../../customer/presenter/widgets/customer_flip_card.dart';
+import '../../../customer/presenter/widgets/person_flip_card.dart';
 
 class ProfileUserPage extends StatefulWidget {
   const ProfileUserPage({super.key});
@@ -153,7 +153,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: CustomerFlipCard(
+              child: PersonFlipCard(
                 customer: customer,
                 calculateAge: _calculateAge,
                 getSkillName: _getSkillName,

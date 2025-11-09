@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../auth/domain/enums/user_skill.dart';
 import 'customer_profile_card.dart';
 
-class CustomerFlipCard extends StatelessWidget {
+class PersonFlipCard extends StatelessWidget {
   final PersonCustomerModel customer;
   final int Function(String) calculateAge;
   final String Function(UserSkill) getSkillName;
@@ -19,7 +19,7 @@ class CustomerFlipCard extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final Future<bool> Function(FlipCardController)? onVerMaisPressed;
 
-  const CustomerFlipCard({
+  const PersonFlipCard({
     super.key,
     required this.customer,
     required this.calculateAge,

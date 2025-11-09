@@ -21,7 +21,7 @@ import '../../../auth/domain/enums/user_skill.dart';
 import '../../../auth/domain/models/select_item.dart';
 import '../../../auth/presenter/widgets/pill_widget.dart';
 import '../../../customer/data/models/customer_model.dart';
-import '../../../customer/presenter/widgets/customer_flip_card.dart';
+import '../../../customer/presenter/widgets/house_flip_card.dart';
 
 class ProfileImmobilePage extends StatefulWidget {
   const ProfileImmobilePage({super.key});
@@ -153,11 +153,7 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: CustomerFlipCard(
-                customer: customer,
-                calculateAge: _calculateAge,
-                getSkillName: _getSkillName,
-              ),
+              child: HouseFlipCard(immobile: customer),
             ),
             const Gap(16),
             Row(

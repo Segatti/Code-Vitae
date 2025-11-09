@@ -4,66 +4,66 @@ import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../auth/domain/enums/type_user.dart';
-import '../../data/models/customer_model.dart';
-import '../../domain/enums/match_type.dart';
-import '../../domain/usecases/get_customers.dart';
-import '../../domain/usecases/match_customer.dart';
+import '../../../customer/data/models/customer_model.dart';
+import '../../../customer/domain/enums/match_type.dart';
+import '../../../customer/domain/usecases/get_customers.dart';
+import '../../../customer/domain/usecases/match_customer.dart';
 
-abstract class ICustomersController extends ChangeNotifier {
+abstract class IHousesController extends ChangeNotifier {
   List<String> loadingList = [];
   String errorMessage = "";
 
-  List<CustomerModel> customers = [];
+  List<CustomerModel> houses = [];
   bool hasMore = true;
 
   Future<Unit> initialize();
   @override
   Future<Unit> dispose();
 
-  Future<bool> getCustomers();
-  Future<bool> matchCustomer(CustomerModel customer, MatchType matchType);
+  Future<bool> getHouses();
+  Future<bool> matchHouse(CustomerModel customer, MatchType matchType);
 }
 
-class CustomersController extends ICustomersController {
+class HousesController extends IHousesController {
   final IGetCustomers _getCustomers;
   final IMatchCustomer _matchCustomer;
 
-  CustomersController(this._getCustomers, this._matchCustomer);
+  HousesController(this._getCustomers, this._matchCustomer);
 
-  late final getCustomersCommand = Command0(
+  late final getHousesCommand = Command0(
     () => _getCustomers.call(
-      typeUser: TypeUser.person,
-      startAfter: customers.isNotEmpty
-          ? customers.last.id
+      typeUser: TypeUser.immobile,
+      startAfter: houses.isNotEmpty
+          ? houses.last.id
           : (SessionService.customer!.lastMatch.isNotEmpty
               ? SessionService.customer!.lastMatch
               : null),
     ),
   );
-  late final matchCustomerCommand = Command2(_matchCustomer.call);
+  late final matchHouseCommand = Command2(_matchCustomer.call);
 
   @override
-  Future<bool> getCustomers() async {
+  Future<bool> getHouses() async {
     print("getCustomers");
-    loadingList.add('getCustomers');
+    loadingList.add('getHouses');
     notifyListeners();
-    await getCustomersCommand.execute();
-    loadingList.remove('getCustomers');
+    await getHousesCommand.execute();
+    loadingList.remove('getHouses');
     notifyListeners();
-    final result = getCustomersCommand.value;
+    final result = getHousesCommand.value;
     return result.when(
       data: (list) {
         if (list.isEmpty) {
           hasMore = false;
         } else {
-          customers.addAll(list);
+          houses.addAll(list);
         }
         print(list.length);
         notifyListeners();
         return true;
       },
       failure: (error) {
-        errorMessage = "Erro ao buscar clientes";
+        errorMessage = "Erro ao buscar imóveis";
         notifyListeners();
         return false;
       },
@@ -72,13 +72,13 @@ class CustomersController extends ICustomersController {
   }
 
   @override
-  Future<bool> matchCustomer(CustomerModel customer, MatchType matchType) async {
-    loadingList.add('matchCustomer');
+  Future<bool> matchHouse(CustomerModel customer, MatchType matchType) async {
+    loadingList.add('matchHouse');
     notifyListeners();
-    await matchCustomerCommand.execute(customer, matchType);
-    loadingList.remove('matchCustomer');
+    await matchHouseCommand.execute(customer, matchType);
+    loadingList.remove('matchHouse');
     notifyListeners();
-    final result = matchCustomerCommand.value;
+    final result = matchHouseCommand.value;
     return result.when(
       data: (customer) {
         return true;
@@ -97,7 +97,7 @@ class CustomersController extends ICustomersController {
     print("initialize");
     loadingList.add('initialize');
     notifyListeners();
-    await getCustomers();
+    await getHouses();
     loadingList.remove('initialize');
     notifyListeners();
     return unit;
@@ -106,9 +106,9 @@ class CustomersController extends ICustomersController {
   @override
   Future<Unit> dispose() async {
     loadingList.clear();
-    getCustomersCommand.cancel();
-    matchCustomerCommand.cancel();
-    customers.clear();
+    getHousesCommand.cancel();
+    matchHouseCommand.cancel();
+    houses.clear();
     errorMessage = "";
     notifyListeners();
     super.dispose();
