@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
+import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,7 +19,7 @@ abstract interface class IProfileController extends ChangeNotifier {
   String? errorMessage;
   List<String> loadingList = [];
 
-  Customer? customer;
+  CustomerModel? customer;
   List<XFile> selectedPhotos = [];
 
   int get totalPhotosCount;
@@ -53,7 +53,7 @@ class ProfileController extends IProfileController {
     this._storageService,
   );
 
-  late final _getCustomerCommand = Command0<Customer>(_getProfile.call);
+  late final _getCustomerCommand = Command0<CustomerModel>(_getProfile.call);
 
   late final _updateProfileCommand = Command1(_updateProfile.call);
 
@@ -86,10 +86,20 @@ class ProfileController extends IProfileController {
     final result = _getCustomerCommand.value;
     return result.when(
       data: (data) {
-        customer = data.copyWith(
-          email: SessionService.customer!.email,
-          password: SessionService.customer!.password,
-        );
+        switch (data) {
+          case PersonCustomerModel _:
+            customer = data.copyWith(
+              email: SessionService.customer!.email,
+              password: SessionService.customer!.password,
+            );
+            break;
+          case ImmobileCustomerModel _:
+            customer = data.copyWith(
+              email: SessionService.customer!.email,
+              password: SessionService.customer!.password,
+            );
+            break;
+        }
         notifyListeners();
         return true;
       },
@@ -284,7 +294,14 @@ class ProfileController extends IProfileController {
         .take(IProfileController.maxPhotos)
         .toList();
 
-    customer = customer!.copyWith(photos: finalPhotosList);
+    switch (customer!) {
+      case PersonCustomerModel data:
+        customer = data.copyWith(photos: finalPhotosList);
+        break;
+      case ImmobileCustomerModel data:
+        customer = data.copyWith(photos: finalPhotosList);
+        break;
+    }
     SessionService.setCustomer(customer!);
 
     // Limpa as fotos selecionadas após o upload
@@ -315,7 +332,14 @@ class ProfileController extends IProfileController {
     if (index >= 0 && index < customer!.photos.length) {
       final updatedPhotos = List<String>.from(customer!.photos);
       updatedPhotos.removeAt(index);
-      customer = customer!.copyWith(photos: updatedPhotos);
+      switch (customer!) {
+        case PersonCustomerModel data:
+          customer = data.copyWith(photos: updatedPhotos);
+          break;
+        case ImmobileCustomerModel data:
+          customer = data.copyWith(photos: updatedPhotos);
+          break;
+      }
       SessionService.setCustomer(customer!);
       notifyListeners();
     }

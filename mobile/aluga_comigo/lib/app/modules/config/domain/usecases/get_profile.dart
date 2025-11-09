@@ -1,11 +1,11 @@
+import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../../shared/data/services/session_service.dart';
-import '../../../customer/domain/entities/customer.dart';
 import '../../data/repositories/profile_repository.dart';
 
 abstract interface class IGetProfile {
-  AsyncResult<Customer> call();
+  AsyncResult<CustomerModel> call();
 }
 
 class GetProfile implements IGetProfile {
@@ -14,7 +14,7 @@ class GetProfile implements IGetProfile {
   const GetProfile(this.repository);
 
   @override
-  AsyncResult<Customer> call() async {
+  AsyncResult<CustomerModel> call() async {
     final id = SessionService.customer!.id;
     return repository.getProfile(id);
   }

@@ -6,13 +6,12 @@ import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/enums/type_user.dart';
-import '../../domain/entities/customer.dart';
 import '../../domain/enums/match_type.dart';
 import '../models/customer_model.dart';
 
 abstract interface class ICustomerDatasource {
-  Future<List<Customer>> getCustomers({String? startAfter});
-  Future<Unit> matchCustomer(Customer customer, MatchType matchType);
+  Future<List<CustomerModel>> getCustomers({String? startAfter});
+  Future<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
 }
 
 class CustomerDatasource implements ICustomerDatasource {
@@ -22,7 +21,10 @@ class CustomerDatasource implements ICustomerDatasource {
   const CustomerDatasource(this.database, this.storage);
 
   @override
-  Future<Unit> matchCustomer(Customer customer, MatchType matchType) async {
+  Future<Unit> matchCustomer(
+    CustomerModel customer,
+    MatchType matchType,
+  ) async {
     await database
         .getRef(FirebaseDataTables.users)
         .doc(SessionService.customer!.id)
@@ -42,15 +44,23 @@ class CustomerDatasource implements ICustomerDatasource {
     final user = UserModel.fromJson(json!);
     final newUser = user.copyWith(lastMatch: customer.id);
     await storage.setData(StorageKey.user, newUser.toJson());
-    SessionService.setCustomer(
-      SessionService.customer!.copyWith(lastMatch: customer.id),
-    );
+    var customerData = SessionService.customer!;
+    switch (customerData) {
+      case PersonCustomerModel():
+        SessionService.setCustomer(
+          customerData.copyWith(lastMatch: customer.id),
+        );
+      case ImmobileCustomerModel():
+        SessionService.setCustomer(
+          customerData.copyWith(lastMatch: customer.id),
+        );
+    }
 
     return unit;
   }
 
   @override
-  Future<List<Customer>> getCustomers({String? startAfter}) async {
+  Future<List<CustomerModel>> getCustomers({String? startAfter}) async {
     var query = database
         .getRef(FirebaseDataTables.users)
         .where('typeUser', isEqualTo: TypeUser.person.name)
@@ -73,11 +83,7 @@ class CustomerDatasource implements ICustomerDatasource {
     }
 
     return data.docs
-        .map(
-          (e) => Customer.fromModel(
-            CustomerModel.fromMap({'id': e.id, ...e.data()}),
-          ),
-        )
+        .map((e) => CustomerModel.fromMap({'id': e.id, ...e.data()}))
         .toList();
   }
 }

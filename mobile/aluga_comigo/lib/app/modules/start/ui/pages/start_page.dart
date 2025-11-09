@@ -1,4 +1,3 @@
-import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/location_permission_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,6 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
+import '../../../auth/domain/enums/type_immobile.dart';
+import '../../../customer/data/models/customer_model.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -56,17 +57,29 @@ class _StartPageState extends State<StartPage>
     }
   }
 
-  bool _isProfileComplete(Customer? customer) {
-    if (customer == null) return false;
+  bool _isProfileComplete(CustomerModel? model) {
+    if (model == null) return false;
 
-    return customer.name.isNotEmpty &&
-        customer.dateBirth.isNotEmpty &&
-        customer.photos.isNotEmpty &&
-        (customer.shortDescription.isNotEmpty ||
-            customer.longDescription.isNotEmpty) &&
-        customer.cityState.isNotEmpty &&
-        customer.phone.isNotEmpty &&
-        customer.gender.isNotEmpty;
+    switch (model) {
+      case PersonCustomerModel _:
+        return model.name.isNotEmpty &&
+        model.dateBirth.isNotEmpty &&
+        model.photos.isNotEmpty &&
+        (model.shortDescription.isNotEmpty ||
+            model.longDescription.isNotEmpty) &&
+        model.cityState.isNotEmpty &&
+        model.phone.isNotEmpty &&
+        model.gender.isNotEmpty;
+      case ImmobileCustomerModel _:
+        return model.cep.isNotEmpty &&
+        model.price > 0 &&
+        model.photos.isNotEmpty &&
+        (model.shortDescription.isNotEmpty ||
+            model.longDescription.isNotEmpty) &&
+        model.cityState.isNotEmpty &&
+        model.phone.isNotEmpty &&
+        model.typeImmobile != TypeImmobile.none;
+    }
   }
 
   Future<void> _showIncompleteProfileDialog() async {
@@ -170,8 +183,7 @@ class _StartPageState extends State<StartPage>
   void _checkProfileComplete() {
     if (SessionService.customer == null) return;
 
-    final customer = Customer.fromModel(SessionService.customer!);
-    if (!_isProfileComplete(customer)) {
+    if (!_isProfileComplete(SessionService.customer!)) {
       _showIncompleteProfileDialog();
     }
   }

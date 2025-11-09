@@ -11,6 +11,7 @@ import '../../domain/errors/firebase_error_handler.dart';
 
 enum FirebaseDataTables {
   users,
+  immobiles,
   chats,
   matchTo, // from user to person
   matchFrom, // from person to user

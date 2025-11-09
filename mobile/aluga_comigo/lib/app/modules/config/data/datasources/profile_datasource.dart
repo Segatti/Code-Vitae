@@ -2,11 +2,10 @@ import 'package:aluga_comigo/app/shared/domain/entities/failures.dart';
 
 import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../customer/data/models/customer_model.dart';
-import '../../../customer/domain/entities/customer.dart';
 
 abstract interface class IProfileDatasource {
-  Future<Customer> getProfile(String id);
-  Future<void> updateProfile(Customer customer);
+  Future<CustomerModel> getProfile(String id);
+  Future<void> updateProfile(CustomerModel customer);
 }
 
 class ProfileDatasource implements IProfileDatasource {
@@ -15,7 +14,7 @@ class ProfileDatasource implements IProfileDatasource {
   ProfileDatasource(this._database);
 
   @override
-  Future<Customer> getProfile(String id) async {
+  Future<CustomerModel> getProfile(String id) async {
     final response = await _database.read(FirebaseDataTables.users, id);
 
     return response.fold(
@@ -27,13 +26,13 @@ class ProfileDatasource implements IProfileDatasource {
           throw FailureDatasource(message: "Usuário não encontrado");
         }
 
-        return Customer.fromModel(CustomerModel.fromMap(r));
+        return CustomerModel.fromMap(r);
       },
     );
   }
 
   @override
-  Future<void> updateProfile(Customer customer) async {
+  Future<void> updateProfile(CustomerModel customer) async {
     await _database.update(
       FirebaseDataTables.users,
       customer.id,

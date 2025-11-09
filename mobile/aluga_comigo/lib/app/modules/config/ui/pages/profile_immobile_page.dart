@@ -15,18 +15,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../../auth/domain/enums/user_desired_immobile.dart';
+import '../../../auth/domain/enums/user_housework.dart';
 import '../../../auth/domain/enums/user_life_style.dart';
 import '../../../auth/domain/enums/user_skill.dart';
+import '../../../auth/domain/models/select_item.dart';
+import '../../../auth/presenter/widgets/pill_widget.dart';
+import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/presenter/widgets/customer_flip_card.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfileImmobilePage extends StatefulWidget {
+  const ProfileImmobilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfileImmobilePage> createState() => _ProfileImmobilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
   final controller = Modular.get<IProfileController>();
   DateTime date = DateTime.now();
 
@@ -134,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void _showProfileDialog() {
     if (controller.customer == null) return;
 
-    final customer = controller.customer!;
+    final customer = controller.customer! as ImmobileCustomerModel;
 
     showDialog(
       context: context,
@@ -176,6 +180,61 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _showSkillsDialog() {
+    if (controller.customer == null) return;
+
+    final currentSkills = List<UserSkill>.from(controller.customer!.skills);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => _SkillsDialog(
+        initialSkills: currentSkills,
+        getSkillName: _getSkillName,
+        onSave: (selectedSkills) async {
+          controller.customer = controller.customer!.copyWith(
+            skills: selectedSkills,
+          );
+          await controller.updateProfile();
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+        onCancel: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+  void _showHouseworksDialog() {
+    if (controller.customer == null) return;
+
+    final currentHouseworks = List<UserHousework>.from(
+      controller.customer!.houseworks,
+    );
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => _HouseworksDialog(
+        initialHouseworks: currentHouseworks,
+        onSave: (selectedHouseworks) async {
+          controller.customer = controller.customer!.copyWith(
+            houseworks: selectedHouseworks,
+          );
+          await controller.updateProfile();
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+        onCancel: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
   @override
   void dispose() {
     controller.removeListener(_handleError);
@@ -184,6 +243,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _showDialog(Widget child) async {
+    if (controller.customer == null) return;
+
+    final customer = controller.customer! as ImmobileCustomerModel;
+
     await showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
@@ -206,7 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 50,
                     borderRadius: 10,
                     onTap: () {
-                      controller.customer = controller.customer!.copyWith(
+                      controller.customer = customer.copyWith(
                         dateBirth: DateFormat("dd/MM/yyyy").format(date),
                       );
                       Navigator.of(context).pop();
@@ -233,6 +296,8 @@ class _ProfilePageState extends State<ProfilePage> {
             controller.customer == null) {
           return const Center(child: CircularProgressIndicator());
         }
+
+        final customer = controller.customer as ImmobileCustomerModel;
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -478,44 +543,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Nome",
-                                    style: GoogleFonts.rubik(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const Gap(16),
-                                  Expanded(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: const Color(0xFFEFEFEF),
-                                      ),
-                                      child: TextFormField(
-                                        controller: TextEditingController(
-                                          text: controller.customer?.name ?? "",
-                                        ),
-                                        style: GoogleFonts.rubik(
-                                          height: 1,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(16),
                               Row(
                                 children: [
                                   Text(
@@ -1099,14 +1126,18 @@ class _ProfilePageState extends State<ProfilePage> {
                               const Gap(16),
                               PrimaryButtonWidget(
                                 title: "Habilidades",
-                                onTap: () {},
+                                onTap: () {
+                                  _showSkillsDialog();
+                                },
                                 color: const Color(0xFF2C29A3),
                                 borderRadius: 10,
                               ),
                               const Gap(16),
                               PrimaryButtonWidget(
                                 title: "Tarefas Domésticas",
-                                onTap: () {},
+                                onTap: () {
+                                  _showHouseworksDialog();
+                                },
                                 color: const Color(0xFF2C29A3),
                                 borderRadius: 10,
                               ),
@@ -1134,6 +1165,230 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         );
       },
+    );
+  }
+}
+
+class _SkillsDialog extends StatefulWidget {
+  final List<UserSkill> initialSkills;
+  final String Function(UserSkill) getSkillName;
+  final Future<void> Function(List<UserSkill>) onSave;
+  final VoidCallback onCancel;
+
+  const _SkillsDialog({
+    required this.initialSkills,
+    required this.getSkillName,
+    required this.onSave,
+    required this.onCancel,
+  });
+
+  @override
+  State<_SkillsDialog> createState() => _SkillsDialogState();
+}
+
+class _SkillsDialogState extends State<_SkillsDialog> {
+  late List<UserSkill> selectedSkills;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedSkills = List<UserSkill>.from(widget.initialSkills);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final availableSkills = UserSkill.values
+        .where((skill) => skill != UserSkill.none)
+        .toList();
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxWidth: MediaQuery.of(context).size.width * 0.9,
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Selecione suas habilidades',
+              style: GoogleFonts.rubik(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+              ),
+            ),
+            const Gap(24),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: availableSkills.map((skill) {
+                    final isSelected = selectedSkills.contains(skill);
+                    return PillWidget(
+                      initialValue: isSelected,
+                      selectItem: SelectItem(
+                        title: widget.getSkillName(skill),
+                        value: skill,
+                      ),
+                      onTap: (isSelected, value) {
+                        setState(() {
+                          if (isSelected) {
+                            selectedSkills.add(value.value as UserSkill);
+                          } else {
+                            selectedSkills.remove(value.value as UserSkill);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            const Gap(24),
+            Row(
+              children: [
+                Expanded(
+                  child: PrimaryButtonWidget(
+                    title: "Fechar",
+                    onTap: widget.onCancel,
+                    color: Colors.grey,
+                    borderRadius: 10,
+                  ),
+                ),
+                const Gap(16),
+                Expanded(
+                  child: PrimaryButtonWidget(
+                    title: "Salvar",
+                    onTap: () async {
+                      await widget.onSave(selectedSkills);
+                    },
+                    borderRadius: 10,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HouseworksDialog extends StatefulWidget {
+  final List<UserHousework> initialHouseworks;
+  final Future<void> Function(List<UserHousework>) onSave;
+  final VoidCallback onCancel;
+
+  const _HouseworksDialog({
+    required this.initialHouseworks,
+    required this.onSave,
+    required this.onCancel,
+  });
+
+  @override
+  State<_HouseworksDialog> createState() => _HouseworksDialogState();
+}
+
+class _HouseworksDialogState extends State<_HouseworksDialog> {
+  late List<UserHousework> selectedHouseworks;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedHouseworks = List<UserHousework>.from(widget.initialHouseworks);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final availableHouseworks = UserHousework.values
+        .where((housework) => housework != UserHousework.none)
+        .toList();
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxWidth: MediaQuery.of(context).size.width * 0.9,
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Selecione suas tarefas domésticas',
+              style: GoogleFonts.rubik(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+              ),
+            ),
+            const Gap(24),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: availableHouseworks.map((housework) {
+                    final isSelected = selectedHouseworks.contains(housework);
+                    return PillWidget(
+                      initialValue: isSelected,
+                      selectItem: SelectItem(
+                        title: housework.title,
+                        value: housework,
+                      ),
+                      onTap: (isSelected, value) {
+                        setState(() {
+                          if (isSelected) {
+                            selectedHouseworks.add(
+                              value.value as UserHousework,
+                            );
+                          } else {
+                            selectedHouseworks.remove(
+                              value.value as UserHousework,
+                            );
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            const Gap(24),
+            Row(
+              children: [
+                Expanded(
+                  child: PrimaryButtonWidget(
+                    title: "Fechar",
+                    onTap: widget.onCancel,
+                    color: Colors.grey,
+                    borderRadius: 10,
+                  ),
+                ),
+                const Gap(16),
+                Expanded(
+                  child: PrimaryButtonWidget(
+                    title: "Salvar",
+                    onTap: () async {
+                      await widget.onSave(selectedHouseworks);
+                    },
+                    borderRadius: 10,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

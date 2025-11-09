@@ -1,5 +1,5 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_desired_immobile.dart';
-import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
+import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card/flip_card.dart';
@@ -12,7 +12,7 @@ import '../../../auth/domain/enums/user_skill.dart';
 import 'customer_profile_card.dart';
 
 class CustomerFlipCard extends StatelessWidget {
-  final Customer customer;
+  final PersonCustomerModel customer;
   final int Function(String) calculateAge;
   final String Function(UserSkill) getSkillName;
   final double? height;

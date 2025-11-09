@@ -1,10 +1,10 @@
+import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../../customer/domain/entities/customer.dart';
 import '../../data/repositories/profile_repository.dart';
 
 abstract interface class IUpdateProfile {
-  AsyncResult<Unit> call(Customer customer);
+  AsyncResult<Unit> call(CustomerModel customer);
 }
 
 class UpdateProfile implements IUpdateProfile {
@@ -13,7 +13,7 @@ class UpdateProfile implements IUpdateProfile {
   const UpdateProfile(this.repository);
 
   @override
-  AsyncResult<Unit> call(Customer customer) async {
+  AsyncResult<Unit> call(CustomerModel customer) async {
     return repository.updateProfile(customer);
   }
 }

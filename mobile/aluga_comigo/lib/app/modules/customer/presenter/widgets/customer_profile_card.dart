@@ -1,14 +1,15 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_desired_immobile.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_life_style.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
-import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../data/models/customer_model.dart';
+
 class CustomerProfileCard extends StatelessWidget {
-  final Customer customer;
+  final PersonCustomerModel customer;
   final int Function(String) calculateAge;
   final String Function(UserSkill) getSkillName;
   final VoidCallback? onBackPressed;
@@ -57,9 +58,7 @@ class CustomerProfileCard extends StatelessWidget {
             const Gap(4),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200,
@@ -117,10 +116,7 @@ class CustomerProfileCard extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.grey, width: 2),
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -143,10 +139,7 @@ class CustomerProfileCard extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.grey, width: 2),
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -169,10 +162,7 @@ class CustomerProfileCard extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.grey, width: 2),
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -216,10 +206,7 @@ class CustomerProfileCard extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 2,
-                              ),
+                              border: Border.all(color: Colors.grey, width: 2),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -248,10 +235,7 @@ class CustomerProfileCard extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.white,
-                        side: const BorderSide(
-                          width: 3,
-                          color: Colors.orange,
-                        ),
+                        side: const BorderSide(width: 3, color: Colors.orange),
                       ),
                       onPressed: onBackPressed,
                       child: Text(
@@ -272,4 +256,3 @@ class CustomerProfileCard extends StatelessWidget {
     );
   }
 }
-

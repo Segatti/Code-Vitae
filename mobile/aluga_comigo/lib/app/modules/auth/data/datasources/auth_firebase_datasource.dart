@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../../shared/data/services/firebase_auth_service.dart';
 import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../../shared/data/services/firebase_storage_service.dart';
@@ -24,9 +26,17 @@ class AuthFirebaseDatasource implements IAuthDatasource {
       return await data.fold((l) => throw l, (r2) async {
         final data = r2;
 
-        return CustomerModel.fromMap(
-          data,
-        ).copyWith(email: input.email).copyWith(password: input.password);
+        var customer = CustomerModel.fromMap(data);
+        switch (customer) {
+          case PersonCustomerModel():
+            return customer
+                .copyWith(email: input.email)
+                .copyWith(password: input.password);
+          case ImmobileCustomerModel():
+            return customer
+                .copyWith(email: input.email)
+                .copyWith(password: input.password);
+        }
       });
     });
   }
@@ -59,17 +69,17 @@ class AuthFirebaseDatasource implements IAuthDatasource {
           "email": input.email,
           "password": input.password,
           "isActive": true,
-          "createdAt": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "createdAt": Timestamp.now(),
           "typeUser": TypeUser.immobile.name,
           "typeImmobile": input.typeImmobile?.name,
           "photos": [linkPhoto],
         };
 
-        await database.create(FirebaseDataTables.users, map);
-
-        return CustomerModel.fromMap(
-          map,
-        ).copyWith(email: input.email).copyWith(password: input.password);
+        await database.create(FirebaseDataTables.immobiles, map);
+        var immobile = ImmobileCustomerModel.fromMap(map);
+        return immobile
+            .copyWith(email: input.email)
+            .copyWith(password: input.password);
       });
     });
   }
@@ -94,7 +104,7 @@ class AuthFirebaseDatasource implements IAuthDatasource {
           "isActive": true,
           "email": input.email,
           "password": input.password,
-          "createdAt": DateTime.now().toUtc().millisecondsSinceEpoch,
+          "createdAt": Timestamp.now(),
           "typeUser": TypeUser.person.name,
           "skills": input.skills.map((e) => e.name).toList(),
           "photos": [linkPhoto],
@@ -102,9 +112,11 @@ class AuthFirebaseDatasource implements IAuthDatasource {
 
         await database.create(FirebaseDataTables.users, map);
 
-        return CustomerModel.fromMap(
-          map,
-        ).copyWith(email: input.email).copyWith(password: input.password);
+        var person = PersonCustomerModel.fromMap(map);
+
+        return person
+            .copyWith(email: input.email)
+            .copyWith(password: input.password);
       });
     });
   }

@@ -1,5 +1,4 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
-import 'package:aluga_comigo/app/modules/customer/domain/entities/customer.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
@@ -10,6 +9,8 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
+import '../../../auth/domain/enums/type_immobile.dart';
+import '../../data/models/customer_model.dart';
 import '../controllers/customers_controller.dart';
 import '../widgets/customer_flip_card.dart';
 
@@ -61,17 +62,29 @@ class _CustomersPageState extends State<CustomersPage> {
   //   return "${score.toStringAsFixed(1)}/5";
   // }
 
-  bool _isProfileComplete(Customer? customer) {
-    if (customer == null) return false;
+  bool _isProfileComplete(CustomerModel? model) {
+    if (model == null) return false;
 
-    return customer.name.isNotEmpty &&
-        customer.dateBirth.isNotEmpty &&
-        customer.photos.isNotEmpty &&
-        (customer.shortDescription.isNotEmpty ||
-            customer.longDescription.isNotEmpty) &&
-        customer.cityState.isNotEmpty &&
-        customer.phone.isNotEmpty &&
-        customer.gender.isNotEmpty;
+    switch (model) {
+      case PersonCustomerModel _:
+        return model.name.isNotEmpty &&
+        model.dateBirth.isNotEmpty &&
+        model.photos.isNotEmpty &&
+        (model.shortDescription.isNotEmpty ||
+            model.longDescription.isNotEmpty) &&
+        model.cityState.isNotEmpty &&
+        model.phone.isNotEmpty &&
+        model.gender.isNotEmpty;
+      case ImmobileCustomerModel _:
+        return model.cep.isNotEmpty &&
+        model.price > 0 &&
+        model.photos.isNotEmpty &&
+        (model.shortDescription.isNotEmpty ||
+            model.longDescription.isNotEmpty) &&
+        model.cityState.isNotEmpty &&
+        model.phone.isNotEmpty &&
+        model.typeImmobile != TypeImmobile.none;
+    }
   }
 
   Future<void> _showIncompleteProfileDialog() async {
@@ -175,7 +188,7 @@ class _CustomersPageState extends State<CustomersPage> {
   Future<bool> _checkProfileAndShowDetails(
     FlipCardController flipController,
   ) async {
-    if (!_isProfileComplete(Customer.fromModel(SessionService.customer!))) {
+    if (!_isProfileComplete(SessionService.customer!)) {
       await _showIncompleteProfileDialog();
       return false;
     }
@@ -258,17 +271,22 @@ class _CustomersPageState extends State<CustomersPage> {
                       final itemIndex = properties.index % list.length;
                       final customer = list[itemIndex];
 
-                      return CustomerFlipCard(
-                        customer: customer,
-                        calculateAge: _calculateAge,
-                        getSkillName: _getSkillName,
-                        height: constraints.maxHeight,
-                        onVerMaisPressed: (flipController) async {
-                          return await _checkProfileAndShowDetails(
-                            flipController,
+                      switch (customer) {
+                        case PersonCustomerModel _:
+                          return CustomerFlipCard(
+                            customer: customer,
+                            calculateAge: _calculateAge,
+                            getSkillName: _getSkillName,
+                            height: constraints.maxHeight,
+                            onVerMaisPressed: (flipController) async {
+                              return await _checkProfileAndShowDetails(
+                                flipController,
+                              );
+                            },
                           );
-                        },
-                      );
+                        case ImmobileCustomerModel _:
+                          return SizedBox.shrink();
+                      }
                     },
                   );
                 },

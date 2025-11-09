@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../domain/entities/customer.dart';
+import '../../data/models/customer_model.dart';
 import '../../domain/enums/match_type.dart';
 import '../../domain/usecases/get_customers.dart';
 import '../../domain/usecases/match_customer.dart';
@@ -12,7 +12,7 @@ abstract class ICustomersController extends ChangeNotifier {
   List<String> loadingList = [];
   String errorMessage = "";
 
-  List<Customer> customers = [];
+  List<CustomerModel> customers = [];
   bool hasMore = true;
 
   Future<Unit> initialize();
@@ -20,7 +20,7 @@ abstract class ICustomersController extends ChangeNotifier {
   Future<Unit> dispose();
 
   Future<bool> getCustomers();
-  Future<bool> matchCustomer(Customer customer, MatchType matchType);
+  Future<bool> matchCustomer(CustomerModel customer, MatchType matchType);
 }
 
 class CustomersController extends ICustomersController {
@@ -70,7 +70,7 @@ class CustomersController extends ICustomersController {
   }
 
   @override
-  Future<bool> matchCustomer(Customer customer, MatchType matchType) async {
+  Future<bool> matchCustomer(CustomerModel customer, MatchType matchType) async {
     loadingList.add('matchCustomer');
     notifyListeners();
     await matchCustomerCommand.execute(customer, matchType);
