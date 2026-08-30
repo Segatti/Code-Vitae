@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dpad_container/dpad_container.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_tv/app/shared/utils/color_pattern.dart';
 
 class ButtonSecundary extends StatefulWidget {

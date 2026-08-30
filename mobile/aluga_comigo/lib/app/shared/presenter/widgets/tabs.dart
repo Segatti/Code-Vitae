@@ -1,5 +1,5 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TabsWidget extends StatelessWidget {

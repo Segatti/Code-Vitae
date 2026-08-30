@@ -1,7 +1,7 @@
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/location_permission_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';

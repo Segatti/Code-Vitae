@@ -1,5 +1,5 @@
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 

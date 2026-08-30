@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:morty_verso/app/core/domain/entities/page_states.dart';
 
 class BuildStateWidget extends StatelessWidget {

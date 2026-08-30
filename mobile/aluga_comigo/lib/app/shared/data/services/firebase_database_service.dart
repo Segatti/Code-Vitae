@@ -4,7 +4,7 @@ import 'package:aluga_comigo/app/shared/domain/models/errors/firebase.dart';
 import 'package:aluga_comigo/app/shared/domain/typedefs/returns.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../domain/entities/failures.dart';
 import '../../domain/errors/firebase_error_handler.dart';

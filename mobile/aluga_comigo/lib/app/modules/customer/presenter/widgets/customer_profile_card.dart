@@ -2,7 +2,7 @@ import 'package:aluga_comigo/app/modules/auth/domain/enums/user_desired_immobile
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_life_style.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 

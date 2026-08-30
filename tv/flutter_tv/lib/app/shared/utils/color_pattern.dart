@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ColorPattern {
   static Color backgroundColor = const Color(0xFF01012B);

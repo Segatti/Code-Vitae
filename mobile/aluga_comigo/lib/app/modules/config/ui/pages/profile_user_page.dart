@@ -7,8 +7,8 @@ import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dar
 import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_date/dart_date.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -986,7 +986,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                           text: (customer.priceMaxImmobile > 0)
                                               ? customer.priceMaxImmobile
                                                     .toMoney()
-                                              : 2000.toMoney(),
+                                              : '',
                                         ),
                                         onChanged: (value) {
                                           var data = value.moneyToNumber() ?? 0;

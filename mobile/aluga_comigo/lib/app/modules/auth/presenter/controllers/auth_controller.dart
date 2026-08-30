@@ -1,5 +1,5 @@
 import 'package:aluga_comigo/app/modules/auth/domain/entities/inputs/signup_input.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../domain/entities/inputs/login_input.dart';
 import '../../domain/usecases/login_user.dart';

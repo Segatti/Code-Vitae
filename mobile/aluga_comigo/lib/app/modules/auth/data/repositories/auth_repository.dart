@@ -2,7 +2,7 @@ import 'package:aluga_comigo/app/modules/auth/domain/entities/user.dart';
 import 'package:aluga_comigo/app/shared/domain/entities/failures.dart';
 import 'package:aluga_comigo/app/shared/domain/typedefs/returns.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../shared/data/services/session_service.dart';
 import '../../domain/entities/inputs/login_input.dart';

@@ -2,7 +2,7 @@ import 'package:aluga_comigo/app/modules/chats/interactor/enums/home_type.dart';
 import 'package:aluga_comigo/app/modules/chats/interactor/models/contact.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/pages/contact_list_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';

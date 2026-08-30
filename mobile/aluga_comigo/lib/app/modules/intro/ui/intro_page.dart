@@ -1,7 +1,7 @@
 import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/lotties_asset.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';

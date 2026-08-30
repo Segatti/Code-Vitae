@@ -8,7 +8,7 @@ import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dar
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';

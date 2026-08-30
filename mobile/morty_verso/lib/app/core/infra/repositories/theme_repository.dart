@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 import '../../domain/repositories/theme_repository.dart';
 import '../../domain/services/local_storage_service.dart';

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:aluga_comigo/app/modules/quest/interactor/enums/type_reward.dart';
 import 'package:dartx/dartx.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';

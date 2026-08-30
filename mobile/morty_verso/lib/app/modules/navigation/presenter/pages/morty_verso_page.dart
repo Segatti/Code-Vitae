@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../../core/presenter/widgets/general/text_widget.dart';
