@@ -20,7 +20,7 @@ class UCGetFavoriteCharacters implements IUCGetFavoriteCharacters {
     try {
       final result = await getValueLocalStorage('favorite_characters');
       List<String> characterIdList = [];
-      return result.fold(
+      return await result.fold(
         (l) => Left(l),
         (r) {
           if (r != null) {

@@ -11,7 +11,7 @@ abstract class _SplashStoreBase with Store {
   @observable
   bool userIsLogged = false;
   @action
-  setUserIsLogged(bool value) => userIsLogged = value;
+  bool setUserIsLogged(bool value) => userIsLogged = value;
   
 
   @action

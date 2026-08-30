@@ -15,7 +15,7 @@ class AuthModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => const AuthPage(),
+      child: (_, _) => const AuthPage(),
     );
   }
 }

@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    store = Modular.get<LoginStore>();
+    store = inject<LoginStore>();
     _init();
     super.initState();
   }
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: ButtonPrimary(
                             title: 'Entrar',
                             onClick: () {
-                              Modular.to.navigate('/main/');
+                              context.navigate('/main/');
                             },
                           ),
                         ),
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: ButtonSecundary(
                             title: 'Cadastrar',
                             onClick: () {
-                              Modular.to.pushNamed('./sign');
+                              context.pushNamed('./sign');
                             },
                           ),
                         ),
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                                   if (timer?.isActive ?? false) timer?.cancel();
                                   timer = Timer(
                                       const Duration(milliseconds: 500), () {
-                                    Modular.to.pushNamed('./recover');
+                                    context.pushNamed('./recover');
                                   });
                                 },
                                 onFocus: (isFocused) {

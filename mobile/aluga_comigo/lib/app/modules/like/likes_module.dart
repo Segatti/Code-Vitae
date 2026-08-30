@@ -10,12 +10,12 @@ class LikesModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.upToDown,
-      child: (_, __) => const LikesPage(),
+      child: (_, _) => const LikesPage(),
     );
     c.route(
       '/history',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => const HistoryLikesPage(),
+      child: (_, _) => const HistoryLikesPage(),
     );
   }
 }

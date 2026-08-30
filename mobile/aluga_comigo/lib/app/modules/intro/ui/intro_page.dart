@@ -214,6 +214,7 @@ class _IntroPageState extends State<IntroPage> {
                               StorageKey.intro,
                               false.toString(),
                             );
+                            if (!context.mounted) return;
                             context.navigate("/auth/");
                           },
                           child: Container(

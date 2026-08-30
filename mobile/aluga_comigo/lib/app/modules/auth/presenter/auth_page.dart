@@ -262,6 +262,8 @@ class _AuthPageState extends State<AuthPage> {
 
                                   var result = await controller.login(input);
 
+                                  if(!context.mounted) return;
+
                                   if (result) {
                                     context.navigate("/start/customers/");
                                   } else {
@@ -283,6 +285,7 @@ class _AuthPageState extends State<AuthPage> {
                                   );
 
                                   var result = await controller.signup(input);
+                                  if(!context.mounted) return;
                                   if (result) {
                                     context.navigate("/start/customers/");
                                   } else {

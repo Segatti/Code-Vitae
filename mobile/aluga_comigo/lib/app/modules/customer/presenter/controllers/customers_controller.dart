@@ -44,7 +44,6 @@ class CustomersController extends ICustomersController {
 
   @override
   Future<bool> getCustomers() async {
-    print("getCustomers");
     loadingList.add('getCustomers');
     notifyListeners();
     await getCustomersCommand.execute();
@@ -58,7 +57,6 @@ class CustomersController extends ICustomersController {
         } else {
           customers.addAll(list);
         }
-        print(list.length);
         notifyListeners();
         return true;
       },
@@ -94,7 +92,6 @@ class CustomersController extends ICustomersController {
 
   @override
   Future<Unit> initialize() async {
-    print("initialize");
     loadingList.add('initialize');
     notifyListeners();
     await getCustomers();

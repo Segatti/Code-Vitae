@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    store = Modular.get<MainStore>();
+    store = inject<MainStore>();
     super.initState();
   }
 
@@ -56,9 +56,11 @@ class _MainPageState extends State<MainPage> {
                       child: SizedBox(
                         height: 185,
                         child: DottedBorder(
-                          color: const Color.fromARGB(63, 255, 255, 255),
-                          strokeWidth: 3,
-                          dashPattern: const [6, 6],
+                          options: RectDottedBorderOptions(
+                            color: const Color.fromARGB(63, 255, 255, 255),
+                            strokeWidth: 3,
+                            dashPattern: const [6, 6],
+                          ),
                           child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,

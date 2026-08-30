@@ -9,56 +9,56 @@ abstract class _LoginStoreBase with Store {
   @observable
   bool userIsLogged = false;
   @action
-  setUserIsLogged(bool value) => userIsLogged = value;
+  bool setUserIsLogged(bool value) => userIsLogged = value;
 
   @observable
   bool focusEmail = false;
   @action
-  setFocusEmail(bool value) => focusEmail = value;
+  bool setFocusEmail(bool value) => focusEmail = value;
 
   @observable
   String email = "";
   @action
-  setEmail(String value) => email = value;
+  String setEmail(String value) => email = value;
   
 
   @observable
   bool clickEmail = false;
   @action
-  setClickEmail(bool value) => clickEmail = value;
+  bool setClickEmail(bool value) => clickEmail = value;
   
 
   @observable
   bool focusSenha = false;
   @action
-  setFocusSenha(bool value) => focusSenha = value;
+  bool setFocusSenha(bool value) => focusSenha = value;
 
   @observable
   String senha = "";
   @action
-  setSenha(String value) => senha = value;
+  String setSenha(String value) => senha = value;
   
 
   @observable
   bool clickSenha = false;
   @action
-  setClickSenha(bool value) => clickSenha = value;
+  bool setClickSenha(bool value) => clickSenha = value;
   
 
   @observable
   bool focusEntrar = false;
   @action
-  setFocusEntrar(bool value) => focusEntrar = value;
+  bool setFocusEntrar(bool value) => focusEntrar = value;
 
   @observable
   bool focusCriarConta = false;
   @action
-  setFocusCriarConta(bool value) => focusCriarConta = value;
+  bool setFocusCriarConta(bool value) => focusCriarConta = value;
 
   @observable
   bool focusRecuperarSenha = false;
   @action
-  setFocusRecuperarSenha(bool value) => focusRecuperarSenha = value;
+  bool setFocusRecuperarSenha(bool value) => focusRecuperarSenha = value;
 
   @action
   Future<void> startStore() async {}

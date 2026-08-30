@@ -51,7 +51,7 @@ class CardLocationPdf {
                     children: [
                       pdf.Text(validText("${_location.name}"),
                           maxLines: 2,
-                          style: pdf.TextStyle(
+                          style: const pdf.TextStyle(
                               fontSize: 18, fontWeight: pdf.FontWeight.bold)),
                       pdf.Text(
                         validText("Type: ${_location.type ?? ''}"),

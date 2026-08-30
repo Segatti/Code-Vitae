@@ -14,7 +14,7 @@ class HousesModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.upToDown,
-      child: (_, __) => const HousesPage(),
+      child: (_, _) => const HousesPage(),
     );
   }
 }

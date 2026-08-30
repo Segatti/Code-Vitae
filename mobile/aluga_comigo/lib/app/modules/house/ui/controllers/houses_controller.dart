@@ -44,7 +44,6 @@ class HousesController extends IHousesController {
 
   @override
   Future<bool> getHouses() async {
-    print("getCustomers");
     loadingList.add('getHouses');
     notifyListeners();
     await getHousesCommand.execute();
@@ -58,7 +57,6 @@ class HousesController extends IHousesController {
         } else {
           houses.addAll(list);
         }
-        print(list.length);
         notifyListeners();
         return true;
       },
@@ -94,7 +92,6 @@ class HousesController extends IHousesController {
 
   @override
   Future<Unit> initialize() async {
-    print("initialize");
     loadingList.add('initialize');
     notifyListeners();
     await getHouses();

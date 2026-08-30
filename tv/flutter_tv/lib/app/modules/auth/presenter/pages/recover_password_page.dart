@@ -31,7 +31,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
 
   @override
   void initState() {
-    store = Modular.get<RecoverPasswordStore>();
+    store = inject<RecoverPasswordStore>();
     _init();
     super.initState();
   }
@@ -91,7 +91,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                           child: ButtonPrimary(
                             title: 'Enviar',
                             onClick: () {
-                              Modular.to.pop();
+                              context.pop();
                             },
                           ),
                         ),
@@ -100,7 +100,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> {
                           child: ButtonSecundary(
                             title: "Voltar",
                             onClick: () {
-                              Modular.to.pop();
+                              context.pop();
                             },
                           ),
                         ),

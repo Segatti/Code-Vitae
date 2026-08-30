@@ -32,12 +32,12 @@ class ConfigModule extends Module {
     c.route(
       '/security',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => const SecurityPage(),
+      child: (_, _) => const SecurityPage(),
     );
     c.route(
       '/profile',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => SessionService.customer!.typeUser == TypeUser.person
+      child: (_, _) => SessionService.customer!.typeUser == TypeUser.person
           ? ProfileUserPage()
           : ProfileImmobilePage(),
     );

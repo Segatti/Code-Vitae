@@ -20,7 +20,7 @@ class UCGetFavoriteLocations implements IUCGetFavoriteLocations {
     try {
       final result = await getValueLocalStorage('favorite_locations');
       List<String> locationIdList = [];
-      return result.fold(
+      return await result.fold(
         (l) => Left(l),
         (r) {
           if (r != null) {

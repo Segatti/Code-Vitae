@@ -189,7 +189,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
       ActionController(name: '_LoginStoreBase', context: context);
 
   @override
-  dynamic setUserIsLogged(bool value) {
+  bool setUserIsLogged(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setUserIsLogged');
     try {
@@ -200,7 +200,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setFocusEmail(bool value) {
+  bool setFocusEmail(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setFocusEmail');
     try {
@@ -211,7 +211,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setEmail(String value) {
+  String setEmail(String value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setEmail');
     try {
@@ -222,7 +222,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setClickEmail(bool value) {
+  bool setClickEmail(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setClickEmail');
     try {
@@ -233,7 +233,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setFocusSenha(bool value) {
+  bool setFocusSenha(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setFocusSenha');
     try {
@@ -244,7 +244,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setSenha(String value) {
+  String setSenha(String value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setSenha');
     try {
@@ -255,7 +255,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setClickSenha(bool value) {
+  bool setClickSenha(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setClickSenha');
     try {
@@ -266,7 +266,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setFocusEntrar(bool value) {
+  bool setFocusEntrar(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setFocusEntrar');
     try {
@@ -277,7 +277,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setFocusCriarConta(bool value) {
+  bool setFocusCriarConta(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setFocusCriarConta');
     try {
@@ -288,7 +288,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   }
 
   @override
-  dynamic setFocusRecuperarSenha(bool value) {
+  bool setFocusRecuperarSenha(bool value) {
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.setFocusRecuperarSenha');
     try {

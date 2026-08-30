@@ -37,7 +37,7 @@ mixin _$SplashStore on _SplashStoreBase, Store {
       ActionController(name: '_SplashStoreBase', context: context);
 
   @override
-  dynamic setUserIsLogged(bool value) {
+  bool setUserIsLogged(bool value) {
     final _$actionInfo = _$_SplashStoreBaseActionController.startAction(
         name: '_SplashStoreBase.setUserIsLogged');
     try {

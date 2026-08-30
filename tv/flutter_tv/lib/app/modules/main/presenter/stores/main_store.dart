@@ -11,5 +11,5 @@ abstract class _MainStoreBase with Store {
   @observable
   int? itemFocus;
   @action
-  setItemFocus(int value) => itemFocus = value;
+  int setItemFocus(int value) => itemFocus = value;
 }

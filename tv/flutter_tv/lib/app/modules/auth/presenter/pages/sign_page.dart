@@ -36,7 +36,7 @@ class _SignPageState extends State<SignPage> {
 
   @override
   void initState() {
-    store = Modular.get<SignStore>();
+    store = inject<SignStore>();
     _init();
     super.initState();
   }
@@ -132,7 +132,7 @@ class _SignPageState extends State<SignPage> {
                           child: ButtonPrimary(
                             title: "Cadastrar",
                             onClick: () {
-                              Modular.to.pop();
+                              context.pop();
                             },
                           ),
                         ),
@@ -141,7 +141,7 @@ class _SignPageState extends State<SignPage> {
                           child: ButtonSecundary(
                             title: "Voltar",
                             onClick: () {
-                              Modular.to.pop();
+                              context.pop();
                             },
                           ),
                         ),

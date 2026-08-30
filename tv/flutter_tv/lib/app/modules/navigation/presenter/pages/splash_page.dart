@@ -15,18 +15,19 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   void initState() {
-    store = Modular.get<SplashStore>();
-    _init();
+    store = inject<SplashStore>();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
   Future _init() async {
     await store.startStore();
     await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
     if (store.userIsLogged) {
-      Modular.to.navigate("/main/");
+      context.navigate('/main/');
     } else {
-      Modular.to.navigate("/auth/");
+      context.navigate('/auth/');
     }
   }
 

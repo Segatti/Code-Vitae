@@ -6,7 +6,7 @@ enum TypeRewards {
 
   const TypeRewards();
 
-  static getType(String value) {
+  static TypeRewards getType(String value) {
     for (var item in TypeRewards.values) {
       if (item.name == value) return item;
     }

@@ -9,62 +9,62 @@ abstract class _SignStoreBase with Store {
   @observable
   bool focusEmail = false;
   @action
-  setFocusEmail(bool value) => focusEmail = value;
+  bool setFocusEmail(bool value) => focusEmail = value;
 
   @observable
   String email = "";
   @action
-  setEmail(String value) => email = value;
+  String setEmail(String value) => email = value;
   
 
   @observable
   bool clickEmail = false;
   @action
-  setClickEmail(bool value) => clickEmail = value;
+  bool setClickEmail(bool value) => clickEmail = value;
   
 
   @observable
   bool focusSenha = false;
   @action
-  setFocusSenha(bool value) => focusSenha = value;
+  bool setFocusSenha(bool value) => focusSenha = value;
 
   @observable
   String senha = "";
   @action
-  setSenha(String value) => senha = value;
+  String setSenha(String value) => senha = value;
   
 
   @observable
   bool clickSenha = false;
   @action
-  setClickSenha(bool value) => clickSenha = value;
+  bool setClickSenha(bool value) => clickSenha = value;
 
   @observable
   bool focusConfirmarSenha = false;
   @action
-  setFocusConfirmarSenha(bool value) => focusConfirmarSenha = value;
+  bool setFocusConfirmarSenha(bool value) => focusConfirmarSenha = value;
 
   @observable
   String confirmarSenha = "";
   @action
-  setConfirmarSenha(String value) => confirmarSenha = value;
+  String setConfirmarSenha(String value) => confirmarSenha = value;
   
 
   @observable
   bool clickConfirmarSenha = false;
   @action
-  setClickConfirmarSenha(bool value) => clickConfirmarSenha = value;
+  bool setClickConfirmarSenha(bool value) => clickConfirmarSenha = value;
   
 
   @observable
   bool focusEntrar = false;
   @action
-  setFocusEntrar(bool value) => focusEntrar = value;
+  bool setFocusEntrar(bool value) => focusEntrar = value;
 
   @observable
   bool focusCriarConta = false;
   @action
-  setFocusCriarConta(bool value) => focusCriarConta = value;
+  bool setFocusCriarConta(bool value) => focusCriarConta = value;
   
   @action
   Future<void> startStore() async {}

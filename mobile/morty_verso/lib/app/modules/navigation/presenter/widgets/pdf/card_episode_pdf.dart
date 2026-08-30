@@ -51,7 +51,7 @@ class CardEpisodePdf {
                     children: [
                       pdf.Text(validText("${_episode.episode} - ${_episode.name}"),
                           maxLines: 2,
-                          style: pdf.TextStyle(
+                          style: const pdf.TextStyle(
                               fontSize: 18, fontWeight: pdf.FontWeight.bold)),
                       pdf.Text(
                         validText("Air date: ${_episode.airDate ?? ''}"),

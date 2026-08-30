@@ -11,7 +11,7 @@ class StoreModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => const StorePage(),
+      child: (_, _) => const StorePage(),
     );
   }
 }

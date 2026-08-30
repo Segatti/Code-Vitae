@@ -29,7 +29,7 @@ mixin _$MainStore on _MainStoreBase, Store {
       ActionController(name: '_MainStoreBase', context: context);
 
   @override
-  dynamic setItemFocus(int value) {
+  int setItemFocus(int value) {
     final _$actionInfo = _$_MainStoreBaseActionController.startAction(
         name: '_MainStoreBase.setItemFocus');
     try {

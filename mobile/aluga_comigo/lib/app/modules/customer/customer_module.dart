@@ -14,7 +14,7 @@ class CustomerModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.upToDown,
-      child: (_, __) => const CustomersPage(),
+      child: (_, _) => const CustomersPage(),
     );
   }
 }

@@ -9,27 +9,27 @@ import 'presenter/stores/sign_store.dart';
 
 class AuthModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind.factory<LoginStore>((i) => LoginStore()),
-        Bind.factory<SignStore>((i) => SignStore()),
-        Bind.factory<RecoverPasswordStore>((i) => RecoverPasswordStore()),
-      ];
+  String? get path => '/auth';
+
   @override
-  List<ModularRoute> get routes => [
-        ChildRoute(
-          '/',
-          child: (context, args) => const LoginPage(),
-          transition: TransitionType.fadeIn,
-        ),
-        ChildRoute(
-          '/sign',
-          child: (context, args) => const SignPage(),
-          transition: TransitionType.fadeIn,
-        ),
-        ChildRoute(
-          '/recover',
-          child: (context, args) => const RecoverPasswordPage(),
-          transition: TransitionType.fadeIn,
-        ),
-      ];
+  void register(ModularContext c) {
+    c.add<LoginStore>(() => LoginStore());
+    c.add<SignStore>(() => SignStore());
+    c.add<RecoverPasswordStore>(() => RecoverPasswordStore());
+    c.route(
+      '/',
+      child: (context, state) => const LoginPage(),
+      transition: TransitionType.fade,
+    );
+    c.route(
+      '/sign',
+      child: (context, state) => const SignPage(),
+      transition: TransitionType.fade,
+    );
+    c.route(
+      '/recover',
+      child: (context, state) => const RecoverPasswordPage(),
+      transition: TransitionType.fade,
+    );
+  }
 }

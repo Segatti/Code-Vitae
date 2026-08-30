@@ -11,7 +11,7 @@ class QuestModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => const QuestsPage(),
+      child: (_, _) => const QuestsPage(),
     );
   }
 }

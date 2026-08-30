@@ -14,11 +14,11 @@ class IntroModule extends Module {
   void register(ModularContext c) {
     c.module(CoreModule());
     c.module(AuthDiModule());
-    c.route('/', child: (_, __) => const SplashPage());
+    c.route('/', child: (_, _) => const SplashPage());
     c.route(
       '/intro',
       transition: AppTransitions.rightToLeft,
-      child: (_, __) => const IntroPage(),
+      child: (_, _) => const IntroPage(),
     );
   }
 }

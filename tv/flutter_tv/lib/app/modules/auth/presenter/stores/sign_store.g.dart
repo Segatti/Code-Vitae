@@ -195,7 +195,7 @@ mixin _$SignStore on _SignStoreBase, Store {
       ActionController(name: '_SignStoreBase', context: context);
 
   @override
-  dynamic setFocusEmail(bool value) {
+  bool setFocusEmail(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setFocusEmail');
     try {
@@ -206,7 +206,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setEmail(String value) {
+  String setEmail(String value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setEmail');
     try {
@@ -217,7 +217,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setClickEmail(bool value) {
+  bool setClickEmail(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setClickEmail');
     try {
@@ -228,7 +228,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setFocusSenha(bool value) {
+  bool setFocusSenha(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setFocusSenha');
     try {
@@ -239,7 +239,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setSenha(String value) {
+  String setSenha(String value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setSenha');
     try {
@@ -250,7 +250,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setClickSenha(bool value) {
+  bool setClickSenha(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setClickSenha');
     try {
@@ -261,7 +261,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setFocusConfirmarSenha(bool value) {
+  bool setFocusConfirmarSenha(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setFocusConfirmarSenha');
     try {
@@ -272,7 +272,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setConfirmarSenha(String value) {
+  String setConfirmarSenha(String value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setConfirmarSenha');
     try {
@@ -283,7 +283,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setClickConfirmarSenha(bool value) {
+  bool setClickConfirmarSenha(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setClickConfirmarSenha');
     try {
@@ -294,7 +294,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setFocusEntrar(bool value) {
+  bool setFocusEntrar(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setFocusEntrar');
     try {
@@ -305,7 +305,7 @@ mixin _$SignStore on _SignStoreBase, Store {
   }
 
   @override
-  dynamic setFocusCriarConta(bool value) {
+  bool setFocusCriarConta(bool value) {
     final _$actionInfo = _$_SignStoreBaseActionController.startAction(
         name: '_SignStoreBase.setFocusCriarConta');
     try {

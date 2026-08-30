@@ -101,7 +101,7 @@ mixin _$RecoverPasswordStore on _RecoverPasswordStoreBase, Store {
       ActionController(name: '_RecoverPasswordStoreBase', context: context);
 
   @override
-  dynamic setFocusEmail(bool value) {
+  bool setFocusEmail(bool value) {
     final _$actionInfo = _$_RecoverPasswordStoreBaseActionController
         .startAction(name: '_RecoverPasswordStoreBase.setFocusEmail');
     try {
@@ -112,7 +112,7 @@ mixin _$RecoverPasswordStore on _RecoverPasswordStoreBase, Store {
   }
 
   @override
-  dynamic setEmail(String value) {
+  String setEmail(String value) {
     final _$actionInfo = _$_RecoverPasswordStoreBaseActionController
         .startAction(name: '_RecoverPasswordStoreBase.setEmail');
     try {
@@ -123,7 +123,7 @@ mixin _$RecoverPasswordStore on _RecoverPasswordStoreBase, Store {
   }
 
   @override
-  dynamic setClickEmail(bool value) {
+  bool setClickEmail(bool value) {
     final _$actionInfo = _$_RecoverPasswordStoreBaseActionController
         .startAction(name: '_RecoverPasswordStoreBase.setClickEmail');
     try {
@@ -134,7 +134,7 @@ mixin _$RecoverPasswordStore on _RecoverPasswordStoreBase, Store {
   }
 
   @override
-  dynamic setFocusEnviar(bool value) {
+  bool setFocusEnviar(bool value) {
     final _$actionInfo = _$_RecoverPasswordStoreBaseActionController
         .startAction(name: '_RecoverPasswordStoreBase.setFocusEnviar');
     try {
@@ -145,7 +145,7 @@ mixin _$RecoverPasswordStore on _RecoverPasswordStoreBase, Store {
   }
 
   @override
-  dynamic setFocusVoltar(bool value) {
+  bool setFocusVoltar(bool value) {
     final _$actionInfo = _$_RecoverPasswordStoreBaseActionController
         .startAction(name: '_RecoverPasswordStoreBase.setFocusVoltar');
     try {

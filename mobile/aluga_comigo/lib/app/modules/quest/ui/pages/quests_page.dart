@@ -217,7 +217,7 @@ class _QuestsPageState extends State<QuestsPage> {
                           ),
                         ],
                       ),
-                      separatorBuilder: (_, __) => const Gap(16),
+                      separatorBuilder: (_, _) => const Gap(16),
                       itemCount: quests.length,
                     ),
                   ),

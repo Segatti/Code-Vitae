@@ -20,7 +20,7 @@ class UCGetFavoriteEpisodes implements IUCGetFavoriteEpisodes {
     try {
       final result = await getValueLocalStorage('favorite_episodes');
       List<String> episodeIdList = [];
-      return result.fold(
+      return await result.fold(
         (l) => Left(l),
         (r) {
           if (r != null) {

@@ -7,13 +7,10 @@ import 'modules/main/main_module.dart';
 
 class AppModule extends Module {
   @override
-  List<Bind> get binds => [
-    Bind.factory<SplashStore>((i) => SplashStore()),
-  ];
-  @override
-  List<ModularRoute> get routes => [
-        ChildRoute('/', child: (context, args) => const SplashPage()),
-        ModuleRoute('/auth', module: AuthModule()),
-        ModuleRoute('/main', module: MainModule()),
-      ];
+  void register(ModularContext c) {
+    c.add<SplashStore>(() => SplashStore());
+    c.route('/', child: (context, state) => const SplashPage());
+    c.module(AuthModule());
+    c.module(MainModule());
+  }
 }

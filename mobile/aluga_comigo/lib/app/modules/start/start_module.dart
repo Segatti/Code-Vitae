@@ -13,7 +13,7 @@ class StartModule extends Module {
   void register(ModularContext c) {
     c.route(
       '/',
-      child: (_, __) => const StartPage(),
+      child: (_, _) => const StartPage(),
       children: (c) {
         c.module(CustomerModule(), at: '/customers');
         c.module(HousesModule(), at: '/houses');

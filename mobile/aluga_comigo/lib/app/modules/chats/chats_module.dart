@@ -10,7 +10,7 @@ class ChatsModule extends Module {
     c.route(
       '/',
       transition: AppTransitions.upToDown,
-      child: (_, __) => const ChatsListPage(),
+      child: (_, _) => const ChatsListPage(),
     );
     c.route(
       '/chat',
