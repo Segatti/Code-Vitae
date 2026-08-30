@@ -1,31 +1,24 @@
-import 'package:aluga_comigo/app/modules/auth/auth_module.dart';
+import 'package:aluga_comigo/app/modules/auth/auth_di_module.dart';
+import 'package:aluga_comigo/app/shared/core_module.dart';
+import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../../shared/core_module.dart';
-import '../../shared/data/services/secure_storage_service.dart';
 import 'ui/intro_page.dart';
 import 'ui/splash_page.dart';
 
 class IntroModule extends Module {
   @override
-  List<Module> get imports => [
-        CoreModule(),
-        AuthModule(),
-      ];
+  String? get path => '/';
 
   @override
-  void binds(Injector i) {
-    i.addSingleton<SecureStorageService>(SecureStorageService.new);
-  }
-
-  @override
-  void routes(RouteManager r) {
-    r.child('/', child: (_) => const SplashPage());
-    r.child(
+  void register(ModularContext c) {
+    c.module(CoreModule());
+    c.module(AuthDiModule());
+    c.route('/', child: (_, __) => const SplashPage());
+    c.route(
       '/intro',
-      child: (context) => const IntroPage(),
-      duration: const Duration(milliseconds: 500),
-      transition: TransitionType.rightToLeft,
+      transition: AppTransitions.rightToLeft,
+      child: (_, __) => const IntroPage(),
     );
   }
 }

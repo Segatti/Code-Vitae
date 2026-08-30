@@ -49,7 +49,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final service = Modular.get<CameraService>();
+  final service = inject<CameraService>();
 
   String? _selectedState;
   String? _selectedCity;

@@ -1,10 +1,11 @@
+import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/shared/core_module.dart';
 import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
+import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../auth/domain/enums/type_user.dart';
 import 'data/datasources/profile_datasource.dart';
 import 'data/repositories/profile_repository.dart';
 import 'domain/usecases/get_profile.dart';
@@ -16,41 +17,29 @@ import 'ui/pages/security_page.dart';
 
 class ConfigModule extends Module {
   @override
-  List<Module> get imports => [CoreModule()];
+  String? get path => '/config';
 
   @override
-  void binds(Injector i) {
-    // Services
-    i.addSingleton<CameraService>(CameraService.new);
-    i.addSingleton<FirebaseStorageService>(FirebaseStorageService.new);
-
-    // Datasource
-    i.addSingleton<IProfileDatasource>(ProfileDatasource.new);
-
-    // Repository
-    i.addSingleton<IProfileRepository>(ProfileRepository.new);
-
-    // Use cases
-    i.addLazySingleton<IGetProfile>(GetProfile.new);
-    i.addLazySingleton<IUpdateProfile>(UpdateProfile.new);
-
-    // Controller
-    i.add<IProfileController>(ProfileController.new);
-  }
-
-  @override
-  void routes(RouteManager r) {
-    r.child(
-      "/security",
-      child: (_) => const SecurityPage(),
-      transition: TransitionType.rightToLeft,
+  void register(ModularContext c) {
+    c.module(CoreModule());
+    c.addSingleton<CameraService>(CameraService.new);
+    c.addSingleton<FirebaseStorageService>(FirebaseStorageService.new);
+    c.addSingleton<IProfileDatasource>(ProfileDatasource.new);
+    c.addSingleton<IProfileRepository>(ProfileRepository.new);
+    c.addLazySingleton<IGetProfile>(GetProfile.new);
+    c.addLazySingleton<IUpdateProfile>(UpdateProfile.new);
+    c.add<IProfileController>(ProfileController.new);
+    c.route(
+      '/security',
+      transition: AppTransitions.rightToLeft,
+      child: (_, __) => const SecurityPage(),
     );
-    r.child(
-      "/profile",
-      child: (_) => SessionService.customer!.typeUser == TypeUser.person
+    c.route(
+      '/profile',
+      transition: AppTransitions.rightToLeft,
+      child: (_, __) => SessionService.customer!.typeUser == TypeUser.person
           ? ProfileUserPage()
           : ProfileImmobilePage(),
-      transition: TransitionType.rightToLeft,
     );
   }
 }

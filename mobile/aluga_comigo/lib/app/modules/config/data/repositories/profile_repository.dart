@@ -1,6 +1,7 @@
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/result.dart';
-import 'package:result_dart/result_dart.dart';
+import 'package:result_dart/result_dart.dart'
+    hide FutureResultExtension, FutureResultExtensionVoid;
 
 import '../datasources/profile_datasource.dart';
 

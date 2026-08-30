@@ -7,16 +7,19 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class StartModule extends Module {
   @override
-  void routes(RouteManager r) {
-    r.child(
-      "/",
-      child: (_) => const StartPage(),
-      children: [
-        ModuleRoute("/customers", module: CustomerModule()),
-        ModuleRoute("/houses", module: HousesModule()),
-        ModuleRoute("/likes", module: LikesModule()),
-        ModuleRoute("/chats", module: ChatsModule()),
-      ],
+  String? get path => '/start';
+
+  @override
+  void register(ModularContext c) {
+    c.route(
+      '/',
+      child: (_, __) => const StartPage(),
+      children: (c) {
+        c.module(CustomerModule(), at: '/customers');
+        c.module(HousesModule(), at: '/houses');
+        c.module(LikesModule(), at: '/likes');
+        c.module(ChatsModule(), at: '/chats');
+      },
     );
   }
 }

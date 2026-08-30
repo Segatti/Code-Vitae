@@ -54,7 +54,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   final _phoneController = TextEditingController();
   final _cepController = TextEditingController();
   final _valueController = TextEditingController();
-  final service = Modular.get<CameraService>();
+  final service = inject<CameraService>();
 
   String? _selectedState;
   String? _selectedCity;

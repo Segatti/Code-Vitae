@@ -10,13 +10,13 @@ import 'data/services/secure_storage_service.dart';
 
 class CoreModule extends Module {
   @override
-  void exportedBinds(Injector i) {
-    i.addSingleton<FlutterSecureStorage>(FlutterSecureStorage.new);
-    i.addSingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-    i.addSingleton<FirebaseStorage>(() => FirebaseStorage.instance);
-    i.addSingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
-    i.addSingleton<ImagePicker>(ImagePicker.new);
-    i.addSingleton<SecureStorageService>(SecureStorageService.new);
-    i.addSingleton<FirebaseDatabaseService>(FirebaseDatabaseService.new);
+  void register(ModularContext c) {
+    c.addSingleton<FlutterSecureStorage>(FlutterSecureStorage.new);
+    c.addSingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+    c.addSingleton<FirebaseStorage>(() => FirebaseStorage.instance);
+    c.addSingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+    c.addSingleton<ImagePicker>(ImagePicker.new);
+    c.addSingleton<SecureStorageService>(SecureStorageService.new);
+    c.addSingleton<FirebaseDatabaseService>(FirebaseDatabaseService.new);
   }
 }

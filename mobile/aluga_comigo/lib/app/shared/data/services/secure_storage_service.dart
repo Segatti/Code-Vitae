@@ -13,7 +13,6 @@ class SecureStorageService {
   const SecureStorageService(this._storage);
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
         resetOnError: true,
       );
 

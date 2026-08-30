@@ -115,7 +115,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                   itemBuilder: (context, index) =>
                                       GestureDetector(
                                     onTap: () {
-                                      Modular.to.pushNamed(
+                                      context.pushNamed(
                                         "./chat",
                                         arguments: {
                                           "idChat": "1",
@@ -127,7 +127,6 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                 "https://clinicaunix.com.br/wp-content/uploads/2019/12/5-pontos-saude-do-homem.jpg",
                                           ),
                                         },
-                                        forRoot: true,
                                       );
                                     },
                                     child: Container(

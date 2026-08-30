@@ -1,7 +1,8 @@
 // import 'package:result_dart/result_dart.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:result_dart/result_dart.dart';
+import 'package:result_dart/result_dart.dart'
+    hide FutureResultExtension, FutureResultExtensionVoid;
 
 import '../errors/failure.dart' as error;
 

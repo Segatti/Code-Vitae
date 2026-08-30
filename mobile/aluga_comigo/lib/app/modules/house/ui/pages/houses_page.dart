@@ -19,7 +19,7 @@ class HousesPage extends StatefulWidget {
 }
 
 class _HousesPageState extends State<HousesPage> {
-  final controller = Modular.get<IHousesController>();
+  final controller = inject<IHousesController>();
   final swipController = SwipableStackController();
 
   bool _isProfileComplete(CustomerModel? model) {
@@ -114,7 +114,7 @@ class _HousesPageState extends State<HousesPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
-                          Modular.to.pushNamed("/config/profile");
+                          context.pushNamed("/config/profile");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0XFFDF924B),

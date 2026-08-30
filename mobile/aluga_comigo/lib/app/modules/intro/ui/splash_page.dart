@@ -30,29 +30,33 @@ class _SplashPageState extends State<SplashPage> {
         widthContainer = 100;
       });
       Future.delayed(const Duration(seconds: 1), () async {
-        final storage = Modular.get<SecureStorageService>();
-        final loginUser = Modular.get<ILoginUser>();
+        if (!mounted) return;
+        final storage = inject<SecureStorageService>();
+        final loginUser = inject<ILoginUser>();
         final showIntro = await storage.getData(StorageKey.intro);
+        if (!mounted) return;
         if (showIntro == "false") {
           var data = await storage.getData(StorageKey.user);
+          if (!mounted) return;
           if (data != null) {
             final user = UserModel.fromJson(data);
             final userLogged = await loginUser(
               LoginInput(user.email, user.password),
             );
+            if (!mounted) return;
             userLogged.fold(
               (error) {
-                Modular.to.navigate("/auth/");
+                context.navigate("/auth/");
               },
               (user) {
-                Modular.to.navigate("/start/customers");
+                context.navigate("/start/customers");
               },
             );
           } else {
-            Modular.to.navigate("/auth/");
+            context.navigate("/auth/");
           }
         } else {
-          Modular.to.navigate("/intro");
+          context.navigate("/intro");
         }
       });
     });

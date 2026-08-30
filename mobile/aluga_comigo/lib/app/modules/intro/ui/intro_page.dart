@@ -209,12 +209,12 @@ class _IntroPageState extends State<IntroPage> {
                       Center(
                         child: InkWell(
                           onTap: () async {
-                            final storage = Modular.get<SecureStorageService>();
+                            final storage = inject<SecureStorageService>();
                             await storage.setData(
                               StorageKey.intro,
                               false.toString(),
                             );
-                            Modular.to.navigate("/auth/");
+                            context.navigate("/auth/");
                           },
                           child: Container(
                             width: 80,

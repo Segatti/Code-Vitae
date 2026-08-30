@@ -24,7 +24,7 @@ class ProfileImmobilePage extends StatefulWidget {
 }
 
 class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
-  final controller = Modular.get<IProfileController>();
+  final controller = inject<IProfileController>();
   DateTime date = DateTime.now();
 
   @override

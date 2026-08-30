@@ -27,8 +27,8 @@ class _AuthPageState extends State<AuthPage> {
   Color color = const Color(0xFF2C29A3);
   final PageController _controller = PageController();
   bool showAnimation = true;
-  final controller = Modular.get<IAuthController>();
-  final storage = Modular.get<SecureStorageService>();
+  final controller = inject<IAuthController>();
+  final storage = inject<SecureStorageService>();
 
   void backPage() {
     setState(() {
@@ -263,7 +263,7 @@ class _AuthPageState extends State<AuthPage> {
                                   var result = await controller.login(input);
 
                                   if (result) {
-                                    Modular.to.navigate("/start/customers/");
+                                    context.navigate("/start/customers/");
                                   } else {
                                     if (context.mounted) Navigator.pop(context);
                                     notificationError(
@@ -284,7 +284,7 @@ class _AuthPageState extends State<AuthPage> {
 
                                   var result = await controller.signup(input);
                                   if (result) {
-                                    Modular.to.navigate("/start/customers/");
+                                    context.navigate("/start/customers/");
                                   } else {
                                     if (context.mounted) Navigator.pop(context);
                                     notificationError(

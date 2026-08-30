@@ -22,7 +22,7 @@ class CustomersPage extends StatefulWidget {
 }
 
 class _CustomersPageState extends State<CustomersPage> {
-  final controller = Modular.get<ICustomersController>();
+  final controller = inject<ICustomersController>();
   final swipController = SwipableStackController();
 
   void _listenController() {
@@ -154,7 +154,7 @@ class _CustomersPageState extends State<CustomersPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
-                          Modular.to.pushNamed("/config/profile");
+                          context.pushNamed("/config/profile");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0XFFDF924B),

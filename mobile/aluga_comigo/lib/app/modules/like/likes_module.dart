@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import 'ui/pages/history_likes_page.dart';
@@ -5,16 +6,16 @@ import 'ui/pages/likes_page.dart';
 
 class LikesModule extends Module {
   @override
-  void routes(RouteManager r) {
-    r.child(
-      "/",
-      child: (context) => const LikesPage(),
-      transition: TransitionType.upToDown,
+  void register(ModularContext c) {
+    c.route(
+      '/',
+      transition: AppTransitions.upToDown,
+      child: (_, __) => const LikesPage(),
     );
-    r.child(
-      "/history",
-      child: (context) => const HistoryLikesPage(),
-      transition: TransitionType.rightToLeft,
+    c.route(
+      '/history',
+      transition: AppTransitions.rightToLeft,
+      child: (_, __) => const HistoryLikesPage(),
     );
   }
 }

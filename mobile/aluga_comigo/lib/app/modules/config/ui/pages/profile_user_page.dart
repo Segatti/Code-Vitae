@@ -31,7 +31,7 @@ class ProfileUserPage extends StatefulWidget {
 }
 
 class _ProfileUserPageState extends State<ProfileUserPage> {
-  final controller = Modular.get<IProfileController>();
+  final controller = inject<IProfileController>();
   DateTime date = DateTime.now();
 
   int _calculateAge(String dateBirth) {

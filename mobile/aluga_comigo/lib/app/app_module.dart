@@ -9,12 +9,12 @@ import 'modules/quest/quest_module.dart';
 
 class AppModule extends Module {
   @override
-  void routes(RouteManager r) {
-    r.module('/', module: IntroModule());
-    r.module('/auth', module: AuthModule());
-    r.module('/start', module: StartModule());
-    r.module('/config', module: ConfigModule());
-    r.module('/quest', module: QuestModule());
-    r.module('/store', module: StoreModule());
+  void register(ModularContext c) {
+    c.module(IntroModule());
+    c.module(AuthModule());
+    c.module(StartModule());
+    c.module(ConfigModule());
+    c.module(QuestModule());
+    c.module(StoreModule());
   }
 }

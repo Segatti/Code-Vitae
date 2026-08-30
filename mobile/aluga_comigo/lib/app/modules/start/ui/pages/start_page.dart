@@ -149,7 +149,7 @@ class _StartPageState extends State<StartPage>
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
-                          Modular.to.pushNamed("/config/profile");
+                          context.pushNamed("/config/profile");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0XFFDF924B),
@@ -241,7 +241,7 @@ class _StartPageState extends State<StartPage>
             const Gap(16),
             IconButton(
               onPressed: () {
-                Modular.to.pushNamed("/config/profile");
+                context.pushNamed("/config/profile");
               },
               tooltip: "Perfil",
               icon: const Icon(Icons.person, color: Colors.white, size: 35),
@@ -249,7 +249,7 @@ class _StartPageState extends State<StartPage>
             const Gap(16),
             IconButton(
               onPressed: () {
-                Modular.to.pushNamed("/config/security");
+                context.pushNamed("/config/security");
               },
               tooltip: "Segurança",
               icon: const Icon(Icons.shield, color: Colors.white, size: 35),
@@ -257,7 +257,7 @@ class _StartPageState extends State<StartPage>
             const Gap(16),
             IconButton(
               onPressed: () {
-                Modular.to.pushNamed("/quest/");
+                context.pushNamed("/quest/");
               },
               tooltip: "Missões",
               icon: const Icon(Icons.list_alt, color: Colors.white, size: 35),
@@ -266,7 +266,7 @@ class _StartPageState extends State<StartPage>
             IconButton(
               tooltip: "Histórico",
               onPressed: () {
-                Modular.to.pushNamed("/start/likes/history", forRoot: true);
+                context.pushNamed("/start/likes/history");
               },
               icon: const Icon(
                 Icons.photo_outlined,
@@ -277,7 +277,7 @@ class _StartPageState extends State<StartPage>
             const Gap(16),
             IconButton(
               onPressed: () {
-                Modular.to.pushNamed("/store/");
+                context.pushNamed("/store/");
               },
               tooltip: "Loja",
               icon: const Icon(Icons.store, color: Colors.white, size: 35),
@@ -379,7 +379,7 @@ class _StartPageState extends State<StartPage>
                                       ),
                                     ),
                                     onPressed: () {
-                                      Modular.to.navigate("/auth/");
+                                      context.navigate("/auth/");
                                     },
                                     child: Text(
                                       "Confirmar",
@@ -442,16 +442,16 @@ class _StartPageState extends State<StartPage>
                       setState(() => indexNavigationBar = index);
                       switch (index) {
                         case 0:
-                          Modular.to.navigate("/start/customers/");
+                          context.navigate("/start/customers/");
                           break;
                         case 1:
-                          Modular.to.navigate("/start/houses/");
+                          context.navigate("/start/houses/");
                           break;
                         case 2:
-                          Modular.to.navigate("/start/likes/");
+                          context.navigate("/start/likes/");
                           break;
                         case 3:
-                          Modular.to.navigate("/start/chats/");
+                          context.navigate("/start/chats/");
                           break;
                         default:
                       }
