@@ -1,0 +1,41 @@
+---
+description: Padrões Flutter Mobile — Android/iOS
+globs: "lib/**"
+alwaysApply: false
+---
+
+# Flutter Mobile
+
+## Plataforma
+- App mobile (Android/iOS) — **não** Flutter Web primary.
+- Evitar `kIsWeb`, go_router, layout desktop-first.
+- Rotas via **flutter_modular** (`Module`, `Modular.to`, `Modular.get`).
+
+## Layout
+- `SafeArea` em telas com notch/status bar.
+- `Scaffold` com `resizeToAvoidBottomInset` em formulários com teclado.
+- Testar em tamanhos pequenos (320dp+) e tablets.
+
+## Permissões e device
+- `permission_handler` antes de câmera, localização, storage.
+- `geolocator` com tratamento de permissão negada.
+- `image_picker` / `CameraService` via shared services.
+
+## Imagens e performance
+- `cached_network_image` para URLs remotas.
+- Listas longas: `ListView.builder` / lazy loading — evitar `Column` com muitos filhos.
+- Paginação ou limit em queries Firestore quando listas crescem.
+
+## Firebase mobile
+- Auth state: escutar via service compartilhado, não duplicar listeners.
+- Firestore: índices compostos documentados se query complexa.
+- Offline: considerar cache Firestore e feedback de conectividade.
+
+## Segurança
+- `flutter_secure_storage` para tokens/sessão sensível.
+- `freerasp` já configurado — não desabilitar checks de integridade.
+
+## Proibido
+- Importar `dart:html` ou packages web-only
+- Hardcoded API keys no código (usar firebase_options / env)
+- Bloquear UI thread com operações síncronas pesadas

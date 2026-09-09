@@ -1,0 +1,51 @@
+---
+description: Convenções Dart/Flutter gerais
+globs: "**/*.dart"
+alwaysApply: false
+---
+
+# Dart / Flutter
+
+## Arquitetura
+Código Dart neste projeto segue **Clean Architecture**. Respeite camadas e imports — ver `clean-architecture.mdc`.
+
+## Imports
+Ordem: dart → flutter → packages → project (relativos por feature).
+
+```dart
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter_modular/flutter_modular.dart';
+
+import '../../domain/entities/user.dart';
+```
+
+## Naming
+- Files: `snake_case.dart`
+- Classes: `PascalCase`
+- Members: `camelCase`
+- Private: prefix `_`
+- Controllers: `I[Nome]Controller` (interface) + `[Nome]Controller` (impl)
+
+## Widgets
+- Prefer widgets stateless + controller externo over StatefulWidget com lógica.
+- Extraia widgets privados (`_UserAvatar`) em vez de métodos `_buildX` gigantes.
+- Use `Theme.of(context)` / `ColorScheme` — evite cores hardcoded.
+
+## State management (ChangeNotifier)
+- **Controller** para estado de tela e ações (login, listagem, formulários).
+- Lógica de negócio no **UseCase** — **não** no controller/widget.
+- Controller orquestra use cases e expõe estado via `notifyListeners()`.
+- UI escuta com `ListenableBuilder(listenable: controller, builder: ...)`.
+- DI: `Modular.get<I*Controller>()` na page — não instanciar controller manualmente.
+
+## Error handling
+- Domain/Data: `Either<Failure, T>` (dartz) ou Result type do core.
+- Presentation: controller trata `fold` e expõe `errorMessage` ou estado de erro.
+
+## Tests
+- Unit: use cases com mocktail.
+- Controllers: mock use cases injetados no construtor.
+- Widget: `Modular.bindModule` + mocks + `pumpWidget`.

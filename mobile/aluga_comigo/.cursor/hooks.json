@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/block-dangerous.sh",
+        "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/flutter-command-guard.sh"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/dart-format-on-edit.sh",
+        "matcher": "\\.dart$"
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/suggest-analyze.sh",
+        "loop_limit": 2
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": ".cursor/hooks/scan-secrets.sh",
+        "failClosed": false
+      }
+    ]
+  }
+}

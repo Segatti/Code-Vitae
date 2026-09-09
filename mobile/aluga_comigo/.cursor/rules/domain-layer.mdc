@@ -1,0 +1,62 @@
+---
+description: Camada domain — entities, use cases, repository contracts
+globs: "**/domain/**"
+alwaysApply: false
+---
+
+# Domain Layer
+
+## Responsabilidade
+Regras de negócio puras. **Sem** Flutter, **sem** JSON, **sem** HTTP.
+
+## Estrutura por feature
+```
+domain/
+├── entities/       # Objetos de negócio imutáveis
+├── repositories/   # abstract class / interface XRepository
+├── usecases/       # class GetUser implements IGetUser
+└── helpers/        # só se lógica reutilizada em 2+ pontos
+```
+
+## Entities
+- Imutáveis quando possível.
+- Sem `fromJson` — isso é Model na data layer.
+
+```dart
+class User {
+  const User({required this.id, required this.email});
+  final String id;
+  final String email;
+}
+```
+
+## Use Cases (Single Responsibility)
+```dart
+abstract interface class IGetUser {
+  Future<Either<Failure, User>> call(String id);
+}
+
+class GetUser implements IGetUser {
+  GetUser(this.repository);
+  final IUserRepository repository;
+
+  @override
+  Future<Either<Failure, User>> call(String id) {
+    return repository.getUser(id);
+  }
+}
+```
+
+## Repository interfaces
+- Um arquivo por aggregate: `user_repository.dart`
+- Retornam `Either<Failure, T>` ou `Stream` quando aplicável.
+- **Nunca** mencionar API endpoints ou Firebase paths aqui.
+
+## Helpers compartilhados
+- Helpers de domínio reutilizados: `lib/app/shared/domain/helpers/`
+- Helpers locais ao módulo: `domain/helpers/` dentro do módulo.
+
+## Proibido na domain
+- `import 'package:flutter/...'`
+- `import '../data/...'`
+- Models com serialização JSON

@@ -1,0 +1,56 @@
+---
+description: Camada data — models, datasources, repository implementations
+globs: "**/data/**"
+alwaysApply: false
+---
+
+# Data Layer
+
+## Responsabilidade
+Obter e persistir dados. Implementa contratos do **domain**.
+
+## Estrutura
+```
+data/
+├── models/           # DTOs com fromJson/toJson
+├── datasources/      # remote (Firebase/API) e local (cache)
+├── interfaces/       # contratos de datasource (quando separado)
+└── repositories/     # XRepository implements IXRepository
+```
+
+## Models vs Entities
+- Model: serialização, campos nullable da API/Firestore.
+- Mapper: `UserModel.toEntity()` / `UserModel.fromEntity()`.
+- Domain entity permanece limpa.
+
+```dart
+class UserModel {
+  const UserModel({required this.id, required this.email});
+  factory UserModel.fromJson(Map<String, dynamic> json) => ...;
+  User toEntity() => User(id: id, email: email);
+}
+```
+
+## DataSources
+- `FirebaseDatasource` / `RemoteDataSource`: Firebase ou HTTP isolado, retorna Model ou throw.
+- `LocalDataSource`: cache, SecureStorage, SharedPreferences.
+
+## Repository Implementation
+- Orquestra datasources.
+- Converte exceptions → `Failure`.
+- **Único lugar** que conhece Firebase paths, collection names e cache keys.
+
+```dart
+class AuthRepository implements IAuthRepository {
+  AuthRepository({required this.datasource});
+  // ...
+}
+```
+
+## SOLID
+- **D**: impl depende de `IAuthDatasource` abstract, não Firebase SDK direto no repository se evitável.
+
+## Proibido
+- Importar `presenter/` ou `ui/`
+- Lógica de UI ou formatação de tela
+- Emitir estado de UI (controllers ficam em presenter/ui/)

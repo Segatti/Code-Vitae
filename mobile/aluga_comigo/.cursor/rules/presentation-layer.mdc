@@ -1,0 +1,78 @@
+---
+description: Camada presentation — UI, controllers, pages, widgets
+globs: "**/presenter/**, **/ui/**"
+alwaysApply: false
+---
+
+# Presentation Layer
+
+## Responsabilidade
+UI e gerenciamento de estado de tela. Depende de **domain** (UseCases via DI Modular), nunca de data impl.
+
+## Estrutura
+```
+presenter/  (ou ui/)
+├── controllers/     # ChangeNotifier + interface I*Controller
+├── pages/           # telas route-level
+└── widgets/         # componentes reutilizáveis da feature
+```
+
+## DI Modular (no *_di_module.dart)
+```dart
+c.addLazySingleton<ILoginUser>(LoginUser.new);
+c.add<IAuthController>(AuthController.new);
+```
+
+## Controller (ChangeNotifier)
+```dart
+abstract class IAuthController extends ChangeNotifier {
+  String errorMessage = '';
+  Future<bool> login(LoginInput input);
+}
+
+class AuthController extends IAuthController {
+  AuthController(this._loginUser);
+  final ILoginUser _loginUser;
+
+  @override
+  Future<bool> login(LoginInput input) async {
+    final response = await _loginUser(input);
+    return response.fold(
+      (error) {
+        errorMessage = error.message;
+        notifyListeners();
+        return false;
+      },
+      (_) => true,
+    );
+  }
+}
+```
+
+## Pages
+```dart
+class AuthPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Modular.get<IAuthController>();
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (_, __) => AuthView(
+        errorMessage: controller.errorMessage,
+        onLogin: controller.login,
+      ),
+    );
+  }
+}
+```
+
+## Widgets
+- Recebem dados via parâmetros (entities, callbacks), não acessam Modular em widgets leaf.
+- `const` quando possível.
+- Separe: `AuthPage` (orquestra controller) vs `AuthView` (UI pura).
+
+## Proibido
+- `RepositoryImpl` ou `DataSource` na presentation
+- `FirebaseFirestore.instance` ou HTTP em widget
+- Regra de negócio complexa no widget — mover para UseCase
+- Riverpod / Bloc / get_it — use flutter_modular

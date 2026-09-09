@@ -1,0 +1,68 @@
+---
+description: Padrões core Flutter Mobile Clean Architecture — sempre ativos
+alwaysApply: true
+---
+
+# Flutter Mobile — Core
+
+## Arquitetura do projeto
+
+**Clean Architecture é obrigatória.** Ver rule `clean-architecture.mdc` (alwaysApply).
+
+Toda implementação respeita camadas `domain/` → `data/` → `presenter|ui/` por módulo em `lib/app/modules/`.
+
+## Stack
+Flutter 3.x Mobile, Dart 3 strict, **flutter_modular**, **ChangeNotifier**, dartz (Either), Firebase.
+
+## Clean Architecture — regra de dependência
+```
+presenter/ui → domain ← data
+```
+- **domain**: entities, repository interfaces, use cases. Zero Flutter imports (exceto meta/foundation se unavoidable).
+- **data**: models (DTO), datasources, repository implementations.
+- **presenter/ui**: pages, widgets, **controllers ChangeNotifier**. Sem HTTP/repository impl direto.
+
+## Modular + Clean Architecture
+- **DI**: `AuthDiModule` (ou `*_di_module.dart`) registra datasources, repos, use cases via `c.add` / `c.addSingleton` / `c.addLazySingleton`.
+- **Controllers**: `ChangeNotifier` com interface `I*Controller`; injetam use cases no construtor.
+- **Rotas**: módulos aninhados em `lib/app/modules/`; registrar em módulo pai (ex.: `start_module.dart`).
+- **UI**: `ListenableBuilder` / `AnimatedBuilder` ou `Modular.get<I*Controller>()` para rebuild.
+
+## SOLID (aplicação prática)
+- **S**: 1 use case = 1 ação; widgets pequenos e compostos.
+- **O**: estender via novos use cases/implementações, não editar domain existente.
+- **L**: repositories respeitam contratos do domain.
+- **I**: interfaces de repository enxutas por aggregate/feature.
+- **D**: presenter depende de abstrações (UseCase, Repository interface).
+
+## Clean Code
+- Nomes em inglês no código; respostas ao dev em PT-BR se pedido.
+- Funções curtas; extrair widget quando build > ~80 linhas.
+- `const` constructors onde possível.
+- Trailing commas (require_trailing_commas).
+- Evitar `print` — usar debug logging se necessário.
+
+## Diff mínimo (obrigatório)
+- Skill `/minimal-change` — sempre aplicar ao implementar.
+- Escopo explícito em paths; sem refactor fora do pedido.
+- Helper só quando lógica repetida em 2+ pontos.
+
+## Validação (ordem — menor custo primeiro)
+1. `dart analyze`
+2. `dart format --set-exit-if-changed .`
+3. `flutter test test/` (path específico se feature em progresso)
+4. `flutter test` — só se usuário pedir ou antes de PR
+
+## Comportamento do agente
+- Diff mínimo; escopo explícito em paths.
+- Não commitar/push unless pedido.
+- Nova feature: skill `/scaffold-module`.
+- Review: skill `/pr-review` ou subagent `architecture-reviewer`.
+- Mapa completo: AGENTS.md
+
+## Skills disponíveis
+`/minimal-change` `/scaffold-module` `/pr-review` `/fix-ci` `/widget-test` `/project-audit-report`
+
+## Relatórios de auditoria
+Skill `/project-audit-report` gera `docs/reports/YYYY-MM-DD-*-audit.md` (bugs, melhorias, mercado).
+Reutilizar em prompts: `@docs/reports/arquivo.md`

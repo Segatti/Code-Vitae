@@ -1,0 +1,58 @@
+---
+description: Clean Architecture é a arquitetura obrigatória deste projeto — sempre ativa
+alwaysApply: true
+---
+
+# Clean Architecture (obrigatória)
+
+Este projeto **sempre** segue **Clean Architecture**. Toda feature, bugfix ou refactor deve respeitar camadas e regra de dependência.
+
+## Regra de dependência (inviolável)
+
+```
+presenter/ui → domain ← data
+```
+
+- Camadas externas dependem das internas — **nunca o contrário**.
+- **domain** é o núcleo: não conhece data, presenter, Firebase, HTTP ou Flutter UI.
+
+## Camadas e responsabilidades
+
+| Camada | Pasta | Responsabilidade |
+|--------|-------|------------------|
+| **Domain** | `domain/` | Entities, interfaces de repository, use cases — regras de negócio puras |
+| **Data** | `data/` | Models, datasources, implementações de repository — acesso a dados |
+| **Presentation** | `presenter/` ou `ui/` | Controllers, pages, widgets — estado de tela e UI |
+
+Cada módulo em `lib/app/modules/[nome]/` **deve** ter as três camadas quando houver lógica de negócio ou dados.
+
+## Fluxo correto
+
+```
+Widget → Controller → UseCase → Repository (interface) → RepositoryImpl → DataSource
+```
+
+- Controller **nunca** chama Firebase, HTTP ou datasource diretamente.
+- UseCase **nunca** importa Flutter ou JSON.
+- Widget **nunca** contém regra de negócio complexa.
+
+## Ao implementar qualquer coisa
+
+1. Identificar a camada correta antes de criar/editar arquivo
+2. Criar interface no **domain** antes da implementação na **data**
+3. Ordem: entity → repository interface → use case → model/datasource → repository impl → controller → page
+4. Skill `/scaffold-module` para novos módulos
+
+## Violações proibidas
+
+- `domain/` importando `data/`, `presenter/`, `ui/` ou `package:flutter/`
+- `presenter/` ou `ui/` importando implementações concretas de `data/repositories/`
+- Lógica de negócio em widgets ou pages (mover para use case)
+- Firebase/HTTP direto em controller ou widget
+- Pular camadas (ex.: API → controller sem use case/repository)
+- “Atalhos” que quebrem camadas por conveniência
+
+## Exceções
+
+- `lib/app/shared/` — serviços e helpers transversais; domain helpers em `shared/domain/helpers/`
+- Wiring de DI em `*_di_module.dart` — único lugar que instancia impl concretas
