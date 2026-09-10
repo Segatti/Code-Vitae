@@ -66,7 +66,7 @@ test/app/modules/[module]/
 
 ## Não fazer
 - Gerar módulo sem testes mínimos
-- Pular camada domain indo direto Firebase → Controller
+- Pular camada domain indo direto Supabase → Controller
 - God file com tudo em uma page
 - Refactor de módulos existentes fora do escopo
 

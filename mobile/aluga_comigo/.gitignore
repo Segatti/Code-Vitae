@@ -44,3 +44,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /keys
+
+# Credenciais locais (geradas por scripts/initDev.sh)
+dart_defines.json
+dart_defines.android.json
+dart_defines.device.json

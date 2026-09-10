@@ -50,7 +50,7 @@ class GetUser implements IGetUser {
 ## Repository interfaces
 - Um arquivo por aggregate: `user_repository.dart`
 - Retornam `Either<Failure, T>` ou `Stream` quando aplicável.
-- **Nunca** mencionar API endpoints ou Firebase paths aqui.
+- **Nunca** mencionar API endpoints ou nomes de tabelas Supabase aqui.
 
 ## Helpers compartilhados
 - Helpers de domínio reutilizados: `lib/app/shared/domain/helpers/`

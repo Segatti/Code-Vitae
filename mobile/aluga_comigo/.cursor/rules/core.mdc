@@ -12,7 +12,7 @@ alwaysApply: true
 Toda implementação respeita camadas `domain/` → `data/` → `presenter|ui/` por módulo em `lib/app/modules/`.
 
 ## Stack
-Flutter 3.x Mobile, Dart 3 strict, **flutter_modular**, **ChangeNotifier**, dartz (Either), Firebase.
+Flutter 3.x Mobile, Dart 3 strict, **flutter_modular**, **ChangeNotifier**, dartz (Either), Supabase.
 
 ## Clean Architecture — regra de dependência
 ```

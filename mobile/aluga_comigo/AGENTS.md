@@ -13,7 +13,7 @@ Mapa para humanos e agentes de IA.
 - Roteamento + DI: **flutter_modular** v7
 - Estado UI: **ChangeNotifier** controllers (`I*Controller`)
 - Erros: **dartz** (`Either<Failure, T>`) + result_dart
-- Backend: Firebase (Auth, Firestore, Storage)
+- Backend: Supabase (Auth, PostgreSQL, Storage)
 - Tests: flutter_test, mocktail
 
 ---
@@ -29,7 +29,7 @@ presenter/ui → domain ← data
 | **domain** | Entities, UseCases, Repository interfaces | shared/domain apenas |
 | **data** | Models, DataSources, Repository impl | domain, shared |
 | **presenter/ui** | UI, controllers, widgets | domain, shared |
-| **shared** | Services Firebase, helpers, transitions | nada de modules |
+| **shared** | Services Supabase, helpers, transitions | nada de modules |
 
 ---
 
@@ -161,7 +161,7 @@ Gerados em `docs/reports/`. Anexar em prompts: `@docs/reports/YYYY-MM-DD-*-audit
 
 - Import circular entre camadas
 - `domain` importando `data` ou `presenter/ui`
-- Widgets com chamada Firebase/HTTP direta
+- Widgets com chamada Supabase/HTTP direta
 - God classes / widgets > 200 linhas sem extrair
 - Refactor fora do escopo do pedido
 - Helper com uso único

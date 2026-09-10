@@ -13,13 +13,13 @@ Obter e persistir dados. Implementa contratos do **domain**.
 ```
 data/
 ├── models/           # DTOs com fromJson/toJson
-├── datasources/      # remote (Firebase/API) e local (cache)
+├── datasources/      # remote (Supabase/API) e local (cache)
 ├── interfaces/       # contratos de datasource (quando separado)
 └── repositories/     # XRepository implements IXRepository
 ```
 
 ## Models vs Entities
-- Model: serialização, campos nullable da API/Firestore.
+- Model: serialização, campos nullable da API/PostgreSQL.
 - Mapper: `UserModel.toEntity()` / `UserModel.fromEntity()`.
 - Domain entity permanece limpa.
 
@@ -32,13 +32,13 @@ class UserModel {
 ```
 
 ## DataSources
-- `FirebaseDatasource` / `RemoteDataSource`: Firebase ou HTTP isolado, retorna Model ou throw.
+- `SupabaseDatasource` / `RemoteDataSource`: Supabase ou HTTP isolado, retorna Model ou throw.
 - `LocalDataSource`: cache, SecureStorage, SharedPreferences.
 
 ## Repository Implementation
 - Orquestra datasources.
 - Converte exceptions → `Failure`.
-- **Único lugar** que conhece Firebase paths, collection names e cache keys.
+- **Único lugar** que conhece tabelas Supabase, nomes de buckets e cache keys.
 
 ```dart
 class AuthRepository implements IAuthRepository {
@@ -48,7 +48,7 @@ class AuthRepository implements IAuthRepository {
 ```
 
 ## SOLID
-- **D**: impl depende de `IAuthDatasource` abstract, não Firebase SDK direto no repository se evitável.
+- **D**: impl depende de `IAuthDatasource` abstract, não Supabase SDK direto no repository se evitável.
 
 ## Proibido
 - Importar `presenter/` ou `ui/`

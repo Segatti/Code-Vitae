@@ -8,6 +8,7 @@ import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/domain/consts/cities_and_states.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_camera_page.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -56,6 +57,15 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   List<String> _availableCities = [];
 
   Future<void> getImage(ImageSource imageSource) async {
+    if (imageSource == ImageSource.camera) {
+      final path = await AppCameraPage.capture(context);
+      if (path != null) {
+        _userInput.photo = path;
+        setState(() {});
+      }
+      return;
+    }
+
     final result = await service.getImage(imageSource);
     if (result != null) {
       _userInput.photo = result.path;
@@ -243,9 +253,9 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                 Expanded(
                                   child: ChicletAnimatedButton(
                                     onPressed: () async {
-                                      if (acceptTerms) {
-                                        await widget.signup(_userInput);
-                                      }
+                                      if (!acceptTerms) return;
+                                      Navigator.of(context).pop();
+                                      await widget.signup(_userInput);
                                     },
                                     borderRadius: 50,
                                     backgroundColor: (acceptTerms)

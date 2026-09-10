@@ -73,6 +73,6 @@ class AuthPage extends StatelessWidget {
 
 ## Proibido
 - `RepositoryImpl` ou `DataSource` na presentation
-- `FirebaseFirestore.instance` ou HTTP em widget
+- `Supabase.instance.client` ou HTTP em widget
 - Regra de negócio complexa no widget — mover para UseCase
 - Riverpod / Bloc / get_it — use flutter_modular

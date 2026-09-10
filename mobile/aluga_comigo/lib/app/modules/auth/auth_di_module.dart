@@ -1,4 +1,4 @@
-import 'package:aluga_comigo/app/modules/auth/data/datasources/auth_firebase_datasource.dart';
+import 'package:aluga_comigo/app/modules/auth/data/datasources/auth_supabase_datasource.dart';
 import 'package:aluga_comigo/app/modules/auth/data/interfaces/auth_datasource.dart';
 import 'package:aluga_comigo/app/modules/auth/data/repositories/auth_repository.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/repositories/auth_repository.dart';
@@ -12,7 +12,7 @@ class AuthDiModule extends Module {
   @override
   void register(ModularContext c) {
     c.addSingleton<IAuthRepository>(AuthRepository.new);
-    c.addSingleton<IAuthDatasource>(AuthFirebaseDatasource.new);
+    c.addSingleton<IAuthDatasource>(AuthSupabaseDatasource.new);
     c.addLazySingleton<ILoginUser>(LoginUser.new);
     c.addLazySingleton<ISignupUser>(SignupUser.new);
     c.addLazySingleton<ISignupImmobile>(SignupImmobile.new);

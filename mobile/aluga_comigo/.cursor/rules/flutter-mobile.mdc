@@ -24,12 +24,12 @@ alwaysApply: false
 ## Imagens e performance
 - `cached_network_image` para URLs remotas.
 - Listas longas: `ListView.builder` / lazy loading — evitar `Column` com muitos filhos.
-- Paginação ou limit em queries Firestore quando listas crescem.
+- Paginação ou limit em queries PostgREST quando listas crescem.
 
-## Firebase mobile
-- Auth state: escutar via service compartilhado, não duplicar listeners.
-- Firestore: índices compostos documentados se query complexa.
-- Offline: considerar cache Firestore e feedback de conectividade.
+## Supabase mobile
+- Auth state: escutar via `SupabaseAuthService` compartilhado, não duplicar listeners.
+- PostgreSQL: índices documentados em `supabase/migrations/` se query complexa.
+- RLS: políticas em SQL; nunca confiar só no client.
 
 ## Segurança
 - `flutter_secure_storage` para tokens/sessão sensível.
@@ -37,5 +37,5 @@ alwaysApply: false
 
 ## Proibido
 - Importar `dart:html` ou packages web-only
-- Hardcoded API keys no código (usar firebase_options / env)
+- Hardcoded API keys no código (usar `--dart-define` / `SupabaseConfig`)
 - Bloquear UI thread com operações síncronas pesadas

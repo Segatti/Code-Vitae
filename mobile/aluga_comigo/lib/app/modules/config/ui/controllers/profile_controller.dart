@@ -8,7 +8,7 @@ import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../../shared/data/services/camera_service.dart';
-import '../../../../shared/data/services/firebase_storage_service.dart';
+import '../../../../shared/data/services/supabase_storage_service.dart';
 import '../../../../shared/data/services/session_service.dart';
 import '../../domain/usecases/get_profile.dart';
 import '../../domain/usecases/update_profile.dart';
@@ -44,7 +44,7 @@ class ProfileController extends IProfileController {
   final IGetProfile _getProfile;
   final IUpdateProfile _updateProfile;
   final CameraService _cameraService;
-  final FirebaseStorageService _storageService;
+  final SupabaseStorageService _storageService;
 
   ProfileController(
     this._getProfile,
@@ -258,7 +258,7 @@ class ProfileController extends IProfileController {
       final fileName = '$userId/${timestamp}_$i.jpg';
 
       final result = await _storageService.upload(
-        FirebaseStorageTables.users,
+        StorageBuckets.avatars,
         fileName,
         compressedFile,
       );

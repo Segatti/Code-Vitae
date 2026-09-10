@@ -6,14 +6,15 @@ import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/cep_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_camera_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chiclet/chiclet.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -61,6 +62,15 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   List<String> _availableCities = [];
 
   Future<void> getImage(ImageSource imageSource) async {
+    if (imageSource == ImageSource.camera) {
+      final path = await AppCameraPage.capture(context);
+      if (path != null) {
+        _immobileInput.photo = path;
+        setState(() {});
+      }
+      return;
+    }
+
     final result = await service.getImage(imageSource);
     if (result != null) {
       _immobileInput.photo = result.path;
@@ -848,94 +858,76 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: TextFormField(
-                                controller: _cepController,
-                                onChanged: (_) {
-                                  if (haveError) {
-                                    if (_formKey3.currentState?.validate() ??
-                                        false) {
-                                      setState(() {
-                                        haveError = false;
-                                      });
+                              child: SizedBox(
+                                height: 50,
+                                child: TextFormField(
+                                  controller: _cepController,
+                                  onChanged: (_) {
+                                    if (haveError) {
+                                      if (_formKey3.currentState?.validate() ??
+                                          false) {
+                                        setState(() {
+                                          haveError = false;
+                                        });
+                                      }
                                     }
-                                  }
-                                },
-                                keyboardType: TextInputType.number,
-                                validator: (text) {
-                                  String data = text?.trim() ?? '';
-                                  if (data.isEmpty) {
-                                    return "* Campo obrigatório";
-                                  }
-                                  if (data.length != 9) {
-                                    return "Número invalido. Ex: XXXXX-XXX";
-                                  }
-                                  return null;
-                                },
-                                inputFormatters: [CepFormatter()],
-                                textAlignVertical: TextAlignVertical.center,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  isDense: true,
-                                  fillColor: Colors.white,
-                                  counter: const SizedBox.shrink(),
-                                  hintText: 'CEP',
-                                  hintStyle: GoogleFonts.rubik(fontSize: 18),
-                                  errorStyle: const TextStyle(fontSize: 0),
-                                  suffixIcon: RepaintBoundary(
-                                    child: JustTheTooltip(
-                                      backgroundColor: Colors.black,
-                                      borderRadius: BorderRadius.circular(20),
-                                      content: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        child: Text(
-                                          'XXXXX-XXX',
-                                          style: GoogleFonts.rubik(
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  validator: (text) {
+                                    String data = text?.trim() ?? '';
+                                    if (data.isEmpty) {
+                                      return "* Campo obrigatório";
+                                    }
+                                    if (data.length != 9) {
+                                      return "Número invalido. Ex: XXXXX-XXX";
+                                    }
+                                    return null;
+                                  },
+                                  inputFormatters: [CepFormatter()],
+                                  textAlignVertical: TextAlignVertical.center,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    isDense: true,
+                                    fillColor: Colors.white,
+                                    counter: const SizedBox.shrink(),
+                                    hintText: 'CEP',
+                                    hintStyle: GoogleFonts.rubik(fontSize: 18),
+                                    errorStyle: const TextStyle(fontSize: 0),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 14,
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: const BorderSide(
+                                        color: Colors.white,
                                       ),
-                                      isModal: true,
-                                      child: const Icon(Icons.help),
+                                      borderRadius: BorderRadius.circular(25.7),
                                     ),
-                                  ),
-                                  contentPadding: const EdgeInsets.only(
-                                    left: 24.0,
-                                    bottom: 8.0,
-                                    top: 8.0,
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(25.7),
                                     ),
-                                    borderRadius: BorderRadius.circular(25.7),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.white,
+                                    errorBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                        color: Colors.red,
+                                        width: 3,
+                                      ),
+                                      borderRadius: BorderRadius.circular(25.7),
                                     ),
-                                    borderRadius: BorderRadius.circular(25.7),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.red,
-                                      width: 3,
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                        color: Colors.red,
+                                        width: 3,
+                                      ),
+                                      borderRadius: BorderRadius.circular(25.7),
                                     ),
-                                    borderRadius: BorderRadius.circular(25.7),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.red,
-                                      width: 3,
-                                    ),
-                                    borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
                               ),
                             ),
-                            const Gap(16),
+                            // const Gap(16),
                             Expanded(
                               child: DropdownButtonFormField<TypeImmobile>(
                                 isExpanded: true,

@@ -1,6 +1,7 @@
 import 'package:aluga_comigo/app/shared/domain/entities/failures.dart';
 
-import '../../../../shared/data/services/firebase_database_service.dart';
+import '../../../../shared/data/services/supabase_database_service.dart';
+import '../../../../shared/domain/typedefs/returns.dart';
 import '../../../customer/data/models/customer_model.dart';
 
 abstract interface class IProfileDatasource {
@@ -9,21 +10,21 @@ abstract interface class IProfileDatasource {
 }
 
 class ProfileDatasource implements IProfileDatasource {
-  final FirebaseDatabaseService _database;
+  final SupabaseDatabaseService _database;
 
   ProfileDatasource(this._database);
 
   @override
   Future<CustomerModel> getProfile(String id) async {
-    final response = await _database.read(FirebaseDataTables.users, id);
+    final response = await _database.readProfile(id);
 
     return response.fold(
       (l) {
         throw FailureDatasource(message: l.message);
       },
-      (r) async {
+      (Json r) {
         if (r.isEmpty) {
-          throw FailureDatasource(message: "Usuário não encontrado");
+          throw FailureDatasource(message: 'Usuário não encontrado');
         }
 
         return CustomerModel.fromMap(r);
@@ -33,10 +34,14 @@ class ProfileDatasource implements IProfileDatasource {
 
   @override
   Future<void> updateProfile(CustomerModel customer) async {
-    await _database.update(
-      FirebaseDataTables.users,
+    final result = await _database.updateProfile(
       customer.id,
       customer.toMap(),
+    );
+
+    result.fold(
+      (failure) => throw FailureDatasource(message: failure.message),
+      (_) {},
     );
   }
 }

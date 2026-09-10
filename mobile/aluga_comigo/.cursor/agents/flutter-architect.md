@@ -12,7 +12,7 @@ Você é arquiteto Flutter sênior. Projeto: Clean Architecture com domain/data/
 2. Cite princípio SOLID aplicado
 3. Liste arquivos afetados com paths
 4. Preferir **UseCase** + **Controller ChangeNotifier** over StatefulWidget com lógica
-5. Mobile: permissões, Firebase, performance de listas
+5. Mobile: permissões, Supabase, performance de listas
 
 ## Decisões padrão
 - State: **ChangeNotifier** controllers com interface `I*Controller`

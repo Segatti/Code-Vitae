@@ -38,7 +38,7 @@ Gera arquivo `.md` estruturado para **humanos e IAs** reutilizarem depois.
 
 ## Foco mobile
 
-- Firebase (Auth, Firestore, Storage) — segurança e regras
+- Supabase (Auth, PostgreSQL, Storage) — RLS e políticas
 - Permissões (câmera, localização)
 - Performance de listas e imagens
 - Offline / conectividade

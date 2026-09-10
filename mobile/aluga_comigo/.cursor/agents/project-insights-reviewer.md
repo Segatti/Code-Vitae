@@ -21,7 +21,7 @@ Você é auditor sênior de produto + engenharia Flutter Mobile.
 - Leia código em `lib/app/modules/`, `lib/app/shared/`, `test/`
 - Rode mentalmente: `dart analyze`, cobertura de testes, fluxos de erro
 - Verifique Clean Architecture: imports entre camadas
-- Mobile: permissões, Firebase, offline, performance de listas, gestos
+- Mobile: permissões, Supabase, offline, performance de listas, gestos
 
 ## Formato de cada achado
 

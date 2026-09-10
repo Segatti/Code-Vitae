@@ -1,9 +1,8 @@
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../../../shared/data/services/firebase_database_service.dart';
 import '../../../../shared/data/services/secure_storage_service.dart';
+import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../domain/enums/match_type.dart';
@@ -18,7 +17,7 @@ abstract interface class ICustomerDatasource {
 }
 
 class CustomerDatasource implements ICustomerDatasource {
-  final FirebaseDatabaseService database;
+  final SupabaseDatabaseService database;
   final SecureStorageService storage;
 
   const CustomerDatasource(this.database, this.storage);
@@ -28,43 +27,38 @@ class CustomerDatasource implements ICustomerDatasource {
     CustomerModel customer,
     MatchType matchType,
   ) async {
-    await database
-        .getRef(
-          customer.typeUser == TypeUser.person
-              ? FirebaseDataTables.users
-              : FirebaseDataTables.immobiles,
-        )
-        .doc(SessionService.customer!.id)
-        .collection(FirebaseDataTables.matchTo.name)
-        .doc(customer.id)
-        .set({
-          ...customer.toMap(),
-          'matchType': matchType.name,
-        }, SetOptions(merge: true));
+    final session = SessionService.customer!;
+    final sessionId = session.id;
 
-    await database
-        .getRef(
-          customer.typeUser == TypeUser.person
-              ? FirebaseDataTables.users
-              : FirebaseDataTables.immobiles,
-        )
-        .doc(SessionService.customer!.id)
-        .set({'lastMatch': customer.id}, SetOptions(merge: true));
+    switch (session.typeUser) {
+      case TypeUser.person:
+        await database.createPersonMatch(
+          personId: sessionId,
+          immobileId: customer.id,
+          matchType: matchType.name,
+        );
+        await database.updateLastMatchPerson(sessionId, customer.id);
+      case TypeUser.immobile:
+        await database.createImmobileMatch(
+          immobileId: sessionId,
+          personId: customer.id,
+          matchType: matchType.name,
+        );
+        await database.updateLastMatchImmobile(sessionId, customer.id);
+      case TypeUser.none:
+        break;
+    }
 
     final json = await storage.getData(StorageKey.user);
     final user = UserModel.fromJson(json!);
     final newUser = user.copyWith(lastMatch: customer.id);
     await storage.setData(StorageKey.user, newUser.toJson());
-    var customerData = SessionService.customer!;
-    switch (customerData) {
+
+    switch (session) {
       case PersonCustomerModel():
-        SessionService.setCustomer(
-          customerData.copyWith(lastMatch: customer.id),
-        );
+        SessionService.setCustomer(session.copyWith(lastMatch: customer.id));
       case ImmobileCustomerModel():
-        SessionService.setCustomer(
-          customerData.copyWith(lastMatch: customer.id),
-        );
+        SessionService.setCustomer(session.copyWith(lastMatch: customer.id));
     }
 
     return unit;
@@ -75,32 +69,33 @@ class CustomerDatasource implements ICustomerDatasource {
     required TypeUser typeUser,
     String? startAfter,
   }) async {
-    var query = database
-        .getRef(
-          typeUser == TypeUser.person
-              ? FirebaseDataTables.users
-              : FirebaseDataTables.immobiles,
-        )
-        .where('isActive', isEqualTo: true)
-        .orderBy('id', descending: true)
-        .limit(1);
+    final rows = switch (typeUser) {
+      TypeUser.person => await database.listPersons(
+          startAfter: startAfter,
+          limit: 1,
+        ),
+      TypeUser.immobile => await database.listImmobiles(
+          startAfter: startAfter,
+          limit: 1,
+        ),
+      TypeUser.none => <Map<String, dynamic>>[],
+    };
 
-    if (startAfter != null) {
-      query = query.startAfter([startAfter]);
+    final session = SessionService.customer!;
+    if (startAfter != null && rows.isNotEmpty) {
+      final idLast = rows.last['id'] as String;
+      switch (session.typeUser) {
+        case TypeUser.person:
+          await database.updateLastMatchPerson(session.id, idLast);
+        case TypeUser.immobile:
+          await database.updateLastMatchImmobile(session.id, idLast);
+        case TypeUser.none:
+          break;
+      }
     }
 
-    final data = await query.get();
-    if (startAfter != null && data.docs.isNotEmpty) {
-      final idLastMatch = data.docs.last.id;
-      await database.update(
-        FirebaseDataTables.users,
-        SessionService.customer!.id,
-        {'lastMatch': idLastMatch},
-      );
-    }
-
-    return data.docs
-        .map((e) => CustomerModel.fromMap({'id': e.id, ...e.data()}))
+    return rows
+        .map<CustomerModel>((row) => CustomerModel.fromMap(row))
         .toList();
   }
 }

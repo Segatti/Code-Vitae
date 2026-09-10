@@ -285,11 +285,11 @@ class _AuthPageState extends State<AuthPage> {
                                   );
 
                                   var result = await controller.signup(input);
-                                  if(!context.mounted) return;
+                                  if (!context.mounted) return;
+                                  Navigator.pop(context);
                                   if (result) {
                                     context.navigate("/start/customers/");
                                   } else {
-                                    if (context.mounted) Navigator.pop(context);
                                     notificationError(
                                       "Falha no Cadastro",
                                       controller.errorMessage,

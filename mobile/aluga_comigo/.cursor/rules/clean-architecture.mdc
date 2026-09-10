@@ -14,7 +14,7 @@ presenter/ui → domain ← data
 ```
 
 - Camadas externas dependem das internas — **nunca o contrário**.
-- **domain** é o núcleo: não conhece data, presenter, Firebase, HTTP ou Flutter UI.
+- **domain** é o núcleo: não conhece data, presenter, Supabase, HTTP ou Flutter UI.
 
 ## Camadas e responsabilidades
 
@@ -32,7 +32,7 @@ Cada módulo em `lib/app/modules/[nome]/` **deve** ter as três camadas quando h
 Widget → Controller → UseCase → Repository (interface) → RepositoryImpl → DataSource
 ```
 
-- Controller **nunca** chama Firebase, HTTP ou datasource diretamente.
+- Controller **nunca** chama Supabase, HTTP ou datasource diretamente.
 - UseCase **nunca** importa Flutter ou JSON.
 - Widget **nunca** contém regra de negócio complexa.
 
@@ -48,7 +48,7 @@ Widget → Controller → UseCase → Repository (interface) → RepositoryImpl 
 - `domain/` importando `data/`, `presenter/`, `ui/` ou `package:flutter/`
 - `presenter/` ou `ui/` importando implementações concretas de `data/repositories/`
 - Lógica de negócio em widgets ou pages (mover para use case)
-- Firebase/HTTP direto em controller ou widget
+- Supabase/HTTP direto em controller ou widget
 - Pular camadas (ex.: API → controller sem use case/repository)
 - “Atalhos” que quebrem camadas por conveniência
 
