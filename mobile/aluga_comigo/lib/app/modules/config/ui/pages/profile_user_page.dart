@@ -297,7 +297,13 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final customer = controller.customer as PersonCustomerModel;
+        final customer = controller.customer;
+        if (customer is! PersonCustomerModel) {
+          return const Center(
+            child: Text('Não foi possível carregar o perfil do usuário.'),
+          );
+        }
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(

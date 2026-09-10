@@ -64,24 +64,45 @@ class CustomerDatasource implements ICustomerDatasource {
     return unit;
   }
 
+  ({String city, String state}) _locationFromSession(CustomerModel session) {
+    final parts = session.cityState.split(' - ');
+    return (
+      city: parts.isNotEmpty ? parts.first.trim() : '',
+      state: parts.length > 1 ? parts[1].trim() : '',
+    );
+  }
+
   @override
   Future<List<CustomerModel>> getCustomers({
     required TypeUser typeUser,
     String? startAfter,
   }) async {
+    final session = SessionService.customer!;
+    final excludeId = session.id;
+    final location = _locationFromSession(session);
+
+    if (location.city.isEmpty) {
+      return [];
+    }
+
     final rows = switch (typeUser) {
       TypeUser.person => await database.listPersons(
           startAfter: startAfter,
+          excludeId: excludeId,
+          city: location.city,
+          state: location.state,
           limit: 1,
         ),
       TypeUser.immobile => await database.listImmobiles(
           startAfter: startAfter,
+          excludeId: excludeId,
+          city: location.city,
+          state: location.state,
           limit: 1,
         ),
       TypeUser.none => <Map<String, dynamic>>[],
     };
 
-    final session = SessionService.customer!;
     if (startAfter != null && rows.isNotEmpty) {
       final idLast = rows.last['id'] as String;
       switch (session.typeUser) {

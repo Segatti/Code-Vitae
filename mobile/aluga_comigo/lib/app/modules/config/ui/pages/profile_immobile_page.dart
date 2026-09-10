@@ -103,7 +103,8 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
   void _showProfileDialog() {
     if (controller.customer == null) return;
 
-    final customer = controller.customer! as ImmobileCustomerModel;
+    final customer = controller.customer;
+    if (customer is! ImmobileCustomerModel) return;
 
     showDialog(
       context: context,
@@ -158,7 +159,13 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final customer = controller.customer as ImmobileCustomerModel;
+        final customer = controller.customer;
+        if (customer is! ImmobileCustomerModel) {
+          return const Center(
+            child: Text('Não foi possível carregar o perfil do imóvel.'),
+          );
+        }
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(

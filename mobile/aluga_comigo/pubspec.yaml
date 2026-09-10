@@ -47,7 +47,7 @@ dependencies:
   cached_network_image: ^4.0.0
   blur: ^4.0.2
   auto_size_text: ^3.0.0
-  custom_sliding_segmented_control: ^1.8.5
+  custom_sliding_segmented_control: ^2.0.0
   # dart_date: ^1.4.0
   dartz: ^0.10.1
   image_picker: ^1.2.3

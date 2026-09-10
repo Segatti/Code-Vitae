@@ -5,8 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
-import '../../../../shared/data/services/session_service.dart';
-import '../../../auth/domain/enums/type_immobile.dart';
+import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
 import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
 import '../controllers/houses_controller.dart';
@@ -22,140 +21,21 @@ class _HousesPageState extends State<HousesPage> {
   final controller = inject<IHousesController>();
   final swipController = SwipableStackController();
 
-  bool _isProfileComplete(CustomerModel? model) {
-    if (model == null) return false;
-
-    switch (model) {
-      case PersonCustomerModel _:
-        return model.name.isNotEmpty &&
-            model.dateBirth.isNotEmpty &&
-            model.photos.isNotEmpty &&
-            (model.shortDescription.isNotEmpty ||
-                model.longDescription.isNotEmpty) &&
-            model.cityState.isNotEmpty &&
-            model.phone.isNotEmpty &&
-            model.gender.isNotEmpty;
-      case ImmobileCustomerModel _:
-        return model.cep.isNotEmpty &&
-            model.price > 0 &&
-            model.photos.isNotEmpty &&
-            (model.shortDescription.isNotEmpty ||
-                model.longDescription.isNotEmpty) &&
-            model.cityState.isNotEmpty &&
-            model.phone.isNotEmpty &&
-            model.typeImmobile != TypeImmobile.none;
-    }
-  }
-
-  Future<void> _showIncompleteProfileDialog() async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.info_outline,
-                  size: 64,
-                  color: Color(0XFFDF924B),
-                ),
-                const Gap(16),
-                Text(
-                  "Perfil Incompleto",
-                  style: GoogleFonts.rubik(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const Gap(16),
-                Text(
-                  "Você precisa completar seu perfil para visualizar os detalhes dos outros usuários.",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(fontSize: 16, color: Colors.black54),
-                ),
-                const Gap(24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.grey, width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(
-                          "Cancelar",
-                          style: GoogleFonts.rubik(
-                            fontSize: 16,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Gap(16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          context.pushNamed("/config/profile");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0XFFDF924B),
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(
-                          "Preencher",
-                          style: GoogleFonts.rubik(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Future<bool> _checkProfileAndShowDetails(
     FlipCardController flipController,
   ) async {
-    if (!_isProfileComplete(SessionService.customer!)) {
-      await _showIncompleteProfileDialog();
+    if (!await IncompleteProfileHelper.canShowDetails(context)) {
       return false;
     }
 
-    // Se o perfil estiver completo, permite ver os detalhes
     flipController.toggleCard();
     return true;
+  }
+
+  @override
+  void initState() {
+    controller.initialize();
+    super.initState();
   }
 
   @override
@@ -165,7 +45,7 @@ class _HousesPageState extends State<HousesPage> {
       builder: (context, child) {
         var list = controller.houses.toList();
 
-        if (controller.loadingList.contains('getCustomers') ||
+        if (controller.loadingList.contains('getHouses') ||
             controller.loadingList.contains('initialize')) {
           return const Center(child: CircularProgressIndicator());
         }

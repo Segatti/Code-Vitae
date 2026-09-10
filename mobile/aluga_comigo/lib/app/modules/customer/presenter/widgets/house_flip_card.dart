@@ -4,9 +4,9 @@ import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HouseFlipCard extends StatelessWidget {
   final ImmobileCustomerModel immobile;
@@ -70,23 +70,29 @@ class HouseFlipCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-                child: CachedNetworkImage(
-                  height: cardHeight - 170,
-                  imageUrl: immobile.photos.firstOrNull ?? "",
-                  fit: BoxFit.fitHeight,
-                  errorWidget: (context, url, error) {
-                    return Center(
-                      child: Icon(
-                        Icons.home,
-                        size: 100,
-                        color: Colors.grey.shade400,
-                      ),
-                    );
-                  },
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 170,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  child: CachedNetworkImage(
+                    height: cardHeight - 170,
+                    imageUrl: immobile.photos.firstOrNull ?? "",
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) {
+                      return Center(
+                        child: Icon(
+                          Icons.home,
+                          size: 100,
+                          color: Colors.grey.shade400,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               Column(
@@ -108,10 +114,7 @@ class HouseFlipCard extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(_formatScore(immobile.score)),
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
+                                const Icon(Icons.star, color: Colors.amber),
                               ],
                             ),
                           ),
@@ -123,9 +126,7 @@ class HouseFlipCard extends StatelessWidget {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Center(
-                              child: Text(immobile.cityState),
-                            ),
+                            child: Center(child: Text(immobile.cityState)),
                           ),
                       ],
                     ),
@@ -172,9 +173,11 @@ class HouseFlipCard extends StatelessWidget {
                                 foregroundColor: Colors.blueAccent,
                                 visualDensity: VisualDensity.compact,
                               ),
-                              onPressed: onVerNoMapaPressed ?? () {
-                                // Abrir link do google maps
-                              },
+                              onPressed:
+                                  onVerNoMapaPressed ??
+                                  () {
+                                    // Abrir link do google maps
+                                  },
                               child: Text(
                                 "Ver no mapa",
                                 style: GoogleFonts.rubik(
@@ -264,9 +267,7 @@ class HouseFlipCard extends StatelessWidget {
                                                 shape: BoxShape.circle,
                                               ),
                                               child: const Center(
-                                                child: Icon(
-                                                  Icons.bed,
-                                                ),
+                                                child: Icon(Icons.bed),
                                               ),
                                             ),
                                             Align(
@@ -351,8 +352,9 @@ class HouseFlipCard extends StatelessWidget {
                               ),
                               onPressed: () async {
                                 if (onVerMaisPressed != null) {
-                                  final result =
-                                      await onVerMaisPressed!(flipController);
+                                  final result = await onVerMaisPressed!(
+                                    flipController,
+                                  );
                                   if (result) {
                                     flipController.toggleCard();
                                   }
@@ -446,10 +448,7 @@ class HouseFlipCard extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 2,
-                        ),
+                        border: Border.all(color: Colors.grey, width: 2),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -459,25 +458,17 @@ class HouseFlipCard extends StatelessWidget {
                         immobile.price.toMoney(),
                         style: GoogleFonts.rubik(),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const Gap(8),
                 const Row(
                   children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 2,
-                      ),
-                    ),
+                    Expanded(child: Divider(thickness: 2)),
                     Gap(8),
                     Text("Interior da Casa"),
                     Gap(8),
-                    Expanded(
-                      child: Divider(
-                        thickness: 2,
-                      ),
-                    ),
+                    Expanded(child: Divider(thickness: 2)),
                   ],
                 ),
                 const Gap(8),
@@ -537,9 +528,7 @@ class HouseFlipCard extends StatelessWidget {
                                   color: Colors.green,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Center(
-                                  child: Icon(Icons.bed),
-                                ),
+                                child: const Center(child: Icon(Icons.bed)),
                               ),
                               Align(
                                 alignment: Alignment.bottomRight,
@@ -614,19 +603,11 @@ class HouseFlipCard extends StatelessWidget {
                 const Gap(8),
                 const Row(
                   children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 2,
-                      ),
-                    ),
+                    Expanded(child: Divider(thickness: 2)),
                     Gap(8),
                     Text("Locais próximos"),
                     Gap(8),
-                    Expanded(
-                      child: Divider(
-                        thickness: 2,
-                      ),
-                    ),
+                    Expanded(child: Divider(thickness: 2)),
                   ],
                 ),
                 const Gap(8),
@@ -641,10 +622,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Hospital"),
@@ -658,10 +636,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Mercado"),
@@ -675,10 +650,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Faculdade"),
@@ -692,10 +664,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Parque"),
@@ -709,10 +678,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Academia"),
@@ -726,10 +692,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Shopping"),
@@ -743,10 +706,7 @@ class HouseFlipCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.grey, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text("Praia"),
@@ -769,9 +729,11 @@ class HouseFlipCard extends StatelessWidget {
                             color: Colors.orange,
                           ),
                         ),
-                        onPressed: onBackPressed ?? () {
-                          flipController.toggleCard();
-                        },
+                        onPressed:
+                            onBackPressed ??
+                            () {
+                              flipController.toggleCard();
+                            },
                         child: Text(
                           "Voltar",
                           style: GoogleFonts.rubik(
@@ -792,4 +754,3 @@ class HouseFlipCard extends StatelessWidget {
     );
   }
 }
-

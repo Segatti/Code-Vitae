@@ -62,10 +62,15 @@ class HousesController extends IHousesController {
       },
       failure: (error) {
         errorMessage = "Erro ao buscar imóveis";
+        hasMore = false;
         notifyListeners();
         return false;
       },
-      orElse: () => false,
+      orElse: () {
+        hasMore = false;
+        notifyListeners();
+        return false;
+      },
     );
   }
 

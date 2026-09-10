@@ -1,7 +1,8 @@
-import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
+import '../customer/data/models/customer_model.dart';
 
 import 'data/datasources/profile_datasource.dart';
 import 'data/repositories/profile_repository.dart';
@@ -31,9 +32,11 @@ class ConfigModule extends Module {
     c.route(
       '/profile',
       transition: AppTransitions.rightToLeft,
-      child: (_, _) => SessionService.customer!.typeUser == TypeUser.person
-          ? ProfileUserPage()
-          : ProfileImmobilePage(),
+      child: (_, _) => switch (SessionService.customer) {
+        PersonCustomerModel() => const ProfileUserPage(),
+        ImmobileCustomerModel() => const ProfileImmobilePage(),
+        _ => const ProfileUserPage(),
+      },
     );
   }
 }

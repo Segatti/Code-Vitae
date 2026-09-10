@@ -4,11 +4,11 @@ import 'package:aluga_comigo/app/modules/chats/ui/controllers/chats_list_control
 import 'package:aluga_comigo/app/modules/chats/ui/pages/contact_list_page.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../shared/presenter/widgets/tabs.dart';
 
@@ -30,8 +30,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
   }
 
   List<Chat> _filteredChats() {
-    final isPerson =
-        SessionService.customer?.typeUser == TypeUser.person;
+    final isPerson = SessionService.customer?.typeUser == TypeUser.person;
     if (tabSelected == 0) {
       return isPerson ? [] : controller.chats;
     }
@@ -130,8 +129,9 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                             color: Colors.white,
                                           ),
                                           border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
                                             borderSide: BorderSide.none,
                                           ),
                                           hintText: "Pesquisar por nome",
@@ -150,142 +150,132 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                             ),
                                           )
                                         : chats.isEmpty
-                                            ? Center(
-                                                child: Text(
-                                                  'Nenhuma conversa ainda',
-                                                  style: GoogleFonts.rubik(
-                                                    color: Colors.white70,
-                                                  ),
-                                                ),
-                                              )
-                                            : ListView.separated(
-                                                shrinkWrap: true,
-                                                itemCount: chats.length,
-                                                padding: EdgeInsets.zero,
-                                                itemBuilder: (context, index) {
-                                                  final chat = chats[index];
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      context.pushNamed(
-                                                        './chat',
-                                                        arguments: {
-                                                          'chat': chat,
-                                                        },
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                      width: double.infinity,
-                                                      height: 55,
-                                                      color: Colors.white,
-                                                      padding:
-                                                          const EdgeInsetsDirectional
-                                                              .symmetric(
+                                        ? Center(
+                                            child: Text(
+                                              'Nenhuma conversa ainda',
+                                              style: GoogleFonts.rubik(
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                          )
+                                        : ListView.separated(
+                                            shrinkWrap: true,
+                                            itemCount: chats.length,
+                                            padding: EdgeInsets.zero,
+                                            itemBuilder: (context, index) {
+                                              final chat = chats[index];
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  context.pushNamed(
+                                                    './chat',
+                                                    arguments: {'chat': chat},
+                                                  );
+                                                },
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  height: 55,
+                                                  color: Colors.white,
+                                                  padding:
+                                                      const EdgeInsetsDirectional.symmetric(
                                                         horizontal: 8,
                                                       ),
-                                                      child: Row(
-                                                        children: [
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
+                                                  child: Row(
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
                                                               10,
                                                             ),
-                                                            child: chat.otherPhoto
-                                                                    .isNotEmpty
-                                                                ? CachedNetworkImage(
-                                                                    imageUrl: chat
-                                                                        .otherPhoto,
-                                                                    width: 50,
-                                                                    height: 50,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  )
-                                                                : Container(
-                                                                    width: 50,
-                                                                    height: 50,
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                    child: const Icon(
-                                                                      Icons
-                                                                          .person,
+                                                        child:
+                                                            chat
+                                                                .otherPhoto
+                                                                .isNotEmpty
+                                                            ? CachedNetworkImage(
+                                                                imageUrl: chat
+                                                                    .otherPhoto,
+                                                                width: 50,
+                                                                height: 50,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              )
+                                                            : Container(
+                                                                width: 50,
+                                                                height: 50,
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade300,
+                                                                child: const Icon(
+                                                                  Icons.person,
+                                                                ),
+                                                              ),
+                                                      ),
+                                                      const Gap(8),
+                                                      Expanded(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    chat.otherName,
+                                                                    style: GoogleFonts.rubik(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
                                                                     ),
                                                                   ),
-                                                          ),
-                                                          const Gap(8),
-                                                          Expanded(
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        chat.otherName,
-                                                                        style: GoogleFonts
-                                                                            .rubik(
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.w500,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    Text(
-                                                                      _formatLastMessageAt(
-                                                                        chat.lastMessageAt,
-                                                                      ),
-                                                                      style: GoogleFonts
-                                                                          .rubik(
-                                                                        color: Colors
-                                                                            .black54,
-                                                                        fontSize:
-                                                                            13,
-                                                                      ),
-                                                                    ),
-                                                                  ],
                                                                 ),
-                                                                Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        chat.lastMessagePreview
-                                                                                .isNotEmpty
-                                                                            ? chat.lastMessagePreview
-                                                                            : 'Nova conversa',
-                                                                        maxLines:
-                                                                            1,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: GoogleFonts
-                                                                            .rubik(
-                                                                          fontSize:
-                                                                              12,
-                                                                          color:
-                                                                              Colors.black54,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
+                                                                Text(
+                                                                  _formatLastMessageAt(
+                                                                    chat.lastMessageAt,
+                                                                  ),
+                                                                  style: GoogleFonts.rubik(
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    fontSize:
+                                                                        13,
+                                                                  ),
                                                                 ),
                                                               ],
                                                             ),
-                                                          ),
-                                                        ],
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    chat.lastMessagePreview.isNotEmpty
+                                                                        ? chat.lastMessagePreview
+                                                                        : 'Nova conversa',
+                                                                    maxLines: 1,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: GoogleFonts.rubik(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .black54,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  );
-                                                },
-                                                separatorBuilder:
-                                                    (context, index) =>
-                                                        const Divider(
-                                                  height: 1,
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
+                                              );
+                                            },
+                                            separatorBuilder:
+                                                (context, index) =>
+                                                    const Divider(height: 1),
+                                          ),
                                   ),
                                 ],
                               ),

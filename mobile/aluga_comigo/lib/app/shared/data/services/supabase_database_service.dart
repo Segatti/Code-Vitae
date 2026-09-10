@@ -201,12 +201,30 @@ class SupabaseDatabaseService {
     return Left(FailureDatasource(message: 'Tipo de usuário inválido'));
   }
 
-  Future<List<Json>> listPersons({String? startAfter, int limit = 1}) async {
+  Future<List<Json>> listPersons({
+    String? startAfter,
+    String? excludeId,
+    String? city,
+    String? state,
+    int limit = 1,
+  }) async {
     try {
       var filter = _client
           .from('persons')
           .select('*, accounts!inner(is_active, email, phone, type_user)')
           .eq('accounts.is_active', true);
+
+      if (excludeId != null && excludeId.isNotEmpty) {
+        filter = filter.neq('id', excludeId);
+      }
+
+      if (city != null && city.isNotEmpty) {
+        filter = filter.ilike('city', city);
+      }
+
+      if (state != null && state.isNotEmpty) {
+        filter = filter.ilike('state', state);
+      }
 
       if (startAfter != null && startAfter.isNotEmpty) {
         filter = filter.lt('id', startAfter);
@@ -224,12 +242,30 @@ class SupabaseDatabaseService {
     }
   }
 
-  Future<List<Json>> listImmobiles({String? startAfter, int limit = 1}) async {
+  Future<List<Json>> listImmobiles({
+    String? startAfter,
+    String? excludeId,
+    String? city,
+    String? state,
+    int limit = 1,
+  }) async {
     try {
       var filter = _client
           .from('immobiles')
           .select('*, accounts!inner(is_active, email, phone, type_user)')
           .eq('accounts.is_active', true);
+
+      if (excludeId != null && excludeId.isNotEmpty) {
+        filter = filter.neq('id', excludeId);
+      }
+
+      if (city != null && city.isNotEmpty) {
+        filter = filter.ilike('city', city);
+      }
+
+      if (state != null && state.isNotEmpty) {
+        filter = filter.ilike('state', state);
+      }
 
       if (startAfter != null && startAfter.isNotEmpty) {
         filter = filter.lt('id', startAfter);
@@ -306,6 +342,72 @@ class SupabaseDatabaseService {
       await _client.from('immobiles').update({
         'last_match_person_id': personId,
       }).eq('id', immobileId);
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listIncomingPersonMatches(String immobileId) async {
+    try {
+      final rows = await _client
+          .from('person_matches')
+          .select('match_type, persons(*, accounts(*))')
+          .eq('immobile_id', immobileId)
+          .inFilter('match_type', ['like', 'favorite'])
+          .order('created_at', ascending: false);
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final person = map['persons'];
+            if (person is! Map) return null;
+            final customer = PersonMapper.toAppMap(
+              Map<String, dynamic>.from(person),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'matchType': map['match_type'] as String? ?? 'none',
+              'customer': customer,
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listIncomingImmobileMatches(String personId) async {
+    try {
+      final rows = await _client
+          .from('immobile_matches')
+          .select('match_type, immobiles(*, accounts(*))')
+          .eq('person_id', personId)
+          .inFilter('match_type', ['like', 'favorite'])
+          .order('created_at', ascending: false);
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final immobile = map['immobiles'];
+            if (immobile is! Map) return null;
+            final customer = ImmobileMapper.toAppMap(
+              Map<String, dynamic>.from(immobile),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'matchType': map['match_type'] as String? ?? 'none',
+              'customer': customer,
+            };
+          })
+          .whereType<Json>()
+          .toList();
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
