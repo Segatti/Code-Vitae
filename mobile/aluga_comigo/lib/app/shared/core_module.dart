@@ -5,7 +5,10 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'data/services/camera_service.dart';
+import 'data/services/firebase_auth_service.dart';
 import 'data/services/firebase_database_service.dart';
+import 'data/services/firebase_storage_service.dart';
 import 'data/services/secure_storage_service.dart';
 
 class CoreModule extends Module {
@@ -18,5 +21,8 @@ class CoreModule extends Module {
     c.addSingleton<ImagePicker>(ImagePicker.new);
     c.addSingleton<SecureStorageService>(SecureStorageService.new);
     c.addSingleton<FirebaseDatabaseService>(FirebaseDatabaseService.new);
+    c.addSingleton<FirebaseAuthService>(FirebaseAuthService.new);
+    c.addSingleton<FirebaseStorageService>(FirebaseStorageService.new);
+    c.addSingleton<CameraService>(CameraService.new);
   }
 }

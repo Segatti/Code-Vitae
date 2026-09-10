@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/modules/chats/chats_module.dart';
+import 'package:aluga_comigo/app/modules/customer/customer_di_module.dart';
 import 'package:aluga_comigo/app/modules/customer/customer_module.dart';
 import 'package:aluga_comigo/app/modules/house/houses_module.dart';
 import 'package:aluga_comigo/app/modules/like/likes_module.dart';
@@ -11,6 +12,7 @@ class StartModule extends Module {
 
   @override
   void register(ModularContext c) {
+    c.module(CustomerDiModule());
     c.route(
       '/',
       child: (_, _) => const StartPage(),

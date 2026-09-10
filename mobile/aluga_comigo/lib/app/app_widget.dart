@@ -1,6 +1,5 @@
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:material_ui/material_ui.dart' hide GlobalMaterialLocalizations;
+import 'package:material_ui/material_ui.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -12,12 +11,8 @@ class AppWidget extends StatelessWidget {
       theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
       routerConfig: ModularApp.routerConfigOf(context),
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [const Locale('pt', 'BR'), const Locale('en', 'US')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
     );
   }
 }

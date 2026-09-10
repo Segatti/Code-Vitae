@@ -1,7 +1,4 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
-import 'package:aluga_comigo/app/shared/core_module.dart';
-import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
-import 'package:aluga_comigo/app/shared/data/services/firebase_storage_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -21,9 +18,6 @@ class ConfigModule extends Module {
 
   @override
   void register(ModularContext c) {
-    c.module(CoreModule());
-    c.addSingleton<CameraService>(CameraService.new);
-    c.addSingleton<FirebaseStorageService>(FirebaseStorageService.new);
     c.addSingleton<IProfileDatasource>(ProfileDatasource.new);
     c.addSingleton<IProfileRepository>(ProfileRepository.new);
     c.addLazySingleton<IGetProfile>(GetProfile.new);

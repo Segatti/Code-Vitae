@@ -44,7 +44,6 @@ dependencies:
   flutter_bounce: ^1.1.0
   selector_wheel: ^1.1.2
   bubble: ^1.2.1
-  flutter_isolate: ^2.1.0
   cached_network_image: ^4.0.0
   blur: ^4.0.2
   auto_size_text: ^3.0.0

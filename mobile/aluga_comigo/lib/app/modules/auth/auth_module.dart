@@ -1,4 +1,3 @@
-import 'package:aluga_comigo/app/modules/auth/auth_di_module.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/auth_page.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/controllers/auth_controller.dart';
 import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
@@ -10,7 +9,6 @@ class AuthModule extends Module {
 
   @override
   void register(ModularContext c) {
-    c.module(AuthDiModule());
     c.add<IAuthController>(AuthController.new);
     c.route(
       '/',
