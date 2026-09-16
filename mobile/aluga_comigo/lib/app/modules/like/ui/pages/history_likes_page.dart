@@ -12,6 +12,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../shared/presenter/widgets/tabs.dart';
+import '../widgets/history_flip_dialog.dart';
 
 class HistoryLikesPage extends StatefulWidget {
   const HistoryLikesPage({super.key});
@@ -68,11 +69,7 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(
-            Icons.chevron_left,
-            size: 40,
-            color: Colors.grey,
-          ),
+          icon: const Icon(Icons.chevron_left, size: 40, color: Colors.grey),
         ),
         titleSpacing: 0,
         title: Text(
@@ -145,12 +142,23 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
                                       _HistoryCard(
                                         title: _itemTitle(item.customer),
                                         subtitle: _itemSubtitle(item.customer),
-                                        photoUrl: item.customer.photos.isNotEmpty
+                                        photoUrl:
+                                            item.customer.photos.isNotEmpty
                                             ? item.customer.photos.first
                                             : '',
                                         matchType: item.matchType,
                                         rejectedAt: item.rejectedAt,
                                         width: constraints.maxWidth * .3,
+                                        onTap: () async {
+                                          final updated =
+                                              await HistoryFlipDialog.show(
+                                                context,
+                                                item,
+                                              );
+                                          if (updated == true && mounted) {
+                                            controller.initialize();
+                                          }
+                                        },
                                       ),
                                   ],
                                 ),
@@ -178,6 +186,7 @@ class _HistoryCard extends StatelessWidget {
   final MatchType matchType;
   final DateTime? rejectedAt;
   final double width;
+  final VoidCallback? onTap;
 
   const _HistoryCard({
     required this.title,
@@ -186,6 +195,7 @@ class _HistoryCard extends StatelessWidget {
     required this.matchType,
     required this.rejectedAt,
     required this.width,
+    this.onTap,
   });
 
   static String _actionIconAsset(MatchType type) {
@@ -216,46 +226,49 @@ class _HistoryCard extends StatelessWidget {
       width: width,
       child: Column(
         children: [
-          Container(
-            width: width,
-            height: width * 1.5,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white, width: 2),
-              boxShadow: const [
-                BoxShadow(color: Colors.black26, blurRadius: 10),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  photoUrl.isEmpty
-                      ? Container(color: Colors.grey.shade300)
-                      : CachedNetworkImage(
-                          imageUrl: photoUrl,
-                          fit: BoxFit.cover,
-                          errorWidget: (_, __, ___) =>
-                              Container(color: Colors.grey.shade300),
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              width: width,
+              height: width * 1.5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black26, blurRadius: 10),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    photoUrl.isEmpty
+                        ? Container(color: Colors.grey.shade300)
+                        : CachedNetworkImage(
+                            imageUrl: photoUrl,
+                            fit: BoxFit.cover,
+                            errorWidget: (_, __, ___) =>
+                                Container(color: Colors.grey.shade300),
+                          ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: _actionBadgeColor(matchType),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: _actionBadgeColor(matchType),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Image.asset(
-                        _actionIconAsset(matchType),
-                        width: 16,
-                        height: 16,
+                        child: Image.asset(
+                          _actionIconAsset(matchType),
+                          width: 16,
+                          height: 16,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -265,10 +278,7 @@ class _HistoryCard extends StatelessWidget {
             maxLines: subtitle == null ? 2 : 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: GoogleFonts.rubik(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            style: GoogleFonts.rubik(fontSize: 12, fontWeight: FontWeight.w500),
           ),
           if (subtitle != null && subtitle!.isNotEmpty) ...[
             const Gap(2),
@@ -287,10 +297,7 @@ class _HistoryCard extends StatelessWidget {
           if (dateLabel.isNotEmpty)
             Text(
               dateLabel,
-              style: GoogleFonts.rubik(
-                fontSize: 11,
-                color: Colors.black45,
-              ),
+              style: GoogleFonts.rubik(fontSize: 11, color: Colors.black45),
             ),
         ],
       ),

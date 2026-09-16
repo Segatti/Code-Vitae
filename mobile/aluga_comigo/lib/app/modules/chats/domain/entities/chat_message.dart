@@ -6,6 +6,7 @@ class ChatMessage {
   final String content;
   final String messageType;
   final DateTime? createdAt;
+  final DateTime? readAt;
 
   const ChatMessage({
     required this.id,
@@ -15,5 +16,10 @@ class ChatMessage {
     required this.content,
     this.messageType = 'text',
     this.createdAt,
+    this.readAt,
   });
+
+  bool get isSuperChat => messageType == 'superChat';
+
+  bool get isReadByOther => readAt != null;
 }

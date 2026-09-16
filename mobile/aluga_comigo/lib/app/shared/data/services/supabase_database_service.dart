@@ -768,6 +768,184 @@ class SupabaseDatabaseService {
     }
   }
 
+  Future<Json?> findChatByParticipants({
+    required String personId,
+    required String immobileId,
+  }) async {
+    try {
+      final row = await _client
+          .from('chats')
+          .select()
+          .eq('person_id', personId)
+          .eq('immobile_id', immobileId)
+          .maybeSingle();
+      if (row == null) return null;
+      return Map<String, dynamic>.from(row);
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> markChatMessagesRead(String chatId) async {
+    try {
+      await _client.rpc(
+        'mark_chat_messages_read',
+        params: {'p_chat_id': chatId},
+      );
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listOutgoingPersonImmobileMatches(String personId) async {
+    try {
+      final rows = await _client
+          .from('person_matches')
+          .select('match_type, immobiles(*, accounts(*))')
+          .eq('person_id', personId)
+          .inFilter('match_type', ['like', 'favorite'])
+          .order('created_at', ascending: false);
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final immobile = map['immobiles'];
+            if (immobile is! Map) return null;
+            final customer = ImmobileMapper.toAppMap(
+              Map<String, dynamic>.from(immobile),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'matchType': map['match_type'],
+              'customer': customer,
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listMutualPersonContactsForImmobile(
+    String immobileId,
+  ) async {
+    try {
+      final immobileRows = await _client
+          .from('immobile_matches')
+          .select('person_id')
+          .eq('immobile_id', immobileId)
+          .inFilter('match_type', ['like', 'favorite']);
+
+      final personIds = immobileRows
+          .map((row) => row['person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
+
+      if (personIds.isEmpty) return [];
+
+      final personRows = await _client
+          .from('person_matches')
+          .select('match_type, persons(*, accounts(*))')
+          .eq('immobile_id', immobileId)
+          .inFilter('person_id', personIds)
+          .inFilter('match_type', ['like', 'favorite']);
+
+      return personRows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final person = map['persons'];
+            if (person is! Map) return null;
+            final customer = PersonMapper.toAppMap(
+              Map<String, dynamic>.from(person),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'matchType': map['match_type'],
+              'customer': customer,
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listMutualPeerPersonContacts(String personId) async {
+    try {
+      final outgoing = await _client
+          .from('person_peer_matches')
+          .select('to_person_id, match_type')
+          .eq('from_person_id', personId)
+          .inFilter('match_type', ['like', 'favorite']);
+
+      if (outgoing.isEmpty) return [];
+
+      final targetIds = outgoing
+          .map((row) => row['to_person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList();
+
+      final incoming = await _client
+          .from('person_peer_matches')
+          .select('from_person_id')
+          .eq('to_person_id', personId)
+          .inFilter('from_person_id', targetIds)
+          .inFilter('match_type', ['like', 'favorite']);
+
+      final mutualIds = incoming
+          .map((row) => row['from_person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toSet();
+
+      if (mutualIds.isEmpty) return [];
+
+      final persons = await _client
+          .from('persons')
+          .select('*, accounts(*)')
+          .inFilter('id', mutualIds.toList());
+
+      final matchTypeByPersonId = {
+        for (final row in outgoing)
+          row['to_person_id']?.toString() ?? '': row['match_type']?.toString(),
+      };
+
+      return persons
+          .map((row) {
+            final customer = PersonMapper.toAppMap(
+              Map<String, dynamic>.from(row),
+            );
+            if (customer['isActive'] == false) return null;
+            final personId = customer['id']?.toString() ?? '';
+            return {
+              'matchType': matchTypeByPersonId[personId] ?? 'like',
+              'customer': customer,
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<Json> sendMessage({
     required String chatId,
     required String senderId,

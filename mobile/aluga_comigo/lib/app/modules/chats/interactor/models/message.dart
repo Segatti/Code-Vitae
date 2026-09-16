@@ -8,12 +8,7 @@ class Message {
   final String? value;
   final MessageType? type;
 
-  const Message({
-    this.isFromUser,
-    this.dateTime,
-    this.value,
-    this.type,
-  });
+  const Message({this.isFromUser, this.dateTime, this.value, this.type});
 
   Message copyWith({
     bool? isFromUser,

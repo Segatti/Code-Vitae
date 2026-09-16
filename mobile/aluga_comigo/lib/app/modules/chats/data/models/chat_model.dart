@@ -38,12 +38,12 @@ class ChatModel {
   }
 
   Chat toEntity() => Chat(
-        id: id,
-        personId: personId,
-        immobileId: immobileId,
-        otherName: otherName,
-        otherPhoto: otherPhoto,
-        lastMessagePreview: lastMessagePreview,
-        lastMessageAt: lastMessageAt,
-      );
+    id: id,
+    personId: personId,
+    immobileId: immobileId,
+    otherName: otherName,
+    otherPhoto: otherPhoto,
+    lastMessagePreview: lastMessagePreview,
+    lastMessageAt: lastMessageAt,
+  );
 }

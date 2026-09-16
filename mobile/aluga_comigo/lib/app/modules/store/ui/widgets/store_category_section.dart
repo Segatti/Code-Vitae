@@ -12,6 +12,7 @@ class StoreCategorySection extends StatelessWidget {
   final Color backgroundColor;
   final Color headerColor;
   final Color headerTextColor;
+  final Color? descriptionTextColor;
   final List<StoreProduct> products;
   final void Function(StoreProduct product)? onProductTap;
   final String Function(StoreProduct product)? priceFor;
@@ -23,6 +24,7 @@ class StoreCategorySection extends StatelessWidget {
     required this.backgroundColor,
     required this.headerColor,
     required this.headerTextColor,
+    this.descriptionTextColor,
     required this.products,
     this.onProductTap,
     this.priceFor,
@@ -65,7 +67,9 @@ class StoreCategorySection extends StatelessWidget {
                 category.description,
                 style: GoogleFonts.rubik(
                   fontSize: 13,
-                  color: headerTextColor.withValues(alpha: 0.85),
+                  color:
+                      descriptionTextColor ??
+                      headerTextColor.withValues(alpha: 0.85),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -77,7 +81,8 @@ class StoreCategorySection extends StatelessWidget {
                     for (final product in products)
                       _ProductCard(
                         product: product,
-                        priceLabel: priceFor?.call(product) ?? product.priceLabel,
+                        priceLabel:
+                            priceFor?.call(product) ?? product.priceLabel,
                         isPurchasing: purchasingProductId == product.id,
                         width: constraints.maxWidth * .3,
                         height: constraints.maxWidth * .45,

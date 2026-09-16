@@ -8,12 +8,7 @@ class Contact {
   final DateTime? birthday;
   final HomeType? homeType;
 
-  const Contact({
-    this.name,
-    this.photo,
-    this.birthday,
-    this.homeType,
-  });
+  const Contact({this.name, this.photo, this.birthday, this.homeType});
 
   Contact copyWith({
     String? name,
@@ -45,8 +40,9 @@ class Contact {
       birthday: map['birthday'] != null
           ? DateTime.parse(map['birthday'] as String)
           : null,
-      homeType:
-          map['homeType'] != null ? HomeType.getType(map['homeType']) : null,
+      homeType: map['homeType'] != null
+          ? HomeType.getType(map['homeType'])
+          : null,
     );
   }
 

@@ -36,9 +36,9 @@ class _StorePageState extends State<StorePage> {
     final message = controller.purchaseSuccessMessage;
     if (message == null || !mounted) return;
     controller.purchaseSuccessMessage = null;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _confirmPurchase(StoreProduct product) async {
@@ -67,9 +67,9 @@ class _StorePageState extends State<StorePage> {
       await controller.purchase(product);
       if (!mounted) return;
       if (controller.errorMessage.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(controller.errorMessage)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(controller.errorMessage)));
       }
     }
   }
@@ -80,11 +80,7 @@ class _StorePageState extends State<StorePage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(
-            Icons.chevron_left,
-            size: 40,
-            color: Colors.grey,
-          ),
+          icon: const Icon(Icons.chevron_left, size: 40, color: Colors.grey),
         ),
         titleSpacing: 0,
         title: Text(
@@ -150,6 +146,7 @@ class _StorePageState extends State<StorePage> {
                         backgroundColor: const Color(0xFFFFF3E0),
                         headerColor: const Color(0xFFDF924B),
                         headerTextColor: Colors.white,
+                        descriptionTextColor: const Color(0xFF5D4037),
                         products: StoreCatalog.powerUpProducts,
                         priceFor: controller.priceFor,
                         purchasingProductId: controller.purchasingProductId,

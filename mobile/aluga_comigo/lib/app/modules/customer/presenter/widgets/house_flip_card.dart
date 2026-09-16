@@ -220,127 +220,35 @@ class HouseFlipCard extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     if (immobile.bathrooms > 0) ...[
-                                      SizedBox(
-                                        width: 35,
-                                        height: 35,
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.amber,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                child: Icon(Icons.bathroom),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Container(
-                                                width: 15,
-                                                height: 15,
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.red,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${immobile.bathrooms}",
-                                                    style: GoogleFonts.rubik(
-                                                      color: Colors.white,
-                                                      fontSize: 11,
-                                                      height: 1,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                      _ImmobileFeatureIcon(
+                                        tooltip: _bathroomsLabel(
+                                          immobile.bathrooms,
                                         ),
+                                        color: Colors.amber,
+                                        icon: Icons.bathroom,
+                                        count: immobile.bathrooms,
                                       ),
                                       const Gap(8),
                                     ],
                                     if (immobile.bedrooms > 0) ...[
-                                      SizedBox(
-                                        width: 35,
-                                        height: 35,
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.green,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                child: Icon(Icons.bed),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Container(
-                                                width: 15,
-                                                height: 15,
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.red,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${immobile.bedrooms}",
-                                                    style: GoogleFonts.rubik(
-                                                      color: Colors.white,
-                                                      fontSize: 11,
-                                                      height: 1,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                      _ImmobileFeatureIcon(
+                                        tooltip: _bedroomsLabel(
+                                          immobile.bedrooms,
                                         ),
+                                        color: Colors.green,
+                                        icon: Icons.bed,
+                                        count: immobile.bedrooms,
                                       ),
                                       const Gap(8),
                                     ],
                                     if (immobile.carSpaces > 0) ...[
-                                      SizedBox(
-                                        width: 35,
-                                        height: 35,
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.orange,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                child: Icon(
-                                                  Icons.local_parking,
-                                                ),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Container(
-                                                width: 15,
-                                                height: 15,
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.red,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${immobile.carSpaces}",
-                                                    style: GoogleFonts.rubik(
-                                                      color: Colors.white,
-                                                      fontSize: 11,
-                                                      height: 1,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                      _ImmobileFeatureIcon(
+                                        tooltip: _carSpacesLabel(
+                                          immobile.carSpaces,
                                         ),
+                                        color: Colors.orange,
+                                        icon: Icons.local_parking,
+                                        count: immobile.carSpaces,
                                       ),
                                       const Gap(8),
                                     ],
@@ -482,123 +390,29 @@ class HouseFlipCard extends StatelessWidget {
                   child: Row(
                     children: [
                       if (immobile.bathrooms > 0) ...[
-                        SizedBox(
-                          width: 35,
-                          height: 35,
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.amber,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Center(
-                                  child: Icon(Icons.bathroom),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  width: 15,
-                                  height: 15,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${immobile.bathrooms}",
-                                      style: GoogleFonts.rubik(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        height: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        _ImmobileFeatureIcon(
+                          tooltip: _bathroomsLabel(immobile.bathrooms),
+                          color: Colors.amber,
+                          icon: Icons.bathroom,
+                          count: immobile.bathrooms,
                         ),
                         const Gap(8),
                       ],
                       if (immobile.bedrooms > 0) ...[
-                        SizedBox(
-                          width: 35,
-                          height: 35,
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Center(child: Icon(Icons.bed)),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  width: 15,
-                                  height: 15,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${immobile.bedrooms}",
-                                      style: GoogleFonts.rubik(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        height: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        _ImmobileFeatureIcon(
+                          tooltip: _bedroomsLabel(immobile.bedrooms),
+                          color: Colors.green,
+                          icon: Icons.bed,
+                          count: immobile.bedrooms,
                         ),
                         const Gap(8),
                       ],
                       if (immobile.carSpaces > 0) ...[
-                        SizedBox(
-                          width: 35,
-                          height: 35,
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.orange,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Center(
-                                  child: Icon(Icons.local_parking),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  width: 15,
-                                  height: 15,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${immobile.carSpaces}",
-                                      style: GoogleFonts.rubik(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        height: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        _ImmobileFeatureIcon(
+                          tooltip: _carSpacesLabel(immobile.carSpaces),
+                          color: Colors.orange,
+                          icon: Icons.local_parking,
+                          count: immobile.carSpaces,
                         ),
                         const Gap(8),
                       ],
@@ -754,6 +568,70 @@ class HouseFlipCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  static String _bathroomsLabel(int count) =>
+      count == 1 ? '1 banheiro' : '$count banheiros';
+
+  static String _bedroomsLabel(int count) =>
+      count == 1 ? '1 quarto' : '$count quartos';
+
+  static String _carSpacesLabel(int count) =>
+      count == 1 ? '1 vaga na garagem' : '$count vagas na garagem';
+}
+
+class _ImmobileFeatureIcon extends StatelessWidget {
+  final String tooltip;
+  final Color color;
+  final IconData icon;
+  final int count;
+
+  const _ImmobileFeatureIcon({
+    required this.tooltip,
+    required this.color,
+    required this.icon,
+    required this.count,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      triggerMode: TooltipTriggerMode.tap,
+      message: tooltip,
+      child: SizedBox(
+        width: 35,
+        height: 35,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              child: Center(child: Icon(icon)),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                width: 15,
+                height: 15,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '$count',
+                    style: GoogleFonts.rubik(
+                      color: Colors.white,
+                      fontSize: 11,
+                      height: 1,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

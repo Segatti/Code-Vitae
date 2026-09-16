@@ -1,8 +1,9 @@
 import 'package:flip_card/flip_card_controller.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
 import '../../../../shared/domain/constants/icons_asset.dart';
@@ -12,6 +13,7 @@ import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
 import '../controllers/houses_controller.dart';
+import '../widgets/super_chat_immobile_dialog.dart';
 
 class HousesPage extends StatefulWidget {
   const HousesPage({super.key});
@@ -33,6 +35,32 @@ class _HousesPageState extends State<HousesPage> {
     };
   }
 
+  Future<void> _superChatForHouse(
+    ImmobileCustomerModel house,
+    List<CustomerModel> list,
+  ) async {
+    final message = await SuperChatImmobileDialog.show(context);
+    if (message == null || !mounted) return;
+
+    final success = await controller.superChatFavoriteImmobile(house, message);
+    if (!mounted) return;
+
+    if (!success && controller.errorMessage.isNotEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(controller.errorMessage)));
+      return;
+    }
+
+    if (success) {
+      swipController.next(swipeDirection: SwipeDirection.up);
+      if (swipController.currentIndex >= list.length - 1 &&
+          controller.hasMore) {
+        controller.getHouses();
+      }
+    }
+  }
+
   Future<void> _onSwipeCompleted(
     int index,
     SwipeDirection direction,
@@ -41,12 +69,15 @@ class _HousesPageState extends State<HousesPage> {
     final itemIndex = index % list.length;
     final house = list[itemIndex];
     final matchType = _matchTypeFromDirection(direction);
+    if (matchType == MatchType.favorite) {
+      return;
+    }
     if (matchType != null) {
       await controller.handleSwipe(house, matchType);
       if (mounted && controller.errorMessage.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(controller.errorMessage)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(controller.errorMessage)));
       }
     }
     if ((index == list.length - 1) && controller.hasMore) {
@@ -78,7 +109,8 @@ class _HousesPageState extends State<HousesPage> {
       builder: (context, child) {
         var list = controller.houses.toList();
 
-        final isLoadingInitial = list.isEmpty &&
+        final isLoadingInitial =
+            list.isEmpty &&
             (controller.loadingList.contains('getHouses') ||
                 controller.loadingList.contains('initialize'));
 
@@ -120,6 +152,15 @@ class _HousesPageState extends State<HousesPage> {
                       SwipeDirection.left,
                       SwipeDirection.right,
                       SwipeDirection.up,
+                    },
+                    onWillMoveNext: (index, direction) {
+                      if (direction != SwipeDirection.up) return true;
+                      final house = list[index % list.length];
+                      if (house is! ImmobileCustomerModel) return false;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _superChatForHouse(house, list);
+                      });
+                      return false;
                     },
                     stackClipBehaviour: Clip.none,
                     onSwipeCompleted: (index, direction) {
@@ -197,7 +238,12 @@ class _HousesPageState extends State<HousesPage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      swipController.next(swipeDirection: SwipeDirection.up);
+                      if (list.isEmpty) return;
+                      final house =
+                          list[swipController.currentIndex % list.length];
+                      if (house is ImmobileCustomerModel) {
+                        _superChatForHouse(house, list);
+                      }
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -221,10 +267,14 @@ class _HousesPageState extends State<HousesPage> {
                       ),
                       height: 60,
                       padding: const EdgeInsets.all(8),
-                      child: Image.asset(
-                        IconsAsset.favorite,
+                      child: SvgPicture.asset(
+                        IconsAsset.chat,
                         width: 45,
                         height: 45,
+                        colorFilter: ColorFilter.mode(
+                          Colors.amber,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),

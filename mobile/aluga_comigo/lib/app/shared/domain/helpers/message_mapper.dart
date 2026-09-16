@@ -10,6 +10,7 @@ class MessageMapper {
       'content': row['content'] ?? '',
       'messageType': row['message_type'] ?? 'text',
       'createdAt': row['created_at'],
+      'readAt': row['read_at'],
     };
   }
 

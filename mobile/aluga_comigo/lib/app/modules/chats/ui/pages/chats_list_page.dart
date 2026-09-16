@@ -297,9 +297,11 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                     ),
                                   ),
                                   builder: (context) {
-                                    return const FractionallySizedBox(
+                                    return FractionallySizedBox(
                                       heightFactor: 0.9,
-                                      child: ContactListPage(),
+                                      child: ContactListPage(
+                                        tabIndex: tabSelected,
+                                      ),
                                     );
                                   },
                                 );

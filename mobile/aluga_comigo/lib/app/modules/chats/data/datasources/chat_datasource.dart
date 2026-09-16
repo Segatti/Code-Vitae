@@ -26,6 +26,7 @@ class ChatDatasource implements IChatDatasource {
 
   @override
   Future<List<ChatMessageModel>> listMessages(String chatId) async {
+    await database.markChatMessagesRead(chatId);
     final rows = await database.listMessages(chatId);
     return rows.map<ChatMessageModel>(ChatMessageModel.fromMap).toList();
   }

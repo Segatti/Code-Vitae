@@ -13,6 +13,10 @@ abstract interface class ICustomerRepository {
     List<String> alreadyLoadedIds = const [],
   });
   AsyncResult<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
+  AsyncResult<Unit> matchImmobileWithSuperChat({
+    required ImmobileCustomerModel immobile,
+    required String message,
+  });
 }
 
 class CustomerRepository implements ICustomerRepository {
@@ -37,5 +41,15 @@ class CustomerRepository implements ICustomerRepository {
     MatchType matchType,
   ) async {
     return datasource.matchCustomer(customer, matchType).toAsyncResult();
+  }
+
+  @override
+  AsyncResult<Unit> matchImmobileWithSuperChat({
+    required ImmobileCustomerModel immobile,
+    required String message,
+  }) async {
+    return datasource
+        .matchImmobileWithSuperChat(immobile: immobile, message: message)
+        .toAsyncResult();
   }
 }

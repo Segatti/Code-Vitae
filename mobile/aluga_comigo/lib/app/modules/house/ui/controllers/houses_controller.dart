@@ -8,6 +8,7 @@ import '../../../customer/domain/constants/swipe_feed_constants.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/domain/usecases/get_customers.dart';
 import '../../../customer/domain/usecases/match_customer.dart';
+import '../../../customer/domain/usecases/match_immobile_with_super_chat.dart';
 
 abstract class IHousesController extends ChangeNotifier {
   List<String> loadingList = [];
@@ -22,14 +23,23 @@ abstract class IHousesController extends ChangeNotifier {
 
   Future<bool> getHouses();
   Future<bool> matchHouse(CustomerModel customer, MatchType matchType);
+  Future<bool> superChatFavoriteImmobile(
+    ImmobileCustomerModel immobile,
+    String message,
+  );
   Future<void> handleSwipe(CustomerModel customer, MatchType matchType);
 }
 
 class HousesController extends IHousesController {
   final IGetCustomers _getCustomers;
   final IMatchCustomer _matchCustomer;
+  final IMatchImmobileWithSuperChat _matchImmobileWithSuperChat;
 
-  HousesController(this._getCustomers, this._matchCustomer);
+  HousesController(
+    this._getCustomers,
+    this._matchCustomer,
+    this._matchImmobileWithSuperChat,
+  );
 
   late final getHousesCommand = Command0(
     () => _getCustomers.call(
@@ -67,6 +77,35 @@ class HousesController extends IHousesController {
       },
       orElse: () {
         hasMore = false;
+        notifyListeners();
+        return false;
+      },
+    );
+  }
+
+  @override
+  Future<bool> superChatFavoriteImmobile(
+    ImmobileCustomerModel immobile,
+    String message,
+  ) async {
+    loadingList.add('superChatFavorite');
+    notifyListeners();
+
+    final result = await _matchImmobileWithSuperChat(
+      immobile: immobile,
+      message: message,
+    );
+
+    loadingList.remove('superChatFavorite');
+    return result.fold(
+      (_) {
+        houses.removeWhere((item) => item.id == immobile.id);
+        errorMessage = '';
+        notifyListeners();
+        return true;
+      },
+      (_) {
+        errorMessage = 'Erro ao favoritar com Super Chat';
         notifyListeners();
         return false;
       },

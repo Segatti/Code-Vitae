@@ -8,6 +8,7 @@ class ChatMessageModel {
   final String content;
   final String messageType;
   final DateTime? createdAt;
+  final DateTime? readAt;
 
   const ChatMessageModel({
     required this.id,
@@ -17,13 +18,15 @@ class ChatMessageModel {
     required this.content,
     this.messageType = 'text',
     this.createdAt,
+    this.readAt,
   });
 
   factory ChatMessageModel.fromMap(Map<String, dynamic> map) {
-    DateTime? createdAt;
-    final rawAt = map['createdAt'];
-    if (rawAt is String && rawAt.isNotEmpty) {
-      createdAt = DateTime.tryParse(rawAt);
+    DateTime? parseAt(dynamic raw) {
+      if (raw is String && raw.isNotEmpty) {
+        return DateTime.tryParse(raw);
+      }
+      return null;
     }
 
     return ChatMessageModel(
@@ -33,17 +36,19 @@ class ChatMessageModel {
       isFromUser: map['isFromUser'] == true,
       content: map['content']?.toString() ?? '',
       messageType: map['messageType']?.toString() ?? 'text',
-      createdAt: createdAt,
+      createdAt: parseAt(map['createdAt']),
+      readAt: parseAt(map['readAt']),
     );
   }
 
   ChatMessage toEntity() => ChatMessage(
-        id: id,
-        chatId: chatId,
-        senderId: senderId,
-        isFromUser: isFromUser,
-        content: content,
-        messageType: messageType,
-        createdAt: createdAt,
-      );
+    id: id,
+    chatId: chatId,
+    senderId: senderId,
+    isFromUser: isFromUser,
+    content: content,
+    messageType: messageType,
+    createdAt: createdAt,
+    readAt: readAt,
+  );
 }

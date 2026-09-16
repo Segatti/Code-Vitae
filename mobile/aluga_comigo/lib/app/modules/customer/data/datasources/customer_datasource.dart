@@ -16,6 +16,10 @@ abstract interface class ICustomerDatasource {
     List<String> alreadyLoadedIds = const [],
   });
   Future<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
+  Future<Unit> matchImmobileWithSuperChat({
+    required ImmobileCustomerModel immobile,
+    required String message,
+  });
 }
 
 class CustomerDatasource implements ICustomerDatasource {
@@ -33,11 +37,22 @@ class CustomerDatasource implements ICustomerDatasource {
     final sessionId = session.id;
 
     if (matchType == MatchType.favorite) {
-      final consumed = await database.consumeSuperStar();
+      final isPersonToImmobile =
+          session.typeUser == TypeUser.person &&
+          customer.typeUser == TypeUser.immobile;
+      final consumed = isPersonToImmobile
+          ? await database.consumeSuperChat()
+          : await database.consumeSuperStar();
       if (!consumed) {
         throw FailureDatasource(
-          message: 'Você não tem Super Star. Compre na loja.',
+          message: isPersonToImmobile
+              ? 'Você não tem Super Chat. Compre na loja.'
+              : 'Você não tem Super Star. Compre na loja.',
         );
+      }
+      if (isPersonToImmobile) {
+        final inventory = await database.getUserInventory();
+        SessionService.setInventory(UserInventory.fromMap(inventory));
       }
     }
 
@@ -91,6 +106,35 @@ class CustomerDatasource implements ICustomerDatasource {
 
     if (matchType == MatchType.like || matchType == MatchType.favorite) {
       await database.incrementQuestProgress(matchType.name);
+    }
+
+    return unit;
+  }
+
+  @override
+  Future<Unit> matchImmobileWithSuperChat({
+    required ImmobileCustomerModel immobile,
+    required String message,
+  }) async {
+    final trimmed = message.trim();
+    if (trimmed.isEmpty) {
+      throw FailureDatasource(message: 'Digite uma mensagem.');
+    }
+
+    await matchCustomer(immobile, MatchType.favorite);
+
+    final session = SessionService.customer!;
+    final chatRow = await database.findChatByParticipants(
+      personId: session.id,
+      immobileId: immobile.id,
+    );
+    if (chatRow != null) {
+      await database.sendMessage(
+        chatId: chatRow['id']?.toString() ?? '',
+        senderId: session.id,
+        content: trimmed,
+        messageType: 'superChat',
+      );
     }
 
     return unit;

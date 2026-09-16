@@ -17,9 +17,7 @@ class ChatsModule extends Module {
       transition: AppTransitions.rightToLeft,
       child: (_, state) {
         final args = state.arguments! as Map<String, dynamic>;
-        return ChatPage(
-          chat: args['chat'] as Chat,
-        );
+        return ChatPage(chat: args['chat'] as Chat);
       },
     );
   }

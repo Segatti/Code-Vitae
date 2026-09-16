@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/modules/chats/domain/entities/chat.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/entities/chat_message.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/chat_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
@@ -10,10 +11,7 @@ import 'package:intl/intl.dart';
 class ChatPage extends StatefulWidget {
   final Chat chat;
 
-  const ChatPage({
-    super.key,
-    required this.chat,
-  });
+  const ChatPage({super.key, required this.chat});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -99,7 +97,8 @@ class _ChatPageState extends State<ChatPage> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: controller.loadingList.contains('loadMessages') &&
+                      child:
+                          controller.loadingList.contains('loadMessages') &&
                               messages.isEmpty
                           ? const Center(child: CircularProgressIndicator())
                           : ListView.separated(
@@ -117,10 +116,9 @@ class _ChatPageState extends State<ChatPage> {
                                   child: LayoutBuilder(
                                     builder: (context, constraints) {
                                       return Row(
-                                        mainAxisAlignment:
-                                            message.isFromUser
-                                                ? MainAxisAlignment.end
-                                                : MainAxisAlignment.start,
+                                        mainAxisAlignment: message.isFromUser
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
                                         children: message.isFromUser
@@ -132,14 +130,14 @@ class _ChatPageState extends State<ChatPage> {
                                                 ),
                                                 const Gap(8),
                                                 _messageBubble(
-                                                  message.content,
+                                                  message,
                                                   constraints.maxWidth * .8,
                                                   isUser: true,
                                                 ),
                                               ]
                                             : [
                                                 _messageBubble(
-                                                  message.content,
+                                                  message,
                                                   constraints.maxWidth * .8,
                                                   isUser: false,
                                                 ),
@@ -197,9 +195,7 @@ class _ChatPageState extends State<ChatPage> {
                                   contentPadding: EdgeInsets.only(left: 8),
                                 ),
                                 onFieldSubmitted: (_) async {
-                                  await controller.sendMessage(
-                                    widget.chat.id,
-                                  );
+                                  await controller.sendMessage(widget.chat.id);
                                 },
                               ),
                             ),
@@ -231,26 +227,42 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _messageBubble(
-    String text,
+    ChatMessage message,
     double maxWidth, {
     required bool isUser,
   }) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isUser ? Colors.blue : Colors.amber,
-          width: 2,
+    final borderColor = message.isSuperChat
+        ? const Color(0xFFFFC850)
+        : (isUser ? Colors.blue : Colors.amber);
+
+    return Column(
+      crossAxisAlignment: isUser
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
+      children: [
+        Container(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: message.isSuperChat ? const Color(0xFFFFF8E1) : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor, width: 2),
+          ),
+          child: Text(
+            message.content,
+            maxLines: null,
+            style: GoogleFonts.rubik(),
+          ),
         ),
-      ),
-      child: Text(
-        text,
-        maxLines: null,
-        style: GoogleFonts.rubik(),
-      ),
+        if (isUser && message.isSuperChat)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              message.isReadByOther ? 'Lida' : 'Enviada',
+              style: GoogleFonts.rubik(fontSize: 11, color: Colors.black54),
+            ),
+          ),
+      ],
     );
   }
 }
