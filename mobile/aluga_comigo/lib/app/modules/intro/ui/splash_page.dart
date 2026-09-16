@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:styled_text/styled_text.dart';
 
 import '../../../shared/data/services/secure_storage_service.dart';
+import '../../../shared/data/services/session_service.dart';
+import '../../../shared/domain/helpers/start_navigation_helper.dart';
+import '../../auth/domain/enums/type_user.dart';
 import '../../auth/data/models/user_model.dart';
 import '../../auth/domain/entities/inputs/login_input.dart';
 import '../../auth/domain/usecases/login_user.dart';
@@ -49,7 +52,11 @@ class _SplashPageState extends State<SplashPage> {
                 context.navigate("/auth/");
               },
               (user) {
-                context.navigate("/start/customers");
+                context.navigate(
+                  StartNavigationHelper.homeRouteFor(
+                    SessionService.customer?.typeUser ?? TypeUser.none,
+                  ),
+                );
               },
             );
           } else {

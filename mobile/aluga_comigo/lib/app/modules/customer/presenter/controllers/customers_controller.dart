@@ -1,10 +1,10 @@
-import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../auth/domain/enums/type_user.dart';
 import '../../data/models/customer_model.dart';
+import '../../domain/constants/swipe_feed_constants.dart';
 import '../../domain/enums/match_type.dart';
 import '../../domain/usecases/get_customers.dart';
 import '../../domain/usecases/match_customer.dart';
@@ -34,17 +34,14 @@ class CustomersController extends ICustomersController {
   late final getCustomersCommand = Command0(
     () => _getCustomers.call(
       typeUser: TypeUser.person,
-      startAfter: customers.isNotEmpty
-          ? customers.last.id
-          : (SessionService.customer!.lastMatch.isNotEmpty
-              ? SessionService.customer!.lastMatch
-              : null),
+      alreadyLoadedIds: customers.map((customer) => customer.id).toList(),
     ),
   );
   late final matchCustomerCommand = Command2(_matchCustomer.call);
 
   @override
   Future<bool> getCustomers() async {
+    if (loadingList.contains('getCustomers')) return false;
     loadingList.add('getCustomers');
     notifyListeners();
     await getCustomersCommand.execute();
@@ -53,9 +50,10 @@ class CustomersController extends ICustomersController {
     final result = getCustomersCommand.value;
     return result.when(
       data: (list) {
-        if (list.isEmpty) {
+        if (list.isEmpty || list.length < SwipeFeedConstants.pageSize) {
           hasMore = false;
-        } else {
+        }
+        if (list.isNotEmpty) {
           customers.addAll(list);
         }
         notifyListeners();

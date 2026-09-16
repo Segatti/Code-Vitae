@@ -10,7 +10,7 @@ import '../datasources/customer_datasource.dart';
 abstract interface class ICustomerRepository {
   AsyncResult<List<CustomerModel>> getCustomers({
     required TypeUser typeUser,
-    String? startAfter,
+    List<String> alreadyLoadedIds = const [],
   });
   AsyncResult<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
 }
@@ -23,11 +23,11 @@ class CustomerRepository implements ICustomerRepository {
   @override
   AsyncResult<List<CustomerModel>> getCustomers({
     required TypeUser typeUser,
-    String? startAfter,
+    List<String> alreadyLoadedIds = const [],
   }) async {
     return datasource.getCustomers(
       typeUser: typeUser,
-      startAfter: startAfter,
+      alreadyLoadedIds: alreadyLoadedIds,
     ).toAsyncResult();
   }
 

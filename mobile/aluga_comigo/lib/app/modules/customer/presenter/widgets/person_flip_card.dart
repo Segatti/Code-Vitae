@@ -1,13 +1,13 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_desired_immobile.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../shared/ui/widgets/card_photo_pager.dart';
 import '../../../../shared/ui/widgets/power_up_badge.dart';
 import '../../../auth/domain/enums/user_skill.dart';
 import 'customer_profile_card.dart';
@@ -69,22 +69,14 @@ class PersonFlipCard extends StatelessWidget {
               Positioned.fill(
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 170),
-                  child: ClipRRect(
+                  child: CardPhotoPager(
+                    photoUrls: customer.photos,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
-                    child: CachedNetworkImage(
-                      height: cardHeight,
-                      imageUrl: customer.photos.firstOrNull ?? "",
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) {
-                        return Center(
-                          child: const Icon(
-                            Icons.person,
-                            size: 100,
-                          ),
-                        );
-                      },
+                    placeholder: const Icon(
+                      Icons.person,
+                      size: 100,
                     ),
                   ),
                 ),

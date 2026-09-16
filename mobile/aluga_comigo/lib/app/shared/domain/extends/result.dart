@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:result_dart/result_dart.dart'
     hide FutureResultExtension, FutureResultExtensionVoid;
 
+import '../entities/failures.dart' as entity;
 import '../errors/failure.dart' as error;
 
 extension AsyncResultReturn<T extends Object> on Future<T> {
@@ -14,8 +15,8 @@ extension AsyncResultReturn<T extends Object> on Future<T> {
     } catch (e, s) {
       debugPrint(e.toString());
       debugPrint(s.toString());
-      if (e is error.Failure) {
-        return Failure(e);
+      if (e is error.Failure || e is entity.Failure) {
+        return Failure(e is Exception ? e : Exception(e.toString()));
       }
       return Failure(Exception(e.toString()));
     }
@@ -30,8 +31,8 @@ extension AsyncResultReturnVoid on Future<void> {
     } catch (e, s) {
       debugPrint(e.toString());
       debugPrint(s.toString());
-      if (e is error.Failure) {
-        return Failure(e);
+      if (e is error.Failure || e is entity.Failure) {
+        return Failure(e is Exception ? e : Exception(e.toString()));
       }
       return Failure(Exception(e.toString()));
     }

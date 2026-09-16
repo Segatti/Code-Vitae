@@ -6,6 +6,9 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../shared/data/services/secure_storage_service.dart';
+import '../../../shared/data/services/session_service.dart';
+import '../../../shared/domain/helpers/start_navigation_helper.dart';
+import '../../auth/domain/enums/type_user.dart';
 import '../../../shared/presenter/widgets/popups/loading_popup.dart';
 import '../../../shared/presenter/widgets/primary_button.dart';
 import '../../../shared/presenter/widgets/secondary_button.dart';
@@ -265,7 +268,12 @@ class _AuthPageState extends State<AuthPage> {
                                   if(!context.mounted) return;
 
                                   if (result) {
-                                    context.navigate("/start/customers/");
+                                    context.navigate(
+                                      StartNavigationHelper.homeRouteFor(
+                                        SessionService.customer?.typeUser ??
+                                            TypeUser.none,
+                                      ),
+                                    );
                                   } else {
                                     if (context.mounted) Navigator.pop(context);
                                     notificationError(
@@ -288,7 +296,12 @@ class _AuthPageState extends State<AuthPage> {
                                   if (!context.mounted) return;
                                   Navigator.pop(context);
                                   if (result) {
-                                    context.navigate("/start/customers/");
+                                    context.navigate(
+                                      StartNavigationHelper.homeRouteFor(
+                                        SessionService.customer?.typeUser ??
+                                            TypeUser.none,
+                                      ),
+                                    );
                                   } else {
                                     notificationError(
                                       "Falha no Cadastro",

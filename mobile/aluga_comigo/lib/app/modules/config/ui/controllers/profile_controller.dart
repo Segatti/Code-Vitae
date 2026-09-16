@@ -43,6 +43,7 @@ abstract interface class IProfileController extends ChangeNotifier {
   Future<bool> uploadPhotos();
   void removePhoto(int index);
   void removeSelectedPhoto(int index);
+  void reorderPhotos(int oldIndex, int newIndex);
   bool get canRemovePhotos;
 }
 
@@ -357,6 +358,46 @@ class ProfileController extends IProfileController {
       selectedPhotos.removeAt(index);
       notifyListeners();
     }
+  }
+
+  @override
+  void reorderPhotos(int oldIndex, int newIndex) {
+    if (customer == null) return;
+
+    final saved = List<String>.from(customer!.photos);
+    final pending = List<XFile>.from(selectedPhotos);
+    final unified = <Object>[...saved, ...pending];
+    final length = unified.length;
+    if (length < 2 ||
+        oldIndex < 0 ||
+        oldIndex >= length ||
+        newIndex < 0 ||
+        newIndex >= length) {
+      return;
+    }
+
+    final item = unified.removeAt(oldIndex);
+    unified.insert(newIndex, item);
+
+    final newSaved = <String>[];
+    final newPending = <XFile>[];
+    for (final entry in unified) {
+      if (entry is String) {
+        newSaved.add(entry);
+      } else if (entry is XFile) {
+        newPending.add(entry);
+      }
+    }
+
+    selectedPhotos = newPending;
+    switch (customer!) {
+      case PersonCustomerModel data:
+        customer = data.copyWith(photos: newSaved);
+      case ImmobileCustomerModel data:
+        customer = data.copyWith(photos: newSaved);
+    }
+    SessionService.setCustomer(customer!);
+    notifyListeners();
   }
 
   @override

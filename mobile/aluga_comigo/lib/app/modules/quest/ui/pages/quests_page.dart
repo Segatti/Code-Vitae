@@ -5,10 +5,10 @@ import 'package:aluga_comigo/app/modules/quest/interactor/enums/type_reward.dart
 import 'package:aluga_comigo/app/modules/quest/ui/controllers/quests_controller.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class QuestsPage extends StatefulWidget {
@@ -44,9 +44,7 @@ class _QuestsPageState extends State<QuestsPage> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          success ? 'Prêmio recebido!' : controller.errorMessage,
-        ),
+        content: Text(success ? 'Prêmio recebido!' : controller.errorMessage),
       ),
     );
   }
@@ -57,11 +55,7 @@ class _QuestsPageState extends State<QuestsPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(
-            Icons.chevron_left,
-            size: 40,
-            color: Colors.grey,
-          ),
+          icon: const Icon(Icons.chevron_left, size: 40, color: Colors.grey),
         ),
         titleSpacing: 0,
         title: Text(
@@ -129,7 +123,9 @@ class _QuestsPageState extends State<QuestsPage> {
                                   controller.errorMessage.isNotEmpty
                                       ? controller.errorMessage
                                       : 'Nenhuma missão disponível.',
-                                  style: GoogleFonts.rubik(color: Colors.black54),
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.black54,
+                                  ),
                                 ),
                               )
                             : ListView.separated(
@@ -139,15 +135,19 @@ class _QuestsPageState extends State<QuestsPage> {
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                           color: const Color(0xFFEAEAEA),
                                         ),
                                         child: Row(
                                           children: [
-                                            Flexible(
+                                            Expanded(
                                               flex: 3,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(
+                                                  8,
+                                                ),
                                                 child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -157,7 +157,8 @@ class _QuestsPageState extends State<QuestsPage> {
                                                       style: GoogleFonts.rubik(
                                                         color: Colors.black,
                                                         fontSize: 16,
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                       ),
                                                     ),
                                                     Text(
@@ -176,8 +177,8 @@ class _QuestsPageState extends State<QuestsPage> {
                                               height: 50,
                                               color: const Color(0xFFACACAC),
                                             ),
-                                            Flexible(
-                                              flex: 1,
+                                            SizedBox(
+                                              width: 100,
                                               child: Center(
                                                 child: Row(
                                                   mainAxisAlignment:
@@ -186,15 +187,22 @@ class _QuestsPageState extends State<QuestsPage> {
                                                     Text(
                                                       '${quest.rewardAmount}x',
                                                       style: GoogleFonts.rubik(
-                                                        color: const Color(0xFF787878),
+                                                        color: const Color(
+                                                          0xFF787878,
+                                                        ),
                                                         fontSize: 16,
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                       ),
                                                     ),
                                                     const Gap(8),
                                                     Icon(
-                                                      _rewardIcon(quest.rewardType),
-                                                      color: const Color(0xFF2C29A3),
+                                                      _rewardIcon(
+                                                        quest.rewardType,
+                                                      ),
+                                                      color: const Color(
+                                                        0xFF2C29A3,
+                                                      ),
                                                       size: 28,
                                                     ),
                                                   ],
@@ -208,7 +216,9 @@ class _QuestsPageState extends State<QuestsPage> {
                                         GestureDetector(
                                           onTap: () => _claim(quest),
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
                                             child: BackdropFilter(
                                               filter: ImageFilter.blur(
                                                 sigmaX: 5,
@@ -224,10 +234,36 @@ class _QuestsPageState extends State<QuestsPage> {
                                                       'Receber Prêmio',
                                                       style: GoogleFonts.rubik(
                                                         color: Colors.white,
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         fontSize: 16,
                                                       ),
                                                     ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      else if (quest.isCompleted &&
+                                          quest.isClaimed)
+                                        Positioned.fill(
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            child: ColoredBox(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.82),
+                                              child: Center(
+                                                child: Text(
+                                                  'Prêmio resgatado',
+                                                  style: GoogleFonts.rubik(
+                                                    color: const Color(
+                                                      0xFF2C29A3,
+                                                    ),
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 15,
                                                   ),
                                                 ),
                                               ),

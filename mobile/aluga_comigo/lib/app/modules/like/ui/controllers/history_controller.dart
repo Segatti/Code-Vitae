@@ -1,5 +1,7 @@
+import 'package:aluga_comigo/app/shared/domain/entities/failures.dart'
+    as entity;
+import 'package:aluga_comigo/app/shared/domain/errors/failure.dart' as app;
 import 'package:material_ui/material_ui.dart';
-import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../data/models/rejected_history_item.dart';
@@ -19,34 +21,34 @@ class HistoryController extends IHistoryController {
 
   HistoryController(this._getRejectedHistory);
 
-  late final _loadCommand = Command0(_getRejectedHistory.call);
-
   @override
   Future<Unit> initialize() async {
     loadingList.add('loadHistory');
+    errorMessage = '';
     notifyListeners();
 
-    await _loadCommand.execute();
-
-    loadingList.remove('loadHistory');
-    final result = _loadCommand.value;
-    result.when(
-      data: (data) {
-        persons = data.persons;
-        immobiles = data.immobiles;
-        errorMessage = '';
-      },
-      failure: (_) {
-        errorMessage = 'Erro ao carregar histórico';
-        persons = [];
-        immobiles = [];
-      },
-      orElse: () {
-        persons = [];
-        immobiles = [];
-      },
-    );
-    notifyListeners();
+    try {
+      final result = await _getRejectedHistory();
+      result.fold(
+        (data) {
+          persons = data.persons;
+          immobiles = data.immobiles;
+          errorMessage = '';
+        },
+        (failure) {
+          persons = [];
+          immobiles = [];
+          errorMessage = switch (failure) {
+            app.Failure(:final message) => message,
+            entity.Failure(:final message) => message,
+            _ => failure.toString(),
+          };
+        },
+      );
+    } finally {
+      loadingList.remove('loadHistory');
+      notifyListeners();
+    }
     return unit;
   }
 }

@@ -1,12 +1,12 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_immobile.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:aluga_comigo/app/shared/ui/widgets/card_photo_pager.dart';
+import 'package:aluga_comigo/app/shared/ui/widgets/power_up_badge.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:aluga_comigo/app/shared/ui/widgets/power_up_badge.dart';
 import 'package:material_ui/material_ui.dart';
 
 class HouseFlipCard extends StatelessWidget {
@@ -72,33 +72,21 @@ class HouseFlipCard extends StatelessWidget {
           child: Stack(
             children: [
               if (immobile.hasActivePowerUp)
-                const Positioned(
-                  top: 12,
-                  left: 12,
-                  child: PowerUpBadge(),
-                ),
+                const Positioned(top: 12, left: 12, child: PowerUpBadge()),
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 170,
-                child: ClipRRect(
+                child: CardPhotoPager(
+                  photoUrls: immobile.photos,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
-                  child: CachedNetworkImage(
-                    height: cardHeight - 170,
-                    imageUrl: immobile.photos.firstOrNull ?? "",
-                    fit: BoxFit.cover,
-                    errorWidget: (context, url, error) {
-                      return Center(
-                        child: Icon(
-                          Icons.home,
-                          size: 100,
-                          color: Colors.grey.shade400,
-                        ),
-                      );
-                    },
+                  placeholder: Icon(
+                    Icons.home,
+                    size: 100,
+                    color: Colors.grey.shade400,
                   ),
                 ),
               ),
@@ -152,27 +140,37 @@ class HouseFlipCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (immobile.typeImmobile != TypeImmobile.none)
-                              Text(
-                                _getTypeImmobileTitle(immobile.typeImmobile),
-                                style: GoogleFonts.rubik(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1,
-                                ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (immobile.typeImmobile !=
+                                      TypeImmobile.none)
+                                    Text(
+                                      _getTypeImmobileTitle(
+                                        immobile.typeImmobile,
+                                      ),
+                                      style: GoogleFonts.rubik(
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  const Gap(4),
+                                  if (immobile.price > 0)
+                                    Text(
+                                      immobile.price.toMoney(),
+                                      style: GoogleFonts.rubik(
+                                        fontSize: 16,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                ],
                               ),
-                            const Gap(12),
-                            if (immobile.price > 0)
-                              Text(
-                                immobile.price.toMoney(),
-                                style: GoogleFonts.rubik(
-                                  fontSize: 16,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            const Spacer(),
+                            ),
+                            const Gap(16),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,

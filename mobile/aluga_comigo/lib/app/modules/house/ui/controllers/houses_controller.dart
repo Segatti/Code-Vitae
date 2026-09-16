@@ -1,10 +1,10 @@
-import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../auth/domain/enums/type_user.dart';
 import '../../../customer/data/models/customer_model.dart';
+import '../../../customer/domain/constants/swipe_feed_constants.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/domain/usecases/get_customers.dart';
 import '../../../customer/domain/usecases/match_customer.dart';
@@ -34,17 +34,14 @@ class HousesController extends IHousesController {
   late final getHousesCommand = Command0(
     () => _getCustomers.call(
       typeUser: TypeUser.immobile,
-      startAfter: houses.isNotEmpty
-          ? houses.last.id
-          : (SessionService.customer!.lastMatch.isNotEmpty
-              ? SessionService.customer!.lastMatch
-              : null),
+      alreadyLoadedIds: houses.map((house) => house.id).toList(),
     ),
   );
   late final matchHouseCommand = Command2(_matchCustomer.call);
 
   @override
   Future<bool> getHouses() async {
+    if (loadingList.contains('getHouses')) return false;
     loadingList.add('getHouses');
     notifyListeners();
     await getHousesCommand.execute();
@@ -53,9 +50,10 @@ class HousesController extends IHousesController {
     final result = getHousesCommand.value;
     return result.when(
       data: (list) {
-        if (list.isEmpty) {
+        if (list.isEmpty || list.length < SwipeFeedConstants.pageSize) {
           hasMore = false;
-        } else {
+        }
+        if (list.isNotEmpty) {
           houses.addAll(list);
         }
         notifyListeners();

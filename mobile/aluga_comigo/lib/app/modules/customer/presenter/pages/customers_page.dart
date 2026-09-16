@@ -124,8 +124,11 @@ class _CustomersPageState extends State<CustomersPage> {
       builder: (context, child) {
         var list = controller.customers.toList();
 
-        if (controller.loadingList.contains('getCustomers') ||
-            controller.loadingList.contains('initialize')) {
+        final isLoadingInitial = list.isEmpty &&
+            (controller.loadingList.contains('getCustomers') ||
+                controller.loadingList.contains('initialize'));
+
+        if (isLoadingInitial) {
           return const Center(child: CircularProgressIndicator());
         }
 

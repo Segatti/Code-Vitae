@@ -202,7 +202,6 @@ class SupabaseDatabaseService {
   }
 
   Future<List<Json>> listPersons({
-    String? startAfter,
     String? excludeId,
     List<String>? excludeIds,
     String? city,
@@ -231,10 +230,6 @@ class SupabaseDatabaseService {
         filter = filter.ilike('state', state);
       }
 
-      if (startAfter != null && startAfter.isNotEmpty) {
-        filter = filter.lt('id', startAfter);
-      }
-
       final rows = await filter
           .order('power_up_until', ascending: false, nullsFirst: false)
           .order('created_at', ascending: false)
@@ -251,7 +246,6 @@ class SupabaseDatabaseService {
   }
 
   Future<List<Json>> listImmobiles({
-    String? startAfter,
     String? excludeId,
     List<String>? excludeIds,
     String? city,
@@ -280,10 +274,6 @@ class SupabaseDatabaseService {
         filter = filter.ilike('state', state);
       }
 
-      if (startAfter != null && startAfter.isNotEmpty) {
-        filter = filter.lt('id', startAfter);
-      }
-
       final rows = await filter
           .order('power_up_until', ascending: false, nullsFirst: false)
           .order('created_at', ascending: false)
@@ -291,6 +281,25 @@ class SupabaseDatabaseService {
       return rows
           .map((row) => ImmobileMapper.toAppMap(Map<String, dynamic>.from(row)))
           .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> createPersonPeerMatch({
+    required String fromPersonId,
+    required String toPersonId,
+    required String matchType,
+  }) async {
+    try {
+      await _client.from('person_peer_matches').upsert({
+        'from_person_id': fromPersonId,
+        'to_person_id': toPersonId,
+        'match_type': matchType,
+      });
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -329,6 +338,22 @@ class SupabaseDatabaseService {
         'person_id': personId,
         'match_type': matchType,
       });
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> updateLastMatchPersonPeer(
+    String personId,
+    String targetPersonId,
+  ) async {
+    try {
+      await _client.from('persons').update({
+        'last_match_person_id': targetPersonId,
+      }).eq('id', personId);
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -432,6 +457,24 @@ class SupabaseDatabaseService {
     }
   }
 
+  Future<List<String>> listPersonPeerMatchedTargetIds(String fromPersonId) async {
+    try {
+      final rows = await _client
+          .from('person_peer_matches')
+          .select('to_person_id')
+          .eq('from_person_id', fromPersonId);
+      return rows
+          .map((row) => row['to_person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<List<String>> listPersonMatchedImmobileIds(String personId) async {
     try {
       final rows = await _client
@@ -468,13 +511,49 @@ class SupabaseDatabaseService {
     }
   }
 
+  Future<List<Json>> listRejectedPeersByPerson(String fromPersonId) async {
+    try {
+      final rows = await _client
+          .from('person_peer_matches')
+          .select(
+            'match_type, created_at, persons!person_peer_matches_to_person_id_fkey(*)',
+          )
+          .eq('from_person_id', fromPersonId)
+          .inFilter('match_type', ['like', 'favorite', 'unlike'])
+          .order('created_at', ascending: false);
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final person = map['persons'];
+            if (person is! Map) return null;
+            final customer = PersonMapper.toAppMap(
+              Map<String, dynamic>.from(person),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'customer': customer,
+              'matchType': map['match_type'],
+              'rejectedAt': map['created_at'],
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<List<Json>> listRejectedImmobilesByPerson(String personId) async {
     try {
       final rows = await _client
           .from('person_matches')
-          .select('created_at, immobiles(*, accounts(*))')
+          .select('match_type, created_at, immobiles(*, accounts(*))')
           .eq('person_id', personId)
-          .eq('match_type', 'unlike')
+          .inFilter('match_type', ['like', 'favorite', 'unlike'])
           .order('created_at', ascending: false);
 
       return rows
@@ -488,6 +567,7 @@ class SupabaseDatabaseService {
             if (customer['isActive'] == false) return null;
             return {
               'customer': customer,
+              'matchType': map['match_type'],
               'rejectedAt': map['created_at'],
             };
           })
@@ -505,9 +585,9 @@ class SupabaseDatabaseService {
     try {
       final rows = await _client
           .from('immobile_matches')
-          .select('created_at, persons(*, accounts(*))')
+          .select('match_type, created_at, persons(*, accounts(*))')
           .eq('immobile_id', immobileId)
-          .eq('match_type', 'unlike')
+          .inFilter('match_type', ['like', 'favorite', 'unlike'])
           .order('created_at', ascending: false);
 
       return rows
@@ -521,6 +601,7 @@ class SupabaseDatabaseService {
             if (customer['isActive'] == false) return null;
             return {
               'customer': customer,
+              'matchType': map['match_type'],
               'rejectedAt': map['created_at'],
             };
           })

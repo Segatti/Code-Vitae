@@ -203,7 +203,7 @@ INSERT INTO public.persons (
     'Trabalho remoto, não fumo e gosto de ambientes silenciosos.',
     4.5,
     ARRAY['cucaMaster', 'laundryOperator'],
-    '1998-05-12',
+    '12/05/1998',
     2500,
     'apartment',
     'stayingAtHome',

@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:aluga_comigo/app/modules/config/ui/controllers/profile_controller.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -14,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../auth/domain/enums/type_immobile.dart';
 import '../../../customer/data/models/customer_model.dart';
+import '../widgets/profile_photos_editor.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
 
 class ProfileImmobilePage extends StatefulWidget {
@@ -241,190 +239,7 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Gap(32),
-                        SizedBox(
-                          height: 155,
-                          child: ListView(
-                            shrinkWrap: true,
-                            clipBehavior: Clip.none,
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              const Gap(16),
-                              // Botão de adicionar foto (sempre primeiro)
-                              if (controller.canAddMorePhotos)
-                                GestureDetector(
-                                  onTap: () {
-                                    controller.selectPhotos();
-                                  },
-                                  child: Container(
-                                    height: 155,
-                                    width: 115,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.white24,
-                                          offset: Offset(-5, -5),
-                                          blurRadius: 20,
-                                        ),
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          offset: Offset(5, 5),
-                                          blurRadius: 20,
-                                        ),
-                                      ],
-                                      color: Colors.white,
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Color(0xFFD9D9D9),
-                                        ),
-                                        padding: const EdgeInsets.all(8),
-                                        child: const Icon(
-                                          Icons.add,
-                                          color: Color(0xFF7C7C7C),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              if (controller.canAddMorePhotos) const Gap(16),
-                              // Fotos salvas
-                              for (
-                                var i = 0;
-                                i < (controller.customer?.photos.length ?? 0);
-                                i++
-                              ) ...[
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      width: 115,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.white24,
-                                            offset: Offset(-5, -5),
-                                            blurRadius: 20,
-                                          ),
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            offset: Offset(5, 5),
-                                            blurRadius: 20,
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              controller.customer!.photos[i],
-                                          fit: BoxFit.cover,
-                                          errorWidget: (context, url, error) =>
-                                              const SizedBox.shrink(),
-                                        ),
-                                      ),
-                                    ),
-                                    // Ícone X para deletar (sempre visível)
-                                    Positioned(
-                                      top: -8,
-                                      right: -8,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          controller.removePhoto(i);
-                                        },
-                                        child: Container(
-                                          width: 28,
-                                          height: 28,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(16),
-                              ],
-                              // Fotos selecionadas antes de salvar
-                              for (
-                                var i = 0;
-                                i < controller.selectedPhotos.length;
-                                i++
-                              ) ...[
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      width: 115,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.white24,
-                                            offset: Offset(-5, -5),
-                                            blurRadius: 20,
-                                          ),
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            offset: Offset(5, 5),
-                                            blurRadius: 20,
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.file(
-                                          File(
-                                            controller.selectedPhotos[i].path,
-                                          ),
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const SizedBox.shrink(),
-                                        ),
-                                      ),
-                                    ),
-                                    // Ícone X para deletar foto selecionada
-                                    Positioned(
-                                      top: -8,
-                                      right: -8,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          controller.removeSelectedPhoto(i);
-                                        },
-                                        child: Container(
-                                          width: 28,
-                                          height: 28,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(16),
-                              ],
-                            ],
-                          ),
-                        ),
+                        ProfilePhotosEditor(controller: controller),
                         const Gap(32),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:aluga_comigo/app/modules/config/ui/controllers/profile_controller.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
@@ -21,6 +18,7 @@ import '../../../auth/domain/enums/user_skill.dart';
 import '../../../auth/domain/models/select_item.dart';
 import '../../../auth/presenter/widgets/pill_widget.dart';
 import '../../../customer/data/models/customer_model.dart';
+import '../widgets/profile_photos_editor.dart';
 import '../../../customer/presenter/widgets/person_flip_card.dart';
 
 class ProfileUserPage extends StatefulWidget {
@@ -32,8 +30,6 @@ class ProfileUserPage extends StatefulWidget {
 
 class _ProfileUserPageState extends State<ProfileUserPage> {
   final controller = inject<IProfileController>();
-  DateTime date = DateTime.now();
-
   final _shortDescriptionController = TextEditingController();
   final _longDescriptionController = TextEditingController();
   final _priceMaxController = TextEditingController();
@@ -49,9 +45,96 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
         : '';
   }
 
+  DateTime? _parseBirthDate(String raw) {
+    if (raw.isEmpty) return null;
+    final br = raw.toDate();
+    if (br != null) return br;
+    return DateTime.tryParse(raw);
+  }
+
+  String _formatBirthDate(String raw) {
+    final parsed = _parseBirthDate(raw);
+    if (parsed == null) return raw;
+    return DateFormat('dd/MM/yyyy').format(parsed);
+  }
+
+  DateTime _clampBirthDate(DateTime value) {
+    final maximumDate = DateTime.now().subYears(18);
+    final minimumDate = DateTime.now().subYears(100);
+    if (value.isAfter(maximumDate)) return maximumDate;
+    if (value.isBefore(minimumDate)) return minimumDate;
+    return value;
+  }
+
+  Future<void> _pickBirthDate(PersonCustomerModel customer) async {
+    if (controller.customer == null) return;
+
+    final maximumDate = DateTime.now().subYears(18);
+    final minimumDate = DateTime.now().subYears(100);
+    var selected = _clampBirthDate(
+      _parseBirthDate(customer.dateBirth) ?? DateTime.now().subYears(19),
+    );
+
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (modalContext) {
+        return StatefulBuilder(
+          builder: (modalContext, setModalState) {
+            return Container(
+              height: 280,
+              padding: const EdgeInsets.only(top: 6),
+              margin: EdgeInsets.only(
+                bottom: MediaQuery.of(modalContext).viewInsets.bottom,
+              ),
+              color: CupertinoColors.systemBackground.resolveFrom(modalContext),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CupertinoDatePicker(
+                        initialDateTime: selected,
+                        minimumDate: minimumDate,
+                        maximumDate: maximumDate,
+                        mode: CupertinoDatePickerMode.date,
+                        onDateTimeChanged: (newDate) {
+                          setModalState(() => selected = newDate);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: PrimaryButtonWidget(
+                        height: 50,
+                        borderRadius: 10,
+                        onTap: () {
+                          controller.patchPerson(
+                            (c) => c.copyWith(
+                              dateBirth: DateFormat('dd/MM/yyyy').format(
+                                selected,
+                              ),
+                            ),
+                          );
+                          Navigator.of(modalContext).pop();
+                        },
+                        title: 'Confirmar',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    controller.updatePage();
+  }
+
   int _calculateAge(String dateBirth) {
     if (dateBirth.isEmpty) return 0;
-    final date = dateBirth.toDate();
+    final date = _parseBirthDate(dateBirth);
     if (date == null) return 0;
     final now = DateTime.now();
     int age = now.year - date.year;
@@ -260,51 +343,6 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
     super.dispose();
   }
 
-  Future<void> _showDialog(Widget child) async {
-    if (controller.customer == null) return;
-
-    await showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 216,
-        padding: const EdgeInsets.only(top: 6.0),
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        child: SafeArea(
-          child: SizedBox(
-            height: 200,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(child: child),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: PrimaryButtonWidget(
-                    height: 50,
-                    borderRadius: 10,
-                    onTap: () {
-                      controller.patchPerson(
-                        (c) => c.copyWith(
-                          dateBirth: DateFormat('dd/MM/yyyy').format(date),
-                        ),
-                      );
-                      Navigator.of(context).pop();
-                    },
-                    title: "Confirmar",
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-    controller.updatePage();
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -380,189 +418,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Gap(32),
-                        SizedBox(
-                          height: 155,
-                          child: ListView(
-                            shrinkWrap: true,
-                            clipBehavior: Clip.none,
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              const Gap(16),
-                              // Botão de adicionar foto (sempre primeiro)
-                              if (controller.canAddMorePhotos)
-                                GestureDetector(
-                                  onTap: () {
-                                    controller.selectPhotos();
-                                  },
-                                  child: Container(
-                                    height: 155,
-                                    width: 115,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.white24,
-                                          offset: Offset(-5, -5),
-                                          blurRadius: 20,
-                                        ),
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          offset: Offset(5, 5),
-                                          blurRadius: 20,
-                                        ),
-                                      ],
-                                      color: Colors.white,
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Color(0xFFD9D9D9),
-                                        ),
-                                        padding: const EdgeInsets.all(8),
-                                        child: const Icon(
-                                          Icons.add,
-                                          color: Color(0xFF7C7C7C),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              if (controller.canAddMorePhotos) const Gap(16),
-                              // Fotos salvas
-                              for (
-                                var i = 0;
-                                i < (customer.photos.length);
-                                i++
-                              ) ...[
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      width: 115,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.white24,
-                                            offset: Offset(-5, -5),
-                                            blurRadius: 20,
-                                          ),
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            offset: Offset(5, 5),
-                                            blurRadius: 20,
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
-                                          imageUrl: customer.photos[i],
-                                          fit: BoxFit.cover,
-                                          errorWidget: (context, url, error) =>
-                                              const SizedBox.shrink(),
-                                        ),
-                                      ),
-                                    ),
-                                    // Ícone X para deletar (sempre visível)
-                                    Positioned(
-                                      top: -8,
-                                      right: -8,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          controller.removePhoto(i);
-                                        },
-                                        child: Container(
-                                          width: 28,
-                                          height: 28,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(16),
-                              ],
-                              // Fotos selecionadas antes de salvar
-                              for (
-                                var i = 0;
-                                i < controller.selectedPhotos.length;
-                                i++
-                              ) ...[
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      width: 115,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.white24,
-                                            offset: Offset(-5, -5),
-                                            blurRadius: 20,
-                                          ),
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            offset: Offset(5, 5),
-                                            blurRadius: 20,
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.file(
-                                          File(
-                                            controller.selectedPhotos[i].path,
-                                          ),
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const SizedBox.shrink(),
-                                        ),
-                                      ),
-                                    ),
-                                    // Ícone X para deletar foto selecionada
-                                    Positioned(
-                                      top: -8,
-                                      right: -8,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          controller.removeSelectedPhoto(i);
-                                        },
-                                        child: Container(
-                                          width: 28,
-                                          height: 28,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(16),
-                              ],
-                            ],
-                          ),
-                        ),
+                        ProfilePhotosEditor(controller: controller),
                         const Gap(32),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -738,24 +594,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                   const Gap(16),
                                   Expanded(
                                     child: GestureDetector(
-                                      onTap: () {
-                                        _showDialog(
-                                          CupertinoDatePicker(
-                                            initialDateTime:
-                                                customer.dateBirth.isNotEmpty
-                                                ? DateFormat(
-                                                    "dd/MM/yyyy",
-                                                  ).parse(customer.dateBirth)
-                                                : DateTime.now().subYears(19),
-                                            maximumDate: DateTime.now()
-                                                .subYears(18),
-                                            mode: CupertinoDatePickerMode.date,
-                                            onDateTimeChanged: (newDate) {
-                                              setState(() => date = newDate);
-                                            },
-                                          ),
-                                        );
-                                      },
+                                      onTap: () => _pickBirthDate(customer),
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 16,
@@ -768,7 +607,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                           color: const Color(0xFFEFEFEF),
                                         ),
                                         child: Text(
-                                          customer.dateBirth,
+                                          _formatBirthDate(customer.dateBirth),
                                           style: GoogleFonts.rubik(
                                             height: 1,
                                             color: Colors.black,

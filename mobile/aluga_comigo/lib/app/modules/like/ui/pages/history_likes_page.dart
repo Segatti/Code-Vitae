@@ -1,7 +1,9 @@
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
+import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
+import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:aluga_comigo/app/modules/like/data/models/rejected_history_item.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:aluga_comigo/app/modules/like/ui/controllers/history_controller.dart';
-import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
@@ -10,7 +12,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../shared/presenter/widgets/tabs.dart';
-import '../../../auth/domain/enums/type_user.dart';
 
 class HistoryLikesPage extends StatefulWidget {
   const HistoryLikesPage({super.key});
@@ -27,7 +28,7 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
   void initState() {
     super.initState();
     controller = inject<IHistoryController>();
-    tabSelected = SessionService.customer?.typeUser == TypeUser.person ? 1 : 0;
+    tabSelected = 0;
     controller.initialize();
   }
 
@@ -39,10 +40,25 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
   }
 
   String _itemTitle(CustomerModel customer) {
+    if (tabSelected == 1) {
+      return switch (customer) {
+        ImmobileCustomerModel(:final typeImmobile) =>
+          typeImmobile.title.isNotEmpty ? typeImmobile.title : 'Imóvel',
+        PersonCustomerModel(:final name) => name,
+      };
+    }
     return switch (customer) {
       PersonCustomerModel(:final name) => name,
       ImmobileCustomerModel(:final shortDescription) =>
         shortDescription.isNotEmpty ? shortDescription : 'Imóvel',
+    };
+  }
+
+  String? _itemSubtitle(CustomerModel customer) {
+    if (tabSelected != 1) return null;
+    return switch (customer) {
+      ImmobileCustomerModel(:final price) => price.toMoney(useFree: false),
+      _ => null,
     };
   }
 
@@ -93,7 +109,7 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
                       children: [
                         const Gap(16),
                         Text(
-                          'Perfis que você rejeitou',
+                          'Suas curtidas, favoritos e rejeições',
                           style: GoogleFonts.rubik(
                             fontSize: 14,
                             color: Colors.black54,
@@ -112,7 +128,7 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 32),
                             child: Text(
-                              'Nenhuma rejeição nesta aba.',
+                              'Nenhuma interação nesta aba.',
                               style: GoogleFonts.rubik(color: Colors.black54),
                             ),
                           )
@@ -128,9 +144,11 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
                                     for (final item in items)
                                       _HistoryCard(
                                         title: _itemTitle(item.customer),
+                                        subtitle: _itemSubtitle(item.customer),
                                         photoUrl: item.customer.photos.isNotEmpty
                                             ? item.customer.photos.first
                                             : '',
+                                        matchType: item.matchType,
                                         rejectedAt: item.rejectedAt,
                                         width: constraints.maxWidth * .3,
                                       ),
@@ -155,16 +173,38 @@ class _HistoryLikesPageState extends State<HistoryLikesPage> {
 
 class _HistoryCard extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final String photoUrl;
+  final MatchType matchType;
   final DateTime? rejectedAt;
   final double width;
 
   const _HistoryCard({
     required this.title,
+    this.subtitle,
     required this.photoUrl,
+    required this.matchType,
     required this.rejectedAt,
     required this.width,
   });
+
+  static String _actionIconAsset(MatchType type) {
+    return switch (type) {
+      MatchType.like => IconsAsset.like,
+      MatchType.favorite => IconsAsset.favorite,
+      MatchType.unlike => IconsAsset.unlike,
+      MatchType.none => IconsAsset.unlike,
+    };
+  }
+
+  static Color _actionBadgeColor(MatchType type) {
+    return switch (type) {
+      MatchType.like => Colors.green.shade600,
+      MatchType.favorite => Colors.amber.shade800,
+      MatchType.unlike => Colors.red.shade700,
+      MatchType.none => Colors.grey.shade600,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,18 +243,15 @@ class _HistoryCard extends StatelessWidget {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.red.shade700,
+                        color: _actionBadgeColor(matchType),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 14,
+                      child: Image.asset(
+                        _actionIconAsset(matchType),
+                        width: 16,
+                        height: 16,
                       ),
                     ),
                   ),
@@ -225,7 +262,7 @@ class _HistoryCard extends StatelessWidget {
           const Gap(6),
           Text(
             title,
-            maxLines: 2,
+            maxLines: subtitle == null ? 2 : 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: GoogleFonts.rubik(
@@ -233,6 +270,20 @@ class _HistoryCard extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
+          if (subtitle != null && subtitle!.isNotEmpty) ...[
+            const Gap(2),
+            Text(
+              subtitle!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.rubik(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+              ),
+            ),
+          ],
           if (dateLabel.isNotEmpty)
             Text(
               dateLabel,

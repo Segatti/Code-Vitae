@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
+import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/maps_helper.dart';
 import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
 import '../../../customer/data/models/customer_model.dart';
@@ -77,8 +78,11 @@ class _HousesPageState extends State<HousesPage> {
       builder: (context, child) {
         var list = controller.houses.toList();
 
-        if (controller.loadingList.contains('getHouses') ||
-            controller.loadingList.contains('initialize')) {
+        final isLoadingInitial = list.isEmpty &&
+            (controller.loadingList.contains('getHouses') ||
+                controller.loadingList.contains('initialize'));
+
+        if (isLoadingInitial) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -179,10 +183,12 @@ class _HousesPageState extends State<HousesPage> {
                           right: Radius.circular(20),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.cancel,
-                        color: Colors.red,
-                        size: 45,
+                      height: 60,
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset(
+                        IconsAsset.unlike,
+                        width: 45,
+                        height: 45,
                       ),
                     ),
                   ),
@@ -213,10 +219,12 @@ class _HousesPageState extends State<HousesPage> {
                         ),
                         color: Colors.white,
                       ),
-                      child: const Icon(
-                        Icons.chat,
-                        color: Colors.amber,
-                        size: 45,
+                      height: 60,
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset(
+                        IconsAsset.favorite,
+                        width: 45,
+                        height: 45,
                       ),
                     ),
                   ),
@@ -247,10 +255,12 @@ class _HousesPageState extends State<HousesPage> {
                           left: Radius.circular(20),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.heart_broken,
-                        color: Colors.blue,
-                        size: 45,
+                      height: 60,
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset(
+                        IconsAsset.like,
+                        width: 45,
+                        height: 45,
                       ),
                     ),
                   ),

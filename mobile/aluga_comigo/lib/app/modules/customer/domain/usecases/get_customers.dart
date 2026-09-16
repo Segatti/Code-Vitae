@@ -7,7 +7,7 @@ import '../../data/repositories/customer_repository.dart';
 abstract interface class IGetCustomers {
   AsyncResult<List<CustomerModel>> call({
     required TypeUser typeUser,
-    String? startAfter,
+    List<String> alreadyLoadedIds = const [],
   });
 }
 
@@ -19,11 +19,11 @@ class GetCustomers implements IGetCustomers {
   @override
   AsyncResult<List<CustomerModel>> call({
     required TypeUser typeUser,
-    String? startAfter,
+    List<String> alreadyLoadedIds = const [],
   }) async {
     return repository.getCustomers(
       typeUser: typeUser,
-      startAfter: startAfter,
+      alreadyLoadedIds: alreadyLoadedIds,
     );
   }
 }

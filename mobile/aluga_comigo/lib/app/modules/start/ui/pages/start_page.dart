@@ -15,7 +15,9 @@ import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/data/services/supabase_auth_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
+import '../../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
+import '../../../auth/domain/enums/type_user.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -51,6 +53,18 @@ class _StartPageState extends State<StartPage>
     );
     _checkLocationPermission();
     _loadInventory();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _ensureSwipeTabForSession());
+  }
+
+  void _ensureSwipeTabForSession() {
+    if (!mounted) return;
+    final type = SessionService.customer?.typeUser ?? TypeUser.none;
+    if (type != TypeUser.immobile) return;
+
+    final path = context.routeState(listen: false).uri.path;
+    if (StartNavigationHelper.isImmobileOwnerSwipeRoute(path)) {
+      _routerOutletKey.currentState?.navigate('/start/likes/');
+    }
   }
 
   Future<void> _loadInventory() async {
@@ -313,16 +327,19 @@ class _StartPageState extends State<StartPage>
   }
 
   int _navigationIndexFromPath(String path) {
-    if (path.contains('/houses')) return 1;
-    if (path.contains('/likes')) return 2;
-    if (path.contains('/chats')) return 3;
-    return 0;
+    final type = SessionService.customer?.typeUser ?? TypeUser.none;
+    return StartNavigationHelper.navigationIndexForPath(path, type);
   }
 
   void _navigateToTab(int index) {
     // Bottom nav sits beside [RouterOutlet] in the Stack — `context.navigate`
     // would hit the root delegate and replace the whole app. Target the outlet.
-    _routerOutletKey.currentState?.navigate(_tabRoutes[index]);
+    final type = SessionService.customer?.typeUser ?? TypeUser.none;
+    final route = switch (type) {
+      TypeUser.immobile when index == 0 || index == 1 => '/start/likes/',
+      _ => _tabRoutes[index],
+    };
+    _routerOutletKey.currentState?.navigate(route);
   }
 
   Widget _buildNavigationBar(int currentIndex) {
