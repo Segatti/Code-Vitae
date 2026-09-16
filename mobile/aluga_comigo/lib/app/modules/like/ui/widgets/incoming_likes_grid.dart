@@ -2,19 +2,23 @@ import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../data/models/incoming_like_model.dart';
+
 class IncomingLikesGrid extends StatelessWidget {
-  final List<String> photoUrls;
+  final List<IncomingLikeModel> items;
   final bool blurPhotos;
+  final void Function(IncomingLikeModel item)? onItemTap;
 
   const IncomingLikesGrid({
     super.key,
-    required this.photoUrls,
+    required this.items,
     this.blurPhotos = false,
+    this.onItemTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (photoUrls.isEmpty) {
+    if (items.isEmpty) {
       return const Padding(
         padding: EdgeInsets.only(bottom: 16),
         child: Text('Ninguém por aqui ainda.'),
@@ -27,11 +31,12 @@ class IncomingLikesGrid extends StatelessWidget {
           alignment: WrapAlignment.start,
           runSpacing: 16,
           children: [
-            for (final photoUrl in photoUrls) ...[
+            for (final item in items) ...[
               _PhotoTile(
-                photoUrl: photoUrl,
+                item: item,
                 width: constraints.maxWidth * .3,
                 blur: blurPhotos,
+                onTap: onItemTap == null ? null : () => onItemTap!(item),
               ),
               SizedBox(width: constraints.maxWidth * .1 / 2),
             ],
@@ -43,36 +48,46 @@ class IncomingLikesGrid extends StatelessWidget {
 }
 
 class _PhotoTile extends StatelessWidget {
-  final String photoUrl;
+  final IncomingLikeModel item;
   final double width;
   final bool blur;
+  final VoidCallback? onTap;
 
   const _PhotoTile({
-    required this.photoUrl,
+    required this.item,
     required this.width,
     required this.blur,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final image = CachedNetworkImage(
-      imageUrl: photoUrl,
-      fit: BoxFit.cover,
-      errorWidget: (_, __, ___) => Container(color: Colors.grey.shade300),
-    );
+    final photoUrl =
+        item.customer.photos.isNotEmpty ? item.customer.photos.first : '';
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox(
-        width: width,
-        height: width * (16 / 9),
-        child: blur
-            ? Blur(
-                blur: 5,
-                blurColor: Colors.white,
-                child: SizedBox.expand(child: image),
-              )
-            : image,
+    final image = photoUrl.isEmpty
+        ? Container(color: Colors.grey.shade300)
+        : CachedNetworkImage(
+            imageUrl: photoUrl,
+            fit: BoxFit.cover,
+            errorWidget: (_, __, ___) => Container(color: Colors.grey.shade300),
+          );
+
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: SizedBox(
+          width: width,
+          height: width * (16 / 9),
+          child: blur
+              ? Blur(
+                  blur: 5,
+                  blurColor: Colors.white,
+                  child: SizedBox.expand(child: image),
+                )
+              : image,
+        ),
       ),
     );
   }

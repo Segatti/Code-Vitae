@@ -22,6 +22,7 @@ abstract class IHousesController extends ChangeNotifier {
 
   Future<bool> getHouses();
   Future<bool> matchHouse(CustomerModel customer, MatchType matchType);
+  Future<void> handleSwipe(CustomerModel customer, MatchType matchType);
 }
 
 class HousesController extends IHousesController {
@@ -72,6 +73,15 @@ class HousesController extends IHousesController {
         return false;
       },
     );
+  }
+
+  @override
+  Future<void> handleSwipe(CustomerModel customer, MatchType matchType) async {
+    final success = await matchHouse(customer, matchType);
+    if (success) {
+      houses.removeWhere((item) => item.id == customer.id);
+      notifyListeners();
+    }
   }
 
   @override

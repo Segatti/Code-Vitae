@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../shared/ui/widgets/power_up_badge.dart';
 import '../../../auth/domain/enums/user_skill.dart';
 import 'customer_profile_card.dart';
 
@@ -59,6 +60,12 @@ class PersonFlipCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
+              if (customer.hasActivePowerUp)
+                const Positioned(
+                  top: 12,
+                  left: 12,
+                  child: PowerUpBadge(),
+                ),
               Positioned.fill(
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 170),

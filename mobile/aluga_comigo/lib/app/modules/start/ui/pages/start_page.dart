@@ -10,7 +10,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../../shared/data/services/session_service.dart';
+import '../../../../shared/data/services/supabase_auth_service.dart';
+import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
 
@@ -36,6 +39,8 @@ class _StartPageState extends State<StartPage>
 
   late AnimationController _animationController;
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  final GlobalKey<RouterOutletState> _routerOutletKey =
+      GlobalKey<RouterOutletState>();
 
   @override
   void initState() {
@@ -45,6 +50,26 @@ class _StartPageState extends State<StartPage>
       duration: Durations.short4,
     );
     _checkLocationPermission();
+    _loadInventory();
+  }
+
+  Future<void> _loadInventory() async {
+    try {
+      final database = inject<SupabaseDatabaseService>();
+      final map = await database.getUserInventory();
+      SessionService.setInventory(UserInventory.fromMap(map));
+    } catch (_) {}
+  }
+
+  Future<void> _logout() async {
+    final auth = inject<SupabaseAuthService>();
+    final storage = inject<SecureStorageService>();
+    await auth.signOut();
+    await storage.deleteData(StorageKey.user);
+    SessionService.clearCustomer();
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    context.navigate('/auth/');
   }
 
   Future<void> _checkLocationPermission() async {
@@ -256,9 +281,7 @@ class _StartPageState extends State<StartPage>
                                         width: 5,
                                       ),
                                     ),
-                                    onPressed: () {
-                                      context.navigate("/auth/");
-                                    },
+                                    onPressed: _logout,
                                     child: Text(
                                       "Confirmar",
                                       style: GoogleFonts.rubik(
@@ -297,12 +320,13 @@ class _StartPageState extends State<StartPage>
   }
 
   void _navigateToTab(int index) {
-    context.navigate(_tabRoutes[index]);
+    // Bottom nav sits beside [RouterOutlet] in the Stack — `context.navigate`
+    // would hit the root delegate and replace the whole app. Target the outlet.
+    _routerOutletKey.currentState?.navigate(_tabRoutes[index]);
   }
 
   Widget _buildNavigationBar(int currentIndex) {
     return SnakeNavigationBar.color(
-      key: ValueKey('start-nav-$currentIndex'),
       snakeViewColor: Colors.white,
       shadowColor: const Color.fromARGB(255, 170, 110, 110),
       elevation: 10,
@@ -374,7 +398,7 @@ class _StartPageState extends State<StartPage>
         Expanded(
           child: Stack(
             children: [
-              const RouterOutlet(),
+              RouterOutlet(key: _routerOutletKey),
               Positioned(
                 right: 0,
                 left: 0,
@@ -407,7 +431,7 @@ class _StartPageState extends State<StartPage>
         drawerIconColor: const Color.fromRGBO(158, 158, 158, 1),
         title: SvgPicture.asset("assets/icons/logo.svg", width: 40),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () => context.pushNamed('/notifications/'),
           icon: const Icon(
             Icons.notifications_active_outlined,
             size: 35,

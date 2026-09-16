@@ -1,8 +1,12 @@
-import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:aluga_comigo/app/modules/store/interactor/enums/store_item_category.dart';
+import 'package:aluga_comigo/app/modules/store/interactor/models/store_catalog.dart';
+import 'package:aluga_comigo/app/modules/store/interactor/models/store_product.dart';
+import 'package:aluga_comigo/app/modules/store/ui/controllers/store_controller.dart';
+import 'package:aluga_comigo/app/modules/store/ui/widgets/store_category_section.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_ui/material_ui.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
@@ -12,14 +16,70 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage> {
+  late final IStoreController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = inject<IStoreController>();
+    controller.addListener(_onControllerUpdate);
+    controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(_onControllerUpdate);
+    super.dispose();
+  }
+
+  void _onControllerUpdate() {
+    final message = controller.purchaseSuccessMessage;
+    if (message == null || !mounted) return;
+    controller.purchaseSuccessMessage = null;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Future<void> _confirmPurchase(StoreProduct product) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(product.label),
+        content: Text(
+          'Confirmar compra por ${controller.priceFor(product)}?',
+          style: GoogleFonts.rubik(fontSize: 15),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Comprar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await controller.purchase(product);
+      if (!mounted) return;
+      if (controller.errorMessage.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(controller.errorMessage)),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(
             Icons.chevron_left,
             size: 40,
@@ -27,432 +87,132 @@ class _StorePageState extends State<StorePage> {
           ),
         ),
         titleSpacing: 0,
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                'Loja ',
-                style: GoogleFonts.rubik(
-                  fontSize: 18,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
+        title: Text(
+          'Loja',
+          style: GoogleFonts.rubik(
+            fontSize: 18,
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
-      body: Column(
-        children: [
-          const Divider(
-            height: 2,
-            thickness: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFFFFDC64),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.white24,
-                              offset: Offset(-10, -10),
-                              blurRadius: 40,
-                            ),
-                            BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(10, 10),
-                              blurRadius: 20,
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 32,
-                          bottom: 16,
-                          left: 16,
-                          right: 16,
-                        ),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Bounce(
-                                duration: Durations.short3,
-                                onPressed: () {},
-                                child: Container(
-                                  width: constraints.maxWidth * .3,
-                                  height: constraints.maxWidth * .45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        flex: 4,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16),
-                                            child: Image.asset(
-                                              IconsAsset.superStar1,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 1,
-                                      ),
-                                      Flexible(
-                                        child: Center(
-                                          child: Text(
-                                            "R\$ 11,99",
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Bounce(
-                                duration: Durations.short3,
-                                onPressed: () {},
-                                child: Container(
-                                  width: constraints.maxWidth * .3,
-                                  height: constraints.maxWidth * .45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        flex: 4,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12),
-                                            child: Image.asset(
-                                              IconsAsset.superStar2,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 1,
-                                      ),
-                                      Flexible(
-                                        child: Center(
-                                          child: Text(
-                                            "R\$ 27,99",
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Bounce(
-                                duration: Durations.short3,
-                                onPressed: () {},
-                                child: Container(
-                                  width: constraints.maxWidth * .3,
-                                  height: constraints.maxWidth * .45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        flex: 4,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8),
-                                            child: Image.asset(
-                                              IconsAsset.superStar3,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 1,
-                                      ),
-                                      Flexible(
-                                        child: Center(
-                                          child: Text(
-                                            "R\$ 49,99",
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 32,
-                        width: 120,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20),
-                            bottom: Radius.circular(10),
-                          ),
-                          color: Color(0xFFFFC850),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(0, 5),
-                              blurRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            "SuperStar",
-                            style: GoogleFonts.rubik(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+      body: ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
+          if (controller.loadingList.contains('initialize')) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return Column(
+            children: [
+              const Divider(height: 2, thickness: 2),
+              if (controller.errorMessage.isNotEmpty &&
+                  !controller.storeAvailable)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    controller.errorMessage,
+                    style: GoogleFonts.rubik(color: Colors.orange.shade800),
+                    textAlign: TextAlign.center,
                   ),
-                  const Gap(32),
-                  Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFF605DDE),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.white24,
-                              offset: Offset(-10, -10),
-                              blurRadius: 40,
-                            ),
-                            BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(10, 10),
-                              blurRadius: 20,
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 32,
-                          bottom: 16,
-                          left: 16,
-                          right: 16,
-                        ),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Bounce(
-                                duration: Durations.short3,
-                                onPressed: () {},
-                                child: Container(
-                                  width: constraints.maxWidth * .3,
-                                  height: constraints.maxWidth * .45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        flex: 4,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16),
-                                            child: Image.asset(
-                                              IconsAsset.superChat1,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 1,
-                                      ),
-                                      Flexible(
-                                        child: Center(
-                                          child: Text(
-                                            "R\$ 11,99",
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Bounce(
-                                duration: Durations.short3,
-                                onPressed: () {},
-                                child: Container(
-                                  width: constraints.maxWidth * .3,
-                                  height: constraints.maxWidth * .45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        flex: 4,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12),
-                                            child: Image.asset(
-                                              IconsAsset.superChat2,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 1,
-                                      ),
-                                      Flexible(
-                                        child: Center(
-                                          child: Text(
-                                            "R\$ 27,99",
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Bounce(
-                                duration: Durations.short3,
-                                onPressed: () {},
-                                child: Container(
-                                  width: constraints.maxWidth * .3,
-                                  height: constraints.maxWidth * .45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        flex: 4,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8),
-                                            child: Image.asset(
-                                              IconsAsset.superChat3,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(
-                                        height: 1,
-                                      ),
-                                      Flexible(
-                                        child: Center(
-                                          child: Text(
-                                            "R\$ 49,99",
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 32,
-                        width: 120,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20),
-                            bottom: Radius.circular(10),
-                          ),
-                          color: Color(0xFF5350C3),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white30,
-                              offset: Offset(0, 5),
-                              blurRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            "SuperChat",
-                            style: GoogleFonts.rubik(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F5F5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _BalanceChip(
+                      icon: Icons.star,
+                      label: 'Super Star',
+                      value: controller.inventory.superStarBalance,
+                    ),
+                    _BalanceChip(
+                      icon: Icons.chat_bubble,
+                      label: 'Super Chat',
+                      value: controller.inventory.superChatBalance,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-        ],
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      StoreCategorySection(
+                        category: StoreItemCategory.powerUp,
+                        backgroundColor: const Color(0xFFFFF3E0),
+                        headerColor: const Color(0xFFDF924B),
+                        headerTextColor: Colors.white,
+                        products: StoreCatalog.powerUpProducts,
+                        priceFor: controller.priceFor,
+                        purchasingProductId: controller.purchasingProductId,
+                        onProductTap: _confirmPurchase,
+                      ),
+                      const Gap(32),
+                      StoreCategorySection(
+                        category: StoreItemCategory.superStar,
+                        backgroundColor: const Color(0xFFFFDC64),
+                        headerColor: const Color(0xFFFFC850),
+                        headerTextColor: Colors.black,
+                        products: StoreCatalog.superStarProducts,
+                        priceFor: controller.priceFor,
+                        purchasingProductId: controller.purchasingProductId,
+                        onProductTap: _confirmPurchase,
+                      ),
+                      const Gap(32),
+                      StoreCategorySection(
+                        category: StoreItemCategory.superChat,
+                        backgroundColor: const Color(0xFF605DDE),
+                        headerColor: const Color(0xFF5350C3),
+                        headerTextColor: Colors.white,
+                        products: StoreCatalog.superChatProducts,
+                        priceFor: controller.priceFor,
+                        purchasingProductId: controller.purchasingProductId,
+                        onProductTap: _confirmPurchase,
+                      ),
+                      const Gap(16),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
+    );
+  }
+}
+
+class _BalanceChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final int value;
+
+  const _BalanceChip({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 20, color: const Color(0xFF2C29A3)),
+        const Gap(6),
+        Text(
+          '$label: $value',
+          style: GoogleFonts.rubik(fontWeight: FontWeight.w500),
+        ),
+      ],
     );
   }
 }

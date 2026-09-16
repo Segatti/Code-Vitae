@@ -22,6 +22,7 @@ abstract class ICustomersController extends ChangeNotifier {
 
   Future<bool> getCustomers();
   Future<bool> matchCustomer(CustomerModel customer, MatchType matchType);
+  Future<void> handleSwipe(CustomerModel customer, MatchType matchType);
 }
 
 class CustomersController extends ICustomersController {
@@ -67,6 +68,15 @@ class CustomersController extends ICustomersController {
       },
       orElse: () => false,
     );
+  }
+
+  @override
+  Future<void> handleSwipe(CustomerModel customer, MatchType matchType) async {
+    final success = await matchCustomer(customer, matchType);
+    if (success) {
+      customers.removeWhere((item) => item.id == customer.id);
+      notifyListeners();
+    }
   }
 
   @override

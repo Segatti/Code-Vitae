@@ -27,6 +27,20 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
   final controller = inject<IProfileController>();
   DateTime date = DateTime.now();
 
+  final _priceController = TextEditingController();
+  final _shortDescriptionController = TextEditingController();
+  final _longDescriptionController = TextEditingController();
+  String? _formBoundCustomerId;
+
+  void _bindFormFields(ImmobileCustomerModel customer) {
+    if (_formBoundCustomerId == customer.id) return;
+    _formBoundCustomerId = customer.id;
+    _priceController.text =
+        customer.price > 0 ? customer.price.toMoney() : '';
+    _shortDescriptionController.text = customer.shortDescription;
+    _longDescriptionController.text = customer.longDescription;
+  }
+
   @override
   void initState() {
     controller.initialize();
@@ -145,6 +159,9 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
   @override
   void dispose() {
     controller.removeListener(_handleError);
+    _priceController.dispose();
+    _shortDescriptionController.dispose();
+    _longDescriptionController.dispose();
     controller.dispose();
     super.dispose();
   }
@@ -165,6 +182,8 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
             child: Text('Não foi possível carregar o perfil do imóvel.'),
           );
         }
+
+        _bindFormFields(customer);
 
         return Scaffold(
           appBar: AppBar(
@@ -443,11 +462,12 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                                             .primaryFocus
                                                             ?.unfocus();
                                                       });
-                                                  controller.customer = customer
-                                                      .copyWith(
-                                                        typeImmobile:
-                                                            TypeImmobile.house,
-                                                      );
+                                                  controller.patchImmobile(
+                                                    (c) => c.copyWith(
+                                                      typeImmobile:
+                                                          TypeImmobile.house,
+                                                    ),
+                                                  );
                                                   controller.updatePage();
                                                 },
                                                 child: Text(
@@ -466,12 +486,13 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                                             .primaryFocus
                                                             ?.unfocus();
                                                       });
-                                                  controller.customer = customer
-                                                      .copyWith(
-                                                        typeImmobile:
-                                                            TypeImmobile
-                                                                .apartment,
-                                                      );
+                                                  controller.patchImmobile(
+                                                    (c) => c.copyWith(
+                                                      typeImmobile:
+                                                          TypeImmobile
+                                                              .apartment,
+                                                    ),
+                                                  );
                                                   controller.updatePage();
                                                 },
                                                 child: Text(
@@ -556,19 +577,15 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                       ),
                                       child: TextFormField(
                                         inputFormatters: [MoneyFormatter()],
-                                        controller: TextEditingController(
-                                          text: (customer.price > 0)
-                                              ? customer.price.toMoney()
-                                              : '',
-                                        ),
+                                        controller: _priceController,
                                         onChanged: (value) {
-                                          var data = value.moneyToNumber() ?? 0;
-                                          if (data > 0) {
-                                            controller.customer = customer
-                                                .copyWith(
-                                                  price: data.toDouble(),
-                                                );
-                                          }
+                                          final data =
+                                              value.moneyToNumber() ?? 0;
+                                          controller.patchImmobile(
+                                            (c) => c.copyWith(
+                                              price: data.toDouble(),
+                                            ),
+                                          );
                                         },
                                         style: GoogleFonts.rubik(
                                           height: 1,
@@ -615,13 +632,7 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                       color: const Color(0xFFEFEFEF),
                                     ),
                                     child: TextFormField(
-                                      controller: TextEditingController(
-                                        text:
-                                            controller
-                                                .customer
-                                                ?.shortDescription ??
-                                            "",
-                                      ),
+                                      controller: _shortDescriptionController,
                                       style: GoogleFonts.rubik(
                                         height: 1,
                                         color: Colors.black,
@@ -629,8 +640,10 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                         fontSize: 16,
                                       ),
                                       onChanged: (value) {
-                                        controller.customer = customer.copyWith(
-                                          shortDescription: value,
+                                        controller.patchImmobile(
+                                          (c) => c.copyWith(
+                                            shortDescription: value,
+                                          ),
                                         );
                                       },
                                       maxLines: null,
@@ -665,13 +678,7 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                       color: const Color(0xFFEFEFEF),
                                     ),
                                     child: TextFormField(
-                                      controller: TextEditingController(
-                                        text:
-                                            controller
-                                                .customer
-                                                ?.longDescription ??
-                                            "",
-                                      ),
+                                      controller: _longDescriptionController,
                                       style: GoogleFonts.rubik(
                                         height: 1,
                                         color: Colors.black,
@@ -679,8 +686,10 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                         fontSize: 16,
                                       ),
                                       onChanged: (value) {
-                                        controller.customer = customer.copyWith(
-                                          longDescription: value,
+                                        controller.patchImmobile(
+                                          (c) => c.copyWith(
+                                            longDescription: value,
+                                          ),
                                         );
                                       },
                                       maxLines: null,

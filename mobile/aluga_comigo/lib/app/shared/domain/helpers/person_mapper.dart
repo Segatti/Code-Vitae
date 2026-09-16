@@ -26,6 +26,7 @@ class PersonMapper {
       'gender': personRow['gender'] ?? '',
       'houseworks': List<String>.from(personRow['houseworks'] ?? const []),
       'isActive': account?['is_active'] ?? true,
+      'powerUpUntil': personRow['power_up_until'],
     };
   }
 

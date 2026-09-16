@@ -71,6 +71,7 @@ dependencies:
   material_ui: ^1.1.0
   camera: ^0.12.1
   supabase_flutter: ^2.17.2
+  in_app_purchase: ^3.2.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

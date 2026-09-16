@@ -10,6 +10,6 @@ class LikesDiModule extends Module {
     c.addSingleton<ILikesDatasource>(LikesDatasource.new);
     c.addSingleton<ILikesRepository>(LikesRepository.new);
     c.addSingleton<IGetIncomingLikes>(GetIncomingLikes.new);
-    c.addSingleton<ILikesController>(LikesController.new);
+    c.addLazySingleton<ILikesController>(LikesController.new);
   }
 }

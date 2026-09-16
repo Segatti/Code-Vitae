@@ -204,6 +204,7 @@ class SupabaseDatabaseService {
   Future<List<Json>> listPersons({
     String? startAfter,
     String? excludeId,
+    List<String>? excludeIds,
     String? city,
     String? state,
     int limit = 1,
@@ -218,6 +219,10 @@ class SupabaseDatabaseService {
         filter = filter.neq('id', excludeId);
       }
 
+      if (excludeIds != null && excludeIds.isNotEmpty) {
+        filter = filter.not('id', 'in', excludeIds);
+      }
+
       if (city != null && city.isNotEmpty) {
         filter = filter.ilike('city', city);
       }
@@ -230,7 +235,10 @@ class SupabaseDatabaseService {
         filter = filter.lt('id', startAfter);
       }
 
-      final rows = await filter.order('created_at', ascending: false).limit(limit);
+      final rows = await filter
+          .order('power_up_until', ascending: false, nullsFirst: false)
+          .order('created_at', ascending: false)
+          .limit(limit);
       return rows
           .map((row) => PersonMapper.toAppMap(Map<String, dynamic>.from(row)))
           .toList();
@@ -245,6 +253,7 @@ class SupabaseDatabaseService {
   Future<List<Json>> listImmobiles({
     String? startAfter,
     String? excludeId,
+    List<String>? excludeIds,
     String? city,
     String? state,
     int limit = 1,
@@ -259,6 +268,10 @@ class SupabaseDatabaseService {
         filter = filter.neq('id', excludeId);
       }
 
+      if (excludeIds != null && excludeIds.isNotEmpty) {
+        filter = filter.not('id', 'in', excludeIds);
+      }
+
       if (city != null && city.isNotEmpty) {
         filter = filter.ilike('city', city);
       }
@@ -271,7 +284,10 @@ class SupabaseDatabaseService {
         filter = filter.lt('id', startAfter);
       }
 
-      final rows = await filter.order('created_at', ascending: false).limit(limit);
+      final rows = await filter
+          .order('power_up_until', ascending: false, nullsFirst: false)
+          .order('created_at', ascending: false)
+          .limit(limit);
       return rows
           .map((row) => ImmobileMapper.toAppMap(Map<String, dynamic>.from(row)))
           .toList();
@@ -416,6 +432,108 @@ class SupabaseDatabaseService {
     }
   }
 
+  Future<List<String>> listPersonMatchedImmobileIds(String personId) async {
+    try {
+      final rows = await _client
+          .from('person_matches')
+          .select('immobile_id')
+          .eq('person_id', personId);
+      return rows
+          .map((row) => row['immobile_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<String>> listImmobileMatchedPersonIds(String immobileId) async {
+    try {
+      final rows = await _client
+          .from('immobile_matches')
+          .select('person_id')
+          .eq('immobile_id', immobileId);
+      return rows
+          .map((row) => row['person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listRejectedImmobilesByPerson(String personId) async {
+    try {
+      final rows = await _client
+          .from('person_matches')
+          .select('created_at, immobiles(*, accounts(*))')
+          .eq('person_id', personId)
+          .eq('match_type', 'unlike')
+          .order('created_at', ascending: false);
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final immobile = map['immobiles'];
+            if (immobile is! Map) return null;
+            final customer = ImmobileMapper.toAppMap(
+              Map<String, dynamic>.from(immobile),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'customer': customer,
+              'rejectedAt': map['created_at'],
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listRejectedPersonsByImmobile(String immobileId) async {
+    try {
+      final rows = await _client
+          .from('immobile_matches')
+          .select('created_at, persons(*, accounts(*))')
+          .eq('immobile_id', immobileId)
+          .eq('match_type', 'unlike')
+          .order('created_at', ascending: false);
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final person = map['persons'];
+            if (person is! Map) return null;
+            final customer = PersonMapper.toAppMap(
+              Map<String, dynamic>.from(person),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'customer': customer,
+              'rejectedAt': map['created_at'],
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<List<Json>> listChatsForUser(String userId) async {
     try {
       final rows = await _client
@@ -457,6 +575,110 @@ class SupabaseDatabaseService {
             ),
           )
           .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<Json> getUserInventory() async {
+    try {
+      final result = await _client.rpc('get_user_inventory');
+      return Map<String, dynamic>.from(result as Map);
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<bool> consumeSuperStar() async {
+    try {
+      final result = await _client.rpc('consume_super_star');
+      return result == true;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<bool> consumeSuperChat() async {
+    try {
+      final result = await _client.rpc('consume_super_chat');
+      return result == true;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> fulfillPurchase({
+    required String productId,
+    required String transactionId,
+    required String platform,
+  }) async {
+    try {
+      await _client.rpc(
+        'fulfill_purchase',
+        params: {
+          'p_product_id': productId,
+          'p_transaction_id': transactionId,
+          'p_platform': platform,
+        },
+      );
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> setAccountActive(bool active) async {
+    try {
+      await _client.rpc('set_account_active', params: {'p_active': active});
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> incrementQuestProgress(String actionType) async {
+    try {
+      await _client.rpc(
+        'increment_quest_progress',
+        params: {'p_action_type': actionType},
+      );
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+    }
+  }
+
+  Future<List<Json>> getUserQuests() async {
+    try {
+      final result = await _client.rpc('get_user_quests');
+      final list = result as List<dynamic>? ?? const [];
+      return list.map((item) => Map<String, dynamic>.from(item as Map)).toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> claimQuestReward(String questId) async {
+    try {
+      await _client.rpc('claim_quest_reward', params: {'p_quest_id': questId});
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(

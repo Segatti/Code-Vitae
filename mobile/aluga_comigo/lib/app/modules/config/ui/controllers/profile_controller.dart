@@ -31,6 +31,12 @@ abstract interface class IProfileController extends ChangeNotifier {
 
   void updatePage();
 
+  void patchPerson(PersonCustomerModel Function(PersonCustomerModel current) patch);
+
+  void patchImmobile(
+    ImmobileCustomerModel Function(ImmobileCustomerModel current) patch,
+  );
+
   Future<bool> getCustomer();
   Future<bool> updateProfile();
   Future<void> selectPhotos();
@@ -356,5 +362,23 @@ class ProfileController extends IProfileController {
   @override
   void updatePage() {
     notifyListeners();
+  }
+
+  @override
+  void patchPerson(PersonCustomerModel Function(PersonCustomerModel) patch) {
+    final current = customer;
+    if (current is PersonCustomerModel) {
+      customer = patch(current);
+    }
+  }
+
+  @override
+  void patchImmobile(
+    ImmobileCustomerModel Function(ImmobileCustomerModel) patch,
+  ) {
+    final current = customer;
+    if (current is ImmobileCustomerModel) {
+      customer = patch(current);
+    }
   }
 }

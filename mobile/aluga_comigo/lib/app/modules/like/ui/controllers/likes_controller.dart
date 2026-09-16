@@ -4,6 +4,7 @@ import 'package:result_dart/result_dart.dart';
 
 import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/domain/enums/match_type.dart';
+import '../../../customer/domain/usecases/match_customer.dart';
 import '../../data/models/incoming_like_model.dart';
 import '../../domain/usecases/get_incoming_likes.dart';
 
@@ -18,12 +19,14 @@ abstract interface class ILikesController extends ChangeNotifier {
   List<ImmobileCustomerModel> get immobiles;
 
   Future<Unit> initialize();
+  Future<bool> respondToLike(IncomingLikeModel item, MatchType matchType);
 }
 
 class LikesController extends ILikesController {
   final IGetIncomingLikes _getIncomingLikes;
+  final IMatchCustomer _matchCustomer;
 
-  LikesController(this._getIncomingLikes);
+  LikesController(this._getIncomingLikes, this._matchCustomer);
 
   late final _loadCommand = Command0(_getIncomingLikes.call);
 
@@ -71,5 +74,33 @@ class LikesController extends ILikesController {
     );
     notifyListeners();
     return unit;
+  }
+
+  @override
+  Future<bool> respondToLike(
+    IncomingLikeModel item,
+    MatchType matchType,
+  ) async {
+    loadingList.add('respondLike');
+    notifyListeners();
+
+    final result = await _matchCustomer(item.customer, matchType);
+
+    loadingList.remove('respondLike');
+    return result.fold(
+      (_) {
+        errorMessage = 'Erro ao responder curtida';
+        notifyListeners();
+        return false;
+      },
+      (_) {
+        items.removeWhere(
+          (entry) => entry.customer.id == item.customer.id,
+        );
+        errorMessage = '';
+        notifyListeners();
+        return true;
+      },
+    );
   }
 }

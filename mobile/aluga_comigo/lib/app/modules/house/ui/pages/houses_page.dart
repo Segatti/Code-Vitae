@@ -5,8 +5,10 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
+import '../../../../shared/domain/helpers/maps_helper.dart';
 import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
 import '../../../customer/data/models/customer_model.dart';
+import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
 import '../controllers/houses_controller.dart';
 
@@ -20,6 +22,36 @@ class HousesPage extends StatefulWidget {
 class _HousesPageState extends State<HousesPage> {
   final controller = inject<IHousesController>();
   final swipController = SwipableStackController();
+
+  MatchType? _matchTypeFromDirection(SwipeDirection direction) {
+    return switch (direction) {
+      SwipeDirection.left => MatchType.unlike,
+      SwipeDirection.up => MatchType.favorite,
+      SwipeDirection.right => MatchType.like,
+      _ => null,
+    };
+  }
+
+  Future<void> _onSwipeCompleted(
+    int index,
+    SwipeDirection direction,
+    List<CustomerModel> list,
+  ) async {
+    final itemIndex = index % list.length;
+    final house = list[itemIndex];
+    final matchType = _matchTypeFromDirection(direction);
+    if (matchType != null) {
+      await controller.handleSwipe(house, matchType);
+      if (mounted && controller.errorMessage.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(controller.errorMessage)),
+        );
+      }
+    }
+    if ((index == list.length - 1) && controller.hasMore) {
+      controller.getHouses();
+    }
+  }
 
   Future<bool> _checkProfileAndShowDetails(
     FlipCardController flipController,
@@ -87,9 +119,7 @@ class _HousesPageState extends State<HousesPage> {
                     },
                     stackClipBehaviour: Clip.none,
                     onSwipeCompleted: (index, direction) {
-                      if ((index == list.length - 1) && controller.hasMore) {
-                        controller.getHouses();
-                      }
+                      _onSwipeCompleted(index, direction, list);
                     },
                     builder: (context, properties) {
                       final itemIndex = properties.index % list.length;
@@ -105,6 +135,12 @@ class _HousesPageState extends State<HousesPage> {
                             onVerMaisPressed: (flipController) async {
                               return await _checkProfileAndShowDetails(
                                 flipController,
+                              );
+                            },
+                            onVerNoMapaPressed: () {
+                              MapsHelper.openLocation(
+                                cep: house.cep,
+                                cityState: house.cityState,
                               );
                             },
                           );

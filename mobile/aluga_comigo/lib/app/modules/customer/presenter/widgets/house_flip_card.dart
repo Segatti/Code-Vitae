@@ -6,6 +6,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:aluga_comigo/app/shared/ui/widgets/power_up_badge.dart';
 import 'package:material_ui/material_ui.dart';
 
 class HouseFlipCard extends StatelessWidget {
@@ -70,6 +71,12 @@ class HouseFlipCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
+              if (immobile.hasActivePowerUp)
+                const Positioned(
+                  top: 12,
+                  left: 12,
+                  child: PowerUpBadge(),
+                ),
               Positioned(
                 top: 0,
                 left: 0,

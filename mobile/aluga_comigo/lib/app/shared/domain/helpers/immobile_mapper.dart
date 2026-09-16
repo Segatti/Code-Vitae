@@ -31,6 +31,7 @@ class ImmobileMapper {
       'isMallNear': immobileRow['is_mall_near'] ?? false,
       'isBeachNear': immobileRow['is_beach_near'] ?? false,
       'isActive': account?['is_active'] ?? true,
+      'powerUpUntil': immobileRow['power_up_until'],
     };
   }
 

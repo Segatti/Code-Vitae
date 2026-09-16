@@ -15,6 +15,10 @@ port = 54322
 shadow_port = 54320
 major_version = 15
 
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
 [db.pooler]
 enabled = false
 

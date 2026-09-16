@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/modules/like/ui/controllers/history_controller.dart';
 import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -9,6 +10,7 @@ class HistoryModule extends Module {
 
   @override
   void register(ModularContext c) {
+    c.add<IHistoryController>(HistoryController.new);
     c.route(
       '/',
       transition: AppTransitions.rightToLeft,

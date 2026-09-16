@@ -34,6 +34,21 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
   final controller = inject<IProfileController>();
   DateTime date = DateTime.now();
 
+  final _shortDescriptionController = TextEditingController();
+  final _longDescriptionController = TextEditingController();
+  final _priceMaxController = TextEditingController();
+  String? _formBoundCustomerId;
+
+  void _bindFormFields(PersonCustomerModel customer) {
+    if (_formBoundCustomerId == customer.id) return;
+    _formBoundCustomerId = customer.id;
+    _shortDescriptionController.text = customer.shortDescription;
+    _longDescriptionController.text = customer.longDescription;
+    _priceMaxController.text = customer.priceMaxImmobile > 0
+        ? customer.priceMaxImmobile.toMoney()
+        : '';
+  }
+
   int _calculateAge(String dateBirth) {
     if (dateBirth.isEmpty) return 0;
     final date = dateBirth.toDate();
@@ -194,7 +209,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
         initialSkills: currentSkills,
         getSkillName: _getSkillName,
         onSave: (selectedSkills) async {
-          controller.customer = customer.copyWith(skills: selectedSkills);
+          controller.patchPerson((c) => c.copyWith(skills: selectedSkills));
           await controller.updateProfile();
           if (context.mounted) {
             Navigator.of(context).pop();
@@ -220,8 +235,8 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
       builder: (context) => _HouseworksDialog(
         initialHouseworks: currentHouseworks,
         onSave: (selectedHouseworks) async {
-          controller.customer = customer.copyWith(
-            houseworks: selectedHouseworks,
+          controller.patchPerson(
+            (c) => c.copyWith(houseworks: selectedHouseworks),
           );
           await controller.updateProfile();
           if (context.mounted) {
@@ -238,14 +253,15 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
   @override
   void dispose() {
     controller.removeListener(_handleError);
+    _shortDescriptionController.dispose();
+    _longDescriptionController.dispose();
+    _priceMaxController.dispose();
     controller.dispose();
     super.dispose();
   }
 
   Future<void> _showDialog(Widget child) async {
     if (controller.customer == null) return;
-
-    final customer = controller.customer! as PersonCustomerModel;
 
     await showCupertinoModalPopup<void>(
       context: context,
@@ -269,8 +285,10 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                     height: 50,
                     borderRadius: 10,
                     onTap: () {
-                      controller.customer = customer.copyWith(
-                        dateBirth: DateFormat("dd/MM/yyyy").format(date),
+                      controller.patchPerson(
+                        (c) => c.copyWith(
+                          dateBirth: DateFormat('dd/MM/yyyy').format(date),
+                        ),
                       );
                       Navigator.of(context).pop();
                     },
@@ -303,6 +321,8 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
             child: Text('Não foi possível carregar o perfil do usuário.'),
           );
         }
+
+        _bindFormFields(customer);
 
         return Scaffold(
           appBar: AppBar(
@@ -616,10 +636,11 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                                             .primaryFocus
                                                             ?.unfocus();
                                                       });
-                                                  controller.customer = customer
-                                                      .copyWith(
-                                                        gender: "Homem",
-                                                      );
+                                                  controller.patchPerson(
+                                                    (c) => c.copyWith(
+                                                      gender: 'Homem',
+                                                    ),
+                                                  );
                                                   controller.updatePage();
                                                 },
                                                 child: Text("Homem"),
@@ -636,10 +657,11 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                                             .primaryFocus
                                                             ?.unfocus();
                                                       });
-                                                  controller.customer = customer
-                                                      .copyWith(
-                                                        gender: "Mulher",
-                                                      );
+                                                  controller.patchPerson(
+                                                    (c) => c.copyWith(
+                                                      gender: 'Mulher',
+                                                    ),
+                                                  );
                                                   controller.updatePage();
                                                 },
                                                 child: Text("Mulher"),
@@ -778,13 +800,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                       color: const Color(0xFFEFEFEF),
                                     ),
                                     child: TextFormField(
-                                      controller: TextEditingController(
-                                        text:
-                                            controller
-                                                .customer
-                                                ?.shortDescription ??
-                                            "",
-                                      ),
+                                      controller: _shortDescriptionController,
                                       style: GoogleFonts.rubik(
                                         height: 1,
                                         color: Colors.black,
@@ -792,8 +808,10 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                         fontSize: 16,
                                       ),
                                       onChanged: (value) {
-                                        controller.customer = customer.copyWith(
-                                          shortDescription: value,
+                                        controller.patchPerson(
+                                          (c) => c.copyWith(
+                                            shortDescription: value,
+                                          ),
                                         );
                                       },
                                       maxLines: null,
@@ -828,13 +846,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                       color: const Color(0xFFEFEFEF),
                                     ),
                                     child: TextFormField(
-                                      controller: TextEditingController(
-                                        text:
-                                            controller
-                                                .customer
-                                                ?.longDescription ??
-                                            "",
-                                      ),
+                                      controller: _longDescriptionController,
                                       style: GoogleFonts.rubik(
                                         height: 1,
                                         color: Colors.black,
@@ -842,8 +854,10 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                         fontSize: 16,
                                       ),
                                       onChanged: (value) {
-                                        controller.customer = customer.copyWith(
-                                          longDescription: value,
+                                        controller.patchPerson(
+                                          (c) => c.copyWith(
+                                            longDescription: value,
+                                          ),
                                         );
                                       },
                                       maxLines: null,
@@ -897,11 +911,12 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                                                   ?.unfocus();
                                                             },
                                                           );
-                                                      controller.customer =
-                                                          customer.copyWith(
-                                                            desiredImmobile:
-                                                                desiredImmobile,
-                                                          );
+                                                      controller.patchPerson(
+                                                        (c) => c.copyWith(
+                                                          desiredImmobile:
+                                                              desiredImmobile,
+                                                        ),
+                                                      );
                                                       controller.updatePage();
                                                     },
                                                     child: Text(
@@ -988,21 +1003,15 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                       ),
                                       child: TextFormField(
                                         inputFormatters: [MoneyFormatter()],
-                                        controller: TextEditingController(
-                                          text: (customer.priceMaxImmobile > 0)
-                                              ? customer.priceMaxImmobile
-                                                    .toMoney()
-                                              : '',
-                                        ),
+                                        controller: _priceMaxController,
                                         onChanged: (value) {
-                                          var data = value.moneyToNumber() ?? 0;
-                                          if (data > 0) {
-                                            controller.customer = customer
-                                                .copyWith(
-                                                  priceMaxImmobile: data
-                                                      .toDouble(),
-                                                );
-                                          }
+                                          final data =
+                                              value.moneyToNumber() ?? 0;
+                                          controller.patchPerson(
+                                            (c) => c.copyWith(
+                                              priceMaxImmobile: data.toDouble(),
+                                            ),
+                                          );
                                         },
                                         style: GoogleFonts.rubik(
                                           height: 1,
@@ -1067,11 +1076,11 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                                                   ?.unfocus();
                                                             },
                                                           );
-                                                      controller.customer =
-                                                          customer.copyWith(
-                                                            lifeStyle:
-                                                                lifeStyle,
-                                                          );
+                                                      controller.patchPerson(
+                                                        (c) => c.copyWith(
+                                                          lifeStyle: lifeStyle,
+                                                        ),
+                                                      );
                                                       controller.updatePage();
                                                     },
                                                     child: Text(

@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
 import '../../data/models/customer_model.dart';
+import '../../domain/enums/match_type.dart';
 import '../controllers/customers_controller.dart';
 import '../widgets/person_flip_card.dart';
 
@@ -60,6 +61,36 @@ class _CustomersPageState extends State<CustomersPage> {
   //   if (score == 0) return "0/5";
   //   return "${score.toStringAsFixed(1)}/5";
   // }
+
+  MatchType? _matchTypeFromDirection(SwipeDirection direction) {
+    return switch (direction) {
+      SwipeDirection.left => MatchType.unlike,
+      SwipeDirection.up => MatchType.favorite,
+      SwipeDirection.right => MatchType.like,
+      _ => null,
+    };
+  }
+
+  Future<void> _onSwipeCompleted(
+    int index,
+    SwipeDirection direction,
+    List<CustomerModel> list,
+  ) async {
+    final itemIndex = index % list.length;
+    final customer = list[itemIndex];
+    final matchType = _matchTypeFromDirection(direction);
+    if (matchType != null) {
+      await controller.handleSwipe(customer, matchType);
+      if (mounted && controller.errorMessage.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(controller.errorMessage)),
+        );
+      }
+    }
+    if ((index == list.length - 1) && controller.hasMore) {
+      controller.getCustomers();
+    }
+  }
 
   Future<bool> _checkProfileAndShowDetails(
     FlipCardController flipController,
@@ -137,9 +168,7 @@ class _CustomersPageState extends State<CustomersPage> {
                     },
                     stackClipBehaviour: Clip.none,
                     onSwipeCompleted: (index, direction) {
-                      if ((index == list.length - 1) && controller.hasMore) {
-                        controller.getCustomers();
-                      }
+                      _onSwipeCompleted(index, direction, list);
                     },
                     builder: (context, properties) {
                       final itemIndex = properties.index % list.length;

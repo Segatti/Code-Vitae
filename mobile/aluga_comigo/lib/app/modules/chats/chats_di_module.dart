@@ -17,7 +17,7 @@ class ChatsDiModule extends Module {
     c.addSingleton<IListChats>(ListChats.new);
     c.addSingleton<IListMessages>(ListMessages.new);
     c.addSingleton<ISendMessage>(SendMessage.new);
-    c.addSingleton<IChatsListController>(ChatsListController.new);
-    c.add<IChatController>(ChatController.new);
+    c.addLazySingleton<IChatsListController>(ChatsListController.new);
+    c.addLazySingleton<IChatController>(ChatController.new);
   }
 }

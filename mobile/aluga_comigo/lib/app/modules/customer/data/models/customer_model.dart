@@ -21,6 +21,19 @@ sealed class CustomerModel {
   final double score;
   final String cityState;
   final List<String> photos;
+  final DateTime? powerUpUntil;
+
+  bool get hasActivePowerUp {
+    final until = powerUpUntil;
+    if (until == null) return false;
+    return until.isAfter(DateTime.now());
+  }
+
+  static DateTime? parsePowerUpUntil(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    return DateTime.tryParse(value.toString());
+  }
 
   CustomerModel({
     this.id = "",
@@ -34,6 +47,7 @@ sealed class CustomerModel {
     this.longDescription = "",
     this.score = 0,
     this.photos = const [],
+    this.powerUpUntil,
   });
 
   Map<String, dynamic> toMap() {
@@ -108,6 +122,7 @@ class PersonCustomerModel extends CustomerModel {
     this.desiredImmobile = UserDesiredImmobile.none,
     this.lifeStyle = UserLifeStyle.none,
     this.gender = "",
+    super.powerUpUntil,
   });
 
   @override
@@ -173,6 +188,7 @@ class PersonCustomerModel extends CustomerModel {
       ),
       lifeStyle: UserLifeStyle.get(map.getSafe<String>('lifeStyle')),
       gender: map.getSafe<String>('gender'),
+      powerUpUntil: CustomerModel.parsePowerUpUntil(map['powerUpUntil']),
     );
   }
 
@@ -206,6 +222,7 @@ class PersonCustomerModel extends CustomerModel {
     UserDesiredImmobile? desiredImmobile,
     UserLifeStyle? lifeStyle,
     String? gender,
+    DateTime? powerUpUntil,
   }) {
     return PersonCustomerModel(
       id: id ?? this.id,
@@ -225,8 +242,9 @@ class PersonCustomerModel extends CustomerModel {
       priceMaxImmobile: priceMaxImmobile ?? this.priceMaxImmobile,
       cityState: cityState ?? this.cityState,
       desiredImmobile: desiredImmobile ?? this.desiredImmobile,
-      lifeStyle: lifeStyle ?? UserLifeStyle.none,
+      lifeStyle: lifeStyle ?? this.lifeStyle,
       gender: gender ?? this.gender,
+      powerUpUntil: powerUpUntil ?? this.powerUpUntil,
     );
   }
 }
@@ -271,6 +289,7 @@ class ImmobileCustomerModel extends CustomerModel {
     this.isGymNear = false,
     this.isMallNear = false,
     this.isBeachNear = false,
+    super.powerUpUntil,
   });
 
   @override
@@ -336,6 +355,7 @@ class ImmobileCustomerModel extends CustomerModel {
       isGymNear: map.getSafe<bool>('isGymNear'),
       isMallNear: map.getSafe<bool>('isMallNear'),
       isBeachNear: map.getSafe<bool>('isBeachNear'),
+      powerUpUntil: CustomerModel.parsePowerUpUntil(map['powerUpUntil']),
     );
   }
 
@@ -374,6 +394,7 @@ class ImmobileCustomerModel extends CustomerModel {
     bool? isGymNear,
     bool? isMallNear,
     bool? isBeachNear,
+    DateTime? powerUpUntil,
   }) {
     return ImmobileCustomerModel(
       id: id ?? this.id,
@@ -400,6 +421,7 @@ class ImmobileCustomerModel extends CustomerModel {
       isGymNear: isGymNear ?? this.isGymNear,
       isMallNear: isMallNear ?? this.isMallNear,
       isBeachNear: isBeachNear ?? this.isBeachNear,
+      powerUpUntil: powerUpUntil ?? this.powerUpUntil,
     );
   }
 }
