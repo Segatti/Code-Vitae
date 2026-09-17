@@ -1,6 +1,8 @@
 import 'package:aluga_comigo/app/modules/chats/domain/entities/chat.dart';
+import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/entities/chat_message.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/chat_controller.dart';
+import 'package:aluga_comigo/app/modules/chats/ui/widgets/chat_contact_flip_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,19 +20,14 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late final IChatController controller;
+  var _initialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    controller = inject<IChatController>();
-    controller.initialize(widget.chat.id);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialized) return;
+    _initialized = true;
+    context.read<IChatController>().initialize(widget.chat);
   }
 
   String _formatTime(DateTime? dateTime) {
@@ -40,13 +37,15 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: controller,
-      builder: (context, _) {
-        final messages = controller.messages;
-        final isSending = controller.loadingList.contains('sendMessage');
+    final controller = context.watch<IChatController>();
+    final messages = controller.messages;
+    final isSending = controller.loadingList.contains('sendMessage');
+    final sessionId = SessionService.customer?.id ?? '';
+    final otherDisplay = sessionId.isEmpty
+        ? (name: widget.chat.otherName, photo: widget.chat.otherPhoto)
+        : widget.chat.otherParticipantDisplay(sessionId);
 
-        return Scaffold(
+    return Scaffold(
           appBar: AppBar(
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -57,37 +56,41 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             titleSpacing: 0,
-            title: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: widget.chat.otherPhoto.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: widget.chat.otherPhoto,
-                          height: 40,
-                          width: 40,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          height: 40,
-                          width: 40,
-                          color: Colors.grey.shade300,
-                          child: const Icon(Icons.person),
-                        ),
-                ),
-                const Gap(16),
-                Expanded(
-                  child: Text(
-                    widget.chat.otherName,
-                    style: GoogleFonts.rubik(
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
+            title: InkWell(
+              onTap: () => ChatContactFlipDialog.show(context, widget.chat),
+              borderRadius: BorderRadius.circular(8),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: otherDisplay.photo.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: otherDisplay.photo,
+                            height: 40,
+                            width: 40,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            height: 40,
+                            width: 40,
+                            color: Colors.grey.shade300,
+                            child: const Icon(Icons.person),
+                          ),
+                  ),
+                  const Gap(16),
+                  Expanded(
+                    child: Text(
+                      otherDisplay.name,
+                      style: GoogleFonts.rubik(
+                        fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
-                const Gap(16),
-              ],
+                  const Gap(16),
+                ],
+              ),
             ),
           ),
           body: Column(
@@ -195,7 +198,7 @@ class _ChatPageState extends State<ChatPage> {
                                   contentPadding: EdgeInsets.only(left: 8),
                                 ),
                                 onFieldSubmitted: (_) async {
-                                  await controller.sendMessage(widget.chat.id);
+                                  await controller.sendMessage();
                                 },
                               ),
                             ),
@@ -203,9 +206,7 @@ class _ChatPageState extends State<ChatPage> {
                               onPressed: isSending
                                   ? null
                                   : () async {
-                                      await controller.sendMessage(
-                                        widget.chat.id,
-                                      );
+                                      await controller.sendMessage();
                                     },
                               icon: Icon(
                                 isSending ? Icons.hourglass_empty : Icons.send,
@@ -222,8 +223,6 @@ class _ChatPageState extends State<ChatPage> {
             ],
           ),
         );
-      },
-    );
   }
 
   Widget _messageBubble(

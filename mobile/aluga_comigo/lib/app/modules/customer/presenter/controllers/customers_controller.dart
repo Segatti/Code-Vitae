@@ -5,6 +5,8 @@ import 'package:result_dart/result_dart.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../data/models/customer_model.dart';
 import '../../domain/constants/swipe_feed_constants.dart';
+import '../../domain/entities/match_customer_response.dart';
+import '../../domain/entities/swipe_action_result.dart';
 import '../../domain/enums/match_type.dart';
 import '../../domain/usecases/get_customers.dart';
 import '../../domain/usecases/match_customer.dart';
@@ -17,12 +19,19 @@ abstract class ICustomersController extends ChangeNotifier {
   bool hasMore = true;
 
   Future<Unit> initialize();
+  void resetFeedState();
   @override
   Future<Unit> dispose();
 
   Future<bool> getCustomers();
-  Future<bool> matchCustomer(CustomerModel customer, MatchType matchType);
-  Future<void> handleSwipe(CustomerModel customer, MatchType matchType);
+  Future<MatchCustomerResponse?> matchCustomer(
+    CustomerModel customer,
+    MatchType matchType,
+  );
+  Future<SwipeActionResult> handleSwipe(
+    CustomerModel customer,
+    MatchType matchType,
+  );
 }
 
 class CustomersController extends ICustomersController {
@@ -69,16 +78,27 @@ class CustomersController extends ICustomersController {
   }
 
   @override
-  Future<void> handleSwipe(CustomerModel customer, MatchType matchType) async {
-    final success = await matchCustomer(customer, matchType);
-    if (success) {
-      customers.removeWhere((item) => item.id == customer.id);
-      notifyListeners();
+  Future<SwipeActionResult> handleSwipe(
+    CustomerModel customer,
+    MatchType matchType,
+  ) async {
+    final outcome = await matchCustomer(customer, matchType);
+    if (outcome == null) {
+      return const SwipeActionResult(removed: false);
     }
+    customers.removeWhere((item) => item.id == customer.id);
+    notifyListeners();
+    return SwipeActionResult(
+      removed: true,
+      mutualMatch: outcome.mutualMatch,
+    );
   }
 
   @override
-  Future<bool> matchCustomer(CustomerModel customer, MatchType matchType) async {
+  Future<MatchCustomerResponse?> matchCustomer(
+    CustomerModel customer,
+    MatchType matchType,
+  ) async {
     loadingList.add('matchCustomer');
     notifyListeners();
     await matchCustomerCommand.execute(customer, matchType);
@@ -86,20 +106,30 @@ class CustomersController extends ICustomersController {
     notifyListeners();
     final result = matchCustomerCommand.value;
     return result.when(
-      data: (customer) {
-        return true;
+      data: (response) {
+        errorMessage = '';
+        return response;
       },
       failure: (error) {
         errorMessage = "Erro ao buscar clientes";
         notifyListeners();
-        return false;
+        return null;
       },
-      orElse: () => false,
+      orElse: () => null,
     );
   }
 
   @override
+  void resetFeedState() {
+    customers.clear();
+    hasMore = true;
+    errorMessage = '';
+    notifyListeners();
+  }
+
+  @override
   Future<Unit> initialize() async {
+    resetFeedState();
     loadingList.add('initialize');
     notifyListeners();
     await getCustomers();

@@ -19,7 +19,8 @@ class LikesDatasource implements ILikesDatasource {
     if (session == null) return [];
 
     final rows = switch (session.typeUser) {
-      TypeUser.person => await database.listIncomingImmobileMatches(session.id),
+      TypeUser.person =>
+        await database.listIncomingPersonPeerMatches(session.id),
       TypeUser.immobile => await database.listIncomingPersonMatches(session.id),
       TypeUser.none => <Map<String, dynamic>>[],
     };

@@ -6,6 +6,7 @@ import '../../domain/entities/failures.dart';
 import '../../domain/errors/supabase_error_handler.dart';
 import '../../domain/helpers/account_mapper.dart';
 import '../../domain/helpers/chat_mapper.dart';
+import '../../domain/helpers/peer_chat_mapper.dart';
 import '../../domain/helpers/immobile_mapper.dart';
 import '../../domain/helpers/message_mapper.dart';
 import '../../domain/helpers/person_mapper.dart';
@@ -289,17 +290,92 @@ class SupabaseDatabaseService {
     }
   }
 
+  static bool _isPositiveMatchType(String? type) {
+    return type == 'like' || type == 'favorite';
+  }
+
+  static bool _pendingIncomingAfterMyAction(String? myMatchType) {
+    if (myMatchType == null || myMatchType == 'none') return true;
+    return false;
+  }
+
+  Future<bool> hasMutualPersonPeerMatch({
+    required String personId,
+    required String otherPersonId,
+  }) async {
+    try {
+      final rows = await _client
+          .from('person_peer_matches')
+          .select('from_person_id, match_type')
+          .or(
+            'and(from_person_id.eq.$personId,to_person_id.eq.$otherPersonId),'
+            'and(from_person_id.eq.$otherPersonId,to_person_id.eq.$personId)',
+          );
+
+      var selfPositive = false;
+      var otherPositive = false;
+      for (final row in rows) {
+        final map = Map<String, dynamic>.from(row);
+        final from = map['from_person_id']?.toString() ?? '';
+        final type = map['match_type']?.toString();
+        if (from == personId) {
+          selfPositive = _isPositiveMatchType(type);
+        } else if (from == otherPersonId) {
+          otherPositive = _isPositiveMatchType(type);
+        }
+      }
+      return selfPositive && otherPositive;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<bool> hasMutualPersonImmobileMatch({
+    required String personId,
+    required String immobileId,
+  }) async {
+    try {
+      final personRow = await _client
+          .from('person_matches')
+          .select('match_type')
+          .eq('person_id', personId)
+          .eq('immobile_id', immobileId)
+          .maybeSingle();
+
+      final immobileRow = await _client
+          .from('immobile_matches')
+          .select('match_type')
+          .eq('immobile_id', immobileId)
+          .eq('person_id', personId)
+          .maybeSingle();
+
+      return _isPositiveMatchType(personRow?['match_type']?.toString()) &&
+          _isPositiveMatchType(immobileRow?['match_type']?.toString());
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<void> createPersonPeerMatch({
     required String fromPersonId,
     required String toPersonId,
     required String matchType,
   }) async {
     try {
-      await _client.from('person_peer_matches').upsert({
-        'from_person_id': fromPersonId,
-        'to_person_id': toPersonId,
-        'match_type': matchType,
-      });
+      await _client.from('person_peer_matches').upsert(
+        {
+          'from_person_id': fromPersonId,
+          'to_person_id': toPersonId,
+          'match_type': matchType,
+        },
+        onConflict: 'from_person_id,to_person_id',
+      );
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -314,11 +390,14 @@ class SupabaseDatabaseService {
     required String matchType,
   }) async {
     try {
-      await _client.from('person_matches').upsert({
-        'person_id': personId,
-        'immobile_id': immobileId,
-        'match_type': matchType,
-      });
+      await _client.from('person_matches').upsert(
+        {
+          'person_id': personId,
+          'immobile_id': immobileId,
+          'match_type': matchType,
+        },
+        onConflict: 'person_id,immobile_id',
+      );
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -333,11 +412,14 @@ class SupabaseDatabaseService {
     required String matchType,
   }) async {
     try {
-      await _client.from('immobile_matches').upsert({
-        'immobile_id': immobileId,
-        'person_id': personId,
-        'match_type': matchType,
-      });
+      await _client.from('immobile_matches').upsert(
+        {
+          'immobile_id': immobileId,
+          'person_id': personId,
+          'match_type': matchType,
+        },
+        onConflict: 'immobile_id,person_id',
+      );
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -395,14 +477,37 @@ class SupabaseDatabaseService {
     try {
       final rows = await _client
           .from('person_matches')
-          .select('match_type, persons(*, accounts(*))')
+          .select('match_type, person_id, persons(*, accounts(*))')
           .eq('immobile_id', immobileId)
           .inFilter('match_type', ['like', 'favorite'])
           .order('created_at', ascending: false);
 
+      if (rows.isEmpty) return [];
+
+      final personIds = rows
+          .map((row) => row['person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
+
+      final myRows = await _client
+          .from('immobile_matches')
+          .select('person_id, match_type')
+          .eq('immobile_id', immobileId)
+          .inFilter('person_id', personIds);
+
+      final myMatchByPersonId = {
+        for (final row in myRows)
+          row['person_id']?.toString() ?? '': row['match_type']?.toString(),
+      };
+
       return rows
           .map((row) {
             final map = Map<String, dynamic>.from(row);
+            final personId = map['person_id']?.toString() ?? '';
+            if (!_pendingIncomingAfterMyAction(myMatchByPersonId[personId])) {
+              return null;
+            }
             final person = map['persons'];
             if (person is! Map) return null;
             final customer = PersonMapper.toAppMap(
@@ -411,6 +516,66 @@ class SupabaseDatabaseService {
             if (customer['isActive'] == false) return null;
             return {
               'matchType': map['match_type'] as String? ?? 'none',
+              'customer': customer,
+            };
+          })
+          .whereType<Json>()
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  /// Pessoas que curtiram/super-stararam [personId] e ainda não há match mútuo.
+  Future<List<Json>> listIncomingPersonPeerMatches(String personId) async {
+    try {
+      final rows = await _client
+          .from('person_peer_matches')
+          .select(
+            'match_type, from_person_id, '
+            'persons!person_peer_matches_from_person_id_fkey(*, accounts(*))',
+          )
+          .eq('to_person_id', personId)
+          .inFilter('match_type', ['like', 'favorite'])
+          .order('created_at', ascending: false);
+
+      if (rows.isEmpty) return [];
+
+      final fromIds = rows
+          .map((row) => row['from_person_id']?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
+
+      final myRows = await _client
+          .from('person_peer_matches')
+          .select('to_person_id, match_type')
+          .eq('from_person_id', personId)
+          .inFilter('to_person_id', fromIds);
+
+      final myMatchByPersonId = {
+        for (final row in myRows)
+          row['to_person_id']?.toString() ?? '': row['match_type']?.toString(),
+      };
+
+      return rows
+          .map((row) {
+            final map = Map<String, dynamic>.from(row);
+            final fromId = map['from_person_id']?.toString() ?? '';
+            if (!_pendingIncomingAfterMyAction(myMatchByPersonId[fromId])) {
+              return null;
+            }
+            final person = map['persons'];
+            if (person is! Map) return null;
+            final customer = PersonMapper.toAppMap(
+              Map<String, dynamic>.from(person),
+            );
+            if (customer['isActive'] == false) return null;
+            return {
+              'matchType': map['match_type'] as String? ?? 'like',
               'customer': customer,
             };
           })
@@ -623,7 +788,7 @@ class SupabaseDatabaseService {
           .or('person_id.eq.$userId,immobile_id.eq.$userId')
           .order('last_message_at', ascending: false, nullsFirst: false);
 
-      return rows
+      final immobileChats = rows
           .map(
             (row) => ChatMapper.fromRow(
               Map<String, dynamic>.from(row),
@@ -631,6 +796,37 @@ class SupabaseDatabaseService {
             ),
           )
           .toList();
+
+      final peerRows = await _client
+          .from('person_peer_chats')
+          .select()
+          .or('person_low_id.eq.$userId,person_high_id.eq.$userId')
+          .order('last_message_at', ascending: false, nullsFirst: false);
+
+      final peerChats = peerRows
+          .map(
+            (row) => PeerChatMapper.fromRow(
+              Map<String, dynamic>.from(row),
+              userId,
+            ),
+          )
+          .toList();
+
+      final merged = [...immobileChats, ...peerChats];
+      merged.sort((a, b) {
+        final aAt = a['lastMessageAt'];
+        final bAt = b['lastMessageAt'];
+        final aDate = aAt == null
+            ? DateTime.fromMillisecondsSinceEpoch(0)
+            : DateTime.tryParse(aAt.toString()) ??
+                DateTime.fromMillisecondsSinceEpoch(0);
+        final bDate = bAt == null
+            ? DateTime.fromMillisecondsSinceEpoch(0)
+            : DateTime.tryParse(bAt.toString()) ??
+                DateTime.fromMillisecondsSinceEpoch(0);
+        return bDate.compareTo(aDate);
+      });
+      return merged;
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -639,10 +835,14 @@ class SupabaseDatabaseService {
     }
   }
 
-  Future<List<Json>> listMessages(String chatId) async {
+  Future<List<Json>> listMessages(
+    String chatId, {
+    bool personPeerChat = false,
+  }) async {
     try {
+      final table = personPeerChat ? 'person_peer_messages' : 'messages';
       final rows = await _client
-          .from('messages')
+          .from(table)
           .select()
           .eq('chat_id', chatId)
           .order('created_at', ascending: true);
@@ -760,6 +960,73 @@ class SupabaseDatabaseService {
   Future<void> claimQuestReward(String questId) async {
     try {
       await _client.rpc('claim_quest_reward', params: {'p_quest_id': questId});
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listUserNotifications(String accountId) async {
+    try {
+      final rows = await _client
+          .from('user_notifications')
+          .select()
+          .eq('account_id', accountId)
+          .order('created_at', ascending: false)
+          .limit(100);
+
+      return rows
+          .map(
+            (row) => {
+              'id': row['id'],
+              'notificationType': row['notification_type'],
+              'title': row['title'],
+              'body': row['body'],
+              'createdAt': row['created_at'],
+            },
+          )
+          .map((map) => Map<String, dynamic>.from(map))
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<Json> getOrCreatePersonImmobileChat({
+    required String personId,
+    required String immobileId,
+  }) async {
+    try {
+      final row = await _client.rpc(
+        'get_or_create_person_immobile_chat',
+        params: {
+          'p_person_id': personId,
+          'p_immobile_id': immobileId,
+        },
+      );
+      return Map<String, dynamic>.from(row as Map);
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<Json> getOrCreatePersonPeerChat({
+    required String otherPersonId,
+  }) async {
+    try {
+      final row = await _client.rpc(
+        'get_or_create_person_peer_chat',
+        params: {'p_other_person_id': otherPersonId},
+      );
+      return Map<String, dynamic>.from(row as Map);
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -951,10 +1218,12 @@ class SupabaseDatabaseService {
     required String senderId,
     required String content,
     String messageType = 'text',
+    bool personPeerChat = false,
   }) async {
     try {
+      final table = personPeerChat ? 'person_peer_messages' : 'messages';
       final data = await _client
-          .from('messages')
+          .from(table)
           .insert(
             MessageMapper.toRow(
               chatId: chatId,
@@ -969,6 +1238,46 @@ class SupabaseDatabaseService {
       return MessageMapper.fromRow(
         Map<String, dynamic>.from(data),
         senderId,
+      );
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<int> countUserNotificationsAfter({
+    required String accountId,
+    required DateTime after,
+  }) async {
+    try {
+      final rows = await _client
+          .from('user_notifications')
+          .select('id')
+          .eq('account_id', accountId)
+          .gt('created_at', after.toUtc().toIso8601String());
+
+      return rows.length;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> deleteChatForUser({
+    required String chatId,
+    required bool isPersonPeerChat,
+  }) async {
+    try {
+      await _client.rpc(
+        'delete_chat_for_user',
+        params: {
+          'p_chat_id': chatId,
+          'p_is_person_peer_chat': isPersonPeerChat,
+        },
       );
     } on PostgrestException catch (error) {
       debugPrint(error.toString());

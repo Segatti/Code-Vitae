@@ -5,8 +5,8 @@ import '../../../../shared/data/services/session_service.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../../customer/data/models/customer_model.dart';
 import '../../data/models/match_contact_model.dart';
-import '../../data/repositories/match_contact_repository.dart';
 import '../../domain/entities/chat.dart';
+import '../../domain/usecases/get_or_create_chat_for_contact.dart';
 import '../../domain/usecases/list_match_contacts.dart';
 
 abstract interface class IContactListController extends ChangeNotifier {
@@ -20,9 +20,12 @@ abstract interface class IContactListController extends ChangeNotifier {
 
 class ContactListController extends IContactListController {
   final IListMatchContacts _listMatchContacts;
-  final IMatchContactRepository _matchContactRepository;
+  final IGetOrCreateChatForContact _getOrCreateChatForContact;
 
-  ContactListController(this._listMatchContacts, this._matchContactRepository);
+  ContactListController(
+    this._listMatchContacts,
+    this._getOrCreateChatForContact,
+  );
 
   @override
   Future<Unit> load({required int tabIndex}) async {
@@ -54,6 +57,13 @@ class ContactListController extends IContactListController {
 
   @override
   Future<Chat?> resolveChat(CustomerModel customer) async {
-    return _matchContactRepository.findChatForContact(customer);
+    loadingList.add('resolveChat');
+    notifyListeners();
+
+    final chat = await _getOrCreateChatForContact(customer);
+
+    loadingList.remove('resolveChat');
+    notifyListeners();
+    return chat;
   }
 }

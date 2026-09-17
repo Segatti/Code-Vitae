@@ -2,9 +2,10 @@ import 'package:result_dart/result_dart.dart';
 
 import '../../data/models/customer_model.dart';
 import '../../data/repositories/customer_repository.dart';
+import '../entities/match_customer_response.dart';
 
 abstract interface class IMatchImmobileWithSuperChat {
-  AsyncResult<Unit> call({
+  AsyncResult<MatchCustomerResponse> call({
     required ImmobileCustomerModel immobile,
     required String message,
   });
@@ -16,7 +17,7 @@ class MatchImmobileWithSuperChat implements IMatchImmobileWithSuperChat {
   const MatchImmobileWithSuperChat(this.repository);
 
   @override
-  AsyncResult<Unit> call({
+  AsyncResult<MatchCustomerResponse> call({
     required ImmobileCustomerModel immobile,
     required String message,
   }) {

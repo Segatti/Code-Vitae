@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
+import 'package:aluga_comigo/app/modules/chats/chat_navigation.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/entities/chat.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/chats_list_controller.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/pages/contact_list_page.dart';
@@ -32,9 +33,15 @@ class _ChatsListPageState extends State<ChatsListPage> {
   List<Chat> _filteredChats() {
     final isPerson = SessionService.customer?.typeUser == TypeUser.person;
     if (tabSelected == 0) {
-      return isPerson ? [] : controller.chats;
+      if (isPerson) {
+        return controller.chats.where((c) => c.isPersonPeerChat).toList();
+      }
+      return controller.chats.where((c) => !c.isPersonPeerChat).toList();
     }
-    return isPerson ? controller.chats : [];
+    if (isPerson) {
+      return controller.chats.where((c) => !c.isPersonPeerChat).toList();
+    }
+    return [];
   }
 
   String _formatLastMessageAt(DateTime? dateTime) {
@@ -54,7 +61,9 @@ class _ChatsListPageState extends State<ChatsListPage> {
       listenable: controller,
       builder: (context, _) {
         final chats = _filteredChats();
-        final isLoading = controller.loadingList.contains('loadChats');
+        final isInitialLoading =
+            controller.loadingList.contains('loadChats') &&
+            controller.chats.isEmpty;
 
         return Column(
           children: [
@@ -143,7 +152,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: isLoading && chats.isEmpty
+                                    child: isInitialLoading
                                         ? const Center(
                                             child: CircularProgressIndicator(
                                               color: Colors.white,
@@ -164,11 +173,25 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                             padding: EdgeInsets.zero,
                                             itemBuilder: (context, index) {
                                               final chat = chats[index];
+                                              final sessionId =
+                                                  SessionService
+                                                      .customer
+                                                      ?.id ??
+                                                  '';
+                                              final otherDisplay =
+                                                  sessionId.isEmpty
+                                                  ? (
+                                                      name: chat.otherName,
+                                                      photo: chat.otherPhoto,
+                                                    )
+                                                  : chat.otherParticipantDisplay(
+                                                      sessionId,
+                                                    );
                                               return GestureDetector(
                                                 onTap: () {
-                                                  context.pushNamed(
-                                                    './chat',
-                                                    arguments: {'chat': chat},
+                                                  ChatNavigation.open(
+                                                    context,
+                                                    chat,
                                                   );
                                                 },
                                                 child: Container(
@@ -187,12 +210,13 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                               10,
                                                             ),
                                                         child:
-                                                            chat
-                                                                .otherPhoto
+                                                            otherDisplay
+                                                                .photo
                                                                 .isNotEmpty
                                                             ? CachedNetworkImage(
-                                                                imageUrl: chat
-                                                                    .otherPhoto,
+                                                                imageUrl:
+                                                                    otherDisplay
+                                                                        .photo,
                                                                 width: 50,
                                                                 height: 50,
                                                                 fit: BoxFit
@@ -220,7 +244,8 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                               children: [
                                                                 Expanded(
                                                                   child: Text(
-                                                                    chat.otherName,
+                                                                    otherDisplay
+                                                                        .name,
                                                                     style: GoogleFonts.rubik(
                                                                       fontSize:
                                                                           16,
@@ -285,8 +310,8 @@ class _ChatsListPageState extends State<ChatsListPage> {
                             height: 60,
                             width: double.infinity,
                             child: GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
+                              onTap: () async {
+                                await showModalBottomSheet<void>(
                                   context: context,
                                   useSafeArea: true,
                                   useRootNavigator: true,
@@ -305,6 +330,9 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                     );
                                   },
                                 );
+                                if (mounted) {
+                                  await controller.initialize();
+                                }
                               },
                               child: Center(
                                 child: Text(

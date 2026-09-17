@@ -14,7 +14,9 @@ abstract interface class IMatchContactRepository {
     required int tabIndex,
   });
 
-  Future<Chat?> findChatForContact(CustomerModel customer);
+  Future<Chat?> getOrCreateChatForContact(CustomerModel customer);
+
+  AsyncResult<CustomerModel> getContactProfile(String accountId);
 }
 
 class MatchContactRepository implements IMatchContactRepository {
@@ -33,7 +35,12 @@ class MatchContactRepository implements IMatchContactRepository {
   }
 
   @override
-  Future<Chat?> findChatForContact(CustomerModel customer) {
-    return datasource.findChatForContact(customer);
+  Future<Chat?> getOrCreateChatForContact(CustomerModel customer) {
+    return datasource.getOrCreateChatForContact(customer);
+  }
+
+  @override
+  AsyncResult<CustomerModel> getContactProfile(String accountId) {
+    return datasource.getContactProfile(accountId).toAsyncResult();
   }
 }

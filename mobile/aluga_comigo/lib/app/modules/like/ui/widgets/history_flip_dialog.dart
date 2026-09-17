@@ -5,6 +5,7 @@ import 'package:aluga_comigo/app/modules/customer/domain/usecases/match_customer
 import 'package:aluga_comigo/app/modules/customer/domain/usecases/match_immobile_with_super_chat.dart';
 import 'package:aluga_comigo/app/modules/house/ui/widgets/super_chat_immobile_dialog.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/house_flip_card.dart';
+import 'package:aluga_comigo/app/modules/customer/presenter/widgets/match_celebration_dialog.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/person_flip_card.dart';
 import 'package:aluga_comigo/app/modules/like/data/models/rejected_history_item.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
@@ -12,6 +13,7 @@ import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/maps_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
@@ -131,6 +133,10 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
 
     final customer = widget.item.customer;
     if (matchType == MatchType.favorite && customer is ImmobileCustomerModel) {
+      if (!await InventoryPromptHelper.ensureSuperChatAvailable(context)) {
+        return;
+      }
+      if (!mounted) return;
       final message = await SuperChatImmobileDialog.show(context);
       if (message == null || !mounted) return;
       setState(() => _submitting = true);
@@ -140,12 +146,26 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
       );
       if (!mounted) return;
       setState(() => _submitting = false);
-      result.fold((error) {
-        final text = error.toString().replaceFirst('Exception: ', '');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(text.isNotEmpty ? text : 'Erro ao salvar')),
-        );
-      }, (_) => Navigator.of(context).pop(true));
+      result.fold(
+        (response) async {
+          Navigator.of(context).pop(true);
+          final mutual = response.mutualMatch;
+          if (mutual != null && context.mounted) {
+            await MatchCelebrationDialog.show(context, mutual);
+          }
+        },
+        (failure) {
+          final text = failure.toString().replaceFirst('Exception: ', '');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(text.isNotEmpty ? text : 'Erro ao salvar')),
+          );
+        },
+      );
+      return;
+    }
+
+    if (InventoryPromptHelper.actionUsesSuperStar(matchType, customer) &&
+        !await InventoryPromptHelper.ensureSuperStarAvailable(context)) {
       return;
     }
 
@@ -157,16 +177,20 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
     setState(() => _submitting = false);
 
     result.fold(
-      (error) {
-        final message = error.toString().replaceFirst('Exception: ', '');
+      (response) async {
+        Navigator.of(context).pop(true);
+        final mutual = response.mutualMatch;
+        if (mutual != null && context.mounted) {
+          await MatchCelebrationDialog.show(context, mutual);
+        }
+      },
+      (failure) {
+        final message = failure.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message.isNotEmpty ? message : 'Erro ao salvar'),
           ),
         );
-      },
-      (_) {
-        Navigator.of(context).pop(true);
       },
     );
   }

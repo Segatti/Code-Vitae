@@ -4,7 +4,10 @@ import '../entities/chat_message.dart';
 import '../repositories/chat_repository.dart';
 
 abstract interface class IListMessages {
-  AsyncResult<List<ChatMessage>> call(String chatId);
+  AsyncResult<List<ChatMessage>> call(
+    String chatId, {
+    required bool isPersonPeerChat,
+  });
 }
 
 class ListMessages implements IListMessages {
@@ -13,7 +16,13 @@ class ListMessages implements IListMessages {
   const ListMessages(this.repository);
 
   @override
-  AsyncResult<List<ChatMessage>> call(String chatId) {
-    return repository.listMessages(chatId);
+  AsyncResult<List<ChatMessage>> call(
+    String chatId, {
+    required bool isPersonPeerChat,
+  }) {
+    return repository.listMessages(
+      chatId,
+      isPersonPeerChat: isPersonPeerChat,
+    );
   }
 }

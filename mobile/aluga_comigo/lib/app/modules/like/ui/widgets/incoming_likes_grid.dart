@@ -7,12 +7,14 @@ import '../../data/models/incoming_like_model.dart';
 class IncomingLikesGrid extends StatelessWidget {
   final List<IncomingLikeModel> items;
   final bool blurPhotos;
+  final bool Function(IncomingLikeModel item)? blurForItem;
   final void Function(IncomingLikeModel item)? onItemTap;
 
   const IncomingLikesGrid({
     super.key,
     required this.items,
     this.blurPhotos = false,
+    this.blurForItem,
     this.onItemTap,
   });
 
@@ -35,7 +37,7 @@ class IncomingLikesGrid extends StatelessWidget {
               _PhotoTile(
                 item: item,
                 width: constraints.maxWidth * .3,
-                blur: blurPhotos,
+                blur: blurForItem?.call(item) ?? blurPhotos,
                 onTap: onItemTap == null ? null : () => onItemTap!(item),
               ),
               SizedBox(width: constraints.maxWidth * .1 / 2),
@@ -62,8 +64,9 @@ class _PhotoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final photoUrl =
-        item.customer.photos.isNotEmpty ? item.customer.photos.first : '';
+    final photoUrl = item.customer.photos.isNotEmpty
+        ? item.customer.photos.first
+        : '';
 
     final image = photoUrl.isEmpty
         ? Container(color: Colors.grey.shade300)

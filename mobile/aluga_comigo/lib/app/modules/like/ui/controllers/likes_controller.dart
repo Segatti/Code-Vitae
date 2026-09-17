@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../customer/data/models/customer_model.dart';
+import '../../../customer/domain/entities/swipe_action_result.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/domain/usecases/match_customer.dart';
 import '../../data/models/incoming_like_model.dart';
@@ -19,7 +19,10 @@ abstract interface class ILikesController extends ChangeNotifier {
   List<ImmobileCustomerModel> get immobiles;
 
   Future<Unit> initialize();
-  Future<bool> respondToLike(IncomingLikeModel item, MatchType matchType);
+  Future<SwipeActionResult> respondToLike(
+    IncomingLikeModel item,
+    MatchType matchType,
+  );
 }
 
 class LikesController extends ILikesController {
@@ -27,8 +30,6 @@ class LikesController extends ILikesController {
   final IMatchCustomer _matchCustomer;
 
   LikesController(this._getIncomingLikes, this._matchCustomer);
-
-  late final _loadCommand = Command0(_getIncomingLikes.call);
 
   @override
   List<IncomingLikeModel> get superStars =>
@@ -52,23 +53,21 @@ class LikesController extends ILikesController {
 
   @override
   Future<Unit> initialize() async {
+    if (loadingList.contains('loadLikes')) return unit;
+
     loadingList.add('loadLikes');
     notifyListeners();
 
-    await _loadCommand.execute();
+    final result = await _getIncomingLikes();
 
     loadingList.remove('loadLikes');
-    final result = _loadCommand.value;
-    result.when(
-      data: (data) {
+    result.fold(
+      (data) {
         items = data;
         errorMessage = '';
       },
-      failure: (_) {
+      (_) {
         errorMessage = 'Erro ao carregar curtidas';
-        items = [];
-      },
-      orElse: () {
         items = [];
       },
     );
@@ -77,7 +76,7 @@ class LikesController extends ILikesController {
   }
 
   @override
-  Future<bool> respondToLike(
+  Future<SwipeActionResult> respondToLike(
     IncomingLikeModel item,
     MatchType matchType,
   ) async {
@@ -88,18 +87,21 @@ class LikesController extends ILikesController {
 
     loadingList.remove('respondLike');
     return result.fold(
-      (_) {
-        errorMessage = 'Erro ao responder curtida';
-        notifyListeners();
-        return false;
-      },
-      (_) {
+      (response) {
         items.removeWhere(
           (entry) => entry.customer.id == item.customer.id,
         );
         errorMessage = '';
         notifyListeners();
-        return true;
+        return SwipeActionResult(
+          removed: true,
+          mutualMatch: response.mutualMatch,
+        );
+      },
+      (_) {
+        errorMessage = 'Erro ao responder curtida';
+        notifyListeners();
+        return const SwipeActionResult(removed: false);
       },
     );
   }

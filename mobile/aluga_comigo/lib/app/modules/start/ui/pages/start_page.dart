@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/location_permission_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,8 +18,11 @@ import '../../../../shared/data/services/supabase_auth_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/start_navigation_helper.dart';
-import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
+import '../../../../shared/presenter/helpers/feed_session_helper.dart';
 import '../../../auth/domain/enums/type_user.dart';
+import '../../../chats/ui/controllers/chats_list_controller.dart';
+import '../../../like/ui/controllers/likes_controller.dart';
+import '../../../notifications/ui/controllers/notifications_badge_controller.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -44,16 +49,22 @@ class _StartPageState extends State<StartPage>
   final GlobalKey<RouterOutletState> _routerOutletKey =
       GlobalKey<RouterOutletState>();
 
+  late final INotificationsBadgeController _notificationsBadge;
+
   @override
   void initState() {
     super.initState();
+    _notificationsBadge = inject<INotificationsBadgeController>();
+    _notificationsBadge.startWatching();
     _animationController = AnimationController(
       vsync: this,
       duration: Durations.short4,
     );
     _checkLocationPermission();
     _loadInventory();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _ensureSwipeTabForSession());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _ensureSwipeTabForSession(),
+    );
   }
 
   void _ensureSwipeTabForSession() {
@@ -63,7 +74,9 @@ class _StartPageState extends State<StartPage>
 
     final path = context.routeState(listen: false).uri.path;
     if (StartNavigationHelper.isImmobileOwnerSwipeRoute(path)) {
-      _routerOutletKey.currentState?.navigate('/start/likes/');
+      const route = '/start/likes/';
+      _routerOutletKey.currentState?.navigate(route);
+      _reloadTabData(route);
     }
   }
 
@@ -80,6 +93,7 @@ class _StartPageState extends State<StartPage>
     final storage = inject<SecureStorageService>();
     await auth.signOut();
     await storage.deleteData(StorageKey.user);
+    FeedSessionHelper.resetSwipeFeeds();
     SessionService.clearCustomer();
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -92,17 +106,6 @@ class _StartPageState extends State<StartPage>
       hasLocationPermission = status.isGranted;
       isCheckingPermission = false;
     });
-
-    // Verificar perfil após a verificação de permissão
-    if (mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkProfileComplete();
-      });
-    }
-  }
-
-  void _checkProfileComplete() {
-    IncompleteProfileHelper.showEntryPromptIfNeeded(context);
   }
 
   Future<void> _requestLocationPermission() async {
@@ -110,13 +113,6 @@ class _StartPageState extends State<StartPage>
     setState(() {
       hasLocationPermission = status.isGranted;
     });
-
-    // Verificar perfil após conceder permissão
-    if (mounted && hasLocationPermission) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkProfileComplete();
-      });
-    }
   }
 
   @override
@@ -340,6 +336,15 @@ class _StartPageState extends State<StartPage>
       _ => _tabRoutes[index],
     };
     _routerOutletKey.currentState?.navigate(route);
+    _reloadTabData(route);
+  }
+
+  void _reloadTabData(String route) {
+    if (route.startsWith('/start/likes')) {
+      unawaited(inject<ILikesController>().initialize());
+    } else if (route.startsWith('/start/chats')) {
+      unawaited(inject<IChatsListController>().initialize());
+    }
   }
 
   Widget _buildNavigationBar(int currentIndex) {
@@ -447,13 +452,49 @@ class _StartPageState extends State<StartPage>
         backgroundColor: Colors.white,
         drawerIconColor: const Color.fromRGBO(158, 158, 158, 1),
         title: SvgPicture.asset("assets/icons/logo.svg", width: 40),
-        trailing: IconButton(
-          onPressed: () => context.pushNamed('/notifications/'),
-          icon: const Icon(
-            Icons.notifications_active_outlined,
-            size: 35,
-            color: Colors.grey,
-          ),
+        trailing: ListenableBuilder(
+          listenable: _notificationsBadge,
+          builder: (context, _) {
+            final count = _notificationsBadge.unreadCount;
+            return IconButton(
+              onPressed: () => context.pushNamed('/notifications/'),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(
+                    Icons.notifications_active_outlined,
+                    size: 35,
+                    color: Colors.grey,
+                  ),
+                  if (count > 0)
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(minWidth: 18),
+                        child: Text(
+                          count > 99 ? '99+' : '$count',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.rubik(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

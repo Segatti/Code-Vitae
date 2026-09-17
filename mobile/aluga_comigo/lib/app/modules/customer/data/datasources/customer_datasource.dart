@@ -1,5 +1,4 @@
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
-import 'package:result_dart/result_dart.dart';
 
 import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
@@ -7,6 +6,8 @@ import '../../../../shared/domain/entities/failures.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../domain/constants/swipe_feed_constants.dart';
+import '../../domain/entities/match_customer_response.dart';
+import '../../domain/entities/mutual_match.dart';
 import '../../domain/enums/match_type.dart';
 import '../models/customer_model.dart';
 
@@ -15,8 +16,11 @@ abstract interface class ICustomerDatasource {
     required TypeUser typeUser,
     List<String> alreadyLoadedIds = const [],
   });
-  Future<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
-  Future<Unit> matchImmobileWithSuperChat({
+  Future<MatchCustomerResponse> matchCustomer(
+    CustomerModel customer,
+    MatchType matchType,
+  );
+  Future<MatchCustomerResponse> matchImmobileWithSuperChat({
     required ImmobileCustomerModel immobile,
     required String message,
   });
@@ -29,7 +33,7 @@ class CustomerDatasource implements ICustomerDatasource {
   const CustomerDatasource(this.database, this.storage);
 
   @override
-  Future<Unit> matchCustomer(
+  Future<MatchCustomerResponse> matchCustomer(
     CustomerModel customer,
     MatchType matchType,
   ) async {
@@ -50,10 +54,8 @@ class CustomerDatasource implements ICustomerDatasource {
               : 'Você não tem Super Star. Compre na loja.',
         );
       }
-      if (isPersonToImmobile) {
-        final inventory = await database.getUserInventory();
-        SessionService.setInventory(UserInventory.fromMap(inventory));
-      }
+      final inventory = await database.getUserInventory();
+      SessionService.setInventory(UserInventory.fromMap(inventory));
     }
 
     switch (session.typeUser) {
@@ -106,13 +108,43 @@ class CustomerDatasource implements ICustomerDatasource {
 
     if (matchType == MatchType.like || matchType == MatchType.favorite) {
       await database.incrementQuestProgress(matchType.name);
+      final isMutual = await _isMutualMatch(session, customer);
+      if (isMutual) {
+        return MatchCustomerResponse(
+          mutualMatch: MutualMatch(matchedCustomer: customer),
+        );
+      }
     }
 
-    return unit;
+    return const MatchCustomerResponse();
+  }
+
+  Future<bool> _isMutualMatch(
+    CustomerModel session,
+    CustomerModel customer,
+  ) async {
+    return switch ((session.typeUser, customer.typeUser)) {
+      (TypeUser.person, TypeUser.person) =>
+        database.hasMutualPersonPeerMatch(
+          personId: session.id,
+          otherPersonId: customer.id,
+        ),
+      (TypeUser.person, TypeUser.immobile) =>
+        database.hasMutualPersonImmobileMatch(
+          personId: session.id,
+          immobileId: customer.id,
+        ),
+      (TypeUser.immobile, TypeUser.person) =>
+        database.hasMutualPersonImmobileMatch(
+          personId: customer.id,
+          immobileId: session.id,
+        ),
+      _ => false,
+    };
   }
 
   @override
-  Future<Unit> matchImmobileWithSuperChat({
+  Future<MatchCustomerResponse> matchImmobileWithSuperChat({
     required ImmobileCustomerModel immobile,
     required String message,
   }) async {
@@ -121,7 +153,7 @@ class CustomerDatasource implements ICustomerDatasource {
       throw FailureDatasource(message: 'Digite uma mensagem.');
     }
 
-    await matchCustomer(immobile, MatchType.favorite);
+    final mutual = await matchCustomer(immobile, MatchType.favorite);
 
     final session = SessionService.customer!;
     final chatRow = await database.findChatByParticipants(
@@ -137,7 +169,7 @@ class CustomerDatasource implements ICustomerDatasource {
       );
     }
 
-    return unit;
+    return mutual;
   }
 
   ({String city, String state}) _locationFromSession(CustomerModel session) {

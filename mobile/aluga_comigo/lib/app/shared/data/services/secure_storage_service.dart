@@ -31,6 +31,21 @@ class SecureStorageService {
     );
   }
 
+  Future<String?> getDataByKey(String key) async {
+    return _storage.read(
+      key: key,
+      aOptions: _getAndroidOptions(),
+    );
+  }
+
+  Future<void> setDataByKey(String key, String value) async {
+    await _storage.write(
+      key: key,
+      value: value,
+      aOptions: _getAndroidOptions(),
+    );
+  }
+
   Future<void> deleteData(StorageKey key) async {
     await _storage.delete(
       key: key.name,

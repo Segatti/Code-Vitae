@@ -5,6 +5,8 @@ import 'package:result_dart/result_dart.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/domain/constants/swipe_feed_constants.dart';
+import '../../../customer/domain/entities/match_customer_response.dart';
+import '../../../customer/domain/entities/swipe_action_result.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/domain/usecases/get_customers.dart';
 import '../../../customer/domain/usecases/match_customer.dart';
@@ -18,16 +20,23 @@ abstract class IHousesController extends ChangeNotifier {
   bool hasMore = true;
 
   Future<Unit> initialize();
+  void resetFeedState();
   @override
   Future<Unit> dispose();
 
   Future<bool> getHouses();
-  Future<bool> matchHouse(CustomerModel customer, MatchType matchType);
-  Future<bool> superChatFavoriteImmobile(
+  Future<MatchCustomerResponse?> matchHouse(
+    CustomerModel customer,
+    MatchType matchType,
+  );
+  Future<SwipeActionResult> superChatFavoriteImmobile(
     ImmobileCustomerModel immobile,
     String message,
   );
-  Future<void> handleSwipe(CustomerModel customer, MatchType matchType);
+  Future<SwipeActionResult> handleSwipe(
+    CustomerModel customer,
+    MatchType matchType,
+  );
 }
 
 class HousesController extends IHousesController {
@@ -84,7 +93,7 @@ class HousesController extends IHousesController {
   }
 
   @override
-  Future<bool> superChatFavoriteImmobile(
+  Future<SwipeActionResult> superChatFavoriteImmobile(
     ImmobileCustomerModel immobile,
     String message,
   ) async {
@@ -98,31 +107,45 @@ class HousesController extends IHousesController {
 
     loadingList.remove('superChatFavorite');
     return result.fold(
-      (_) {
+      (response) {
         houses.removeWhere((item) => item.id == immobile.id);
         errorMessage = '';
         notifyListeners();
-        return true;
+        return SwipeActionResult(
+          removed: true,
+          mutualMatch: response.mutualMatch,
+        );
       },
       (_) {
         errorMessage = 'Erro ao favoritar com Super Chat';
         notifyListeners();
-        return false;
+        return const SwipeActionResult(removed: false);
       },
     );
   }
 
   @override
-  Future<void> handleSwipe(CustomerModel customer, MatchType matchType) async {
-    final success = await matchHouse(customer, matchType);
-    if (success) {
-      houses.removeWhere((item) => item.id == customer.id);
-      notifyListeners();
+  Future<SwipeActionResult> handleSwipe(
+    CustomerModel customer,
+    MatchType matchType,
+  ) async {
+    final outcome = await matchHouse(customer, matchType);
+    if (outcome == null) {
+      return const SwipeActionResult(removed: false);
     }
+    houses.removeWhere((item) => item.id == customer.id);
+    notifyListeners();
+    return SwipeActionResult(
+      removed: true,
+      mutualMatch: outcome.mutualMatch,
+    );
   }
 
   @override
-  Future<bool> matchHouse(CustomerModel customer, MatchType matchType) async {
+  Future<MatchCustomerResponse?> matchHouse(
+    CustomerModel customer,
+    MatchType matchType,
+  ) async {
     loadingList.add('matchHouse');
     notifyListeners();
     await matchHouseCommand.execute(customer, matchType);
@@ -130,20 +153,30 @@ class HousesController extends IHousesController {
     notifyListeners();
     final result = matchHouseCommand.value;
     return result.when(
-      data: (customer) {
-        return true;
+      data: (response) {
+        errorMessage = '';
+        return response;
       },
       failure: (error) {
         errorMessage = "Erro ao buscar clientes";
         notifyListeners();
-        return false;
+        return null;
       },
-      orElse: () => false,
+      orElse: () => null,
     );
   }
 
   @override
+  void resetFeedState() {
+    houses.clear();
+    hasMore = true;
+    errorMessage = '';
+    notifyListeners();
+  }
+
+  @override
   Future<Unit> initialize() async {
+    resetFeedState();
     loadingList.add('initialize');
     notifyListeners();
     await getHouses();

@@ -21,9 +21,12 @@ class ChatRepository implements domain.IChatRepository {
   }
 
   @override
-  AsyncResult<List<ChatMessage>> listMessages(String chatId) async {
+  AsyncResult<List<ChatMessage>> listMessages(
+    String chatId, {
+    required bool isPersonPeerChat,
+  }) async {
     return datasource
-        .listMessages(chatId)
+        .listMessages(chatId, isPersonPeerChat: isPersonPeerChat)
         .then((models) => models.map((m) => m.toEntity()).toList())
         .toAsyncResult();
   }
@@ -32,10 +35,38 @@ class ChatRepository implements domain.IChatRepository {
   AsyncResult<ChatMessage> sendMessage({
     required String chatId,
     required String content,
+    required bool isPersonPeerChat,
   }) async {
     return datasource
-        .sendMessage(chatId: chatId, content: content)
+        .sendMessage(
+          chatId: chatId,
+          content: content,
+          isPersonPeerChat: isPersonPeerChat,
+        )
         .then((model) => model.toEntity())
         .toAsyncResult();
   }
+
+  @override
+  Stream<List<Chat>> watchChats() {
+    return datasource.watchChats().map(
+          (models) => models.map((m) => m.toEntity()).toList(),
+        );
+  }
+
+  @override
+  Stream<List<ChatMessage>> watchMessages(
+    String chatId, {
+    required bool isPersonPeerChat,
+  }) {
+    return datasource.watchMessages(
+      chatId,
+      isPersonPeerChat: isPersonPeerChat,
+    ).map(
+          (models) => models.map((m) => m.toEntity()).toList(),
+        );
+  }
+
+  @override
+  Future<void> deleteChat(Chat chat) => datasource.deleteChat(chat);
 }

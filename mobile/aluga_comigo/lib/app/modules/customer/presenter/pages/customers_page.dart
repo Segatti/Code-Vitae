@@ -1,6 +1,8 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/helpers/swipable_stack_helper.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:material_ui/material_ui.dart';
@@ -12,6 +14,7 @@ import 'package:swipable_stack/swipable_stack.dart';
 import '../../data/models/customer_model.dart';
 import '../../domain/enums/match_type.dart';
 import '../controllers/customers_controller.dart';
+import '../widgets/match_celebration_dialog.dart';
 import '../widgets/person_flip_card.dart';
 
 class CustomersPage extends StatefulWidget {
@@ -80,7 +83,21 @@ class _CustomersPageState extends State<CustomersPage> {
     final customer = list[itemIndex];
     final matchType = _matchTypeFromDirection(direction);
     if (matchType != null) {
-      await controller.handleSwipe(customer, matchType);
+      if (InventoryPromptHelper.actionUsesSuperStar(matchType, customer) &&
+          !InventoryPromptHelper.hasSuperStarBalance()) {
+        if (mounted) {
+          await InventoryPromptHelper.promptSuperStarPurchase(context);
+        }
+        SwipableStackHelper.resetToFront(swipController);
+        return;
+      }
+      final swipeResult = await controller.handleSwipe(customer, matchType);
+      if (swipeResult.removed && mounted) {
+        SwipableStackHelper.resetToFront(swipController);
+      }
+      if (mounted && swipeResult.mutualMatch != null) {
+        await MatchCelebrationDialog.show(context, swipeResult.mutualMatch!);
+      }
       if (mounted && controller.errorMessage.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(controller.errorMessage)),
@@ -105,9 +122,10 @@ class _CustomersPageState extends State<CustomersPage> {
 
   @override
   void initState() {
-    swipController.addListener(_listenController);
-    controller.initialize();
     super.initState();
+    swipController.addListener(_listenController);
+    SwipableStackHelper.resetToFront(swipController);
+    controller.initialize();
   }
 
   @override
@@ -168,6 +186,21 @@ class _CustomersPageState extends State<CustomersPage> {
                       SwipeDirection.left,
                       SwipeDirection.right,
                       SwipeDirection.up,
+                    },
+                    onWillMoveNext: (index, direction) {
+                      if (direction != SwipeDirection.up) return true;
+                      final person = list[index % list.length];
+                      if (person is! PersonCustomerModel) return false;
+                      if (InventoryPromptHelper.hasSuperStarBalance()) {
+                        return true;
+                      }
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        if (!mounted) return;
+                        await InventoryPromptHelper.promptSuperStarPurchase(
+                          context,
+                        );
+                      });
+                      return false;
                     },
                     stackClipBehaviour: Clip.none,
                     onSwipeCompleted: (index, direction) {
@@ -240,7 +273,12 @@ class _CustomersPageState extends State<CustomersPage> {
                 const Gap(16),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      if (!await InventoryPromptHelper.ensureSuperStarAvailable(
+                        context,
+                      )) {
+                        return;
+                      }
                       swipController.next(swipeDirection: SwipeDirection.up);
                     },
                     child: Container(

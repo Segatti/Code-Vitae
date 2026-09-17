@@ -1,5 +1,6 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_immobile.dart';
 import 'package:aluga_comigo/app/modules/chats/data/models/match_contact_model.dart';
+import 'package:aluga_comigo/app/modules/chats/chat_navigation.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/contact_list_controller.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
@@ -67,15 +68,15 @@ class _ContactListPageState extends State<ContactListPage> {
   }
 
   Future<void> _onContactTap(MatchContactModel contact) async {
+    if (controller.loadingList.contains('resolveChat')) return;
+
     final chat = await controller.resolveChat(contact.customer);
     if (!mounted) return;
 
     if (chat == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Conversa disponível após match mútuo com este contato.',
-          ),
+          content: Text('Não foi possível abrir a conversa com este contato.'),
         ),
       );
       return;
@@ -83,7 +84,7 @@ class _ContactListPageState extends State<ContactListPage> {
 
     Navigator.of(context).pop();
     if (!context.mounted) return;
-    await context.pushNamed('./chat', arguments: {'chat': chat});
+    await ChatNavigation.open(context, chat);
   }
 
   @override

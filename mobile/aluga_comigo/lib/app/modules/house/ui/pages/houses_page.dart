@@ -9,9 +9,12 @@ import 'package:swipable_stack/swipable_stack.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/maps_helper.dart';
 import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
+import '../../../../shared/presenter/helpers/inventory_prompt_helper.dart';
+import '../../../../shared/presenter/helpers/swipable_stack_helper.dart';
 import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
+import '../../../customer/presenter/widgets/match_celebration_dialog.dart';
 import '../controllers/houses_controller.dart';
 import '../widgets/super_chat_immobile_dialog.dart';
 
@@ -39,24 +42,39 @@ class _HousesPageState extends State<HousesPage> {
     ImmobileCustomerModel house,
     List<CustomerModel> list,
   ) async {
+    if (!await InventoryPromptHelper.ensureSuperChatAvailable(context)) {
+      return;
+    }
+    if (!mounted) return;
     final message = await SuperChatImmobileDialog.show(context);
     if (message == null || !mounted) return;
 
-    final success = await controller.superChatFavoriteImmobile(house, message);
+    final superChatResult =
+        await controller.superChatFavoriteImmobile(house, message);
     if (!mounted) return;
 
-    if (!success && controller.errorMessage.isNotEmpty) {
+    if (!superChatResult.removed && controller.errorMessage.isNotEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(controller.errorMessage)));
       return;
     }
 
-    if (success) {
+    if (superChatResult.removed) {
       swipController.next(swipeDirection: SwipeDirection.up);
-      if (swipController.currentIndex >= list.length - 1 &&
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        SwipableStackHelper.resetToFront(swipController);
+      });
+      if (swipController.currentIndex >= controller.houses.length - 1 &&
           controller.hasMore) {
         controller.getHouses();
+      }
+      if (superChatResult.mutualMatch != null) {
+        await MatchCelebrationDialog.show(
+          context,
+          superChatResult.mutualMatch!,
+        );
       }
     }
   }
@@ -73,7 +91,13 @@ class _HousesPageState extends State<HousesPage> {
       return;
     }
     if (matchType != null) {
-      await controller.handleSwipe(house, matchType);
+      final swipeResult = await controller.handleSwipe(house, matchType);
+      if (swipeResult.removed && mounted) {
+        SwipableStackHelper.resetToFront(swipController);
+      }
+      if (mounted && swipeResult.mutualMatch != null) {
+        await MatchCelebrationDialog.show(context, swipeResult.mutualMatch!);
+      }
       if (mounted && controller.errorMessage.isNotEmpty) {
         ScaffoldMessenger.of(
           context,
@@ -98,8 +122,9 @@ class _HousesPageState extends State<HousesPage> {
 
   @override
   void initState() {
-    controller.initialize();
     super.initState();
+    SwipableStackHelper.resetToFront(swipController);
+    controller.initialize();
   }
 
   @override
@@ -148,6 +173,7 @@ class _HousesPageState extends State<HousesPage> {
                 builder: (context, constraints) {
                   return SwipableStack(
                     controller: swipController,
+                    itemCount: list.length,
                     detectableSwipeDirections: const {
                       SwipeDirection.left,
                       SwipeDirection.right,

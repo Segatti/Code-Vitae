@@ -4,6 +4,7 @@ import 'package:result_dart/result_dart.dart'
     hide FutureResultExtension, FutureResultExtensionVoid;
 
 import '../../../auth/domain/enums/type_user.dart';
+import '../../domain/entities/match_customer_response.dart';
 import '../../domain/enums/match_type.dart';
 import '../datasources/customer_datasource.dart';
 
@@ -12,8 +13,11 @@ abstract interface class ICustomerRepository {
     required TypeUser typeUser,
     List<String> alreadyLoadedIds = const [],
   });
-  AsyncResult<Unit> matchCustomer(CustomerModel customer, MatchType matchType);
-  AsyncResult<Unit> matchImmobileWithSuperChat({
+  AsyncResult<MatchCustomerResponse> matchCustomer(
+    CustomerModel customer,
+    MatchType matchType,
+  );
+  AsyncResult<MatchCustomerResponse> matchImmobileWithSuperChat({
     required ImmobileCustomerModel immobile,
     required String message,
   });
@@ -36,7 +40,7 @@ class CustomerRepository implements ICustomerRepository {
   }
 
   @override
-  AsyncResult<Unit> matchCustomer(
+  AsyncResult<MatchCustomerResponse> matchCustomer(
     CustomerModel customer,
     MatchType matchType,
   ) async {
@@ -44,7 +48,7 @@ class CustomerRepository implements ICustomerRepository {
   }
 
   @override
-  AsyncResult<Unit> matchImmobileWithSuperChat({
+  AsyncResult<MatchCustomerResponse> matchImmobileWithSuperChat({
     required ImmobileCustomerModel immobile,
     required String message,
   }) async {

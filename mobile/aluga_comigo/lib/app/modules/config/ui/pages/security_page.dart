@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/shared/presenter/helpers/feed_session_helper.dart';
 import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/data/services/supabase_auth_service.dart';
@@ -137,6 +138,7 @@ class _SecurityPageState extends State<SecurityPage> {
   Future<void> _logout({String? showMessage}) async {
     await _auth.signOut();
     await _storage.deleteData(StorageKey.user);
+    FeedSessionHelper.resetSwipeFeeds();
     SessionService.clearCustomer();
     if (!mounted) return;
     if (showMessage != null) {

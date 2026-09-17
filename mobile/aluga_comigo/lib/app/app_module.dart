@@ -14,6 +14,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'modules/auth/auth_module.dart';
 import 'modules/config/config_module.dart';
 import 'modules/intro/intro_module.dart';
+import 'modules/notifications/notifications_di_module.dart';
 import 'modules/notifications/notifications_module.dart';
 import 'modules/quest/quest_di_module.dart';
 import 'modules/quest/quest_module.dart';
@@ -36,6 +37,7 @@ class AppModule extends Module {
     c.module(ConfigModule());
     c.module(QuestDiModule());
     c.module(QuestModule());
+    c.module(NotificationsDiModule());
     c.module(NotificationsModule());
     c.module(StoreDiModule());
     c.module(StoreModule());
