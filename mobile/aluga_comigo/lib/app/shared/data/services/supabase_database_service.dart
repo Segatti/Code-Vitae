@@ -102,7 +102,7 @@ class SupabaseDatabaseService {
     try {
       final data = await _client
           .from('immobiles')
-          .select('*, accounts(*)')
+          .select('*, accounts!immobiles_owner_account_id_fkey(*)')
           .eq('id', id)
           .maybeSingle();
       if (data == null) return const Right({});
@@ -118,6 +118,28 @@ class SupabaseDatabaseService {
     }
   }
 
+  /// Imóveis do anunciante (conta tipo immobile).
+  Future<List<Json>> listOwnedImmobiles(String accountId) async {
+    try {
+      final rows = await _client
+          .from('immobiles')
+          .select('*, accounts!immobiles_owner_account_id_fkey(*)')
+          .eq('owner_account_id', accountId)
+          .order('created_at', ascending: false);
+
+      return rows
+          .map(
+            (row) => ImmobileMapper.toAppMap(Map<String, dynamic>.from(row)),
+          )
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<Either<FailureDatasource, Json>> readProfile(String id) async {
     final accountResult = await readAccount(id);
     if (accountResult.isLeft()) {
@@ -127,12 +149,47 @@ class SupabaseDatabaseService {
     }
 
     final account = accountResult.getOrElse(() => <String, dynamic>{});
-    if (account.isEmpty) return const Right(<String, dynamic>{});
+    if (account.isEmpty) {
+      return readImmobile(id);
+    }
 
     final typeUser = account['type_user'] as String?;
     if (typeUser == 'person') return readPerson(id);
     if (typeUser == 'immobile') return readImmobile(id);
     return const Right(<String, dynamic>{});
+  }
+
+  /// Novo anúncio vinculado à conta do anunciante (id gerado no Postgres).
+  Future<Json> createOwnedImmobileListing(String ownerAccountId) async {
+    try {
+      final ownerRow = await readImmobile(ownerAccountId);
+      final ownerMap = ownerRow.getOrElse(() => <String, dynamic>{});
+
+      final insertRow = <String, dynamic>{
+        'owner_account_id': ownerAccountId,
+        'name': '',
+        'state': ownerMap['state'] ?? '',
+        'city': ownerMap['city'] ?? '',
+        'cep': ownerMap['cep'] ?? '',
+        'photos': <String>[],
+        'short_description': '',
+        'long_description': '',
+        'type_immobile': 'none',
+      };
+
+      final data = await _client
+          .from('immobiles')
+          .insert(insertRow)
+          .select('*, accounts!immobiles_owner_account_id_fkey(*)')
+          .single();
+
+      return ImmobileMapper.toAppMap(Map<String, dynamic>.from(data));
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
   }
 
   Future<Either<FailureDatasource, void>> createProfile(Json data) async {
@@ -782,10 +839,11 @@ class SupabaseDatabaseService {
 
   Future<List<Json>> listChatsForUser(String userId) async {
     try {
+      // RLS restringe às conversas do usuário (inclui dono do anúncio quando
+      // immobile_id é o id do listing, não da conta).
       final rows = await _client
           .from('chats')
           .select()
-          .or('person_id.eq.$userId,immobile_id.eq.$userId')
           .order('last_message_at', ascending: false, nullsFirst: false);
 
       final immobileChats = rows
@@ -1057,12 +1115,20 @@ class SupabaseDatabaseService {
   }
 
   Future<void> markChatMessagesRead(String chatId) async {
+    if (chatId.trim().isEmpty) return;
     try {
       await _client.rpc(
         'mark_chat_messages_read',
         params: {'p_chat_id': chatId},
       );
     } on PostgrestException catch (error) {
+      if (error.message.contains('chat not found')) {
+        debugPrint(
+          'markChatMessagesRead: conversa não autorizada ou RPC desatualizada '
+          '(aplique migration 014). chatId=$chatId',
+        );
+        return;
+      }
       debugPrint(error.toString());
       throw FailureDatasource(
         message: SupabaseErrorHandler.getMessage(error.code, error.message),
@@ -1259,6 +1325,72 @@ class SupabaseDatabaseService {
           .gt('created_at', after.toUtc().toIso8601String());
 
       return rows.length;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<List<Json>> listChatImmobileOffers(String chatId) async {
+    try {
+      final rows = await _client
+          .from('chat_immobile_offers')
+          .select('*, immobiles(name, photos)')
+          .eq('chat_id', chatId)
+          .order('created_at', ascending: true);
+
+      return rows.map((row) {
+        final map = Map<String, dynamic>.from(row);
+        final immobile = map['immobiles'];
+        if (immobile is Map) {
+          final imm = Map<String, dynamic>.from(immobile);
+          map['immobile_name'] = imm['name'];
+          final photos = imm['photos'];
+          if (photos is List && photos.isNotEmpty) {
+            map['immobile_photo'] = photos.first;
+          }
+        }
+        map.remove('immobiles');
+        return map;
+      }).toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<Json> insertChatImmobileOffer({
+    required String chatId,
+    required String immobileId,
+    required String offeredByAccountId,
+  }) async {
+    try {
+      final data = await _client
+          .from('chat_immobile_offers')
+          .insert({
+            'chat_id': chatId,
+            'immobile_id': immobileId,
+            'offered_by_account_id': offeredByAccountId,
+          })
+          .select('*, immobiles(name, photos)')
+          .single();
+
+      final map = Map<String, dynamic>.from(data);
+      final immobile = map['immobiles'];
+      if (immobile is Map) {
+        final imm = Map<String, dynamic>.from(immobile);
+        map['immobile_name'] = imm['name'];
+        final photos = imm['photos'];
+        if (photos is List && photos.isNotEmpty) {
+          map['immobile_photo'] = photos.first;
+        }
+      }
+      map.remove('immobiles');
+      return map;
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(

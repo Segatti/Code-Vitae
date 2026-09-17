@@ -15,6 +15,9 @@ class Chat {
   final DateTime? lastMessageAt;
   final bool isPersonPeerChat;
 
+  /// Imóvel pelo qual a conversa foi aberta (metadado em [chats], não mensagem).
+  String get contactListingId => immobileId;
+
   const Chat({
     required this.id,
     required this.personId,

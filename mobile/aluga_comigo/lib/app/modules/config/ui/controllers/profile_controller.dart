@@ -25,7 +25,7 @@ abstract interface class IProfileController extends ChangeNotifier {
   int get totalPhotosCount;
   bool get canAddMorePhotos;
 
-  Future<Unit> initialize();
+  Future<Unit> initialize({String? profileId});
   @override
   void dispose();
 
@@ -62,6 +62,8 @@ class ProfileController extends IProfileController {
 
   late final _getCustomerCommand = Command0<CustomerModel>(_getProfile.call);
 
+  String? _profileId;
+
   late final _updateProfileCommand = Command1(_updateProfile.call);
 
   @override
@@ -86,13 +88,12 @@ class ProfileController extends IProfileController {
     loadingList.add('getCustomer');
     notifyListeners();
 
-    await _getCustomerCommand.execute();
+    final profileResult = await _getProfile(_profileId);
     loadingList.remove('getCustomer');
     notifyListeners();
 
-    final result = _getCustomerCommand.value;
-    return result.when(
-      data: (data) {
+    return profileResult.fold(
+      (data) {
         switch (data) {
           case PersonCustomerModel _:
             customer = data.copyWith(
@@ -110,12 +111,11 @@ class ProfileController extends IProfileController {
         notifyListeners();
         return true;
       },
-      failure: (error) {
+      (_) {
         errorMessage = 'Não foi possivel pegar seu perfil';
         notifyListeners();
         return false;
       },
-      orElse: () => false,
     );
   }
 
@@ -319,7 +319,8 @@ class ProfileController extends IProfileController {
   }
 
   @override
-  Future<Unit> initialize() async {
+  Future<Unit> initialize({String? profileId}) async {
+    _profileId = profileId;
     await getCustomer();
 
     return unit;

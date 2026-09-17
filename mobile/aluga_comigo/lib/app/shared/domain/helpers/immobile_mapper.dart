@@ -5,6 +5,9 @@ class ImmobileMapper {
     final account = accountRow ?? immobileRow['accounts'] as Json?;
     return {
       'id': immobileRow['id']?.toString() ?? '',
+      'ownerAccountId': immobileRow['owner_account_id']?.toString() ??
+          immobileRow['id']?.toString() ??
+          '',
       'email': account?['email'] ?? '',
       'password': '',
       'typeUser': 'immobile',
@@ -36,9 +39,12 @@ class ImmobileMapper {
   }
 
   static Json toRow(Json appMap) {
+    final id = appMap['id'];
+    final ownerAccountId = appMap['ownerAccountId'] ?? id;
     return {
-      'id': appMap['id'],
-      'name': appMap['name'] ?? appMap['shortDescription'] ?? '',
+      if (id != null && id.toString().isNotEmpty) 'id': id,
+      'owner_account_id': ownerAccountId,
+      'name': _listingDisplayName(appMap),
       'state': appMap['state'] ?? '',
       'city': appMap['city'] ?? '',
       'cep': appMap['cep'] ?? '',
@@ -66,5 +72,12 @@ class ImmobileMapper {
     if (value == null) return null;
     final text = value.toString();
     return text.isEmpty ? null : text;
+  }
+
+  /// Título do anúncio em [immobiles.name] — não confundir com nome do dono.
+  static String _listingDisplayName(Json appMap) {
+    final brief = appMap['shortDescription']?.toString().trim() ?? '';
+    if (brief.isNotEmpty) return brief;
+    return appMap['name']?.toString() ?? '';
   }
 }

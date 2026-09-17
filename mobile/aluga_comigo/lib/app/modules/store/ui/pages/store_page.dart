@@ -1,4 +1,6 @@
+import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/modules/store/interactor/enums/store_item_category.dart';
+import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/modules/store/interactor/models/store_catalog.dart';
 import 'package:aluga_comigo/app/modules/store/interactor/models/store_product.dart';
 import 'package:aluga_comigo/app/modules/store/ui/controllers/store_controller.dart';
@@ -74,6 +76,9 @@ class _StorePageState extends State<StorePage> {
     }
   }
 
+  bool get _isImmobileOwner =>
+      SessionService.customer?.typeUser == TypeUser.immobile;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,11 +128,12 @@ class _StorePageState extends State<StorePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _BalanceChip(
-                      icon: Icons.star,
-                      label: 'Super Star',
-                      value: controller.inventory.superStarBalance,
-                    ),
+                    if (!_isImmobileOwner)
+                      _BalanceChip(
+                        icon: Icons.star,
+                        label: 'Super Star',
+                        value: controller.inventory.superStarBalance,
+                      ),
                     _BalanceChip(
                       icon: Icons.chat_bubble,
                       label: 'Super Chat',
@@ -152,17 +158,19 @@ class _StorePageState extends State<StorePage> {
                         purchasingProductId: controller.purchasingProductId,
                         onProductTap: _confirmPurchase,
                       ),
-                      const Gap(32),
-                      StoreCategorySection(
-                        category: StoreItemCategory.superStar,
-                        backgroundColor: const Color(0xFFFFDC64),
-                        headerColor: const Color(0xFFFFC850),
-                        headerTextColor: Colors.black,
-                        products: StoreCatalog.superStarProducts,
-                        priceFor: controller.priceFor,
-                        purchasingProductId: controller.purchasingProductId,
-                        onProductTap: _confirmPurchase,
-                      ),
+                      if (!_isImmobileOwner) ...[
+                        const Gap(32),
+                        StoreCategorySection(
+                          category: StoreItemCategory.superStar,
+                          backgroundColor: const Color(0xFFFFDC64),
+                          headerColor: const Color(0xFFFFC850),
+                          headerTextColor: Colors.black,
+                          products: StoreCatalog.superStarProducts,
+                          priceFor: controller.priceFor,
+                          purchasingProductId: controller.purchasingProductId,
+                          onProductTap: _confirmPurchase,
+                        ),
+                      ],
                       const Gap(32),
                       StoreCategorySection(
                         category: StoreItemCategory.superChat,

@@ -5,7 +5,7 @@ import '../../../../shared/data/services/session_service.dart';
 import '../../data/repositories/profile_repository.dart';
 
 abstract interface class IGetProfile {
-  AsyncResult<CustomerModel> call();
+  AsyncResult<CustomerModel> call([String? profileId]);
 }
 
 class GetProfile implements IGetProfile {
@@ -14,8 +14,8 @@ class GetProfile implements IGetProfile {
   const GetProfile(this.repository);
 
   @override
-  AsyncResult<CustomerModel> call() async {
-    final id = SessionService.customer!.id;
+  AsyncResult<CustomerModel> call([String? profileId]) async {
+    final id = profileId ?? SessionService.customer!.id;
     return repository.getProfile(id);
   }
 }

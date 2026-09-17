@@ -11,11 +11,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../auth/domain/enums/type_immobile.dart';
 import '../../../customer/data/models/customer_model.dart';
+import '../widgets/profile_immobile_extended_fields.dart';
 import '../widgets/profile_photos_editor.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
 
 class ProfileImmobilePage extends StatefulWidget {
-  const ProfileImmobilePage({super.key});
+  final String? profileId;
+
+  const ProfileImmobilePage({super.key, this.profileId});
 
   @override
   State<ProfileImmobilePage> createState() => _ProfileImmobilePageState();
@@ -41,10 +44,9 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
 
   @override
   void initState() {
-    controller.initialize();
-    // Listener para mostrar mensagens de erro
-    controller.addListener(_handleError);
     super.initState();
+    controller.initialize(profileId: widget.profileId);
+    controller.addListener(_handleError);
   }
 
   void _handleError() {
@@ -200,7 +202,9 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
               children: [
                 Expanded(
                   child: Text(
-                    'Perfil',
+                    widget.profileId != null
+                        ? 'Detalhes do imóvel'
+                        : 'Perfil',
                     style: GoogleFonts.rubik(
                       fontSize: 18,
                       color: Colors.black,
@@ -518,6 +522,11 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                     ),
                                   ),
                                 ],
+                              ),
+                              const Gap(16),
+                              ProfileImmobileExtendedFields(
+                                controller: controller,
+                                customer: customer,
                               ),
                               const Gap(16),
                               PrimaryButtonWidget(

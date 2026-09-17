@@ -124,16 +124,17 @@ class AuthSupabaseDatasource implements IAuthDatasource {
     try {
       final appMap = {
         'id': signupData.uid,
+        'ownerAccountId': signupData.uid,
         'email': input.email,
         'typeUser': TypeUser.immobile.name,
-        'name': input.name,
         'phone': input.phone,
         'cep': input.cep,
         'price': input.value,
         'state': input.state,
         'city': input.city,
         'typeImmobile': input.typeImmobile?.name ?? 'none',
-        'shortDescription': input.name,
+        'name': input.name,
+        'shortDescription': '',
         'photos': [signupData.linkPhoto],
         'isActive': true,
       };

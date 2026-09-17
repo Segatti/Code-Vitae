@@ -5,6 +5,9 @@ import 'package:aluga_comigo/app/modules/chats/data/repositories/match_contact_r
 import 'package:aluga_comigo/app/modules/chats/domain/repositories/chat_repository.dart'
     as domain;
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_chat_contact_profile.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_immobile_listing.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/usecases/list_chat_immobile_offers.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/usecases/offer_immobile_in_chat.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_or_create_chat_for_contact.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/list_match_contacts.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/list_chats.dart';
@@ -13,6 +16,7 @@ import 'package:aluga_comigo/app/modules/chats/domain/usecases/watch_chats.dart'
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/watch_messages.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/list_messages.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/send_message.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/usecases/send_super_chat_message.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/chats_list_controller.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/contact_list_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -33,6 +37,10 @@ class ChatsDiModule extends Module {
     c.addSingleton<IUnmatchChatContact>(UnmatchChatContact.new);
     c.addSingleton<IListMessages>(ListMessages.new);
     c.addSingleton<ISendMessage>(SendMessage.new);
+    c.addSingleton<ISendSuperChatMessage>(SendSuperChatMessage.new);
+    c.addSingleton<IGetImmobileListing>(GetImmobileListing.new);
+    c.addSingleton<IListChatImmobileOffers>(ListChatImmobileOffers.new);
+    c.addSingleton<IOfferImmobileInChat>(OfferImmobileInChat.new);
     c.addLazySingleton<IChatsListController>(ChatsListController.new);
     c.addLazySingleton<IContactListController>(ContactListController.new);
   }

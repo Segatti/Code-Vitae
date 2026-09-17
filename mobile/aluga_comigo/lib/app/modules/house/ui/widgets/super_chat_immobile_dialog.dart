@@ -5,12 +5,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
 class SuperChatImmobileDialog extends StatefulWidget {
-  const SuperChatImmobileDialog({super.key});
+  const SuperChatImmobileDialog({this.inConversation = false, super.key});
 
-  static Future<String?> show(BuildContext context) {
+  final bool inConversation;
+
+  static Future<String?> show(
+    BuildContext context, {
+    bool inConversation = false,
+  }) {
     return showDialog<String>(
       context: context,
-      builder: (_) => const SuperChatImmobileDialog(),
+      builder: (_) => SuperChatImmobileDialog(inConversation: inConversation),
     );
   }
 
@@ -54,8 +59,11 @@ class _SuperChatImmobileDialogState extends State<SuperChatImmobileDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Sua mensagem será destacada no chat. Você poderá ver quando o '
-              'anunciante ler. O imóvel será marcado como favorito.',
+              widget.inConversation
+                  ? 'Sua mensagem será destacada no chat. Você poderá ver '
+                      'quando o destinatário ler.'
+                  : 'Sua mensagem será destacada no chat. Você poderá ver quando o '
+                      'anunciante ler. O imóvel será marcado como favorito.',
               style: GoogleFonts.rubik(fontSize: 14, color: Colors.black87),
             ),
             const Gap(16),

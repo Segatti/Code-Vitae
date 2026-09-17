@@ -28,6 +28,7 @@ class HousesPage extends StatefulWidget {
 class _HousesPageState extends State<HousesPage> {
   final controller = inject<IHousesController>();
   final swipController = SwipableStackController();
+  bool _superChatFlowRunning = false;
 
   MatchType? _matchTypeFromDirection(SwipeDirection direction) {
     return switch (direction) {
@@ -42,40 +43,42 @@ class _HousesPageState extends State<HousesPage> {
     ImmobileCustomerModel house,
     List<CustomerModel> list,
   ) async {
-    if (!await InventoryPromptHelper.ensureSuperChatAvailable(context)) {
-      return;
-    }
-    if (!mounted) return;
-    final message = await SuperChatImmobileDialog.show(context);
-    if (message == null || !mounted) return;
-
-    final superChatResult =
-        await controller.superChatFavoriteImmobile(house, message);
-    if (!mounted) return;
-
-    if (!superChatResult.removed && controller.errorMessage.isNotEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(controller.errorMessage)));
-      return;
-    }
-
-    if (superChatResult.removed) {
-      swipController.next(swipeDirection: SwipeDirection.up);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        SwipableStackHelper.resetToFront(swipController);
-      });
-      if (swipController.currentIndex >= controller.houses.length - 1 &&
-          controller.hasMore) {
-        controller.getHouses();
+    if (_superChatFlowRunning) return;
+    _superChatFlowRunning = true;
+    try {
+      if (!await InventoryPromptHelper.ensureSuperChatAvailable(context)) {
+        return;
       }
-      if (superChatResult.mutualMatch != null) {
-        await MatchCelebrationDialog.show(
+      if (!mounted) return;
+      final message = await SuperChatImmobileDialog.show(context);
+      if (message == null || !mounted) return;
+
+      final superChatResult =
+          await controller.superChatFavoriteImmobile(house, message);
+      if (!mounted) return;
+
+      if (!superChatResult.removed && controller.errorMessage.isNotEmpty) {
+        ScaffoldMessenger.of(
           context,
-          superChatResult.mutualMatch!,
-        );
+        ).showSnackBar(SnackBar(content: Text(controller.errorMessage)));
+        return;
       }
+
+      if (superChatResult.removed) {
+        SwipableStackHelper.resetToFront(swipController);
+        if (swipController.currentIndex >= controller.houses.length - 1 &&
+            controller.hasMore) {
+          controller.getHouses();
+        }
+        if (superChatResult.mutualMatch != null) {
+          await MatchCelebrationDialog.show(
+            context,
+            superChatResult.mutualMatch!,
+          );
+        }
+      }
+    } finally {
+      _superChatFlowRunning = false;
     }
   }
 

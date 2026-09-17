@@ -263,6 +263,7 @@ class ImmobileCustomerModel extends CustomerModel {
   final bool isBeachNear;
   final double price;
   final TypeImmobile typeImmobile;
+  final String ownerAccountId;
 
   ImmobileCustomerModel({
     super.id = "",
@@ -277,6 +278,7 @@ class ImmobileCustomerModel extends CustomerModel {
     super.score = 0,
     this.price = 0,
     this.typeImmobile = TypeImmobile.none,
+    this.ownerAccountId = '',
     super.cityState = "",
     this.cep = "",
     this.bathrooms = 0,
@@ -344,6 +346,7 @@ class ImmobileCustomerModel extends CustomerModel {
       price: map.getSafe<double>('price'),
       cityState: cityState,
       typeImmobile: TypeImmobile.get(map.getSafe<String>('typeImmobile')),
+      ownerAccountId: map.getSafe<String>('ownerAccountId'),
       cep: map.getSafe<String>('cep'),
       bathrooms: map.getSafe<int>('bathrooms'),
       bedrooms: map.getSafe<int>('bedrooms'),
@@ -383,6 +386,7 @@ class ImmobileCustomerModel extends CustomerModel {
     double? price,
     String? cityState,
     TypeImmobile? typeImmobile,
+    String? ownerAccountId,
     String? cep,
     int? bathrooms,
     int? bedrooms,
@@ -410,6 +414,7 @@ class ImmobileCustomerModel extends CustomerModel {
       price: price ?? this.price,
       cityState: cityState ?? this.cityState,
       typeImmobile: typeImmobile ?? this.typeImmobile,
+      ownerAccountId: ownerAccountId ?? this.ownerAccountId,
       cep: cep ?? this.cep,
       bathrooms: bathrooms ?? this.bathrooms,
       bedrooms: bedrooms ?? this.bedrooms,

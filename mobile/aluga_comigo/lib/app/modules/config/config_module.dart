@@ -38,5 +38,16 @@ class ConfigModule extends Module {
         _ => const ProfileUserPage(),
       },
     );
+    c.route(
+      '/profile/immobile',
+      transition: AppTransitions.rightToLeft,
+      child: (_, state) {
+        final args = state.arguments;
+        final immobileId = args is Map
+            ? args['immobileId']?.toString()
+            : null;
+        return ProfileImmobilePage(profileId: immobileId);
+      },
+    );
   }
 }

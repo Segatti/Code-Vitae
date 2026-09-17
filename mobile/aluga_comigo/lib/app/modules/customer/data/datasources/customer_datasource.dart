@@ -156,18 +156,16 @@ class CustomerDatasource implements ICustomerDatasource {
     final mutual = await matchCustomer(immobile, MatchType.favorite);
 
     final session = SessionService.customer!;
-    final chatRow = await database.findChatByParticipants(
+    final chatRow = await database.getOrCreatePersonImmobileChat(
       personId: session.id,
       immobileId: immobile.id,
     );
-    if (chatRow != null) {
-      await database.sendMessage(
-        chatId: chatRow['id']?.toString() ?? '',
-        senderId: session.id,
-        content: trimmed,
-        messageType: 'superChat',
-      );
-    }
+    await database.sendMessage(
+      chatId: chatRow['id']?.toString() ?? '',
+      senderId: session.id,
+      content: trimmed,
+      messageType: 'superChat',
+    );
 
     return mutual;
   }

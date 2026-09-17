@@ -30,7 +30,14 @@ class _ChatsListPageState extends State<ChatsListPage> {
     controller.initialize();
   }
 
+  bool get _isImmobileOwner =>
+      SessionService.customer?.typeUser == TypeUser.immobile;
+
   List<Chat> _filteredChats() {
+    if (_isImmobileOwner) {
+      return controller.chats;
+    }
+
     final isPerson = SessionService.customer?.typeUser == TypeUser.person;
     if (tabSelected == 0) {
       if (isPerson) {
@@ -70,14 +77,16 @@ class _ChatsListPageState extends State<ChatsListPage> {
             Expanded(
               child: Column(
                 children: [
-                  TabsWidget(
-                    values: const ["Pessoas", "Imóveis"],
-                    valueSelected: tabSelected,
-                    onChange: (value) => setState(() {
-                      tabSelected = value;
-                    }),
-                  ),
-                  const Gap(8),
+                  if (!_isImmobileOwner) ...[
+                    TabsWidget(
+                      values: const ["Pessoas", "Imóveis"],
+                      valueSelected: tabSelected,
+                      onChange: (value) => setState(() {
+                        tabSelected = value;
+                      }),
+                    ),
+                    const Gap(8),
+                  ],
                   Expanded(
                     child: Container(
                       margin: const EdgeInsetsDirectional.symmetric(
@@ -306,45 +315,46 @@ class _ChatsListPageState extends State<ChatsListPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 60,
-                            width: double.infinity,
-                            child: GestureDetector(
-                              onTap: () async {
-                                await showModalBottomSheet<void>(
-                                  context: context,
-                                  useSafeArea: true,
-                                  useRootNavigator: true,
-                                  isScrollControlled: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  builder: (context) {
-                                    return FractionallySizedBox(
-                                      heightFactor: 0.9,
-                                      child: ContactListPage(
-                                        tabIndex: tabSelected,
+                          if (!_isImmobileOwner)
+                            SizedBox(
+                              height: 60,
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await showModalBottomSheet<void>(
+                                    context: context,
+                                    useSafeArea: true,
+                                    useRootNavigator: true,
+                                    isScrollControlled: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
                                       ),
-                                    );
-                                  },
-                                );
-                                if (mounted) {
-                                  await controller.initialize();
-                                }
-                              },
-                              child: Center(
-                                child: Text(
-                                  "Iniciar Conversa",
-                                  style: GoogleFonts.rubik(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                    ),
+                                    builder: (context) {
+                                      return FractionallySizedBox(
+                                        heightFactor: 0.9,
+                                        child: ContactListPage(
+                                          tabIndex: tabSelected,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                  if (mounted) {
+                                    await controller.initialize();
+                                  }
+                                },
+                                child: Center(
+                                  child: Text(
+                                    "Iniciar Conversa",
+                                    style: GoogleFonts.rubik(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),

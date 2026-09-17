@@ -15,6 +15,7 @@ class HouseFlipCard extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final Future<bool> Function(FlipCardController)? onVerMaisPressed;
   final VoidCallback? onVerNoMapaPressed;
+  final String? ownerDisplayName;
 
   const HouseFlipCard({
     super.key,
@@ -23,6 +24,7 @@ class HouseFlipCard extends StatelessWidget {
     this.onBackPressed,
     this.onVerMaisPressed,
     this.onVerNoMapaPressed,
+    this.ownerDisplayName,
   });
 
   String _getTypeImmobileTitle(TypeImmobile type) {
@@ -374,6 +376,32 @@ class HouseFlipCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (ownerDisplayName != null &&
+                    ownerDisplayName!.trim().isNotEmpty) ...[
+                  const Gap(8),
+                  Row(
+                    children: [
+                      Text(
+                        'Dono',
+                        style: GoogleFonts.rubik(
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: Text(
+                          ownerDisplayName!.trim(),
+                          style: GoogleFonts.rubik(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 const Gap(8),
                 const Row(
                   children: [

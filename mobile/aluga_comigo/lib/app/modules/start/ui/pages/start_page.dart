@@ -20,6 +20,7 @@ import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../../shared/presenter/helpers/feed_session_helper.dart';
 import '../../../auth/domain/enums/type_user.dart';
+import '../../../my_immobiles/ui/controllers/my_immobiles_controller.dart';
 import '../../../chats/ui/controllers/chats_list_controller.dart';
 import '../../../like/ui/controllers/likes_controller.dart';
 import '../../../notifications/ui/controllers/notifications_badge_controller.dart';
@@ -33,13 +34,6 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage>
     with SingleTickerProviderStateMixin {
-  static const _tabRoutes = [
-    '/start/customers/',
-    '/start/houses/',
-    '/start/likes/',
-    '/start/chats/',
-  ];
-
   bool isMenuOpen = false;
   bool hasLocationPermission = false;
   bool isCheckingPermission = true;
@@ -74,7 +68,7 @@ class _StartPageState extends State<StartPage>
 
     final path = context.routeState(listen: false).uri.path;
     if (StartNavigationHelper.isImmobileOwnerSwipeRoute(path)) {
-      const route = '/start/likes/';
+      const route = '/start/my-immobiles/';
       _routerOutletKey.currentState?.navigate(route);
       _reloadTabData(route);
     }
@@ -122,6 +116,9 @@ class _StartPageState extends State<StartPage>
   }
 
   Widget _buildDrawer() {
+    final isImmobileOwner =
+        SessionService.customer?.typeUser == TypeUser.immobile;
+
     return Container(
       color: const Color(0xFF2C29A3),
       padding: const EdgeInsets.only(top: 8, bottom: 16),
@@ -152,14 +149,16 @@ class _StartPageState extends State<StartPage>
               child: Divider(color: Colors.white, thickness: 1),
             ),
             const Gap(16),
-            IconButton(
-              onPressed: () {
-                context.pushNamed("/config/profile");
-              },
-              tooltip: "Perfil",
-              icon: const Icon(Icons.person, color: Colors.white, size: 35),
-            ),
-            const Gap(16),
+            if (!isImmobileOwner) ...[
+              IconButton(
+                onPressed: () {
+                  context.pushNamed("/config/profile");
+                },
+                tooltip: "Perfil",
+                icon: const Icon(Icons.person, color: Colors.white, size: 35),
+              ),
+              const Gap(16),
+            ],
             IconButton(
               onPressed: () {
                 context.pushNamed("/config/security");
@@ -167,26 +166,28 @@ class _StartPageState extends State<StartPage>
               tooltip: "Segurança",
               icon: const Icon(Icons.shield, color: Colors.white, size: 35),
             ),
-            const Gap(16),
-            IconButton(
-              onPressed: () {
-                context.pushNamed("/quest/");
-              },
-              tooltip: "Missões",
-              icon: const Icon(Icons.list_alt, color: Colors.white, size: 35),
-            ),
-            const Gap(16),
-            IconButton(
-              tooltip: "Histórico",
-              onPressed: () {
-                context.pushNamed("/history/");
-              },
-              icon: const Icon(
-                Icons.photo_outlined,
-                color: Colors.white,
-                size: 35,
+            if (!isImmobileOwner) ...[
+              const Gap(16),
+              IconButton(
+                onPressed: () {
+                  context.pushNamed("/quest/");
+                },
+                tooltip: "Missões",
+                icon: const Icon(Icons.list_alt, color: Colors.white, size: 35),
               ),
-            ),
+              const Gap(16),
+              IconButton(
+                tooltip: "Histórico",
+                onPressed: () {
+                  context.pushNamed("/history/");
+                },
+                icon: const Icon(
+                  Icons.photo_outlined,
+                  color: Colors.white,
+                  size: 35,
+                ),
+              ),
+            ],
             const Gap(16),
             IconButton(
               onPressed: () {
@@ -331,10 +332,9 @@ class _StartPageState extends State<StartPage>
     // Bottom nav sits beside [RouterOutlet] in the Stack — `context.navigate`
     // would hit the root delegate and replace the whole app. Target the outlet.
     final type = SessionService.customer?.typeUser ?? TypeUser.none;
-    final route = switch (type) {
-      TypeUser.immobile when index == 0 || index == 1 => '/start/likes/',
-      _ => _tabRoutes[index],
-    };
+    final routes = StartNavigationHelper.tabRoutesFor(type);
+    if (index < 0 || index >= routes.length) return;
+    final route = routes[index];
     _routerOutletKey.currentState?.navigate(route);
     _reloadTabData(route);
   }
@@ -344,10 +344,76 @@ class _StartPageState extends State<StartPage>
       unawaited(inject<ILikesController>().initialize());
     } else if (route.startsWith('/start/chats')) {
       unawaited(inject<IChatsListController>().initialize());
+    } else if (route.startsWith('/start/my-immobiles')) {
+      final accountId = SessionService.customer?.id ?? '';
+      if (accountId.isNotEmpty) {
+        unawaited(inject<IMyImmobilesController>().initialize(accountId));
+      }
     }
   }
 
+  BottomNavigationBarItem _navBarItem({
+    required String asset,
+    required int itemIndex,
+    required int currentIndex,
+  }) {
+    return BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        asset,
+        width: 35,
+        height: 35,
+        colorFilter: currentIndex == itemIndex
+            ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
+            : null,
+      ),
+    );
+  }
+
   Widget _buildNavigationBar(int currentIndex) {
+    final isImmobileOwner =
+        SessionService.customer?.typeUser == TypeUser.immobile;
+
+    final items = isImmobileOwner
+        ? [
+            _navBarItem(
+              asset: IconsAsset.home,
+              itemIndex: 0,
+              currentIndex: currentIndex,
+            ),
+            _navBarItem(
+              asset: IconsAsset.likes,
+              itemIndex: 1,
+              currentIndex: currentIndex,
+            ),
+            _navBarItem(
+              asset: IconsAsset.chat,
+              itemIndex: 2,
+              currentIndex: currentIndex,
+            ),
+          ]
+        : [
+            _navBarItem(
+              asset: IconsAsset.customer,
+              itemIndex: 0,
+              currentIndex: currentIndex,
+            ),
+            _navBarItem(
+              asset: IconsAsset.home,
+              itemIndex: 1,
+              currentIndex: currentIndex,
+            ),
+            _navBarItem(
+              asset: IconsAsset.likes,
+              itemIndex: 2,
+              currentIndex: currentIndex,
+            ),
+            _navBarItem(
+              asset: IconsAsset.chat,
+              itemIndex: 3,
+              currentIndex: currentIndex,
+            ),
+          ];
+
     return SnakeNavigationBar.color(
       snakeViewColor: Colors.white,
       shadowColor: const Color.fromARGB(255, 170, 110, 110),
@@ -366,48 +432,7 @@ class _StartPageState extends State<StartPage>
           _navigateToTab(index);
         }
       },
-      items: [
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            IconsAsset.customer,
-            width: 35,
-            height: 35,
-            colorFilter: currentIndex == 0
-                ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
-                : null,
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            IconsAsset.home,
-            width: 35,
-            height: 35,
-            colorFilter: currentIndex == 1
-                ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
-                : null,
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            IconsAsset.likes,
-            width: 35,
-            height: 35,
-            colorFilter: currentIndex == 2
-                ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
-                : null,
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            IconsAsset.chat,
-            width: 35,
-            height: 35,
-            colorFilter: currentIndex == 3
-                ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
-                : null,
-          ),
-        ),
-      ],
+      items: items,
     );
   }
 
