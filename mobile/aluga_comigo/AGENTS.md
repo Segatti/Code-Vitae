@@ -108,6 +108,8 @@ Skill `/minimal-change` — auto-invoca em toda implementação:
 
 | Skill | Uso |
 |-------|-----|
+| `/task-intent-confirmation` | **Antes** de implementar — reformula pedido e aguarda **sim** do dev |
+| `/post-task-simplicity-review` | **Depois** de implementar — revisa simplicidade antes do resumo final |
 | `/minimal-change` | **Sempre** — diff mínimo, helper só com 2+ usos |
 | `/scaffold-module` | Criar módulo Clean Architecture completo |
 | `/pr-review` | Review antes de PR |

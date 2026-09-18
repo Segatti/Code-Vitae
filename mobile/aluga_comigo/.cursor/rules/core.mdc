@@ -61,7 +61,7 @@ presenter/ui → domain ← data
 - Mapa completo: AGENTS.md
 
 ## Skills disponíveis
-`/minimal-change` `/scaffold-module` `/pr-review` `/fix-ci` `/widget-test` `/project-audit-report`
+`/task-intent-confirmation` `/post-task-simplicity-review` `/minimal-change` `/scaffold-module` `/pr-review` `/fix-ci` `/widget-test` `/project-audit-report`
 
 ## Relatórios de auditoria
 Skill `/project-audit-report` gera `docs/reports/YYYY-MM-DD-*-audit.md` (bugs, melhorias, mercado).
