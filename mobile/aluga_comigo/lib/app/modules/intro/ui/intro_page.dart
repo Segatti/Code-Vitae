@@ -1,10 +1,10 @@
 import 'package:aluga_comigo/app/shared/data/services/secure_storage_service.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/lotties_asset.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:material_ui/material_ui.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -49,69 +49,8 @@ class _IntroPageState extends State<IntroPage> {
           firstChild: SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 64),
-                    Lottie.asset(icons[index], height: 300, width: 300),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: 300,
-                      child: Text(
-                        titles[index],
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.rubik(
-                          color: AppColors.primaryOrange,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            index++;
-                          });
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.primaryBlue.withValues(alpha: .5),
-                          ),
-                          child: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          secondChild: AnimatedCrossFade(
-            duration: const Duration(seconds: 1),
-            firstChild: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.center,
+            child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(
@@ -135,6 +74,7 @@ class _IntroPageState extends State<IntroPage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 32),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -167,75 +107,143 @@ class _IntroPageState extends State<IntroPage> {
                 ],
               ),
             ),
+          ),
+          secondChild: AnimatedCrossFade(
+            duration: const Duration(seconds: 1),
+            firstChild: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 64),
+                        Lottie.asset(icons[index], height: 300, width: 300),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: 300,
+                          child: Text(
+                            titles[index],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.rubik(
+                              color: AppColors.primaryOrange,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                index++;
+                              });
+                            },
+                            child: Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primaryBlue.withValues(
+                                  alpha: .5,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.chevron_right,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
             secondChild: Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 64),
-                      SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: Transform.scale(
-                          scale: 1.5,
-                          child: Lottie.asset(icons[index], fit: BoxFit.fill),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: 300,
-                        child: Text(
-                          titles[index],
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.rubik(
-                            color: AppColors.primaryOrange,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 64),
+                        SizedBox(
+                          width: 300,
+                          height: 300,
+                          child: Transform.scale(
+                            scale: 1.5,
+                            child: Lottie.asset(icons[index], fit: BoxFit.fill),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: InkWell(
-                          onTap: () async {
-                            final storage = inject<SecureStorageService>();
-                            await storage.setData(
-                              StorageKey.intro,
-                              false.toString(),
-                            );
-                            if (!context.mounted) return;
-                            context.navigate("/auth/");
-                          },
-                          child: Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.primaryBlue.withValues(
-                                alpha: .5,
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: 300,
+                          child: Text(
+                            titles[index],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.rubik(
+                              color: AppColors.primaryOrange,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: InkWell(
+                            onTap: () async {
+                              final storage = inject<SecureStorageService>();
+                              await storage.setData(
+                                StorageKey.intro,
+                                false.toString(),
+                              );
+                              if (!context.mounted) return;
+                              context.navigate("/auth/");
+                            },
+                            child: Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primaryBlue.withValues(
+                                  alpha: .5,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.chevron_right,
+                                color: Colors.white,
                               ),
                             ),
-                            child: const Icon(
-                              Icons.chevron_right,
-                              color: Colors.white,
-                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             crossFadeState: index == 1

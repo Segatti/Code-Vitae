@@ -15,7 +15,10 @@ abstract interface class IMatchContactDatasource {
     required int tabIndex,
   });
 
-  Future<Chat?> getOrCreateChatForContact(CustomerModel customer);
+  Future<Chat?> getOrCreateChatForContact(
+    CustomerModel customer, {
+    String? immobileListingId,
+  });
 
   Future<CustomerModel> getContactProfile(String accountId);
 }
@@ -49,7 +52,10 @@ class MatchContactDatasource implements IMatchContactDatasource {
   }
 
   @override
-  Future<Chat?> getOrCreateChatForContact(CustomerModel customer) async {
+  Future<Chat?> getOrCreateChatForContact(
+    CustomerModel customer, {
+    String? immobileListingId,
+  }) async {
     final session = SessionService.customer!;
     final userId = session.id;
 
@@ -70,7 +76,7 @@ class MatchContactDatasource implements IMatchContactDatasource {
         ),
         TypeUser.immobile when customer is PersonCustomerModel => (
           personId: customer.id,
-          immobileId: userId,
+          immobileId: immobileListingId ?? userId,
         ),
         _ => null,
       };

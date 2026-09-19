@@ -101,12 +101,14 @@ read_local_credentials() {
 write_dart_defines() {
   local url="$1"
   local anon_key="$2"
-  local output_file="$3"
+  local backend_url="$3"
+  local output_file="$4"
 
   cat >"$output_file" <<EOF
 {
   "SUPABASE_URL": "${url}",
-  "SUPABASE_ANON_KEY": "${anon_key}"
+  "SUPABASE_ANON_KEY": "${anon_key}",
+  "BACKEND_API_URL": "${backend_url}"
 }
 EOF
 }
@@ -175,18 +177,22 @@ if [[ -z "$API_URL" || -z "$ANON_KEY" ]]; then
   exit 1
 fi
 
+BACKEND_URL="http://127.0.0.1:8080"
+BACKEND_ANDROID_URL="http://10.0.2.2:8080"
+
 log "Gerando dart_defines.json (iOS / simulador / desktop)..."
-write_dart_defines "$API_URL" "$ANON_KEY" "dart_defines.json"
+write_dart_defines "$API_URL" "$ANON_KEY" "$BACKEND_URL" "dart_defines.json"
 
 log "Gerando dart_defines.android.json (emulador Android → 10.0.2.2)..."
 ANDROID_URL="${API_URL/127.0.0.1/10.0.2.2}"
-write_dart_defines "$ANDROID_URL" "$ANON_KEY" "dart_defines.android.json"
+write_dart_defines "$ANDROID_URL" "$ANON_KEY" "$BACKEND_ANDROID_URL" "dart_defines.android.json"
 
 LAN_IP="$(detect_lan_ip)"
 if [[ -n "$LAN_IP" ]]; then
   log "Gerando dart_defines.device.json (celular físico → ${LAN_IP})..."
   DEVICE_URL="${API_URL/127.0.0.1/${LAN_IP}}"
-  write_dart_defines "$DEVICE_URL" "$ANON_KEY" "dart_defines.device.json"
+  BACKEND_DEVICE_URL="http://${LAN_IP}:8080"
+  write_dart_defines "$DEVICE_URL" "$ANON_KEY" "$BACKEND_DEVICE_URL" "dart_defines.device.json"
 else
   warn "Não detectou IP da rede local — dart_defines.device.json não gerado."
 fi
@@ -209,6 +215,9 @@ echo "  Contas demo (senha: demo123):"
 echo "    Pessoas:  ana@demo.local | bruno@demo.local | carla@demo.local"
 echo "    Imóveis:  apt.centro@demo.local | casa.jardins@demo.local | kit.vila@demo.local"
 echo "    Match + chat: Ana Silva ↔ Apto Centro"
+echo ""
+echo "  Backend API (outro terminal):"
+echo "    ./scripts/runBackend.sh"
 echo ""
 echo "  App (simulador/desktop):"
 echo "    flutter run --dart-define-from-file=dart_defines.json"

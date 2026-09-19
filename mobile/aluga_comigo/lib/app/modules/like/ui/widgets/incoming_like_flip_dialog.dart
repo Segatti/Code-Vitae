@@ -1,7 +1,7 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
-import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
 import 'package:aluga_comigo/app/modules/customer/domain/entities/swipe_action_result.dart';
+import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/house_flip_card.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/match_celebration_dialog.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/person_flip_card.dart';
@@ -17,17 +17,23 @@ import 'package:material_ui/material_ui.dart';
 class IncomingLikeFlipDialog extends StatefulWidget {
   final IncomingLikeModel item;
   final Future<SwipeActionResult> Function(MatchType matchType) onRespond;
+  final bool forImmobileOwner;
+  final Future<void> Function()? onStartConversation;
 
   const IncomingLikeFlipDialog({
     super.key,
     required this.item,
     required this.onRespond,
+    this.forImmobileOwner = false,
+    this.onStartConversation,
   });
 
   static Future<void> show(
     BuildContext context, {
     required IncomingLikeModel item,
     required Future<SwipeActionResult> Function(MatchType matchType) onRespond,
+    bool forImmobileOwner = false,
+    Future<void> Function()? onStartConversation,
   }) {
     return showDialog<void>(
       context: context,
@@ -35,6 +41,8 @@ class IncomingLikeFlipDialog extends StatefulWidget {
       builder: (_) => IncomingLikeFlipDialog(
         item: item,
         onRespond: onRespond,
+        forImmobileOwner: forImmobileOwner,
+        onStartConversation: onStartConversation,
       ),
     );
   }
@@ -87,9 +95,9 @@ class _IncomingLikeFlipDialogState extends State<IncomingLikeFlipDialog> {
     setState(() => _submitting = false);
 
     if (!result.removed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao dar match')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Erro ao dar match')));
       return;
     }
 
@@ -97,6 +105,18 @@ class _IncomingLikeFlipDialogState extends State<IncomingLikeFlipDialog> {
     final mutual = result.mutualMatch;
     if (mutual != null && context.mounted) {
       await MatchCelebrationDialog.show(context, mutual);
+    }
+  }
+
+  Future<void> _onStartConversation() async {
+    final startConversation = widget.onStartConversation;
+    if (startConversation == null || _submitting) return;
+    setState(() => _submitting = true);
+
+    try {
+      await startConversation();
+    } finally {
+      if (mounted) setState(() => _submitting = false);
     }
   }
 
@@ -120,7 +140,9 @@ class _IncomingLikeFlipDialogState extends State<IncomingLikeFlipDialog> {
             Align(
               alignment: Alignment.centerRight,
               child: IconButton(
-                onPressed: _submitting ? null : () => Navigator.of(context).pop(),
+                onPressed: _submitting
+                    ? null
+                    : () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close, color: Colors.grey),
               ),
             ),
@@ -140,23 +162,23 @@ class _IncomingLikeFlipDialogState extends State<IncomingLikeFlipDialog> {
               width: double.infinity,
               child: switch (customer) {
                 PersonCustomerModel person => PersonFlipCard(
-                    customer: person,
-                    calculateAge: _calculateAge,
-                    getSkillName: _getSkillName,
-                    height: maxHeight,
-                    onVerMaisPressed: _onVerMais,
-                  ),
+                  customer: person,
+                  calculateAge: _calculateAge,
+                  getSkillName: _getSkillName,
+                  height: maxHeight,
+                  onVerMaisPressed: _onVerMais,
+                ),
                 ImmobileCustomerModel immobile => HouseFlipCard(
-                    immobile: immobile,
-                    height: maxHeight,
-                    onVerMaisPressed: _onVerMais,
-                    onVerNoMapaPressed: () {
-                      MapsHelper.openLocation(
-                        cep: immobile.cep,
-                        cityState: immobile.cityState,
-                      );
-                    },
-                  ),
+                  immobile: immobile,
+                  height: maxHeight,
+                  onVerMaisPressed: _onVerMais,
+                  onVerNoMapaPressed: () {
+                    MapsHelper.openLocation(
+                      cep: immobile.cep,
+                      cityState: immobile.cityState,
+                    );
+                  },
+                ),
               },
             ),
             Padding(
@@ -174,14 +196,22 @@ class _IncomingLikeFlipDialogState extends State<IncomingLikeFlipDialog> {
                   const Gap(12),
                   Expanded(
                     child: FilledButton(
-                      onPressed: _submitting ? null : _onMatch,
+                      onPressed: _submitting
+                          ? null
+                          : widget.forImmobileOwner
+                          ? _onStartConversation
+                          : _onMatch,
                       child: _submitting
                           ? const SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Dar match'),
+                          : Text(
+                              widget.forImmobileOwner
+                                  ? 'Iniciar conversa'
+                                  : 'Dar match',
+                            ),
                     ),
                   ),
                 ],

@@ -13,7 +13,7 @@ Mapa para humanos e agentes de IA.
 - Roteamento + DI: **flutter_modular** v7
 - Estado UI: **ChangeNotifier** controllers (`I*Controller`)
 - Erros: **dartz** (`Either<Failure, T>`) + result_dart
-- Backend: Supabase (Auth, PostgreSQL, Storage)
+- Backend: Supabase (Auth, PostgreSQL, Storage) + **API Dart** (`backend/`, `BACKEND_API_URL`) para loja/inventário/missões
 - Tests: flutter_test, mocktail
 
 ---

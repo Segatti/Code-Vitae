@@ -10,12 +10,12 @@ import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_camera_page.dart';
 import 'package:chiclet/chiclet.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -223,8 +223,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                       });
                                     },
                                   ),
-                                  const Text(
-                                    "Declaro que tenho 18 anos ou mais.",
+                                  Flexible(
+                                    child: const Text(
+                                      "Declaro que tenho 18 anos ou mais.",
+                                    ),
                                   ),
                                 ],
                               ),

@@ -13,6 +13,14 @@ class AppWidget extends StatelessWidget {
       routerConfig: ModularApp.routerConfigOf(context),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: const TextScaler.linear(1)),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

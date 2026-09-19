@@ -223,8 +223,10 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                       });
                                     },
                                   ),
-                                  const Text(
-                                    "Declaro que tenho 18 anos ou mais.",
+                                  Flexible(
+                                    child: const Text(
+                                      "Declaro que tenho 18 anos ou mais.",
+                                    ),
                                   ),
                                 ],
                               ),

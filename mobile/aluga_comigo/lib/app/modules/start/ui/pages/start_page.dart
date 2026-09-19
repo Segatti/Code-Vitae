@@ -20,9 +20,9 @@ import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../../shared/presenter/helpers/feed_session_helper.dart';
 import '../../../auth/domain/enums/type_user.dart';
-import '../../../my_immobiles/ui/controllers/my_immobiles_controller.dart';
 import '../../../chats/ui/controllers/chats_list_controller.dart';
 import '../../../like/ui/controllers/likes_controller.dart';
+import '../../../my_immobiles/ui/controllers/my_immobiles_controller.dart';
 import '../../../notifications/ui/controllers/notifications_badge_controller.dart';
 
 class StartPage extends StatefulWidget {
@@ -39,7 +39,7 @@ class _StartPageState extends State<StartPage>
   bool isCheckingPermission = true;
 
   late AnimationController _animationController;
-  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  final _drawerKey = GlobalKey<SliderDrawerState>();
   final GlobalKey<RouterOutletState> _routerOutletKey =
       GlobalKey<RouterOutletState>();
 
@@ -153,6 +153,7 @@ class _StartPageState extends State<StartPage>
               IconButton(
                 onPressed: () {
                   context.pushNamed("/config/profile");
+                  _drawerKey.currentState?.closeSlider();
                 },
                 tooltip: "Perfil",
                 icon: const Icon(Icons.person, color: Colors.white, size: 35),
@@ -162,6 +163,7 @@ class _StartPageState extends State<StartPage>
             IconButton(
               onPressed: () {
                 context.pushNamed("/config/security");
+                _drawerKey.currentState?.closeSlider();
               },
               tooltip: "Segurança",
               icon: const Icon(Icons.shield, color: Colors.white, size: 35),
@@ -171,6 +173,7 @@ class _StartPageState extends State<StartPage>
               IconButton(
                 onPressed: () {
                   context.pushNamed("/quest/");
+                  _drawerKey.currentState?.closeSlider();
                 },
                 tooltip: "Missões",
                 icon: const Icon(Icons.list_alt, color: Colors.white, size: 35),
@@ -180,6 +183,7 @@ class _StartPageState extends State<StartPage>
                 tooltip: "Histórico",
                 onPressed: () {
                   context.pushNamed("/history/");
+                  _drawerKey.currentState?.closeSlider();
                 },
                 icon: const Icon(
                   Icons.photo_outlined,
@@ -192,6 +196,7 @@ class _StartPageState extends State<StartPage>
             IconButton(
               onPressed: () {
                 context.pushNamed("/store/");
+                _drawerKey.currentState?.closeSlider();
               },
               tooltip: "Loja",
               icon: const Icon(Icons.store, color: Colors.white, size: 35),

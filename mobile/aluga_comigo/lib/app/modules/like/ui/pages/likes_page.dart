@@ -1,5 +1,7 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_immobile.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
+import 'package:aluga_comigo/app/modules/chats/chat_navigation.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_or_create_chat_for_contact.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/widgets/immobile_listing_flip_dialog.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
@@ -71,6 +73,28 @@ class _LikesPageState extends State<LikesPage> {
 
   bool _canOpenDetails(IncomingLikeModel item) => !_shouldBlurItem(item);
 
+  Future<void> _startConversationWithPerson(IncomingLikeModel item) async {
+    final person = item.customer;
+    if (person is! PersonCustomerModel) return;
+
+    final getOrCreateChat = inject<IGetOrCreateChatForContact>();
+    final chat = await getOrCreateChat(
+      person,
+      immobileListingId: item.immobileId,
+    );
+    if (!mounted) return;
+
+    if (chat == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Não foi possível abrir a conversa.')),
+      );
+      return;
+    }
+
+    Navigator.of(context).pop();
+    await ChatNavigation.open(context, chat);
+  }
+
   Future<void> _onItemTap(IncomingLikeModel item) async {
     if (!_canOpenDetails(item)) {
       await PowerUpPromptHelper.promptForIncomingLikes(context);
@@ -81,7 +105,11 @@ class _LikesPageState extends State<LikesPage> {
     await IncomingLikeFlipDialog.show(
       context,
       item: item,
+      forImmobileOwner: _isImmobileOwner,
       onRespond: (matchType) => controller.respondToLike(item, matchType),
+      onStartConversation: _isImmobileOwner
+          ? () => _startConversationWithPerson(item)
+          : null,
     );
   }
 

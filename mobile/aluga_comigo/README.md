@@ -19,7 +19,7 @@ Visão do que **já existe neste repositório** e do que **ainda está previsto*
 - [x] Chat (pessoa↔pessoa e pessoa↔imóvel), Super Chat na conversa, ofertas de imóvel
 - [x] Vários anúncios por conta imóvel (`my_immobiles`)
 - [x] Loja in-app (Super Star, Super Chat, PowerUp), missões (quests), notificações
-- [ ] **Backend dedicado** (API/serviços próprios) — **ainda será criado**; hoje o app fala direto com o **Supabase** (BaaS)
+- [x] **Backend Dart dedicado** (`backend/`) — loja, inventário, missões e conta ativa via API; demais fluxos ainda no Supabase client
 
 ### Arquitetura (app)
 
@@ -37,7 +37,8 @@ Visão do que **já existe neste repositório** e do que **ainda está previsto*
 - [x] **Realtime** (chat e inbox)
 - [x] Seed local de demonstração (`supabase/seed.sql`)
 - [x] Ambiente local via Docker + Supabase CLI (`scripts/initDev.sh`)
-- [ ] Backend **separado** do Supabase (filas, integrações, regras server-side centralizadas) — **planejado para uma fase posterior**
+- [x] Backend **Dart** (`backend/`, Postgres direto + JWT Supabase) para regras críticas de loja/missões
+- [ ] Filas, integrações externas e migração total do client — fase posterior
 
 ### Módulos principais no código (`lib/app/modules/`)
 
@@ -71,7 +72,7 @@ Visão do que **já existe neste repositório** e do que **ainda está previsto*
 | UI | Flutter 3.x, Dart 3.10+ |
 | Rotas / DI | [flutter_modular](https://pub.dev/packages/flutter_modular) v7 |
 | Estado de tela | `ChangeNotifier` + interfaces `I*Controller` |
-| Backend | [Supabase](https://supabase.com/) |
+| Backend | [Supabase](https://supabase.com/) + API **Dart** (`backend/`, porta 8080) |
 | Arquitetura | Clean Architecture (`domain` → `data` → `ui` / `presenter`) |
 
 Documentação para contribuidores e agentes: [`AGENTS.md`](./AGENTS.md).

@@ -1,17 +1,17 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:delayed_display/delayed_display.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../shared/data/services/secure_storage_service.dart';
 import '../../../shared/data/services/session_service.dart';
 import '../../../shared/domain/helpers/start_navigation_helper.dart';
-import '../../auth/domain/enums/type_user.dart';
 import '../../../shared/presenter/widgets/popups/loading_popup.dart';
 import '../../../shared/presenter/widgets/primary_button.dart';
 import '../../../shared/presenter/widgets/secondary_button.dart';
+import '../../auth/domain/enums/type_user.dart';
 import '../domain/entities/inputs/login_input.dart';
 import 'controllers/auth_controller.dart';
 import 'widgets/login_card_widget.dart';
@@ -37,17 +37,11 @@ class _AuthPageState extends State<AuthPage> {
     setState(() {
       color = const Color(0xFF2C29A3);
     });
-    _controller.previousPage(
-      duration: Durations.short4,
-      curve: Curves.linear,
-    );
+    _controller.previousPage(duration: Durations.short4, curve: Curves.linear);
   }
 
   void nextPage() {
-    _controller.nextPage(
-      duration: Durations.short4,
-      curve: Curves.linear,
-    );
+    _controller.nextPage(duration: Durations.short4, curve: Curves.linear);
   }
 
   void notificationError(String title, String message) {
@@ -61,10 +55,7 @@ class _AuthPageState extends State<AuthPage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: Colors.white,
-              border: Border.all(
-                color: Colors.red,
-                width: 5,
-              ),
+              border: Border.all(color: Colors.red, width: 5),
             ),
             padding: const EdgeInsets.all(16),
             margin: const EdgeInsets.all(32),
@@ -265,7 +256,7 @@ class _AuthPageState extends State<AuthPage> {
 
                                   var result = await controller.login(input);
 
-                                  if(!context.mounted) return;
+                                  if (!context.mounted) return;
 
                                   if (result) {
                                     context.navigate(
@@ -309,7 +300,7 @@ class _AuthPageState extends State<AuthPage> {
                                     );
                                   }
                                 },
-                              )
+                              ),
                       ],
                     ),
                   ),

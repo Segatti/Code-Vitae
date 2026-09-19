@@ -35,9 +35,11 @@ fi
 cat >dart_defines.device.json <<EOF
 {
   "SUPABASE_URL": "http://${LAN_IP}:54321",
-  "SUPABASE_ANON_KEY": "${ANON_KEY}"
+  "SUPABASE_ANON_KEY": "${ANON_KEY}",
+  "BACKEND_API_URL": "http://${LAN_IP}:8080"
 }
 EOF
 
 echo "dart_defines.device.json gerado:"
 echo "  SUPABASE_URL=http://${LAN_IP}:54321"
+echo "  BACKEND_API_URL=http://${LAN_IP}:8080"

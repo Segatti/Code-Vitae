@@ -1,0 +1,15 @@
+name: aluga_comigo_backend
+description: API Dart intermediária entre o app e o Postgres (regras críticas).
+publish_to: none
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  dart_jsonwebtoken: ^3.3.1
+  postgres: ^3.5.9
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
+
+dev_dependencies:
+  lints: ^6.0.0

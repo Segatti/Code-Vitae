@@ -11,11 +11,13 @@ import '../../domain/helpers/immobile_mapper.dart';
 import '../../domain/helpers/message_mapper.dart';
 import '../../domain/helpers/person_mapper.dart';
 import '../../domain/typedefs/returns.dart';
+import 'aluga_comigo_api_client.dart';
 
 class SupabaseDatabaseService {
   final SupabaseClient _client;
+  final AlugaComigoApiClient _api;
 
-  const SupabaseDatabaseService(this._client);
+  SupabaseDatabaseService(this._client, this._api);
 
   Future<Either<FailureDatasource, void>> createAccount(Json data) async {
     try {
@@ -922,109 +924,32 @@ class SupabaseDatabaseService {
     }
   }
 
-  Future<Json> getUserInventory() async {
-    try {
-      final result = await _client.rpc('get_user_inventory');
-      return Map<String, dynamic>.from(result as Map);
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
+  Future<Json> getUserInventory() => _api.getUserInventory();
 
-  Future<bool> consumeSuperStar() async {
-    try {
-      final result = await _client.rpc('consume_super_star');
-      return result == true;
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
+  Future<bool> consumeSuperStar() => _api.consumeSuperStar();
 
-  Future<bool> consumeSuperChat() async {
-    try {
-      final result = await _client.rpc('consume_super_chat');
-      return result == true;
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
+  Future<bool> consumeSuperChat() => _api.consumeSuperChat();
 
   Future<void> fulfillPurchase({
     required String productId,
     required String transactionId,
     required String platform,
-  }) async {
-    try {
-      await _client.rpc(
-        'fulfill_purchase',
-        params: {
-          'p_product_id': productId,
-          'p_transaction_id': transactionId,
-          'p_platform': platform,
-        },
+  }) =>
+      _api.fulfillPurchase(
+        productId: productId,
+        transactionId: transactionId,
+        platform: platform,
       );
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
 
-  Future<void> setAccountActive(bool active) async {
-    try {
-      await _client.rpc('set_account_active', params: {'p_active': active});
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
+  Future<void> setAccountActive(bool active) => _api.setAccountActive(active);
 
-  Future<void> incrementQuestProgress(String actionType) async {
-    try {
-      await _client.rpc(
-        'increment_quest_progress',
-        params: {'p_action_type': actionType},
-      );
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-    }
-  }
+  Future<void> incrementQuestProgress(String actionType) =>
+      _api.incrementQuestProgress(actionType);
 
-  Future<List<Json>> getUserQuests() async {
-    try {
-      final result = await _client.rpc('get_user_quests');
-      final list = result as List<dynamic>? ?? const [];
-      return list.map((item) => Map<String, dynamic>.from(item as Map)).toList();
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
+  Future<List<Json>> getUserQuests() => _api.getUserQuests();
 
-  Future<void> claimQuestReward(String questId) async {
-    try {
-      await _client.rpc('claim_quest_reward', params: {'p_quest_id': questId});
-    } on PostgrestException catch (error) {
-      debugPrint(error.toString());
-      throw FailureDatasource(
-        message: SupabaseErrorHandler.getMessage(error.code, error.message),
-      );
-    }
-  }
+  Future<void> claimQuestReward(String questId) =>
+      _api.claimQuestReward(questId);
 
   Future<List<Json>> listUserNotifications(String accountId) async {
     try {

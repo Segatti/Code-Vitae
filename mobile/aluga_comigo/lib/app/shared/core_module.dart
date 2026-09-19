@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'data/services/aluga_comigo_api_client.dart';
 import 'data/services/camera_service.dart';
 import 'data/services/secure_storage_service.dart';
 import 'data/services/supabase_auth_service.dart';
@@ -17,6 +18,9 @@ class CoreModule extends Module {
     c.addSingleton<SupabaseClient>(() => Supabase.instance.client);
     c.addSingleton<ImagePicker>(ImagePicker.new);
     c.addSingleton<SecureStorageService>(SecureStorageService.new);
+    c.addSingleton<AlugaComigoApiClient>(
+      () => AlugaComigoApiClient(supabase: Supabase.instance.client),
+    );
     c.addSingleton<SupabaseDatabaseService>(SupabaseDatabaseService.new);
     c.addSingleton<SupabaseRealtimeService>(SupabaseRealtimeService.new);
     c.addSingleton<SupabaseAuthService>(SupabaseAuthService.new);
