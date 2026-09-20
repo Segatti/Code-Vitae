@@ -5,6 +5,8 @@ import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/house_flip_card.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/match_celebration_dialog.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/widgets/person_flip_card.dart';
+import 'package:aluga_comigo/app/modules/chats/chat_navigation.dart';
+import 'package:aluga_comigo/app/modules/chats/domain/entities/chat.dart';
 import 'package:aluga_comigo/app/modules/like/data/models/incoming_like_model.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/maps_helper.dart';
@@ -18,14 +20,16 @@ class IncomingLikeFlipDialog extends StatefulWidget {
   final IncomingLikeModel item;
   final Future<SwipeActionResult> Function(MatchType matchType) onRespond;
   final bool forImmobileOwner;
-  final Future<void> Function()? onStartConversation;
+  final BuildContext hostContext;
+  final Future<Chat?> Function()? onResolveChatForConversation;
 
   const IncomingLikeFlipDialog({
     super.key,
     required this.item,
     required this.onRespond,
+    required this.hostContext,
     this.forImmobileOwner = false,
-    this.onStartConversation,
+    this.onResolveChatForConversation,
   });
 
   static Future<void> show(
@@ -33,7 +37,7 @@ class IncomingLikeFlipDialog extends StatefulWidget {
     required IncomingLikeModel item,
     required Future<SwipeActionResult> Function(MatchType matchType) onRespond,
     bool forImmobileOwner = false,
-    Future<void> Function()? onStartConversation,
+    Future<Chat?> Function()? onResolveChatForConversation,
   }) {
     return showDialog<void>(
       context: context,
@@ -41,8 +45,9 @@ class IncomingLikeFlipDialog extends StatefulWidget {
       builder: (_) => IncomingLikeFlipDialog(
         item: item,
         onRespond: onRespond,
+        hostContext: context,
         forImmobileOwner: forImmobileOwner,
-        onStartConversation: onStartConversation,
+        onResolveChatForConversation: onResolveChatForConversation,
       ),
     );
   }
@@ -109,12 +114,17 @@ class _IncomingLikeFlipDialogState extends State<IncomingLikeFlipDialog> {
   }
 
   Future<void> _onStartConversation() async {
-    final startConversation = widget.onStartConversation;
-    if (startConversation == null || _submitting) return;
+    final resolveChat = widget.onResolveChatForConversation;
+    if (resolveChat == null || _submitting) return;
     setState(() => _submitting = true);
 
     try {
-      await startConversation();
+      final chat = await resolveChat();
+      if (chat == null || !mounted) return;
+
+      Navigator.of(context).pop();
+      if (!widget.hostContext.mounted) return;
+      await ChatNavigation.open(widget.hostContext, chat);
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
