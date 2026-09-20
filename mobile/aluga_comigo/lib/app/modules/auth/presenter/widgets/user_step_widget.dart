@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aluga_comigo/app/modules/auth/domain/entities/inputs/signup_input.dart';
+import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/models/select_item.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/widgets/pill_widget.dart';
@@ -55,6 +56,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   String? _selectedState;
   String? _selectedCity;
   List<String> _availableCities = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _userInput.typeUser = TypeUser.person;
+  }
 
   Future<void> getImage(ImageSource imageSource) async {
     if (imageSource == ImageSource.camera) {
@@ -718,9 +725,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed: () {
+                            _phoneController.text = PhoneFormatter.formatDigits(
+                              _phoneController.text.trim(),
+                            );
                             if (_formKey2.currentState?.validate() ?? false) {
-                              _userInput.name = _nameController.text;
-                              _userInput.phone = _phoneController.text;
+                              _userInput.name = _nameController.text.trim();
+                              _userInput.phone = _phoneController.text.trim();
                               nextPage();
                             } else {
                               setState(() {

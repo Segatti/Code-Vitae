@@ -1,6 +1,17 @@
 import 'package:flutter/services.dart';
 
 class PhoneFormatter extends TextInputFormatter {
+  /// Formata dígitos brutos (ex.: colagem ou automação) no padrão do campo.
+  static String formatDigits(String raw) {
+    final formatter = PhoneFormatter();
+    return formatter
+        .formatEditUpdate(
+          TextEditingValue.empty,
+          TextEditingValue(text: raw),
+        )
+        .text;
+  }
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,

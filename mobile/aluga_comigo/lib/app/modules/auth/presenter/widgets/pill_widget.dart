@@ -29,7 +29,12 @@ class _PillWidgetState extends State<PillWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final title = widget.selectItem.title ?? '';
+    return Semantics(
+      button: true,
+      label: title,
+      selected: isSelected,
+      child: GestureDetector(
       onTap: () {
         setState(() {
           isSelected = !isSelected;
@@ -49,7 +54,7 @@ class _PillWidgetState extends State<PillWidget> {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text(
-          widget.selectItem.title ?? '',
+          title,
           textScaler: const TextScaler.linear(1),
           maxLines: 1,
           style: GoogleFonts.rubik(
@@ -57,6 +62,7 @@ class _PillWidgetState extends State<PillWidget> {
             fontSize: 16,
           ),
         ),
+      ),
       ),
     );
   }

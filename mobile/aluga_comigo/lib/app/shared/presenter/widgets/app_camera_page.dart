@@ -178,6 +178,7 @@ class _AppCameraPageState extends State<AppCameraPage> {
                 right: 0,
                 child: Center(
                   child: GestureDetector(
+                    key: const ValueKey('camera_shutter_button'),
                     onTap: _isCapturing ? null : _takePicture,
                     child: Container(
                       width: 72,

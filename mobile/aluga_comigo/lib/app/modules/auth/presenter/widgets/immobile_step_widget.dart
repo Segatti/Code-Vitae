@@ -731,9 +731,12 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                       Expanded(
                         child: ChicletAnimatedButton(
                           onPressed: () {
+                            _phoneController.text = PhoneFormatter.formatDigits(
+                              _phoneController.text.trim(),
+                            );
                             if (_formKey2.currentState?.validate() ?? false) {
                               _immobileInput.name = _nameController.text;
-                              _immobileInput.phone = _phoneController.text;
+                              _immobileInput.phone = _phoneController.text.trim();
                               nextPage();
                             } else {
                               setState(() {
