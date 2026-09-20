@@ -129,6 +129,7 @@ O que ele faz, em resumo:
   - `dart_defines.json` — simulador / desktop (`127.0.0.1`)
   - `dart_defines.android.json` — emulador Android (`10.0.2.2`)
   - `dart_defines.device.json` — celular físico na mesma Wi-Fi (IP da LAN)
+  - Em todos: `DESIGN_SCREEN_WIDTH` / `DESIGN_SCREEN_HEIGHT` = **390×844** (artboard Figma / iPhone 14) para `.w()` / `.h()` / `.sp()`
 
 **URLs úteis após o start:**
 

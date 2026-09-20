@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -119,47 +120,18 @@ class _AuthPageState extends State<AuthPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
-                    child: SizedBox(
-                      width: 170,
+                    child: Container(
+                      margin: .symmetric(horizontal: 16),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          DelayedDisplay(
-                            delay: initialDuration,
-                            slidingBeginOffset: const Offset(0.0, -0.35),
-                            child: Text(
-                              "Aluga",
-                              textScaler: const TextScaler.linear(1),
-                              style: GoogleFonts.rubik(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 32,
-                                color: const Color(0xFF2C29A3),
-                              ),
-                            ),
+                          Image.asset(
+                            "assets/icons/logoNew.png",
+                            height: 120.h(),
                           ),
-                          DelayedDisplay(
-                            delay: Duration(
-                              milliseconds:
-                                  initialDuration.inMilliseconds + 500,
-                            ),
-                            slidingBeginOffset: const Offset(0.0, -0.35),
-                            child: Text(
-                              "Comigo",
-                              textScaler: const TextScaler.linear(1),
-                              style: GoogleFonts.rubik(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 32,
-                                color: const Color(0xFFDF924B),
-                              ),
-                            ),
-                          ),
-                          DelayedDisplay(
-                            delay: Duration(
-                              milliseconds:
-                                  initialDuration.inMilliseconds + 1000,
-                            ),
-                            slidingBeginOffset: const Offset(0.0, -0.35),
+                          Padding(
+                            padding: .only(right: 12.w()),
                             child: RepaintBoundary(
                               child: AnimatedTextKit(
                                 repeatForever: true,
@@ -167,19 +139,21 @@ class _AuthPageState extends State<AuthPage> {
                                 animatedTexts: [
                                   TyperAnimatedText(
                                     'uma Casa?',
-                                    speed: const Duration(milliseconds: 80),
+                                    speed: const Duration(milliseconds: 160),
                                     textStyle: GoogleFonts.rubik(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 32,
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 32.sp(),
+                                      height: 1,
                                       color: Colors.grey,
                                     ),
                                   ),
                                   TyperAnimatedText(
                                     'um Apê?',
-                                    speed: const Duration(milliseconds: 102),
+                                    speed: const Duration(milliseconds: 210),
                                     textStyle: GoogleFonts.rubik(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 32,
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 32.sp(),
+                                      height: 1,
                                       color: Colors.grey,
                                     ),
                                   ),
@@ -187,7 +161,7 @@ class _AuthPageState extends State<AuthPage> {
                               ),
                             ),
                           ),
-                          const Gap(32),
+                          Gap(32.h()),
                         ],
                       ),
                     ),
@@ -206,7 +180,7 @@ class _AuthPageState extends State<AuthPage> {
                               DelayedDisplay(
                                 delay: Duration(
                                   milliseconds: (showAnimation)
-                                      ? initialDuration.inMilliseconds + 2500
+                                      ? initialDuration.inMilliseconds + 500
                                       : 0,
                                 ),
                                 slidingBeginOffset: const Offset(0.0, -0.35),
@@ -224,7 +198,7 @@ class _AuthPageState extends State<AuthPage> {
                               DelayedDisplay(
                                 delay: Duration(
                                   milliseconds: (showAnimation)
-                                      ? initialDuration.inMilliseconds + 2500
+                                      ? initialDuration.inMilliseconds + 500
                                       : 0,
                                 ),
                                 slidingBeginOffset: const Offset(0.0, -0.35),

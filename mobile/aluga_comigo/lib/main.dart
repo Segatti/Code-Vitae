@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app/app_module.dart';
 import 'app/app_widget.dart';
+import 'app/shared/navigation/modular_navigator.dart';
 import 'supabase_config.dart';
 
 void main() async {
@@ -19,5 +20,11 @@ void main() async {
     publishableKey: SupabaseConfig.anonKey,
   );
 
-  runApp(ModularApp(module: AppModule(), child: const AppWidget()));
+  runApp(
+    ModularApp(
+      module: AppModule(),
+      navigatorKey: ModularNavigator.key,
+      child: const AppWidget(),
+    ),
+  );
 }

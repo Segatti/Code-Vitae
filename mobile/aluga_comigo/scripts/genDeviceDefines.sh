@@ -36,7 +36,9 @@ cat >dart_defines.device.json <<EOF
 {
   "SUPABASE_URL": "http://${LAN_IP}:54321",
   "SUPABASE_ANON_KEY": "${ANON_KEY}",
-  "BACKEND_API_URL": "http://${LAN_IP}:8080"
+  "BACKEND_API_URL": "http://${LAN_IP}:8080",
+  "DESIGN_SCREEN_WIDTH": "390",
+  "DESIGN_SCREEN_HEIGHT": "844"
 }
 EOF
 
