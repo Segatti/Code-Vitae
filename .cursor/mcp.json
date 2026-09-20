@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "dart": {
+      "command": "dart",
+      "args": ["mcp-server", "--force-roots-fallback"]
+    },
+    "patrol": {
+      "command": "dart",
+      "args": ["run", "patrol_mcp"],
+      "cwd": "/home/vittor/Documentos/git/Code-Vitae/mobile/aluga_comigo",
+      "env": {
+        "PROJECT_ROOT": "/home/vittor/Documentos/git/Code-Vitae/mobile/aluga_comigo",
+        "PATROL_FLAGS": "",
+        "SHOW_TERMINAL": "false"
+      }
+    },
+    "marionette": {
+      "command": "/home/vittor/.pub-cache/bin/marionette_mcp",
+      "args": []
+    },
+    "figma-flutter": {
+      "command": "npx",
+      "args": ["-y", "figma-flutter-mcp", "--stdio"],
+      "env": {
+        "FIGMA_API_KEY": ""
+      }
+    }
+  }
+}

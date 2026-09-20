@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "85.0.0"
+  adb:
+    dependency: transitive
+    description:
+      name: adb
+      sha256: ff7324138e3df9dcd8fab54050f9f74a224928321ae50161256109414a87f1d4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
   alphabet_list_view:
     dependency: "direct main"
     description:
@@ -41,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.0"
+  ansi_styles:
+    dependency: transitive
+    description:
+      name: ansi_styles
+      sha256: "9c656cc12b3c27b17dd982b2cc5c0cfdfbdabd7bc8f3ae5e8542d9867b47ce8a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2+1"
   app_links:
     dependency: transitive
     description:
@@ -321,6 +337,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  ci:
+    dependency: transitive
+    description:
+      name: ci
+      sha256: "145d095ce05cddac4d797a158bc4cf3b6016d1fe63d8c3d2fbd7212590adca13"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
+  cli_completion:
+    dependency: transitive
+    description:
+      name: cli_completion
+      sha256: d61bbbfccabe02fdad54eeb275586e15e31abdeb35ec7a0d68832fae473cc298
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
+  cli_config:
+    dependency: transitive
+    description:
+      name: cli_config
+      sha256: ac20a183a07002b700f0c25e61b7ee46b23c309d76ab7b7640a028f18e4d99ec
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   cli_util:
     dependency: transitive
     description:
@@ -369,6 +409,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  coverage:
+    dependency: transitive
+    description:
+      name: coverage
+      sha256: "956a3de0725ca232ad353565a8290d3357592bf4250f6f298a185e2d949c5d3d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.15.1"
   cpf_cnpj_validator:
     dependency: "direct main"
     description:
@@ -489,6 +537,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  dispose_scope:
+    dependency: transitive
+    description:
+      name: dispose_scope
+      sha256: "48ec38ca2631c53c4f8fa96b294c801e55c335db5e3fb9f82cede150cfe5a2af"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   equatable:
     dependency: "direct main"
     description:
@@ -1197,6 +1253,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.5.1"
+  mason_logger:
+    dependency: transitive
+    description:
+      name: mason_logger
+      sha256: "495a2732647b1c861f75c8bcc36766b8af4c59999a6c8562d7e604cc6fba0fa3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.6"
   matcher:
     dependency: transitive
     description:
@@ -1221,6 +1285,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  mcp_dart:
+    dependency: transitive
+    description:
+      name: mcp_dart
+      sha256: "5a185c1c02e90239e6f3ebca05ef51e04ac0f9c2b1b7ec7ffbb1a671a6379729"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.2"
   meta:
     dependency: transitive
     description:
@@ -1349,6 +1421,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  patrol_cli:
+    dependency: transitive
+    description:
+      name: patrol_cli
+      sha256: "920e62775db68c5d01ba90103d21f893635a195c5c4dba2ecff5218622934eaa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.0"
+  patrol_log:
+    dependency: transitive
+    description:
+      name: patrol_log
+      sha256: "3d91c93e8d0ed19cb12d4b27aa24eca7294e0a48d9d8445505c9775feb5fde2d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1"
+  patrol_mcp:
+    dependency: "direct dev"
+    description:
+      name: patrol_mcp
+      sha256: "90971474ef2c097c1d6ad9f6aee2fadc7dd7c587064435b86d1ce2e696a48da8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1409,10 +1505,10 @@ packages:
     dependency: transitive
     description:
       name: platform
-      sha256: a36d119c13416516a7b5913fbe8af8531e11633d784c550b2125f76c758524ec
+      sha256: "5d6b1b0036a5f331ebc77c850ebc8506cbc1e9416c27e59b439f917a902a4984"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "3.1.6"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -1453,6 +1549,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.9.1"
+  process:
+    dependency: transitive
+    description:
+      name: process
+      sha256: "4242ba3508d37e01808bdf71ad1d5bb93a8d671bf2e7450e6b1b353fb0808891"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.6"
   pub_semver:
     dependency: transitive
     description:
@@ -1461,6 +1565,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  pub_updater:
+    dependency: transitive
+    description:
+      name: pub_updater
+      sha256: "3aadeb8c68d15ef9d117b36474ddcc543b48ae1e64f7dd71407da26df66bf7c8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   pubspec_parse:
     dependency: transitive
     description:
@@ -1642,6 +1754,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  source_maps:
+    dependency: transitive
+    description:
+      name: source_maps
+      sha256: "14c2945847669b44089bb1222f66873d7ff7103c58911917f2a63c5a62327898"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.14"
   source_span:
     dependency: transitive
     description:
@@ -1962,6 +2082,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.1"
+  version:
+    dependency: transitive
+    description:
+      name: version
+      sha256: "3d4140128e6ea10d83da32fef2fa4003fccbf6852217bb854845802f04191f94"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   video_player:
     dependency: transitive
     description:
