@@ -346,6 +346,7 @@ class _ChatPageState extends State<ChatPage> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            key: const ValueKey('chat_message_field'),
                             controller: controller.messageController,
                             decoration: const InputDecoration(
                               hintText: "Mensagem",
@@ -370,6 +371,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                           ),
                         IconButton(
+                          key: const ValueKey('chat_send_button'),
                           onPressed: isSending
                               ? null
                               : () async {

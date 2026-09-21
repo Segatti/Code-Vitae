@@ -414,6 +414,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                 const Divider(height: 2, thickness: 2),
                 Expanded(
                   child: SingleChildScrollView(
+                    key: const ValueKey('profile_user_form'),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -474,6 +475,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                   const Gap(16),
                                   Expanded(
                                     child: GestureDetector(
+                                      key: const ValueKey(
+                                        'profile_gender_field',
+                                      ),
                                       onTap: () {
                                         showCupertinoModalPopup(
                                           context: context,
@@ -594,6 +598,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                   const Gap(16),
                                   Expanded(
                                     child: GestureDetector(
+                                      key: const ValueKey(
+                                        'profile_birth_date_field',
+                                      ),
                                       onTap: () => _pickBirthDate(customer),
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
@@ -639,6 +646,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                       color: const Color(0xFFEFEFEF),
                                     ),
                                     child: TextFormField(
+                                      key: const ValueKey(
+                                        'profile_short_description_field',
+                                      ),
                                       controller: _shortDescriptionController,
                                       style: GoogleFonts.rubik(
                                         height: 1,
@@ -685,6 +695,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                       color: const Color(0xFFEFEFEF),
                                     ),
                                     child: TextFormField(
+                                      key: const ValueKey(
+                                        'profile_long_description_field',
+                                      ),
                                       controller: _longDescriptionController,
                                       style: GoogleFonts.rubik(
                                         height: 1,
@@ -724,6 +737,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                   const Gap(16),
                                   Expanded(
                                     child: GestureDetector(
+                                      key: const ValueKey(
+                                        'profile_desired_immobile_field',
+                                      ),
                                       onTap: () {
                                         showCupertinoModalPopup(
                                           context: context,
@@ -841,6 +857,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                         color: const Color(0xFFEFEFEF),
                                       ),
                                       child: TextFormField(
+                                        key: const ValueKey(
+                                          'profile_price_max_field',
+                                        ),
                                         inputFormatters: [MoneyFormatter()],
                                         controller: _priceMaxController,
                                         onChanged: (value) {
@@ -891,6 +910,9 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                                   const Gap(16),
                                   Expanded(
                                     child: GestureDetector(
+                                      key: const ValueKey(
+                                        'profile_lifestyle_field',
+                                      ),
                                       onTap: () {
                                         showCupertinoModalPopup(
                                           context: context,
@@ -989,6 +1011,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                               ),
                               const Gap(16),
                               PrimaryButtonWidget(
+                                key: const ValueKey('profile_skills_button'),
                                 title: "Habilidades",
                                 onTap: () {
                                   _showSkillsDialog();
@@ -998,6 +1021,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                               ),
                               const Gap(16),
                               PrimaryButtonWidget(
+                                key: const ValueKey('profile_houseworks_button'),
                                 title: "Tarefas Domésticas",
                                 onTap: () {
                                   _showHouseworksDialog();
@@ -1007,6 +1031,7 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
                               ),
                               const Gap(16),
                               PrimaryButtonWidget(
+                                key: const ValueKey('profile_save_button'),
                                 title: "Salvar",
                                 isLoading: controller.loadingList.contains(
                                   'updateProfile',
@@ -1128,6 +1153,7 @@ class _SkillsDialogState extends State<_SkillsDialog> {
                 const Gap(16),
                 Expanded(
                   child: PrimaryButtonWidget(
+                    key: const ValueKey('profile_dialog_save'),
                     title: "Salvar",
                     onTap: () async {
                       await widget.onSave(selectedSkills);
@@ -1241,6 +1267,7 @@ class _HouseworksDialogState extends State<_HouseworksDialog> {
                 const Gap(16),
                 Expanded(
                   child: PrimaryButtonWidget(
+                    key: const ValueKey('profile_dialog_save'),
                     title: "Salvar",
                     onTap: () async {
                       await widget.onSave(selectedHouseworks);

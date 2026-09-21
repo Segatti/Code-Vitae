@@ -1,11 +1,11 @@
 class SupabaseConfig {
   static const url = String.fromEnvironment(
     'SUPABASE_URL',
-    defaultValue: 'https://SEU_PROJETO.supabase.co',
+    defaultValue: 'http://10.0.0.106:54321', // http://127.0.0.1:54321
   );
 
   static const anonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: 'SUA_SUPABASE_ANON_KEY',
+    defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
   );
 }

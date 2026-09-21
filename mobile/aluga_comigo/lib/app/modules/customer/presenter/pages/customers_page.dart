@@ -314,6 +314,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 const Gap(16),
                 Expanded(
                   child: GestureDetector(
+                    key: const ValueKey('feed_like_button'),
                     onTap: () {
                       swipController.next(swipeDirection: SwipeDirection.right);
                     },

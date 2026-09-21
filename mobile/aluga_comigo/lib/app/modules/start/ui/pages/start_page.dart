@@ -150,13 +150,18 @@ class _StartPageState extends State<StartPage>
             ),
             const Gap(16),
             if (!isImmobileOwner) ...[
-              IconButton(
-                onPressed: () {
-                  context.pushNamed("/config/profile");
-                  _drawerKey.currentState?.closeSlider();
-                },
-                tooltip: "Perfil",
-                icon: const Icon(Icons.person, color: Colors.white, size: 35),
+              Semantics(
+                label: 'Menu perfil',
+                button: true,
+                child: IconButton(
+                  key: const ValueKey('drawer_menu_profile'),
+                  onPressed: () {
+                    context.pushNamed("/config/profile");
+                    _drawerKey.currentState?.closeSlider();
+                  },
+                  tooltip: "Perfil",
+                  icon: const Icon(Icons.person, color: Colors.white, size: 35),
+                ),
               ),
               const Gap(16),
             ],
@@ -361,15 +366,20 @@ class _StartPageState extends State<StartPage>
     required String asset,
     required int itemIndex,
     required int currentIndex,
+    required String semanticsLabel,
   }) {
     return BottomNavigationBarItem(
-      icon: SvgPicture.asset(
-        asset,
-        width: 35,
-        height: 35,
-        colorFilter: currentIndex == itemIndex
-            ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
-            : null,
+      icon: Semantics(
+        label: semanticsLabel,
+        button: true,
+        child: SvgPicture.asset(
+          asset,
+          width: 35,
+          height: 35,
+          colorFilter: currentIndex == itemIndex
+              ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
+              : null,
+        ),
       ),
     );
   }
@@ -384,16 +394,19 @@ class _StartPageState extends State<StartPage>
               asset: IconsAsset.home,
               itemIndex: 0,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_feed_imoveis',
             ),
             _navBarItem(
               asset: IconsAsset.likes,
               itemIndex: 1,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_curtidas',
             ),
             _navBarItem(
               asset: IconsAsset.chat,
               itemIndex: 2,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_chats',
             ),
           ]
         : [
@@ -401,21 +414,25 @@ class _StartPageState extends State<StartPage>
               asset: IconsAsset.customer,
               itemIndex: 0,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_feed_pessoas',
             ),
             _navBarItem(
               asset: IconsAsset.home,
               itemIndex: 1,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_feed_imoveis',
             ),
             _navBarItem(
               asset: IconsAsset.likes,
               itemIndex: 2,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_curtidas',
             ),
             _navBarItem(
               asset: IconsAsset.chat,
               itemIndex: 3,
               currentIndex: currentIndex,
+              semanticsLabel: 'nav_chats',
             ),
           ];
 

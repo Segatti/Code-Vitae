@@ -80,6 +80,10 @@ class _ChatsListPageState extends State<ChatsListPage> {
                   if (!_isImmobileOwner) ...[
                     TabsWidget(
                       values: const ["Pessoas", "Imóveis"],
+                      tabSemanticsLabels: const [
+                        'chats_tab_pessoas',
+                        'chats_tab_imoveis',
+                      ],
                       valueSelected: tabSelected,
                       onChange: (value) => setState(() {
                         tabSelected = value;
@@ -320,11 +324,11 @@ class _ChatsListPageState extends State<ChatsListPage> {
                               height: 60,
                               width: double.infinity,
                               child: GestureDetector(
+                                key: const ValueKey('chats_start_conversation'),
                                 onTap: () async {
                                   await showModalBottomSheet<void>(
                                     context: context,
                                     useSafeArea: true,
-                                    useRootNavigator: true,
                                     isScrollControlled: true,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(

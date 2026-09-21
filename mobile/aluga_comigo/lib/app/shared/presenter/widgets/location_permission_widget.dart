@@ -48,6 +48,7 @@ class LocationPermissionWidget extends StatelessWidget {
               ),
               const Gap(48),
               ElevatedButton(
+                key: const ValueKey('location_permission_button'),
                 onPressed: onRequestPermission,
                 style: ElevatedButton.styleFrom(
                   elevation: 0,

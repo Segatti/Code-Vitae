@@ -6,12 +6,14 @@ class TabsWidget extends StatelessWidget {
   final List<String> values;
   final int valueSelected;
   final Function(int value) onChange;
+  final List<String>? tabSemanticsLabels;
 
   const TabsWidget({
     super.key,
     required this.values,
     required this.onChange,
     required this.valueSelected,
+    this.tabSemanticsLabels,
   });
 
   @override
@@ -33,17 +35,26 @@ class TabsWidget extends StatelessWidget {
       innerPadding: const EdgeInsets.all(5),
       children: <int, Widget>{
         for (int i = 0; i < values.length; i++)
-          i: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            child: Text(
-              values[i],
-              textScaler: const TextScaler.linear(1),
-              style: GoogleFonts.rubik(
-                color: CupertinoColors.white,
-                fontSize: 16,
+          i: Semantics(
+            label: tabSemanticsLabels != null && i < tabSemanticsLabels!.length
+                ? tabSemanticsLabels![i]
+                : values[i],
+            button: true,
+            child: Container(
+              key: tabSemanticsLabels != null && i < tabSemanticsLabels!.length
+                  ? ValueKey(tabSemanticsLabels![i])
+                  : null,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: Text(
+                values[i],
+                textScaler: const TextScaler.linear(1),
+                style: GoogleFonts.rubik(
+                  color: CupertinoColors.white,
+                  fontSize: 16,
+                ),
               ),
             ),
           ),

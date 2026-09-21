@@ -93,11 +93,15 @@ class _ContactListPageState extends State<ContactListPage> {
       listenable: controller,
       builder: (context, _) {
         if (controller.loadingList.contains('loadContacts')) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            key: ValueKey('contact_list_loading'),
+            child: CircularProgressIndicator(),
+          );
         }
 
         if (controller.errorMessage.isNotEmpty) {
           return Center(
+            key: const ValueKey('contact_list_error'),
             child: Text(
               controller.errorMessage,
               style: GoogleFonts.rubik(color: Colors.black54),
@@ -107,6 +111,7 @@ class _ContactListPageState extends State<ContactListPage> {
 
         if (controller.contacts.isEmpty) {
           return Center(
+            key: const ValueKey('contact_list_empty'),
             child: Text(
               'Nenhum match encontrado.',
               style: GoogleFonts.rubik(color: Colors.black54),
@@ -115,6 +120,7 @@ class _ContactListPageState extends State<ContactListPage> {
         }
 
         return Column(
+          key: const ValueKey('contact_list_body'),
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -197,6 +203,7 @@ class _ContactListPageState extends State<ContactListPage> {
                 children: [
                   for (final contact in sectionContacts)
                     _ContactTile(
+                      key: ValueKey('contact_list_tile_${contact.customer.id}'),
                       width: constraints.maxWidth * .45,
                       title: _contactTitle(contact.customer),
                       subtitle: _contactSubtitle(contact.customer),
@@ -222,6 +229,14 @@ class _ContactListPageState extends State<ContactListPage> {
     final likes = controller.contacts
         .where((c) => c.matchType == MatchType.like)
         .toList();
+
+    if (favorites.isEmpty && likes.isEmpty) {
+      return [
+        _sectionTitle('Contatos'),
+        _contactWrap(controller.contacts),
+        const Gap(16),
+      ];
+    }
 
     return [
       if (favorites.isNotEmpty) ...[
@@ -258,6 +273,7 @@ class _ContactListPageState extends State<ContactListPage> {
             children: [
               for (final contact in items)
                 _ContactTile(
+                  key: ValueKey('contact_list_tile_${contact.customer.id}'),
                   width: constraints.maxWidth * .45,
                   title: _contactTitle(contact.customer),
                   subtitle: _contactSubtitle(contact.customer),
@@ -282,6 +298,7 @@ class _ContactTile extends StatelessWidget {
   final VoidCallback onTap;
 
   const _ContactTile({
+    super.key,
     required this.width,
     required this.title,
     this.subtitle,
@@ -291,7 +308,10 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'contact_list_tile',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: Container(
         width: width,
@@ -347,6 +367,7 @@ class _ContactTile extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }
