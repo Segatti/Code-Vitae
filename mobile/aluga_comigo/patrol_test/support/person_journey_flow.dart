@@ -109,7 +109,11 @@ Future<void> ensureLocationPermission(PatrolIntegrationTester $) async {
   }
   await $(#location_permission_button).tap();
   await grantMobilePermissions($);
-  await pumpUntilVisible($, find.bySemanticsLabel('nav_feed_pessoas'));
+  await pumpUntilAnyVisible($, [
+    find.bySemanticsLabel('nav_feed_pessoas'),
+    find.bySemanticsLabel('nav_feed_imoveis'),
+    find.text('Meus imóveis para alugar'),
+  ]);
 }
 
 Future<void> registerPersonAccount(

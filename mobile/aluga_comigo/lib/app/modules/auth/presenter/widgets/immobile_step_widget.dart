@@ -215,6 +215,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Checkbox(
+                                    key: const ValueKey('signup_terms_checkbox'),
                                     visualDensity: VisualDensity.compact,
                                     value: acceptTerms,
                                     onChanged: (value) {
@@ -254,6 +255,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                                 const Gap(8),
                                 Expanded(
                                   child: ChicletAnimatedButton(
+                                    key: const ValueKey('signup_terms_confirm'),
                                     onPressed: () async {
                                       if (acceptTerms == true) {
                                         await widget.signup(_immobileInput);
@@ -325,6 +327,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                     child: Column(
                       children: [
                         TextFormField(
+                          key: const ValueKey('signup_email_field'),
                           controller: _emailController,
                           onChanged: (_) {
                             if (haveError) {
@@ -405,6 +408,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                         ),
                         const Gap(16),
                         TextFormField(
+                          key: const ValueKey('signup_password_field'),
                           controller: _passwordController,
                           onChanged: (_) {
                             if (haveError) {
@@ -557,6 +561,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                     child: Column(
                       children: [
                         TextFormField(
+                          key: const ValueKey('signup_name_field'),
                           controller: _nameController,
                           onChanged: (_) {
                             if (haveError) {
@@ -634,6 +639,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                         ),
                         const Gap(16),
                         TextFormField(
+                          key: const ValueKey('signup_phone_field'),
                           controller: _phoneController,
                           onChanged: (_) {
                             if (haveError) {
@@ -778,6 +784,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                     child: Column(
                       children: [
                         TextFormField(
+                          key: const ValueKey('signup_immobile_value_field'),
                           controller: _valueController,
                           onChanged: (_) {
                             if (haveError) {
@@ -866,6 +873,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                               child: SizedBox(
                                 height: 50,
                                 child: TextFormField(
+                                  key: const ValueKey('signup_immobile_cep_field'),
                                   controller: _cepController,
                                   onChanged: (_) {
                                     if (haveError) {
@@ -935,6 +943,9 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                             // const Gap(16),
                             Expanded(
                               child: DropdownButtonFormField<TypeImmobile>(
+                                key: const ValueKey(
+                                  'signup_immobile_type_dropdown',
+                                ),
                                 isExpanded: true,
                                 isDense: true,
                                 validator: (value) {
@@ -1097,6 +1108,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                     child: Column(
                       children: [
                         DropdownButtonFormField<String>(
+                          key: const ValueKey('signup_state_dropdown'),
                           isExpanded: true,
                           isDense: true,
                           validator: (value) {
@@ -1181,6 +1193,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                         ),
                         const Gap(16),
                         DropdownButtonFormField<String>(
+                          key: const ValueKey('signup_city_dropdown'),
                           isExpanded: true,
                           isDense: true,
                           validator: (value) {
@@ -1424,6 +1437,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
+                          key: const ValueKey('signup_photo_confirm'),
                           onPressed: (_immobileInput.photo.isNotEmpty)
                               ? nextPage
                               : null,

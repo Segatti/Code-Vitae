@@ -13,7 +13,7 @@ import 'package:patrol/src/platform/mobile/patrol_runtime_ports.dart';
 import 'package:test_api/src/backend/invoker.dart';
 
 // START: GENERATED TEST IMPORTS
-import 'person_complete_journey_test.dart' as person_complete_journey_test;
+import 'immobile_signup_test.dart' as immobile_signup_test;
 // END: GENERATED TEST IMPORTS
 
 Future<void> main() async {
@@ -105,7 +105,7 @@ Future<void> main() async {
   });
 
 // START: GENERATED TEST GROUPS
-  group('person_complete_journey_test', person_complete_journey_test.main);
+  group('immobile_signup_test', immobile_signup_test.main);
 // END: GENERATED TEST GROUPS
 
   if (constants.testDiscoveryEnabled) {
