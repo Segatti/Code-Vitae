@@ -31,4 +31,30 @@ class PersonJourneyTestData {
       phone: '11987654321',
     );
   }
+
+  /// `--dart-define=PATROL_PERSON_EMAIL=...` e `PATROL_PERSON_PASSWORD=...`
+  static bool get hasPatrolLoginDefines {
+    const email = String.fromEnvironment('PATROL_PERSON_EMAIL');
+    return email.isNotEmpty;
+  }
+
+  factory PersonJourneyTestData.fromPatrolDefines() {
+    const email = String.fromEnvironment('PATROL_PERSON_EMAIL');
+    const password = String.fromEnvironment(
+      'PATROL_PERSON_PASSWORD',
+      defaultValue: 'Teste1234',
+    );
+    if (email.isEmpty) {
+      throw StateError(
+        'Defina PATROL_PERSON_EMAIL (e opcionalmente PATROL_PERSON_PASSWORD) '
+        'no --dart-define-from-file ou deixe vazio para cadastrar conta no teste.',
+      );
+    }
+    return PersonJourneyTestData(
+      email: email,
+      password: password,
+      name: 'Patrol Pessoa Login',
+      phone: '11987654321',
+    );
+  }
 }

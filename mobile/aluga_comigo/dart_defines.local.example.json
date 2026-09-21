@@ -2,5 +2,7 @@
   "SUPABASE_URL": "http://127.0.0.1:54321",
   "SUPABASE_ANON_KEY": "gerado automaticamente por ./scripts/initDev.sh",
   "DESIGN_SCREEN_WIDTH": "390",
-  "DESIGN_SCREEN_HEIGHT": "844"
+  "DESIGN_SCREEN_HEIGHT": "844",
+  "PATROL_PERSON_EMAIL": "",
+  "PATROL_PERSON_PASSWORD": "Teste1234"
 }

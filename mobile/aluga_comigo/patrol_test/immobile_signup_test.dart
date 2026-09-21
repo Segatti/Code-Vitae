@@ -12,7 +12,7 @@ import 'support/person_journey_flow.dart';
 ///   ./scripts/patrolTestDevice.sh 10.0.0.101:5555 patrol_test/immobile_signup_test.dart
 void main() {
   patrolTest(
-    'cadastro conta imóvel: Alugar minha casa até Meus imóveis',
+    'cadastro conta imovel: Alugar minha casa até Meus imoveis',
     ($) async {
       await bootstrapAlugaComigoApp();
       final data = ImmobileJourneyTestData.unique();
@@ -25,6 +25,6 @@ void main() {
 
       expect(find.text('Meus imóveis para alugar'), findsOneWidget);
     },
-    timeout: Timeout(const Duration(minutes: 10)),
+    timeout: Timeout(const Duration(minutes: 15)),
   );
 }

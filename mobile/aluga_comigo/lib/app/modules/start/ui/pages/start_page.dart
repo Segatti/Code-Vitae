@@ -212,6 +212,7 @@ class _StartPageState extends State<StartPage>
               child: Divider(color: Colors.white, thickness: 1),
             ),
             IconButton(
+              key: const ValueKey('drawer_menu_logout'),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -291,6 +292,7 @@ class _StartPageState extends State<StartPage>
                                     ),
                                   ),
                                   ElevatedButton(
+                                    key: const ValueKey('drawer_logout_confirm'),
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
                                       backgroundColor: Colors.white,

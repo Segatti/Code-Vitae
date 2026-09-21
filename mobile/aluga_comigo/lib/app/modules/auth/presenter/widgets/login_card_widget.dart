@@ -55,6 +55,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                   ),
                   const Gap(16),
                   TextFormField(
+                    key: const ValueKey('login_email_field'),
                     controller: email,
                     onChanged: (_) {
                       if (haveError) {
@@ -116,6 +117,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                   ),
                   const Gap(16),
                   TextFormField(
+                    key: const ValueKey('login_password_field'),
                     controller: password,
                     onChanged: (_) {
                       if (haveError) {
@@ -197,6 +199,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
+                          key: const ValueKey('login_submit_button'),
                           onPressed: () {
                             if (_formKey.currentState?.validate() ?? false) {
                               widget.login(email.text, password.text);

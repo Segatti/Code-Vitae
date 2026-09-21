@@ -58,6 +58,9 @@ Future<void> pumpUntilAnyVisible(
     if (find.text('Falha no Cadastro').evaluate().isNotEmpty) {
       fail('Cadastro falhou — verifique Supabase/rede no device.');
     }
+    if (find.text('Falha no Login').evaluate().isNotEmpty) {
+      fail('Login falhou — verifique credenciais ou Supabase/rede.');
+    }
   }
   fail('Timeout aguardando uma das telas: $finders');
 }
@@ -101,6 +104,27 @@ Future<void> completeIntroSlides(PatrolIntegrationTester $) async {
   }
 
   await pumpUntilVisible($, find.text('Quero me cadastrar'));
+}
+
+/// Home do [TypeUser.person]: feed de pessoas + bottom bar com 4 abas.
+Future<void> expectPersonAccountHomeShell(PatrolIntegrationTester $) async {
+  await pumpUntilVisible(
+    $,
+    find.byKey(const ValueKey('feed_like_button')),
+    timeout: const Duration(seconds: 60),
+  );
+
+  const personNavLabels = [
+    'nav_feed_pessoas',
+    'nav_feed_imoveis',
+    'nav_curtidas',
+    'nav_chats',
+  ];
+  for (final label in personNavLabels) {
+    expect(find.bySemanticsLabel(label), findsOneWidget);
+  }
+
+  expect(find.text('Meus imóveis para alugar'), findsNothing);
 }
 
 Future<void> ensureLocationPermission(PatrolIntegrationTester $) async {
@@ -170,6 +194,104 @@ Future<void> registerPersonAccount(
     find.byKey(const ValueKey('feed_like_button')),
     find.bySemanticsLabel('nav_feed_pessoas'),
   ]);
+}
+
+/// Credenciais para login: conta fixa via dart-define ou cadastro + logout no teste.
+Future<PersonJourneyTestData> preparePersonAccountForLogin(
+  PatrolIntegrationTester $, {
+  required bool introAlreadyCompleted,
+}) async {
+  if (PersonJourneyTestData.hasPatrolLoginDefines) {
+    return PersonJourneyTestData.fromPatrolDefines();
+  }
+  if (!introAlreadyCompleted) {
+    await completeIntroSlides($);
+  }
+  final data = PersonJourneyTestData.unique();
+  await registerPersonAccount($, data);
+  await ensureLocationPermission($);
+  await logoutPersonAccount($);
+  return data;
+}
+
+Future<void> loginPersonAccount(
+  PatrolIntegrationTester $,
+  PersonJourneyTestData data,
+) async {
+  if (find.byKey(const ValueKey('feed_like_button')).evaluate().isNotEmpty ||
+      find.bySemanticsLabel('nav_feed_pessoas').evaluate().isNotEmpty) {
+    return;
+  }
+
+  await pumpUntilAnyVisible($, [
+    find.text('Ja tenho conta'),
+    find.text('Login'),
+  ]);
+
+  if (find.text('Ja tenho conta').evaluate().isNotEmpty) {
+    await $('Ja tenho conta').tap();
+  }
+
+  await pumpUntilVisible($, find.text('Login'));
+  await pumpUntilVisible($, find.byKey(const ValueKey('login_email_field')));
+  await $(#login_email_field).enterText(data.email);
+  await $(#login_password_field).enterText(data.password);
+  await $(#login_submit_button).tap();
+  await pumpBrief($, duration: const Duration(seconds: 2));
+
+  await pumpUntilAnyVisible($, [
+    find.byKey(const ValueKey('location_permission_button')),
+    find.byKey(const ValueKey('feed_like_button')),
+    find.bySemanticsLabel('nav_feed_pessoas'),
+  ]);
+}
+
+/// Intro → (cadastro+logout se necessário) → login → permissão de localização.
+Future<PersonJourneyTestData> bootstrapLoggedInPersonAccount(
+  PatrolIntegrationTester $,
+) async {
+  await completeIntroSlides($);
+  final data = await preparePersonAccountForLogin(
+    $,
+    introAlreadyCompleted: true,
+  );
+  await loginPersonAccount($, data);
+  await ensureLocationPermission($);
+  return data;
+}
+
+Future<void> logoutPersonAccount(PatrolIntegrationTester $) async {
+  await dismissIncompleteProfileDialogIfVisible($);
+  await pumpUntilAnyVisible($, [
+    find.byKey(const ValueKey('feed_like_button')),
+    find.bySemanticsLabel('nav_feed_pessoas'),
+  ]);
+
+  if (find.byKey(const ValueKey('feed_like_button')).evaluate().isEmpty) {
+    await tapSemantics($, 'nav_feed_pessoas');
+    await pumpBrief($);
+  }
+
+  await pumpUntilVisible(
+    $,
+    find.byKey(const ValueKey('feed_like_button')),
+    timeout: const Duration(seconds: 60),
+  );
+
+  await _tapStartDrawerToggle($);
+  await pumpUntilVisible(
+    $,
+    find.byKey(const ValueKey('drawer_menu_logout')),
+    timeout: const Duration(seconds: 15),
+  );
+  await $(#drawer_menu_logout).tap();
+  await pumpUntilVisible($, find.text('Deseja Sair?'));
+  await $(#drawer_logout_confirm).tap();
+  await pumpUntilVisible(
+    $,
+    find.text('Ja tenho conta'),
+    timeout: const Duration(seconds: 30),
+  );
 }
 
 Future<void> likePersonAndImmobile(PatrolIntegrationTester $) async {
