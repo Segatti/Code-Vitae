@@ -4,6 +4,7 @@ import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_hel
 import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/swipable_stack_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/feed_empty_state.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/feed_super_star_action_icon.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:material_ui/material_ui.dart';
@@ -292,10 +293,9 @@ class _CustomersPageState extends State<CustomersPage> {
                       ),
                       height: 60,
                       padding: const EdgeInsets.all(8),
-                      child: Image.asset(
-                        IconsAsset.favorite,
-                        width: 45,
-                        height: 45,
+                      child: FeedSuperStarActionIcon(
+                        target: list[
+                            swipController.currentIndex % list.length],
                       ),
                     ),
                   ),

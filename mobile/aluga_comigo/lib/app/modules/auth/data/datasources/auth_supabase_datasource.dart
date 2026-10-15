@@ -41,6 +41,10 @@ class AuthSupabaseDatasource implements IAuthDatasource {
         throw FailureDatasource(message: 'Usuário não autenticado');
       }
 
+      try {
+        await database.setAccountActive(true);
+      } catch (_) {}
+
       final customer = await _readCustomerByUid(uid);
       return switch (customer) {
         PersonCustomerModel() => customer

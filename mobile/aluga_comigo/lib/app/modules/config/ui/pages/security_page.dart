@@ -20,6 +20,9 @@ class _SecurityPageState extends State<SecurityPage> {
   late final SecureStorageService _storage;
   late final SupabaseDatabaseService _database;
 
+  bool _hideAccountLoading = false;
+  bool _deleteAccountLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -94,16 +97,19 @@ class _SecurityPageState extends State<SecurityPage> {
       ),
     );
 
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
 
+    setState(() => _hideAccountLoading = true);
     try {
       await _database.setAccountActive(false);
       await _logout(showMessage: 'Conta ocultada com sucesso.');
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao ocultar conta')),
+        SnackBar(content: Text('Erro ao ocultar conta: $e')),
       );
+    } finally {
+      if (mounted) setState(() => _hideAccountLoading = false);
     }
   }
 
@@ -129,10 +135,22 @@ class _SecurityPageState extends State<SecurityPage> {
       ),
     );
 
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
 
-    await _auth.deleteCurrentUser();
-    await _logout(showMessage: 'Conta apagada.');
+    setState(() => _deleteAccountLoading = true);
+    final deleteResult = await _auth.deleteCurrentUser();
+    await deleteResult.fold(
+      (failure) async {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.message)),
+        );
+      },
+      (_) async {
+        await _logout(showMessage: 'Conta apagada.');
+      },
+    );
+    if (mounted) setState(() => _deleteAccountLoading = false);
   }
 
   Future<void> _logout({String? showMessage}) async {
@@ -244,8 +262,17 @@ class _SecurityPageState extends State<SecurityPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: _hideAccount,
-                          child: Text(
+                          onPressed: _hideAccountLoading ? null : _hideAccount,
+                          child: _hideAccountLoading
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
                             'Esconder conta',
                             style: GoogleFonts.rubik(
                               color: Colors.white,
@@ -263,8 +290,18 @@ class _SecurityPageState extends State<SecurityPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: _deleteAccount,
-                          child: Text(
+                          onPressed:
+                              _deleteAccountLoading ? null : _deleteAccount,
+                          child: _deleteAccountLoading
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
                             'Apagar conta',
                             style: GoogleFonts.rubik(
                               color: Colors.white,

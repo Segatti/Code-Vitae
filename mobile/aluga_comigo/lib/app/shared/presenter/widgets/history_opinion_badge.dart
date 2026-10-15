@@ -30,7 +30,7 @@ class HistoryOpinionBadge extends StatelessWidget {
       MatchType.favorite =>
         usesSuperChatFeedIcon(type, customer)
             ? IconsAsset.chat
-            : IconsAsset.superStar1,
+            : IconsAsset.favorite,
       MatchType.unlike => IconsAsset.unlike,
       MatchType.none => IconsAsset.unlike,
     };

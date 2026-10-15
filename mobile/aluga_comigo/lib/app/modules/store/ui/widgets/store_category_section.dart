@@ -162,11 +162,40 @@ class _ProductCard extends StatelessWidget {
         child: Column(
           children: [
             Flexible(
-              flex: 4,
+              flex: 3,
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(8),
                   child: StoreProductIconWidget(icon: product.icon),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text(
+                product.label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.rubik(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
+                child: Text(
+                  product.description,
+                  textAlign: TextAlign.center,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.rubik(
+                    fontSize: 10,
+                    height: 1.2,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
             ),
@@ -183,7 +212,7 @@ class _ProductCard extends StatelessWidget {
                         priceLabel,
                         style: GoogleFonts.rubik(
                           fontWeight: FontWeight.w500,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
               ),

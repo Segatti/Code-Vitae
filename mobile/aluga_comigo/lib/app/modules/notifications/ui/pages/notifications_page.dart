@@ -29,6 +29,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       AppNotificationType.superStar => Icons.star,
       AppNotificationType.superChat => Icons.chat_bubble,
       AppNotificationType.questCompleted => Icons.emoji_events_outlined,
+      AppNotificationType.chatMessage => Icons.message,
     };
   }
 
@@ -38,6 +39,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       AppNotificationType.superStar => Colors.amber.shade800,
       AppNotificationType.superChat => const Color(0xFFFFC850),
       AppNotificationType.questCompleted => Colors.green.shade700,
+      AppNotificationType.chatMessage => const Color(0xFF2C29A3),
     };
   }
 

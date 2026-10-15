@@ -45,13 +45,20 @@ class SupabaseAuthService {
     }
   }
 
-  Future<void> deleteCurrentUser() async {
+  Future<Return<void>> deleteCurrentUser() async {
     try {
       await _client.rpc('delete_own_account');
+      return const Right(null);
     } on AuthException catch (error) {
       debugPrint(error.toString());
+      return Left(
+        FailureDatasource(
+          message: SupabaseErrorHandler.getMessage(error.code, error.message),
+        ),
+      );
     } catch (error) {
       debugPrint(error.toString());
+      return Left(FailureDatasource(message: error.toString()));
     }
   }
 

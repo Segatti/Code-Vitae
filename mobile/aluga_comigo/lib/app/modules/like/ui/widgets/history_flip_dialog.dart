@@ -14,9 +14,9 @@ import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/maps_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/feed_super_star_action_icon.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
@@ -51,8 +51,6 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
     _matchImmobileWithSuperChat = inject<IMatchImmobileWithSuperChat>();
     _currentMatchType = widget.item.matchType;
   }
-
-  bool get _isImmobileTarget => widget.item.customer is ImmobileCustomerModel;
 
   bool get _hasActivePowerUp =>
       SessionService.customer?.hasActivePowerUp ?? false;
@@ -274,24 +272,14 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
                           ? null
                           : () => _onMatchAction(MatchType.favorite),
                       child: _actionButton(
+                        key: const ValueKey('history_super_star_action'),
                         borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(50),
                           right: Radius.circular(20),
                         ),
-                        icon: _isImmobileTarget
-                            ? SvgPicture.asset(
-                                IconsAsset.chat,
-                                width: 40,
-                                height: 40,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.amber,
-                                  BlendMode.srcIn,
-                                ),
-                              )
-                            : null,
-                        asset: _isImmobileTarget
-                            ? null
-                            : IconsAsset.superStar1,
+                        icon: FeedSuperStarActionIcon(
+                          target: widget.item.customer,
+                        ),
                       ),
                     ),
                   ),
@@ -303,8 +291,8 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
                           : () => _onMatchAction(MatchType.like),
                       child: _actionButton(
                         borderRadius: const BorderRadius.horizontal(
-                          right: Radius.circular(50),
                           left: Radius.circular(20),
+                          right: Radius.circular(50),
                         ),
                         asset: IconsAsset.like,
                       ),
@@ -331,6 +319,7 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
   }
 
   Widget _actionButton({
+    Key? key,
     required BorderRadius borderRadius,
     String? asset,
     Widget? icon,
@@ -338,9 +327,15 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
   }) {
     assert(asset != null || icon != null);
 
-    final iconWidget = icon ?? Image.asset(asset!, width: 40, height: 40);
+    final iconWidget = icon ??
+        Image.asset(
+          asset!,
+          width: 45,
+          height: 45,
+        );
 
     return Container(
+      key: key,
       decoration: BoxDecoration(
         boxShadow: const [
           BoxShadow(
@@ -357,8 +352,8 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
         color: Colors.white,
         borderRadius: borderRadius,
       ),
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      height: 60,
+      padding: const EdgeInsets.all(8),
       child: label == null
           ? Center(child: iconWidget)
           : Row(

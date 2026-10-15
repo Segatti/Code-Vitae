@@ -4,6 +4,7 @@ import 'package:result_dart/result_dart.dart'
     hide FutureResultExtension, FutureResultExtensionVoid;
 
 import '../../domain/entities/app_notification.dart';
+import '../../domain/entities/incoming_notification.dart';
 import '../../domain/repositories/notification_repository.dart' as domain;
 import '../datasources/notification_datasource.dart';
 class NotificationRepository implements domain.INotificationRepository {
@@ -43,5 +44,10 @@ class NotificationRepository implements domain.INotificationRepository {
   @override
   Future<void> markNotificationsViewed() async {
     await datasource.setLastViewedAt(_accountId, DateTime.now().toUtc());
+  }
+
+  @override
+  Stream<IncomingNotification> watchIncomingNotifications() {
+    return datasource.watchNotificationInserts(_accountId);
   }
 }

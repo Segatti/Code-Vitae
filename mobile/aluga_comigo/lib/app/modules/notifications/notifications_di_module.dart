@@ -5,6 +5,7 @@ import 'package:aluga_comigo/app/modules/notifications/domain/repositories/notif
 import 'package:aluga_comigo/app/modules/notifications/domain/usecases/count_unread_notifications.dart';
 import 'package:aluga_comigo/app/modules/notifications/domain/usecases/list_notifications.dart';
 import 'package:aluga_comigo/app/modules/notifications/domain/usecases/mark_notifications_viewed.dart';
+import 'package:aluga_comigo/app/modules/notifications/domain/usecases/watch_incoming_notifications.dart';
 import 'package:aluga_comigo/app/modules/notifications/domain/usecases/watch_unread_notifications.dart';
 import 'package:aluga_comigo/app/modules/notifications/ui/controllers/notifications_badge_controller.dart';
 import 'package:aluga_comigo/app/modules/notifications/ui/controllers/notifications_controller.dart';
@@ -18,6 +19,9 @@ class NotificationsDiModule extends Module {
     c.addSingleton<IListNotifications>(ListNotifications.new);
     c.addSingleton<ICountUnreadNotifications>(CountUnreadNotifications.new);
     c.addSingleton<IWatchUnreadNotifications>(WatchUnreadNotifications.new);
+    c.addSingleton<IWatchIncomingNotifications>(
+      WatchIncomingNotifications.new,
+    );
     c.addSingleton<IMarkNotificationsViewed>(MarkNotificationsViewed.new);
     c.addLazySingleton<INotificationsController>(NotificationsController.new);
     c.addLazySingleton<INotificationsBadgeController>(

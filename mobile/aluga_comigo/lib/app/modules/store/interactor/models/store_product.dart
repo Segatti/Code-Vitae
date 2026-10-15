@@ -17,6 +17,7 @@ class StoreProduct {
   final StoreItemCategory category;
   final String label;
   final String priceLabel;
+  final String description;
   final StoreProductIcon icon;
   final Duration boostDuration;
 
@@ -25,6 +26,7 @@ class StoreProduct {
     required this.category,
     required this.label,
     required this.priceLabel,
+    required this.description,
     required this.icon,
     required this.boostDuration,
   });

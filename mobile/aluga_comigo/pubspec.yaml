@@ -75,6 +75,7 @@ dependencies:
   in_app_purchase: ^3.2.3
   marionette_flutter: ^0.6.0
   image_cropper: ^13.0.0
+  flutter_local_notifications: ^22.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

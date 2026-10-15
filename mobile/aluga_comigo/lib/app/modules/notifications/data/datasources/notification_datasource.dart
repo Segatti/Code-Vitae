@@ -4,6 +4,7 @@ import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/data/services/supabase_realtime_service.dart';
+import '../../domain/entities/incoming_notification.dart';
 import '../models/app_notification_model.dart';
 
 abstract interface class INotificationDatasource {
@@ -16,6 +17,8 @@ abstract interface class INotificationDatasource {
   Future<int> countUnreadSince(String accountId, DateTime after);
 
   Stream<void> watchNotificationChanges(String accountId);
+
+  Stream<IncomingNotification> watchNotificationInserts(String accountId);
 }
 
 class NotificationDatasource implements INotificationDatasource {
@@ -61,5 +64,16 @@ class NotificationDatasource implements INotificationDatasource {
   @override
   Stream<void> watchNotificationChanges(String accountId) {
     return realtime.watchUserNotifications(accountId);
+  }
+
+  @override
+  Stream<IncomingNotification> watchNotificationInserts(String accountId) {
+    return realtime.watchUserNotificationInserts(accountId).map(
+          (event) => IncomingNotification(
+            notificationType: event.notificationType,
+            title: event.title,
+            body: event.body,
+          ),
+        );
   }
 }

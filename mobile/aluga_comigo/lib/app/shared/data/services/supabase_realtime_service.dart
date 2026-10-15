@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/notification_insert_event.dart';
+
 class SupabaseRealtimeService {
   final SupabaseClient _client;
 
@@ -216,6 +218,54 @@ class SupabaseRealtimeService {
               callback: emit,
             );
         channel.subscribe();
+      },
+      onCancel: () async {
+        final channel = notificationsChannel;
+        notificationsChannel = null;
+        if (channel != null) {
+          await _client.removeChannel(channel);
+        }
+      },
+    );
+    return controller.stream;
+  }
+
+  Stream<NotificationInsertEvent> watchUserNotificationInserts(
+    String accountId,
+  ) {
+    RealtimeChannel? notificationsChannel;
+
+    late final StreamController<NotificationInsertEvent> controller;
+    controller = StreamController<NotificationInsertEvent>.broadcast(
+      onListen: () async {
+        notificationsChannel ??=
+            _client.channel('notifications-insert-$accountId');
+        final channel = notificationsChannel!;
+
+        channel
+            .onPostgresChanges(
+              event: PostgresChangeEvent.insert,
+              schema: 'public',
+              table: 'user_notifications',
+              filter: PostgresChangeFilter(
+                type: PostgresChangeFilterType.eq,
+                column: 'account_id',
+                value: accountId,
+              ),
+              callback: (payload) {
+                if (controller.isClosed) return;
+                final record = payload.newRecord;
+                controller.add(
+                  NotificationInsertEvent(
+                    notificationType:
+                        record['notification_type']?.toString() ?? '',
+                    title: record['title']?.toString() ?? '',
+                    body: record['body']?.toString() ?? '',
+                  ),
+                );
+              },
+            )
+            .subscribe();
       },
       onCancel: () async {
         final channel = notificationsChannel;

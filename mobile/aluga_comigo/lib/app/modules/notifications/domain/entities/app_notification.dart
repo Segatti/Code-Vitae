@@ -2,7 +2,8 @@ enum AppNotificationType {
   like,
   superStar,
   superChat,
-  questCompleted;
+  questCompleted,
+  chatMessage;
 
   static AppNotificationType fromString(String value) {
     return AppNotificationType.values.firstWhere(

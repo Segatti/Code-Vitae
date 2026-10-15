@@ -974,7 +974,13 @@ class SupabaseDatabaseService {
         platform: platform,
       );
 
-  Future<void> setAccountActive(bool active) => _api.setAccountActive(active);
+  Future<void> setAccountActive(bool active) async {
+    try {
+      await _api.setAccountActive(active);
+    } catch (_) {
+      await _client.rpc('set_account_active', params: {'p_active': active});
+    }
+  }
 
   Future<void> incrementQuestProgress(String actionType) =>
       _api.incrementQuestProgress(actionType);
