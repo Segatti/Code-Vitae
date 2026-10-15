@@ -22,6 +22,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
   final _formKey = GlobalKey<FormState>();
   bool haveError = false;
   int tabSelected = 0;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +141,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                     },
                     textAlignVertical: TextAlignVertical.center,
                     keyboardType: TextInputType.visiblePassword,
+                    obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -150,6 +152,20 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                       ),
                       errorStyle: const TextStyle(
                         fontSize: 0,
+                      ),
+                      suffixIcon: IconButton(
+                        tooltip:
+                            _obscurePassword ? 'Mostrar senha' : 'Ocultar senha',
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
                       ),
                       contentPadding: const EdgeInsets.only(
                           left: 24.0, bottom: 8.0, top: 8.0),
@@ -176,7 +192,6 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                         borderRadius: BorderRadius.circular(25.7),
                       ),
                     ),
-                    obscureText: true,
                   ),
                   const Gap(16),
                   Row(
