@@ -9,6 +9,7 @@ import 'package:aluga_comigo/app/shared/domain/consts/cities_and_states.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/card_flip_photo_picker.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/searchable_picker_field.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -215,7 +216,9 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Checkbox(
-                                    key: const ValueKey('signup_terms_checkbox'),
+                                    key: const ValueKey(
+                                      'signup_terms_checkbox',
+                                    ),
                                     visualDensity: VisualDensity.compact,
                                     value: acceptTerms,
                                     onChanged: (value) {
@@ -452,10 +455,10 @@ class _UserStepWidgetState extends State<UserStepWidget> {
 
                                   final emailAvailable =
                                       await validateSignupEmailAvailable(
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
-                                    onError: notificationError,
-                                  );
+                                        email: _emailController.text,
+                                        password: _passwordController.text,
+                                        onError: notificationError,
+                                      );
 
                                   if (!mounted) return;
 
@@ -879,55 +882,24 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                     key: _formKey3,
                     child: Column(
                       children: [
-                        DropdownButtonFormField<String>(
+                        SearchablePickerField(
                           key: const ValueKey('signup_state_dropdown'),
-                          isExpanded: true,
-                          isDense: true,
+                          initialValue: _selectedState,
+                          hint: 'Estado',
+                          sheetTitle: 'Selecione o estado',
+                          options: [
+                            for (final state in estatesCitiesMap)
+                              SearchablePickerOption(
+                                value: state['sigla'] as String,
+                                label: '${state['sigla']} - ${state['nome']}',
+                              ),
+                          ],
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "* Campo obrigatório";
+                              return '* Campo obrigatório';
                             }
                             return null;
                           },
-                          alignment: Alignment.center,
-                          hint: Text(
-                            'Estado',
-                            style: GoogleFonts.rubik(fontSize: 18),
-                          ),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            errorStyle: const TextStyle(fontSize: 0),
-                            contentPadding: const EdgeInsets.only(
-                              left: 24.0,
-                              bottom: 8.0,
-                              top: 8.0,
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                          ),
-                          borderRadius: BorderRadius.circular(40),
-                          initialValue: _selectedState,
                           onChanged: (value) {
                             if (haveError) {
                               if (_formKey3.currentState?.validate() ?? false) {
@@ -942,103 +914,47 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               _availableCities = [];
                               if (value != null) {
                                 final stateData = estatesCitiesMap.firstWhere(
-                                  (state) => state["sigla"] == value,
-                                  orElse: () => {"cidades": []},
+                                  (state) => state['sigla'] == value,
+                                  orElse: () => {'cidades': []},
                                 );
                                 _availableCities = List<String>.from(
-                                  stateData["cidades"] ?? [],
+                                  stateData['cidades'] ?? [],
                                 );
                               }
                             });
                           },
-                          items: estatesCitiesMap.map((state) {
-                            return DropdownMenuItem<String>(
-                              value: state["sigla"],
-                              alignment: Alignment.center,
-                              child: Text(
-                                "${state["sigla"]} - ${state["nome"]}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            );
-                          }).toList(),
                         ),
-                        const Gap(16),
-                        DropdownButtonFormField<String>(
-                          key: const ValueKey('signup_city_dropdown'),
-                          isExpanded: true,
-                          isDense: true,
+                        const Gap(8),
+                        SearchablePickerField(
+                          key: ValueKey(
+                            'signup_city_dropdown_${_selectedState ?? 'none'}',
+                          ),
+                          initialValue: _selectedCity,
+                          enabled: _selectedState != null,
+                          hint: 'Cidade',
+                          sheetTitle: 'Selecione a cidade',
+                          options: [
+                            for (final city in _availableCities)
+                              SearchablePickerOption(value: city, label: city),
+                          ],
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "* Campo obrigatório";
+                              return '* Campo obrigatório';
                             }
                             return null;
                           },
-                          alignment: Alignment.center,
-                          hint: Text(
-                            'Cidade',
-                            style: GoogleFonts.rubik(fontSize: 18),
-                          ),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            errorStyle: const TextStyle(fontSize: 0),
-                            contentPadding: const EdgeInsets.only(
-                              left: 24.0,
-                              bottom: 8.0,
-                              top: 8.0,
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                          ),
-                          borderRadius: BorderRadius.circular(40),
-                          initialValue: _selectedCity,
-                          onChanged: _selectedState == null
-                              ? null
-                              : (value) {
-                                  if (haveError) {
-                                    if (_formKey3.currentState?.validate() ??
-                                        false) {
-                                      setState(() {
-                                        haveError = false;
-                                      });
-                                    }
-                                  }
-                                  setState(() {
-                                    _selectedCity = value;
-                                  });
-                                },
-                          items: _availableCities.map((city) {
-                            return DropdownMenuItem<String>(
-                              value: city,
-                              alignment: Alignment.center,
-                              child: Text(
-                                city,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            );
-                          }).toList(),
+                          onChanged: (value) {
+                            if (haveError) {
+                              if (_formKey3.currentState?.validate() ?? false) {
+                                setState(() {
+                                  haveError = false;
+                                });
+                              }
+                            }
+                            setState(() {
+                              _selectedCity = value;
+                            });
+                          },
                         ),
                       ],
                     ),

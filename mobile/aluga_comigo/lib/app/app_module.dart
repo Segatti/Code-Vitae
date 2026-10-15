@@ -9,6 +9,8 @@ import 'package:aluga_comigo/app/modules/my_immobiles/my_immobiles_di_module.dar
 import 'package:aluga_comigo/app/modules/start/start_module.dart';
 import 'package:aluga_comigo/app/modules/store/store_di_module.dart';
 import 'package:aluga_comigo/app/modules/store/store_module.dart';
+import 'package:aluga_comigo/app/modules/tickets/tickets_di_module.dart';
+import 'package:aluga_comigo/app/modules/tickets/tickets_module.dart';
 import 'package:aluga_comigo/app/shared/core_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -43,5 +45,7 @@ class AppModule extends Module {
     c.module(NotificationsModule());
     c.module(StoreDiModule());
     c.module(StoreModule());
+    c.module(TicketsDiModule());
+    c.module(TicketsModule());
   }
 }

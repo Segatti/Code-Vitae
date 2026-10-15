@@ -207,6 +207,19 @@ class _StartPageState extends State<StartPage>
               icon: const Icon(Icons.store, color: Colors.white, size: 35),
             ),
             const Spacer(),
+            IconButton(
+              onPressed: () {
+                context.pushNamed('/tickets/');
+                _drawerKey.currentState?.closeSlider();
+              },
+              tooltip: 'Suporte',
+              icon: const Icon(
+                Icons.support_agent,
+                color: Colors.white,
+                size: 35,
+              ),
+            ),
+            const Gap(16),
             const SizedBox(
               width: 35,
               child: Divider(color: Colors.white, thickness: 1),
