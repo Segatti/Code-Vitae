@@ -6,6 +6,7 @@ import 'package:aluga_comigo/app/shared/data/services/supabase_database_service.
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SecurityPage extends StatefulWidget {
@@ -36,24 +37,11 @@ class _SecurityPageState extends State<SecurityPage> {
   Future<void> _changePassword() async {
     if (_email.isEmpty) return;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Alterar senha'),
-        content: Text(
-          'Enviaremos um link de redefinição para $_email.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Enviar'),
-          ),
-        ],
-      ),
+      title: 'Alterar senha',
+      message: 'Enviaremos um link de redefinição para $_email.',
+      confirmLabel: 'Enviar',
     );
 
     if (confirmed != true || !mounted) return;
@@ -76,25 +64,13 @@ class _SecurityPageState extends State<SecurityPage> {
   }
 
   Future<void> _hideAccount() async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Esconder conta'),
-        content: const Text(
+      title: 'Esconder conta',
+      message:
           'Seu perfil ficará invisível para outros usuários. '
           'Você pode reativar fazendo login novamente.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Esconder'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Esconder',
     );
 
     if (confirmed != true || !mounted) return;
@@ -114,25 +90,13 @@ class _SecurityPageState extends State<SecurityPage> {
   }
 
   Future<void> _deleteAccount() async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Apagar conta'),
-        content: const Text(
+      title: 'Apagar conta',
+      message:
           'Esta ação é permanente. Todos os seus dados serão removidos.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Apagar'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Apagar',
+      confirmDestructive: true,
     );
 
     if (confirmed != true || !mounted) return;

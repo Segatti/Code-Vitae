@@ -81,7 +81,7 @@ class _IntroPageState extends State<IntroPage> {
                     clipBehavior: Clip.hardEdge,
                     children: [
                       ...previousChildren,
-                      if (currentChild != null) currentChild,
+                      ?currentChild,
                     ],
                   );
                 },

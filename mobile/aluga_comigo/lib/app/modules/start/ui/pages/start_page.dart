@@ -19,6 +19,7 @@ import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../../shared/presenter/helpers/feed_session_helper.dart';
+import '../../../../shared/presenter/widgets/app_message_dialog.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../../chats/ui/controllers/chats_list_controller.dart';
 import '../../../like/ui/controllers/likes_controller.dart';
@@ -119,6 +120,11 @@ class _StartPageState extends State<StartPage>
     final isImmobileOwner =
         SessionService.customer?.typeUser == TypeUser.immobile;
 
+    void closeAnd(void Function() action) {
+      action();
+      _drawerKey.currentState?.closeSlider();
+    }
+
     return Container(
       color: const Color(0xFF2C29A3),
       padding: const EdgeInsets.only(top: 8, bottom: 16),
@@ -126,221 +132,89 @@ class _StartPageState extends State<StartPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: CachedNetworkImage(
-                  imageUrl: SessionService.customer?.photos[0] ?? "",
-                  height: 35,
-                  width: 35,
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.person, color: Colors.white, size: 35),
+            Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-            ),
-            const Gap(6),
-            const SizedBox(
-              width: 35,
-              child: Divider(color: Colors.white, thickness: 1),
-            ),
-            const Gap(16),
-            if (!isImmobileOwner) ...[
-              Semantics(
-                label: 'Menu perfil',
-                button: true,
-                child: IconButton(
-                  key: const ValueKey('drawer_menu_profile'),
-                  onPressed: () {
-                    context.pushNamed("/config/profile");
-                    _drawerKey.currentState?.closeSlider();
-                  },
-                  tooltip: "Perfil",
-                  icon: const Icon(Icons.person, color: Colors.white, size: 35),
-                ),
-              ),
-              const Gap(16),
-            ],
-            IconButton(
-              onPressed: () {
-                context.pushNamed("/config/security");
-                _drawerKey.currentState?.closeSlider();
-              },
-              tooltip: "Segurança",
-              icon: const Icon(Icons.shield, color: Colors.white, size: 35),
-            ),
-            if (!isImmobileOwner) ...[
-              const Gap(16),
-              IconButton(
-                onPressed: () {
-                  context.pushNamed("/quest/");
-                  _drawerKey.currentState?.closeSlider();
-                },
-                tooltip: "Missões",
-                icon: const Icon(Icons.list_alt, color: Colors.white, size: 35),
-              ),
-              const Gap(16),
-              IconButton(
-                tooltip: "Histórico",
-                onPressed: () {
-                  context.pushNamed("/history/");
-                  _drawerKey.currentState?.closeSlider();
-                },
-                icon: const Icon(
-                  Icons.photo_outlined,
-                  color: Colors.white,
-                  size: 35,
-                ),
-              ),
-            ],
-            const Gap(16),
-            IconButton(
-              onPressed: () {
-                context.pushNamed("/store/");
-                _drawerKey.currentState?.closeSlider();
-              },
-              tooltip: "Loja",
-              icon: const Icon(Icons.store, color: Colors.white, size: 35),
-            ),
-            const Spacer(),
-            IconButton(
-              onPressed: () {
-                context.pushNamed('/tickets/');
-                _drawerKey.currentState?.closeSlider();
-              },
-              tooltip: 'Suporte',
-              icon: const Icon(
-                Icons.support_agent,
-                color: Colors.white,
-                size: 35,
-              ),
-            ),
-            const Gap(16),
-            const SizedBox(
-              width: 35,
-              child: Divider(color: Colors.white, thickness: 1),
-            ),
-            IconButton(
-              key: const ValueKey('drawer_menu_logout'),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      DefaultTextStyle(
-                        style: const TextStyle(
-                          decoration: TextDecoration.none,
-                          color: Colors.black,
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.all(16),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: Color(0xFFDF924B),
-                                      width: 5,
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  "Deseja Sair?",
-                                  style: GoogleFonts.rubik(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const Gap(16),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Ao confirmar você será deslogado do app.",
-                                      style: GoogleFonts.rubik(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(16),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: const Color(0xFFDF924B),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: Text(
-                                      "Cancelar",
-                                      style: GoogleFonts.rubik(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    key: const ValueKey('drawer_logout_confirm'),
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      side: const BorderSide(
-                                        color: Color(0xFF2C29A3),
-                                        width: 5,
-                                      ),
-                                    ),
-                                    onPressed: _logout,
-                                    child: Text(
-                                      "Confirmar",
-                                      style: GoogleFonts.rubik(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: CachedNetworkImage(
+                    imageUrl: SessionService.customer?.photos[0] ?? '',
+                    height: 35,
+                    width: 35,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.person, color: Colors.white, size: 35),
                   ),
-                );
-              },
-              icon: const Icon(
-                Icons.exit_to_app,
-                color: Colors.white,
-                size: 35,
+                ),
               ),
+            ),
+            const Gap(12),
+            const Divider(color: Colors.white, thickness: 1, height: 1),
+            const Gap(8),
+            if (!isImmobileOwner)
+              _DrawerMenuItem(
+                key: const ValueKey('drawer_menu_profile'),
+                icon: Icons.person,
+                label: 'Perfil',
+                semanticsLabel: 'Menu perfil',
+                onTap: () =>
+                    closeAnd(() => context.pushNamed('/config/profile')),
+              ),
+            const Gap(8),
+            _DrawerMenuItem(
+              icon: Icons.shield,
+              label: 'Segurança',
+              onTap: () =>
+                  closeAnd(() => context.pushNamed('/config/security')),
+            ),
+            const Gap(8),
+            if (!isImmobileOwner) ...[
+              _DrawerMenuItem(
+                icon: Icons.list_alt,
+                label: 'Missões',
+                onTap: () => closeAnd(() => context.pushNamed('/quest/')),
+              ),
+              const Gap(8),
+              _DrawerMenuItem(
+                icon: Icons.photo_outlined,
+                label: 'Histórico',
+                onTap: () => closeAnd(() => context.pushNamed('/history/')),
+              ),
+              const Gap(8),
+            ],
+            _DrawerMenuItem(
+              icon: Icons.store,
+              label: 'Loja',
+              onTap: () => closeAnd(() => context.pushNamed('/store/')),
+            ),
+            const Gap(8),
+            const Spacer(),
+            _DrawerMenuItem(
+              icon: Icons.support_agent,
+              label: 'Suporte',
+              onTap: () => closeAnd(() => context.pushNamed('/tickets/')),
+            ),
+            const Gap(8),
+            const Divider(color: Colors.white, thickness: 1, height: 1),
+            const Gap(8),
+            _DrawerMenuItem(
+              key: const ValueKey('drawer_menu_logout'),
+              icon: Icons.exit_to_app,
+              label: 'Sair',
+              onTap: () async {
+                final confirmed = await showAppConfirmDialog(
+                  context: context,
+                  title: 'Deseja Sair?',
+                  message: 'Ao confirmar você será deslogado do app.',
+                  confirmKey: const ValueKey('drawer_logout_confirm'),
+                );
+                if (confirmed == true && mounted) {
+                  await _logout();
+                }
+              },
             ),
           ],
         ),
@@ -590,6 +464,60 @@ class _StartPageState extends State<StartPage>
           appBar: _buildAppBar(),
           slider: _buildDrawer(),
           child: _buildBody(),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerMenuItem extends StatelessWidget {
+  const _DrawerMenuItem({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.semanticsLabel,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final String? semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: semanticsLabel ?? label,
+      button: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: SizedBox(
+              width: 72,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, color: Colors.white, size: 28),
+                  const Gap(2),
+                  Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.rubik(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

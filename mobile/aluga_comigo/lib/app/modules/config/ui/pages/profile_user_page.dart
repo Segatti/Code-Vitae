@@ -2,6 +2,7 @@ import 'package:aluga_comigo/app/modules/config/ui/controllers/profile_controlle
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/money_formatter.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
@@ -180,97 +181,24 @@ class _ProfileUserPageState extends State<ProfileUserPage> {
   }
 
   void _showErrorDialog(String message) {
-    showDialog(
+    showAppAckDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (_) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.all(32),
-            child: Column(
-              children: [
-                Text(
-                  'Atenção',
-                  style: GoogleFonts.rubik(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-                const Gap(8),
-                Text(
-                  message,
-                  style: GoogleFonts.rubik(
-                    fontSize: 18,
-                    color: Colors.black,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const Gap(16),
-                PrimaryButtonWidget(
-                  title: 'OK',
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    controller.errorMessage = null;
-                    controller.updatePage();
-                  },
-                  borderRadius: 10,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      title: 'Atenção',
+      message: message,
+      messageAlign: TextAlign.center,
+      onAck: () {
+        controller.errorMessage = null;
+        controller.updatePage();
+      },
     );
   }
 
   void _showProfileUpdatedDialog() {
-    showDialog(
+    showAppAckDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.all(32),
-            child: Column(
-              children: [
-                Text(
-                  'Perfil atualizado com sucesso',
-                  style: GoogleFonts.rubik(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const Gap(16),
-                PrimaryButtonWidget(
-                  title: 'OK',
-                  onTap: () => Navigator.of(dialogContext).pop(),
-                  borderRadius: 10,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      title: 'Perfil atualizado',
+      message: 'Perfil atualizado com sucesso.',
+      messageAlign: TextAlign.center,
     );
   }
 

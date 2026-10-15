@@ -13,6 +13,7 @@ import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/maps_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/feed_super_star_action_icon.dart';
 import 'package:flip_card/flip_card_controller.dart';
@@ -93,29 +94,14 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
   }
 
   Future<void> _promptPowerUpPurchase() async {
-    final goToStore = await showDialog<bool>(
+    final goToStore = await showAppConfirmDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'PowerUp necessário',
-          style: GoogleFonts.rubik(fontWeight: FontWeight.w600),
-        ),
-        content: Text(
+      title: 'PowerUp necessário',
+      message:
           'Para mudar sua opinião no histórico, você precisa de um PowerUp '
           'ativo. Deseja ir à loja?',
-          style: GoogleFonts.rubik(fontSize: 15),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Agora não'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Ir para a loja'),
-          ),
-        ],
-      ),
+      cancelLabel: 'Agora não',
+      confirmLabel: 'Ir para a loja',
     );
 
     if (!mounted || goToStore != true) return;

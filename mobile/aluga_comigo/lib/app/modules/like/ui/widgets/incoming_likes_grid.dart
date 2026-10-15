@@ -73,7 +73,7 @@ class _PhotoTile extends StatelessWidget {
         : CachedNetworkImage(
             imageUrl: photoUrl,
             fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => Container(color: Colors.grey.shade300),
+            errorWidget: (_, _, _) => Container(color: Colors.grey.shade300),
           );
 
     return GestureDetector(

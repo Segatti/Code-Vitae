@@ -8,6 +8,7 @@ import '../../../shared/data/services/aluga_comigo_api_client.dart';
 import '../../../shared/data/services/secure_storage_service.dart';
 import '../../../shared/data/services/session_service.dart';
 import '../../../shared/domain/helpers/start_navigation_helper.dart';
+import '../../../shared/presenter/widgets/app_message_dialog.dart';
 import '../../auth/domain/enums/type_user.dart';
 import '../../auth/data/models/user_model.dart';
 import '../../auth/domain/entities/inputs/login_input.dart';
@@ -56,12 +57,15 @@ class _SplashPageState extends State<SplashPage> {
         builder: (dialogContext) {
           return PopScope(
             canPop: false,
-            child: AlertDialog(
-              content: const Text(
-                'Servidor em manutenção, tente novamente mais tarde...',
-              ),
+            child: AppMessageDialogShell(
+              title: 'Manutenção',
+              message:
+                  'Servidor em manutenção, tente novamente mais tarde...',
+              messageAlign: TextAlign.center,
               actions: [
-                TextButton(
+                AppMessageDialogShell.primaryButton(
+                  dialogContext,
+                  label: 'Recarregar',
                   onPressed: () async {
                     if (await api.checkHealth()) {
                       if (dialogContext.mounted) {
@@ -69,7 +73,6 @@ class _SplashPageState extends State<SplashPage> {
                       }
                     }
                   },
-                  child: const Text('Recarregar'),
                 ),
               ],
             ),

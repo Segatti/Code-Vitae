@@ -233,7 +233,7 @@ class _HistoryCard extends StatelessWidget {
                         : CachedNetworkImage(
                             imageUrl: photoUrl,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) =>
+                            errorWidget: (_, _, _) =>
                                 Container(color: Colors.grey.shade300),
                           ),
                     Positioned(

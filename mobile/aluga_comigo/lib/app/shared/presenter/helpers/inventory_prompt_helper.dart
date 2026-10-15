@@ -2,8 +2,8 @@ import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
 abstract final class InventoryPromptHelper {
@@ -49,29 +49,14 @@ abstract final class InventoryPromptHelper {
   }
 
   static Future<void> promptSuperStarPurchase(BuildContext context) async {
-    final goToStore = await showDialog<bool>(
+    final goToStore = await showAppConfirmDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'Sem Super Star',
-          style: GoogleFonts.rubik(fontWeight: FontWeight.w600),
-        ),
-        content: Text(
+      title: 'Sem Super Star',
+      message:
           'Você não tem Super Star disponível. Compre na loja para '
           'destacar este perfil.',
-          style: GoogleFonts.rubik(fontSize: 15),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Agora não'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Comprar'),
-          ),
-        ],
-      ),
+      cancelLabel: 'Agora não',
+      confirmLabel: 'Comprar',
     );
 
     if (goToStore == true && context.mounted) {
@@ -80,29 +65,14 @@ abstract final class InventoryPromptHelper {
   }
 
   static Future<void> promptSuperChatPurchase(BuildContext context) async {
-    final goToStore = await showDialog<bool>(
+    final goToStore = await showAppConfirmDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'Sem Super Chat',
-          style: GoogleFonts.rubik(fontWeight: FontWeight.w600),
-        ),
-        content: Text(
+      title: 'Sem Super Chat',
+      message:
           'Você não tem Super Chat disponível. Compre na loja para '
           'enviar uma mensagem destacada ao imóvel.',
-          style: GoogleFonts.rubik(fontSize: 15),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Agora não'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Comprar'),
-          ),
-        ],
-      ),
+      cancelLabel: 'Agora não',
+      confirmLabel: 'Comprar',
     );
 
     if (goToStore == true && context.mounted) {

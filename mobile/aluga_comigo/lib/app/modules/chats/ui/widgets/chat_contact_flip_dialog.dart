@@ -9,6 +9,7 @@ import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/maps_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
@@ -52,25 +53,13 @@ class _ChatContactFlipDialogState extends State<ChatContactFlipDialog> {
     final customer = _customer;
     if (customer == null || _unmatching) return;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Desfazer match?'),
-        content: const Text(
+      title: 'Desfazer match?',
+      message:
           'Você deixará de ser match com este contato e a conversa '
           'será removida da lista.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Desfazer match'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Desfazer match',
     );
 
     if (confirmed != true || !mounted) return;

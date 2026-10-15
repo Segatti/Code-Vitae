@@ -1,6 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/domain/entities/failures.dart';
 import '../../../../shared/domain/errors/supabase_error_handler.dart';
 import '../../domain/entities/ticket_list_filters.dart';
@@ -40,11 +39,15 @@ class TicketDatasource implements ITicketDatasource {
 
   const TicketDatasource(this.client);
 
-  static const _ticketSelect =
-      '*, support_ticket_reactions(reaction), support_ticket_comments(id, body, created_at)';
+  static const _reactionsSelect =
+      'support_ticket_reactions(reaction, account_id)';
 
+  static const _ticketSelect =
+      '*, $_reactionsSelect, support_ticket_comments(id, body, created_at)';
+
+  /// Sempre o `auth.uid()` — conta pessoa e conta imóvel são logins distintos.
   String get _accountId {
-    final id = SessionService.customer?.id;
+    final id = client.auth.currentUser?.id;
     if (id == null || id.isEmpty) {
       throw FailureDatasource(message: 'Usuário não autenticado');
     }
@@ -63,8 +66,7 @@ class TicketDatasource implements ITicketDatasource {
 
       var filter = client
           .from('support_tickets')
-          .select('*, support_ticket_reactions(reaction)')
-          .eq('account_id', _accountId);
+          .select('*, $_reactionsSelect');
 
       final category = filters.category;
       if (category != null) {
@@ -90,6 +92,7 @@ class TicketDatasource implements ITicketDatasource {
           .map(
             (row) => SupportTicketModel.fromMap(
               Map<String, dynamic>.from(row as Map),
+              currentAccountId: _accountId,
             ),
           )
           .toList();
@@ -110,14 +113,16 @@ class TicketDatasource implements ITicketDatasource {
           .from('support_tickets')
           .select(_ticketSelect)
           .eq('id', ticketId)
-          .eq('account_id', _accountId)
           .maybeSingle();
 
       if (row == null) {
         throw FailureDatasource(message: 'Ticket não encontrado');
       }
 
-      return SupportTicketModel.fromMap(Map<String, dynamic>.from(row));
+      return SupportTicketModel.fromMap(
+        Map<String, dynamic>.from(row),
+        currentAccountId: _accountId,
+      );
     } on PostgrestException catch (error) {
       throw FailureDatasource(
         message: SupabaseErrorHandler.getMessage(error.code, error.message),

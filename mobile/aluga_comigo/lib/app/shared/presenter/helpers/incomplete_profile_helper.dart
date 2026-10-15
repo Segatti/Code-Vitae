@@ -1,9 +1,8 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_immobile.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
 class IncompleteProfileHelper {
@@ -33,99 +32,18 @@ class IncompleteProfileHelper {
   }
 
   static Future<void> showIncompleteProfileDialog(BuildContext context) {
-    return showDialog<void>(
+    return showAppConfirmDialog(
       context: context,
-      builder: (dialogContext) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.info_outline,
-                  size: 64,
-                  color: Color(0XFFDF924B),
-                ),
-                const Gap(16),
-                Text(
-                  'Perfil Incompleto',
-                  style: GoogleFonts.rubik(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const Gap(16),
-                Text(
-                  'Você precisa completar seu perfil para visualizar os detalhes dos outros usuários.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(fontSize: 16, color: Colors.black54),
-                ),
-                const Gap(24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(dialogContext).pop(),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.grey, width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(
-                          'Cancelar',
-                          style: GoogleFonts.rubik(
-                            fontSize: 16,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Gap(16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(dialogContext).pop();
-                          context.pushNamed('/config/profile');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0XFFDF924B),
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(
-                          'Preencher',
-                          style: GoogleFonts.rubik(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+      title: 'Perfil incompleto',
+      message:
+          'Você precisa completar seu perfil para visualizar os detalhes '
+          'dos outros usuários.',
+      confirmLabel: 'Preencher',
+    ).then((goFill) {
+      if (goFill == true && context.mounted) {
+        context.pushNamed('/config/profile');
+      }
+    });
   }
 
   static Future<void> showEntryPromptIfNeeded(BuildContext context) async {

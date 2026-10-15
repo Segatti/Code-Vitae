@@ -9,7 +9,9 @@ import 'package:aluga_comigo/app/shared/domain/consts/cities_and_states.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/card_flip_photo_picker.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/searchable_picker_field.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/signup_terms_dialog.dart';
 import 'package:chiclet/chiclet.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +19,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:styled_text/styled_text.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../helpers/signup_email_validation.dart';
 import 'card_auth_widget.dart';
 import 'signup_password_field.dart';
@@ -41,7 +40,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   final PageController _controller = PageController();
   var indexCarousel = 0;
   final _userInput = SignupUserInput();
-  var acceptTerms = false;
   var haveError = false;
   var _isCheckingAccessEmail = false;
 
@@ -75,39 +73,11 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   }
 
   void notificationError(String title, String message) {
-    showDialog(
+    showAppAckDialog(
       context: context,
-      builder: (_) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-              border: Border.all(color: Colors.red, width: 5),
-            ),
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.all(32),
-            child: Column(
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.rubik(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                ),
-                Text(
-                  message,
-                  style: GoogleFonts.rubik(fontSize: 18, color: Colors.black),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      title: title,
+      message: message,
+      barrierDismissible: true,
     );
   }
 
@@ -132,164 +102,9 @@ class _UserStepWidgetState extends State<UserStepWidget> {
       indexCarousel++;
       setState(() {});
     } else {
-      showDialog(
-        context: context,
-        builder: (_) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                StatefulBuilder(
-                  builder: (context, setState) {
-                    return Dialog(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFF2C29A3),
-                            width: 5,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            StyledText(
-                              text:
-                                  "Ao confirmar você está aceitando os <orange>termos de uso do app</orange>!",
-                              style: GoogleFonts.rubik(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              tags: {
-                                "orange": StyledTextTag(
-                                  style: const TextStyle(
-                                    color: Color(0xFFDF924B),
-                                  ),
-                                ),
-                              },
-                            ),
-                            const Gap(16),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      launchUrl(
-                                        Uri.parse(
-                                          "https://drive.google.com/file/d/1Ob1x0-bLgEiZs7RYAqF7NfY2sNR51rBc/view?usp=drive_link",
-                                        ),
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: const Color(0xFF2C29A3),
-                                          width: 4,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        "Leia aqui os Termos de Uso",
-                                        style: GoogleFonts.rubik(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Gap(8),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  acceptTerms = !acceptTerms;
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Checkbox(
-                                    key: const ValueKey(
-                                      'signup_terms_checkbox',
-                                    ),
-                                    visualDensity: VisualDensity.compact,
-                                    value: acceptTerms,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        acceptTerms = value ?? false;
-                                      });
-                                    },
-                                  ),
-                                  Flexible(
-                                    child: const Text(
-                                      "Declaro que tenho 18 anos ou mais.",
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Gap(16),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ChicletAnimatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    borderRadius: 50,
-                                    backgroundColor: Colors.red,
-                                    child: Text(
-                                      "Cancelar",
-                                      style: GoogleFonts.rubik(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const Gap(8),
-                                Expanded(
-                                  child: ChicletAnimatedButton(
-                                    key: const ValueKey('signup_terms_confirm'),
-                                    onPressed: () async {
-                                      if (!acceptTerms) return;
-                                      Navigator.of(context).pop();
-                                      await widget.signup(_userInput);
-                                    },
-                                    borderRadius: 50,
-                                    backgroundColor: (acceptTerms)
-                                        ? Colors.green
-                                        : Colors.grey,
-                                    child: Text(
-                                      "Confirmar",
-                                      style: GoogleFonts.rubik(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          );
-        },
+      SignupTermsDialog.show(
+        context,
+        onConfirm: () => widget.signup(_userInput),
       );
     }
   }

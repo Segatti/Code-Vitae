@@ -79,7 +79,7 @@ class _CreateTicketPageState extends State<CreateTicketPage> {
                 ),
                 const Gap(16),
                 DropdownButtonFormField<TicketCategory>(
-                  value: controller.category,
+                  initialValue: controller.category,
                   decoration: InputDecoration(
                     labelText: 'Categoria',
                     border: OutlineInputBorder(

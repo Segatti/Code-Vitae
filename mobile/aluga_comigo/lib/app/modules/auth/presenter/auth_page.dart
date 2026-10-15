@@ -10,6 +10,7 @@ import '../../../shared/data/services/secure_storage_service.dart';
 import '../../../shared/data/services/session_service.dart';
 import '../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../shared/presenter/helpers/feed_session_helper.dart';
+import '../../../shared/presenter/widgets/app_message_dialog.dart';
 import '../../../shared/presenter/widgets/popups/loading_popup.dart';
 import '../../../shared/presenter/widgets/primary_button.dart';
 import '../../../shared/presenter/widgets/secondary_button.dart';
@@ -47,45 +48,11 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void notificationError(String title, String message) {
-    showDialog(
+    showAppAckDialog(
       context: context,
-      builder: (_) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-              border: Border.all(color: Colors.red, width: 5),
-            ),
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.all(32),
-            child: Column(
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.rubik(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-                Text(
-                  message,
-                  style: GoogleFonts.rubik(
-                    fontSize: 18,
-                    color: Colors.black,
-                    decoration: TextDecoration.none,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      title: title,
+      message: message,
+      barrierDismissible: true,
     );
   }
 

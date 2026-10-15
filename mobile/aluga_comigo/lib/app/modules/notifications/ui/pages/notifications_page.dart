@@ -84,7 +84,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 return ListView.separated(
                   padding: const EdgeInsets.all(16),
                   itemCount: controller.items.length,
-                  separatorBuilder: (_, __) => const Gap(12),
+                  separatorBuilder: (_, _) => const Gap(12),
                   itemBuilder: (context, index) {
                     final item = controller.items[index];
                     return ListTile(

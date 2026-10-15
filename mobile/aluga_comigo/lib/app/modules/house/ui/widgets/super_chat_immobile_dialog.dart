@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,63 +36,61 @@ class _SuperChatImmobileDialogState extends State<SuperChatImmobileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Row(
+    return AppMessageDialogShell(
+      title: 'Super Chat',
+      message: widget.inConversation
+          ? 'Sua mensagem será destacada no chat. Você poderá ver quando o '
+              'destinatário ler.'
+          : 'Sua mensagem será destacada no chat. Você poderá ver quando o '
+              'anunciante ler. O imóvel será marcado como favorito.',
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SvgPicture.asset(
-            IconsAsset.chat,
-            width: 28,
-            height: 28,
-            colorFilter: .mode(Colors.amber, .srcIn),
+          Row(
+            children: [
+              SvgPicture.asset(
+                IconsAsset.chat,
+                width: 28,
+                height: 28,
+                colorFilter: .mode(Colors.amber, .srcIn),
+              ),
+              const Gap(8),
+              Text(
+                'Mensagem',
+                style: GoogleFonts.rubik(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
           const Gap(8),
-          Expanded(
-            child: Text(
-              'Super Chat',
-              style: GoogleFonts.rubik(fontWeight: FontWeight.w600),
+          TextField(
+            controller: _controller,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: 'Escreva sua mensagem...',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ],
       ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.inConversation
-                  ? 'Sua mensagem será destacada no chat. Você poderá ver '
-                      'quando o destinatário ler.'
-                  : 'Sua mensagem será destacada no chat. Você poderá ver quando o '
-                      'anunciante ler. O imóvel será marcado como favorito.',
-              style: GoogleFonts.rubik(fontSize: 14, color: Colors.black87),
-            ),
-            const Gap(16),
-            TextField(
-              controller: _controller,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'Escreva sua mensagem...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
       actions: [
-        TextButton(
+        AppMessageDialogShell.dismissButton(
+          context,
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
         ),
-        FilledButton(
+        AppMessageDialogShell.primaryButton(
+          context,
+          label: 'Enviar',
           onPressed: () {
             final text = _controller.text.trim();
             if (text.isEmpty) return;
             Navigator.of(context).pop(text);
           },
-          child: const Text('Enviar'),
         ),
       ],
     );

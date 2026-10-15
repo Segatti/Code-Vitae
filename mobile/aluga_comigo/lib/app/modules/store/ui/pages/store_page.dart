@@ -8,6 +8,7 @@ import 'package:aluga_comigo/app/modules/store/ui/widgets/store_category_section
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
 class StorePage extends StatefulWidget {
@@ -44,25 +45,11 @@ class _StorePageState extends State<StorePage> {
   }
 
   Future<void> _confirmPurchase(StoreProduct product) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(product.label),
-        content: Text(
-          'Confirmar compra por ${controller.priceFor(product)}?',
-          style: GoogleFonts.rubik(fontSize: 15),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Comprar'),
-          ),
-        ],
-      ),
+      title: product.label,
+      message: 'Confirmar compra por ${controller.priceFor(product)}?',
+      confirmLabel: 'Comprar',
     );
 
     if (confirmed == true && mounted) {

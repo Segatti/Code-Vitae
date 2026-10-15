@@ -29,6 +29,7 @@ abstract interface class ITicketsController extends ChangeNotifier {
   void setCategoryFilter(TicketCategory? category);
   void setStatusFilter(TicketStatus? status);
   Future<void> toggleReaction(String ticketId, TicketReaction reaction);
+  void resetSessionState();
 }
 
 class TicketsController extends ITicketsController {
@@ -55,6 +56,20 @@ class TicketsController extends ITicketsController {
   Future<Unit> initialize() async {
     await refresh();
     return unit;
+  }
+
+  @override
+  void resetSessionState() {
+    _searchDebounce?.cancel();
+    loadingList = [];
+    errorMessage = '';
+    items = [];
+    searchQuery = '';
+    categoryFilter = null;
+    statusFilter = null;
+    hasMore = true;
+    currentPage = 0;
+    notifyListeners();
   }
 
   @override

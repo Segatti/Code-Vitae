@@ -25,7 +25,10 @@ class SupportTicketModel {
     this.comments = const [],
   });
 
-  factory SupportTicketModel.fromMap(Map<String, dynamic> map) {
+  factory SupportTicketModel.fromMap(
+    Map<String, dynamic> map, {
+    String? currentAccountId,
+  }) {
     DateTime? createdAt;
     final raw = map['created_at'] ?? map['createdAt'];
     if (raw is String && raw.isNotEmpty) {
@@ -35,11 +38,18 @@ class SupportTicketModel {
     TicketReaction? reaction;
     final reactionsRaw = map['support_ticket_reactions'];
     if (reactionsRaw is List && reactionsRaw.isNotEmpty) {
-      final first = reactionsRaw.first;
-      if (first is Map) {
+      for (final item in reactionsRaw) {
+        if (item is! Map) continue;
+        final ownerId = item['account_id']?.toString();
+        if (currentAccountId != null &&
+            ownerId != null &&
+            ownerId != currentAccountId) {
+          continue;
+        }
         reaction = TicketReaction.fromStorage(
-          first['reaction']?.toString(),
+          item['reaction']?.toString(),
         );
+        break;
       }
     }
 

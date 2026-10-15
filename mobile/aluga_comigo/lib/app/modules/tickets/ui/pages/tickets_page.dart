@@ -109,7 +109,7 @@ class _TicketsPageState extends State<TicketsPage> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<TicketCategory?>(
-                        value: controller.categoryFilter,
+                        initialValue: controller.categoryFilter,
                         decoration: InputDecoration(
                           labelText: 'Categoria',
                           border: OutlineInputBorder(
@@ -138,7 +138,7 @@ class _TicketsPageState extends State<TicketsPage> {
                     const Gap(8),
                     Expanded(
                       child: DropdownButtonFormField<TicketStatus?>(
-                        value: controller.statusFilter,
+                        initialValue: controller.statusFilter,
                         decoration: InputDecoration(
                           labelText: 'Situação',
                           border: OutlineInputBorder(
@@ -213,7 +213,7 @@ class _TicketsPageState extends State<TicketsPage> {
                         (controller.loadingList.contains('loadMoreTickets')
                             ? 1
                             : 0),
-                    separatorBuilder: (_, __) => const Gap(8),
+                    separatorBuilder: (_, _) => const Gap(8),
                     itemBuilder: (context, index) {
                       if (index >= controller.items.length) {
                         return const Padding(
