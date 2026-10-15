@@ -114,6 +114,47 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
     );
   }
 
+  void _showProfileUpdatedDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.all(32),
+            child: Column(
+              children: [
+                Text(
+                  'Perfil atualizado com sucesso',
+                  style: GoogleFonts.rubik(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const Gap(16),
+                PrimaryButtonWidget(
+                  title: 'OK',
+                  onTap: () => Navigator.of(dialogContext).pop(),
+                  borderRadius: 10,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showProfileDialog() {
     if (controller.customer == null) return;
 
@@ -534,8 +575,11 @@ class _ProfileImmobilePageState extends State<ProfileImmobilePage> {
                                 isLoading: controller.loadingList.contains(
                                   'updateProfile',
                                 ),
-                                onTap: () {
-                                  controller.updateProfile();
+                                onTap: () async {
+                                  final ok = await controller.updateProfile();
+                                  if (ok && mounted) {
+                                    _showProfileUpdatedDialog();
+                                  }
                                 },
                                 borderRadius: 10,
                               ),

@@ -5,13 +5,11 @@ import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/models/select_item.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/widgets/pill_widget.dart';
-import 'package:aluga_comigo/app/shared/data/services/camera_service.dart';
 import 'package:aluga_comigo/app/shared/domain/consts/cities_and_states.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/validator_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/formatters/phone_formatter.dart';
-import 'package:aluga_comigo/app/shared/presenter/widgets/app_camera_page.dart';
+import 'package:aluga_comigo/app/shared/presenter/helpers/card_flip_photo_picker.dart';
 import 'package:chiclet/chiclet.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,7 +19,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../helpers/signup_email_validation.dart';
 import 'card_auth_widget.dart';
+import 'signup_password_field.dart';
 
 class UserStepWidget extends StatefulWidget {
   final VoidCallback backPage;
@@ -42,6 +42,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   final _userInput = SignupUserInput();
   var acceptTerms = false;
   var haveError = false;
+  var _isCheckingAccessEmail = false;
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -51,8 +52,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final service = inject<CameraService>();
-
   String? _selectedState;
   String? _selectedCity;
   List<String> _availableCities = [];
@@ -64,18 +63,12 @@ class _UserStepWidgetState extends State<UserStepWidget> {
   }
 
   Future<void> getImage(ImageSource imageSource) async {
-    if (imageSource == ImageSource.camera) {
-      final path = await AppCameraPage.capture(context);
-      if (path != null) {
-        _userInput.photo = path;
-        setState(() {});
-      }
-      return;
-    }
-
-    final result = await service.getImage(imageSource);
-    if (result != null) {
-      _userInput.photo = result.path;
+    final cropped = await CardFlipPhotoPicker.pickSingle(
+      context,
+      source: imageSource,
+    );
+    if (cropped != null) {
+      _userInput.photo = cropped.path;
       setState(() {});
     }
   }
@@ -406,8 +399,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           ),
                         ),
                         const Gap(16),
-                        TextFormField(
-                          key: const ValueKey('signup_password_field'),
+                        SignupPasswordField(
                           controller: _passwordController,
                           onChanged: (_) {
                             if (haveError) {
@@ -418,74 +410,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                               }
                             }
                           },
-                          validator: (text) {
-                            String data = text?.trim() ?? '';
-                            if (data.isEmpty) {
-                              return "* Campo obrigatório";
-                            }
-                            if (data.length < 7) {
-                              return "Mínimo 7 caracteres";
-                            }
-                            return null;
-                          },
-                          textAlignVertical: TextAlignVertical.center,
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            isDense: true,
-                            hintText: 'Senha',
-                            hintStyle: GoogleFonts.rubik(fontSize: 18),
-                            errorStyle: const TextStyle(fontSize: 0),
-                            suffixIcon: RepaintBoundary(
-                              child: JustTheTooltip(
-                                backgroundColor: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
-                                content: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  child: Text(
-                                    'Mínimo 7 caracteres',
-                                    style: GoogleFonts.rubik(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                isModal: true,
-                                child: const Icon(Icons.help),
-                              ),
-                            ),
-                            contentPadding: const EdgeInsets.only(
-                              left: 24.0,
-                              bottom: 8.0,
-                              top: 8.0,
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 3,
-                              ),
-                              borderRadius: BorderRadius.circular(25.7),
-                            ),
-                          ),
-                          obscureText: true,
                         ),
                       ],
                     ),
@@ -511,27 +435,60 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                       const Gap(8),
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              _userInput.email = _emailController.text;
-                              _userInput.password = _passwordController.text;
-                              nextPage();
-                            } else {
-                              setState(() {
-                                haveError = true;
-                              });
-                            }
-                          },
+                          onPressed: _isCheckingAccessEmail
+                              ? null
+                              : () async {
+                                  if (!(_formKey.currentState?.validate() ??
+                                      false)) {
+                                    setState(() {
+                                      haveError = true;
+                                    });
+                                    return;
+                                  }
+
+                                  setState(() {
+                                    _isCheckingAccessEmail = true;
+                                  });
+
+                                  final emailAvailable =
+                                      await validateSignupEmailAvailable(
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                    onError: notificationError,
+                                  );
+
+                                  if (!mounted) return;
+
+                                  setState(() {
+                                    _isCheckingAccessEmail = false;
+                                  });
+
+                                  if (!emailAvailable) return;
+
+                                  _userInput.email = _emailController.text;
+                                  _userInput.password =
+                                      _passwordController.text;
+                                  nextPage();
+                                },
                           borderRadius: 50,
                           backgroundColor: Colors.green,
-                          child: Text(
-                            "Confirmar",
-                            style: GoogleFonts.rubik(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: _isCheckingAccessEmail
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  "Confirmar",
+                                  style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
                     ],

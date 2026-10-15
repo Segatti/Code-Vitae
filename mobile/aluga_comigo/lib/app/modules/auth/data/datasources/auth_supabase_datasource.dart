@@ -59,6 +59,32 @@ class AuthSupabaseDatasource implements IAuthDatasource {
     return await response.fold((l) => throw l, (r) => r);
   }
 
+  @override
+  Future<bool> isSignupEmailAvailable(String email, String password) async {
+    try {
+      return await database.isSignupEmailAvailable(email);
+    } on FailureDatasource catch (error) {
+      if (error.message == 'rpc_missing:is_signup_email_available') {
+        return _isSignupEmailAvailableViaAuthProbe(email, password);
+      }
+      rethrow;
+    }
+  }
+
+  /// Fallback quando a RPC ainda não foi aplicada no Supabase.
+  Future<bool> _isSignupEmailAvailableViaAuthProbe(
+    String email,
+    String password,
+  ) async {
+    try {
+      await auth.login(email, password);
+      await auth.signOut();
+      return false;
+    } on FailureDatasource {
+      return true;
+    }
+  }
+
   Future<File> _preparePhotoFile(String photoPath) async {
     if (photoPath.isEmpty) {
       throw FailureDatasource(

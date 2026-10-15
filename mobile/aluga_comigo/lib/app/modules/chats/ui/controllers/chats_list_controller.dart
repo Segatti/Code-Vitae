@@ -12,6 +12,7 @@ abstract interface class IChatsListController extends ChangeNotifier {
   List<Chat> chats = [];
 
   Future<Unit> initialize();
+  void resetSessionState();
   @override
   void dispose();
 }
@@ -24,10 +25,21 @@ class ChatsListController extends IChatsListController {
   StreamSubscription<List<Chat>>? _subscription;
 
   @override
+  void resetSessionState() {
+    _subscription?.cancel();
+    _subscription = null;
+    chats = [];
+    loadingList.remove('loadChats');
+    errorMessage = null;
+    notifyListeners();
+  }
+
+  @override
   Future<Unit> initialize() async {
     await _subscription?.cancel();
     _subscription = null;
 
+    chats = [];
     loadingList.remove('loadChats');
     loadingList.add('loadChats');
     errorMessage = null;

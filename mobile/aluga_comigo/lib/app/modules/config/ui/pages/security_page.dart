@@ -138,7 +138,7 @@ class _SecurityPageState extends State<SecurityPage> {
   Future<void> _logout({String? showMessage}) async {
     await _auth.signOut();
     await _storage.deleteData(StorageKey.user);
-    FeedSessionHelper.resetSwipeFeeds();
+    FeedSessionHelper.resetSessionScopedControllers();
     SessionService.clearCustomer();
     if (!mounted) return;
     if (showMessage != null) {

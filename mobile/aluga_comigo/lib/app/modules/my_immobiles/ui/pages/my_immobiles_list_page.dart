@@ -145,7 +145,7 @@ class _MyImmobilesListPageState extends State<MyImmobilesListPage> {
                     ),
                   ),
                 ),
-              const Gap(90),
+              const Gap(100),
             ],
           ),
         );

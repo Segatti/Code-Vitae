@@ -9,6 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../shared/data/services/secure_storage_service.dart';
 import '../../../shared/data/services/session_service.dart';
 import '../../../shared/domain/helpers/start_navigation_helper.dart';
+import '../../../shared/presenter/helpers/feed_session_helper.dart';
 import '../../../shared/presenter/widgets/popups/loading_popup.dart';
 import '../../../shared/presenter/widgets/primary_button.dart';
 import '../../../shared/presenter/widgets/secondary_button.dart';
@@ -233,6 +234,8 @@ class _AuthPageState extends State<AuthPage> {
                                   if (!context.mounted) return;
 
                                   if (result) {
+                                    FeedSessionHelper
+                                        .resetSessionScopedControllers();
                                     context.navigate(
                                       StartNavigationHelper.homeRouteFor(
                                         SessionService.customer?.typeUser ??
@@ -261,6 +264,8 @@ class _AuthPageState extends State<AuthPage> {
                                   if (!context.mounted) return;
                                   Navigator.pop(context);
                                   if (result) {
+                                    FeedSessionHelper
+                                        .resetSessionScopedControllers();
                                     context.navigate(
                                       StartNavigationHelper.homeRouteFor(
                                         SessionService.customer?.typeUser ??

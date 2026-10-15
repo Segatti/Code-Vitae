@@ -9,7 +9,9 @@
       "cwd": "mobile/aluga_comigo",
       "request": "launch",
       "type": "dart",
-      "args": ["--dart-define-from-file=dart_defines.json"]
+      "args": [
+        "--dart-define-from-file=dart_defines.json"
+      ]
     },
     {
       "name": "aluga_comigo (profile mode)",
@@ -17,7 +19,9 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile",
-      "args": ["--dart-define-from-file=dart_defines.json"]
+      "args": [
+        "--dart-define-from-file=dart_defines.json"
+      ]
     },
     {
       "name": "aluga_comigo (release mode)",
@@ -25,21 +29,27 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
-      "args": ["--dart-define-from-file=dart_defines.json"]
+      "args": [
+        "--dart-define-from-file=dart_defines.json"
+      ]
     },
     {
       "name": "aluga_comigo (Android emulator + Supabase local)",
       "cwd": "mobile/aluga_comigo",
       "request": "launch",
       "type": "dart",
-      "args": ["--dart-define-from-file=dart_defines.android.json"]
+      "args": [
+        "--dart-define-from-file=dart_defines.android.json"
+      ]
     },
     {
       "name": "aluga_comigo (celular + Supabase local)",
       "cwd": "mobile/aluga_comigo",
       "request": "launch",
       "type": "dart",
-      "args": ["--dart-define-from-file=dart_defines.device.json"]
+      "args": [
+        "--dart-define-from-file=dart_defines.device.json"
+      ]
     }
   ]
 }

@@ -1,6 +1,8 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_desired_immobile.dart';
+import 'package:aluga_comigo/app/modules/auth/domain/enums/user_housework.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_life_style.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
@@ -21,6 +23,80 @@ class CustomerProfileCard extends StatelessWidget {
     required this.getSkillName,
     this.onBackPressed,
   });
+
+  void _showHouseworksDialog(BuildContext context) {
+    final selected = customer.houseworks
+        .where((item) => item != UserHousework.none)
+        .toList();
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Tarefas Domésticas',
+                  style: GoogleFonts.rubik(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const Gap(12),
+                if (selected.isEmpty)
+                  Text(
+                    'Nenhuma tarefa selecionada.',
+                    style: GoogleFonts.rubik(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  )
+                else
+                  ...selected.map(
+                    (housework) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            color: Colors.orange,
+                            size: 20,
+                          ),
+                          const Gap(8),
+                          Expanded(
+                            child: Text(
+                              housework.title,
+                              style: GoogleFonts.rubik(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                const Gap(16),
+                PrimaryButtonWidget(
+                  title: 'OK',
+                  onTap: () => Navigator.of(dialogContext).pop(),
+                  borderRadius: 10,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +172,7 @@ class CustomerProfileCard extends StatelessWidget {
                     backgroundColor: Colors.orange,
                     fixedSize: const Size(100, 0),
                   ),
-                  onPressed: () {},
+                  onPressed: () => _showHouseworksDialog(context),
                   child: Text(
                     "Ver",
                     style: GoogleFonts.rubik(

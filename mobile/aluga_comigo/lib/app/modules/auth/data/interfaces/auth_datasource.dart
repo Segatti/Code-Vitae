@@ -7,4 +7,5 @@ abstract class IAuthDatasource {
   Future<CustomerModel> signupUser(SignupUserInput input);
   Future<CustomerModel> signupImmobile(SignupImmobileInput input);
   Future<bool> recoverPassword(String input);
+  Future<bool> isSignupEmailAvailable(String email, String password);
 }

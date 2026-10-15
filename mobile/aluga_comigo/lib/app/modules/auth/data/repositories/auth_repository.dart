@@ -83,6 +83,29 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
+  Future<Return<bool>> isSignupEmailAvailable(
+    String email,
+    String password,
+  ) async {
+    try {
+      final available = await datasource.isSignupEmailAvailable(
+        email,
+        password,
+      );
+      return Right(available);
+    } catch (e, s) {
+      debugPrint(s.toString());
+      if (e is Failure) {
+        return Left(e);
+      } else {
+        return Left(
+          FailureRepository(message: e.toString()),
+        );
+      }
+    }
+  }
+
+  @override
   Future<Return<User>> signupUser(SignupUserInput input) async {
     try {
       final response = await datasource.signupUser(input);

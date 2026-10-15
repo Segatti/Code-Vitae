@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
+import 'package:aluga_comigo/app/shared/presenter/helpers/card_flip_photo_picker.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../../../shared/data/services/camera_service.dart';
 import '../../../../shared/data/services/supabase_storage_service.dart';
 import '../../../../shared/data/services/session_service.dart';
 import '../../domain/usecases/get_profile.dart';
@@ -39,7 +39,7 @@ abstract interface class IProfileController extends ChangeNotifier {
 
   Future<bool> getCustomer();
   Future<bool> updateProfile();
-  Future<void> selectPhotos();
+  Future<void> selectPhotos(BuildContext context);
   Future<bool> uploadPhotos();
   void removePhoto(int index);
   void removeSelectedPhoto(int index);
@@ -50,13 +50,11 @@ abstract interface class IProfileController extends ChangeNotifier {
 class ProfileController extends IProfileController {
   final IGetProfile _getProfile;
   final IUpdateProfile _updateProfile;
-  final CameraService _cameraService;
   final SupabaseStorageService _storageService;
 
   ProfileController(
     this._getProfile,
     this._updateProfile,
-    this._cameraService,
     this._storageService,
   );
 
@@ -165,7 +163,7 @@ class ProfileController extends IProfileController {
   }
 
   @override
-  Future<void> selectPhotos() async {
+  Future<void> selectPhotos(BuildContext context) async {
     try {
       // Verifica se já atingiu o limite de fotos
       if (!canAddMorePhotos) {
@@ -175,7 +173,7 @@ class ProfileController extends IProfileController {
         return;
       }
 
-      final photos = await _cameraService.getMultiImage();
+      final photos = await CardFlipPhotoPicker.pickMultiple(context);
       if (photos.isNotEmpty) {
         final existingPhotos = customer?.photos.length ?? 0;
         final currentSelectedCount = selectedPhotos.length;
@@ -191,7 +189,9 @@ class ProfileController extends IProfileController {
 
         // Adiciona as novas fotos à lista existente, respeitando o limite
         final photosToAdd = photos.take(availableSlots).toList();
-        selectedPhotos.addAll(photosToAdd);
+        selectedPhotos.addAll(
+          photosToAdd.map((file) => XFile(file.path)),
+        );
 
         if (photos.length > availableSlots) {
           errorMessage =

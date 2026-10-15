@@ -63,7 +63,7 @@ class ChatContactListingBanner extends StatelessWidget {
                       const Gap(2),
                       Text(
                         title.isNotEmpty ? title : 'Imóvel',
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.rubik(
                           fontSize: 15,

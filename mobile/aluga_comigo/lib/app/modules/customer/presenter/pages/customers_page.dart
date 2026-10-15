@@ -3,12 +3,12 @@ import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/swipable_stack_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/feed_empty_state.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
 import '../../data/models/customer_model.dart';
@@ -151,22 +151,11 @@ class _CustomersPageState extends State<CustomersPage> {
         }
 
         if (list.isEmpty && !controller.hasMore) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.heart_broken, size: 48),
-                Gap(16),
-                Text(
-                  "Você chegou ao fim, volte mais tarde!",
-                  style: GoogleFonts.rubik(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Gap(50),
-              ],
-            ),
+          return FeedEmptyState(
+            kind: FeedEmptyKind.people,
+            isRefreshing: controller.loadingList.contains('initialize') ||
+                controller.loadingList.contains('getCustomers'),
+            onRefresh: () => controller.initialize(),
           );
         }
 
@@ -351,7 +340,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 const Gap(16),
               ],
             ),
-            const Gap(90),
+            const Gap(100),
           ],
         );
       },

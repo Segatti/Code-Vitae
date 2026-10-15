@@ -46,7 +46,9 @@ class ProfilePhotosEditor extends StatelessWidget {
             children: [
               const Gap(16),
               if (controller.canAddMorePhotos) ...[
-                _AddPhotoTile(onTap: controller.selectPhotos),
+                _AddPhotoTile(
+                  onTap: () => controller.selectPhotos(context),
+                ),
                 const Gap(16),
               ],
               Expanded(
@@ -66,42 +68,53 @@ class ProfilePhotosEditor extends StatelessWidget {
                                   : 'pending-${controller.selectedPhotos[index - _savedCount].path}',
                             ),
                             padding: const EdgeInsets.only(right: 16),
-                            child: ReorderableDragStartListener(
-                              index: index,
-                              child: _PhotoTile(
-                                onRemove: () {
-                                  if (isSaved) {
-                                    controller.removePhoto(index);
-                                  } else {
-                                    controller.removeSelectedPhoto(
-                                      index - _savedCount,
-                                    );
-                                  }
-                                },
-                                child: isSaved
-                                    ? CachedNetworkImage(
-                                        imageUrl:
-                                            controller.customer!.photos[index],
-                                        width: _tileWidth,
-                                        height: _tileHeight,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (_, _, _) =>
-                                            const SizedBox.shrink(),
-                                      )
-                                    : Image.file(
-                                        File(
-                                          controller
-                                              .selectedPhotos[index -
-                                                  _savedCount]
-                                              .path,
-                                        ),
-                                        width: _tileWidth,
-                                        height: _tileHeight,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, _, _) =>
-                                            const SizedBox.shrink(),
-                                      ),
+                            child: _PhotoTile(
+                              dragHandle: ReorderableDragStartListener(
+                                index: index,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.45),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Icon(
+                                    Icons.drag_handle,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ),
                               ),
+                              onRemove: () {
+                                if (isSaved) {
+                                  controller.removePhoto(index);
+                                } else {
+                                  controller.removeSelectedPhoto(
+                                    index - _savedCount,
+                                  );
+                                }
+                              },
+                              child: isSaved
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          controller.customer!.photos[index],
+                                      width: _tileWidth,
+                                      height: _tileHeight,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (_, _, _) =>
+                                          const SizedBox.shrink(),
+                                    )
+                                  : Image.file(
+                                      File(
+                                        controller
+                                            .selectedPhotos[index - _savedCount]
+                                            .path,
+                                      ),
+                                      width: _tileWidth,
+                                      height: _tileHeight,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, _, _) =>
+                                          const SizedBox.shrink(),
+                                    ),
                             ),
                           );
                         },
@@ -165,10 +178,12 @@ class _PhotoTile extends StatelessWidget {
   const _PhotoTile({
     required this.child,
     required this.onRemove,
+    required this.dragHandle,
   });
 
   final Widget child;
   final VoidCallback onRemove;
+  final Widget dragHandle;
 
   @override
   Widget build(BuildContext context) {
@@ -221,18 +236,7 @@ class _PhotoTile extends StatelessWidget {
         Positioned(
           left: 4,
           bottom: 4,
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.45),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: const Icon(
-              Icons.drag_handle,
-              color: Colors.white,
-              size: 18,
-            ),
-          ),
+          child: dragHandle,
         ),
       ],
     );

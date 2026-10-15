@@ -189,12 +189,11 @@ class _ChatPageState extends State<ChatPage> {
           icon: const Icon(Icons.chevron_left, size: 40, color: Colors.grey),
         ),
         titleSpacing: 0,
-        title: InkWell(
-          onTap: () => ChatContactFlipDialog.show(context, widget.chat),
-          borderRadius: BorderRadius.circular(8),
-          child: Row(
-            children: [
-              ClipRRect(
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () => ChatContactFlipDialog.show(context, widget.chat),
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: otherDisplay.photo.isNotEmpty
                     ? CachedNetworkImage(
@@ -210,10 +209,17 @@ class _ChatPageState extends State<ChatPage> {
                         child: const Icon(Icons.person),
                       ),
               ),
-              const Gap(16),
-              Expanded(
+            ),
+            const Gap(16),
+            Expanded(
+              child: InkWell(
+                onTap: () =>
+                    ChatContactFlipDialog.show(context, widget.chat),
+                borderRadius: BorderRadius.circular(8),
                 child: Text(
                   otherDisplay.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.rubik(
                     fontSize: 18,
                     color: Colors.black,
@@ -221,9 +227,9 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
               ),
-              const Gap(16),
-            ],
-          ),
+            ),
+            const Gap(16),
+          ],
         ),
       ),
       body: Column(

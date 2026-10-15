@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_user.dart';
 import 'package:aluga_comigo/app/modules/chats/chat_navigation.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/entities/chat.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/chats_list_controller.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/pages/contact_list_page.dart';
+import 'package:aluga_comigo/app/modules/chats/ui/widgets/chat_contact_flip_dialog.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -27,7 +30,13 @@ class _ChatsListPageState extends State<ChatsListPage> {
   @override
   void initState() {
     super.initState();
-    controller.initialize();
+    unawaited(controller.initialize());
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    unawaited(controller.initialize());
   }
 
   bool get _isImmobileOwner =>
@@ -187,9 +196,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                             itemBuilder: (context, index) {
                                               final chat = chats[index];
                                               final sessionId =
-                                                  SessionService
-                                                      .customer
-                                                      ?.id ??
+                                                  SessionService.customer?.id ??
                                                   '';
                                               final otherDisplay =
                                                   sessionId.isEmpty
@@ -200,24 +207,24 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                   : chat.otherParticipantDisplay(
                                                       sessionId,
                                                     );
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  ChatNavigation.open(
-                                                    context,
-                                                    chat,
-                                                  );
-                                                },
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  height: 55,
-                                                  color: Colors.white,
-                                                  padding:
-                                                      const EdgeInsetsDirectional.symmetric(
-                                                        horizontal: 8,
-                                                      ),
-                                                  child: Row(
-                                                    children: [
-                                                      ClipRRect(
+                                              return Container(
+                                                width: double.infinity,
+                                                height: 55,
+                                                color: Colors.white,
+                                                padding:
+                                                    const EdgeInsetsDirectional.symmetric(
+                                                      horizontal: 8,
+                                                    ),
+                                                child: Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        ChatContactFlipDialog.show(
+                                                          context,
+                                                          chat,
+                                                        );
+                                                      },
+                                                      child: ClipRRect(
                                                         borderRadius:
                                                             BorderRadius.circular(
                                                               10,
@@ -246,8 +253,19 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                                 ),
                                                               ),
                                                       ),
-                                                      const Gap(8),
-                                                      Expanded(
+                                                    ),
+                                                    const Gap(8),
+                                                    Expanded(
+                                                      child: GestureDetector(
+                                                        behavior:
+                                                            HitTestBehavior
+                                                                .opaque,
+                                                        onTap: () {
+                                                          ChatNavigation.open(
+                                                            context,
+                                                            chat,
+                                                          );
+                                                        },
                                                         child: Column(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
@@ -259,6 +277,10 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                                   child: Text(
                                                                     otherDisplay
                                                                         .name,
+                                                                    maxLines: 1,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                     style: GoogleFonts.rubik(
                                                                       fontSize:
                                                                           16,
@@ -305,8 +327,8 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                           ],
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               );
                                             },
@@ -366,7 +388,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
                 ],
               ),
             ),
-            const Gap(90),
+            const Gap(100),
           ],
         );
       },

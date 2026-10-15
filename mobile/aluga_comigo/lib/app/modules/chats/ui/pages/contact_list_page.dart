@@ -345,7 +345,7 @@ class _ContactTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.rubik(height: 1),

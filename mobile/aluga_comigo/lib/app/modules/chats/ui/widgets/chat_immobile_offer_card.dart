@@ -60,7 +60,7 @@ class ChatImmobileOfferCard extends StatelessWidget {
                         offer.immobileName.isNotEmpty
                             ? offer.immobileName
                             : 'Ver anúncio',
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.rubik(
                           fontSize: 14,

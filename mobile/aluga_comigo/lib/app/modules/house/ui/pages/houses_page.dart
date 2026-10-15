@@ -2,7 +2,6 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
@@ -11,6 +10,7 @@ import '../../../../shared/domain/helpers/maps_helper.dart';
 import '../../../../shared/presenter/helpers/incomplete_profile_helper.dart';
 import '../../../../shared/presenter/helpers/inventory_prompt_helper.dart';
 import '../../../../shared/presenter/helpers/swipable_stack_helper.dart';
+import '../../../../shared/presenter/widgets/feed_empty_state.dart';
 import '../../../customer/data/models/customer_model.dart';
 import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/presenter/widgets/house_flip_card.dart';
@@ -147,22 +147,11 @@ class _HousesPageState extends State<HousesPage> {
         }
 
         if (list.isEmpty && !controller.hasMore) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.heart_broken, size: 48),
-                Gap(16),
-                Text(
-                  "Você chegou ao fim, volte mais tarde!",
-                  style: GoogleFonts.rubik(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Gap(50),
-              ],
-            ),
+          return FeedEmptyState(
+            kind: FeedEmptyKind.houses,
+            isRefreshing: controller.loadingList.contains('initialize') ||
+                controller.loadingList.contains('getHouses'),
+            onRefresh: () => controller.initialize(),
           );
         }
 
@@ -348,7 +337,7 @@ class _HousesPageState extends State<HousesPage> {
                 const Gap(16),
               ],
             ),
-            const Gap(90),
+            const Gap(100),
           ],
         );
       },

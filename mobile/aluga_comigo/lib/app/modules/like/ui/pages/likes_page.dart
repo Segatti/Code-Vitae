@@ -345,7 +345,7 @@ class _LikesPageState extends State<LikesPage> {
                       child: _immobileOwnerSection(group),
                     ),
                   ),
-                const Gap(90),
+                const Gap(100),
               ],
             ),
           );
@@ -363,7 +363,7 @@ class _LikesPageState extends State<LikesPage> {
                 title: 'Curtidas(${controller.likes.length})',
                 items: controller.likes,
               ),
-              const Gap(90),
+              const Gap(100),
             ],
           ),
         );

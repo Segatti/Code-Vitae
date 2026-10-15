@@ -19,6 +19,37 @@ class SupabaseDatabaseService {
 
   SupabaseDatabaseService(this._client, this._api);
 
+  Future<bool> isSignupEmailAvailable(String email) async {
+    try {
+      final data = await _client.rpc(
+        'is_signup_email_available',
+        params: {'p_email': email.trim()},
+      );
+      if (data is bool) {
+        return data;
+      }
+      throw FailureDatasource(
+        message: 'Não foi possível verificar o email',
+      );
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      if (error.code == 'PGRST202' ||
+          error.message.contains('is_signup_email_available')) {
+        throw FailureDatasource(
+          message: 'rpc_missing:is_signup_email_available',
+        );
+      }
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    } catch (error) {
+      if (error is FailureDatasource) {
+        rethrow;
+      }
+      throw FailureDatasource(message: error.toString());
+    }
+  }
+
   Future<Either<FailureDatasource, void>> createAccount(Json data) async {
     try {
       await _client.from('accounts').upsert(AccountMapper.toRow(data));
@@ -536,7 +567,7 @@ class SupabaseDatabaseService {
     try {
       final rows = await _client
           .from('person_matches')
-          .select('match_type, person_id, persons(*, accounts(*))')
+          .select('match_type, person_id, persons(*)')
           .eq('immobile_id', immobileId)
           .inFilter('match_type', ['like', 'favorite'])
           .order('created_at', ascending: false);
@@ -548,6 +579,8 @@ class SupabaseDatabaseService {
           .where((id) => id.isNotEmpty)
           .toSet()
           .toList();
+
+      if (personIds.isEmpty) return [];
 
       final myRows = await _client
           .from('immobile_matches')

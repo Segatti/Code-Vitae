@@ -1,5 +1,7 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_desired_immobile.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
+import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/history_opinion_badge.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
@@ -19,6 +21,7 @@ class PersonFlipCard extends StatelessWidget {
   final double? height;
   final VoidCallback? onBackPressed;
   final Future<bool> Function(FlipCardController)? onVerMaisPressed;
+  final MatchType? historyOpinion;
 
   const PersonFlipCard({
     super.key,
@@ -28,6 +31,7 @@ class PersonFlipCard extends StatelessWidget {
     this.height,
     this.onBackPressed,
     this.onVerMaisPressed,
+    this.historyOpinion,
   });
 
   @override
@@ -69,15 +73,30 @@ class PersonFlipCard extends StatelessWidget {
               Positioned.fill(
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 170),
-                  child: CardPhotoPager(
-                    photoUrls: customer.photos,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(20),
-                    ),
-                    placeholder: const Icon(
-                      Icons.person,
-                      size: 100,
-                    ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CardPhotoPager(
+                        photoUrls: customer.photos,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                        placeholder: const Icon(
+                          Icons.person,
+                          size: 100,
+                        ),
+                      ),
+                      if (historyOpinion != null &&
+                          historyOpinion != MatchType.none)
+                        Positioned(
+                          top: 12,
+                          right: 12,
+                          child: HistoryOpinionBadge(
+                            matchType: historyOpinion!,
+                            customer: customer,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

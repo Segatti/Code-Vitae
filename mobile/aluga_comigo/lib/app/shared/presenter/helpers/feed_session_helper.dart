@@ -1,3 +1,4 @@
+import 'package:aluga_comigo/app/modules/chats/ui/controllers/chats_list_controller.dart';
 import 'package:aluga_comigo/app/modules/customer/presenter/controllers/customers_controller.dart';
 import 'package:aluga_comigo/app/modules/house/ui/controllers/houses_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -9,5 +10,17 @@ class FeedSessionHelper {
   static void resetSwipeFeeds() {
     inject<ICustomersController>().resetFeedState();
     inject<IHousesController>().resetFeedState();
+  }
+
+  static void resetChatsList() {
+    try {
+      inject<IChatsListController>().resetSessionState();
+    } catch (_) {}
+  }
+
+  /// Limpa estado em memória ao trocar de conta (singletons).
+  static void resetSessionScopedControllers() {
+    resetSwipeFeeds();
+    resetChatsList();
   }
 }

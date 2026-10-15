@@ -33,6 +33,8 @@ class LikesController extends ILikesController {
   final IGetIncomingLikes _getIncomingLikes;
   final IMatchCustomer _matchCustomer;
 
+  Future<void>? _loadLikesFuture;
+
   LikesController(this._getIncomingLikes, this._matchCustomer);
 
   @override
@@ -84,26 +86,44 @@ class LikesController extends ILikesController {
 
   @override
   Future<Unit> initialize() async {
-    if (loadingList.contains('loadLikes')) return unit;
+    final inFlight = _loadLikesFuture;
+    if (inFlight != null) {
+      await inFlight;
+      return unit;
+    }
 
+    final load = _loadLikes();
+    _loadLikesFuture = load;
+    try {
+      await load;
+    } finally {
+      if (identical(_loadLikesFuture, load)) {
+        _loadLikesFuture = null;
+      }
+    }
+    return unit;
+  }
+
+  Future<void> _loadLikes() async {
     loadingList.add('loadLikes');
     notifyListeners();
 
-    final result = await _getIncomingLikes();
-
-    loadingList.remove('loadLikes');
-    result.fold(
-      (data) {
-        items = data;
-        errorMessage = '';
-      },
-      (_) {
-        errorMessage = 'Erro ao carregar curtidas';
-        items = [];
-      },
-    );
-    notifyListeners();
-    return unit;
+    try {
+      final result = await _getIncomingLikes.call();
+      result.fold(
+        (data) {
+          items = data;
+          errorMessage = '';
+        },
+        (_) {
+          errorMessage = 'Erro ao carregar curtidas';
+          items = [];
+        },
+      );
+    } finally {
+      loadingList.remove('loadLikes');
+      notifyListeners();
+    }
   }
 
   @override

@@ -87,7 +87,7 @@ class _StartPageState extends State<StartPage>
     final storage = inject<SecureStorageService>();
     await auth.signOut();
     await storage.deleteData(StorageKey.user);
-    FeedSessionHelper.resetSwipeFeeds();
+    FeedSessionHelper.resetSessionScopedControllers();
     SessionService.clearCustomer();
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -366,23 +366,23 @@ class _StartPageState extends State<StartPage>
 
   BottomNavigationBarItem _navBarItem({
     required String asset,
+    required String label,
     required int itemIndex,
     required int currentIndex,
     required String semanticsLabel,
   }) {
+    final selected = currentIndex == itemIndex;
     return BottomNavigationBarItem(
       icon: Semantics(
         label: semanticsLabel,
         button: true,
-        child: SvgPicture.asset(
-          asset,
-          width: 35,
-          height: 35,
-          colorFilter: currentIndex == itemIndex
-              ? ColorFilter.mode(AppColors.primaryOrange, BlendMode.srcIn)
-              : null,
+        child: _BottomNavIconLabel(
+          asset: asset,
+          label: label,
+          selected: selected,
         ),
       ),
+      label: '',
     );
   }
 
@@ -394,18 +394,21 @@ class _StartPageState extends State<StartPage>
         ? [
             _navBarItem(
               asset: IconsAsset.home,
+              label: 'Imóveis',
               itemIndex: 0,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_feed_imoveis',
             ),
             _navBarItem(
               asset: IconsAsset.likes,
+              label: 'Curtidas',
               itemIndex: 1,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_curtidas',
             ),
             _navBarItem(
               asset: IconsAsset.chat,
+              label: 'Chat',
               itemIndex: 2,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_chats',
@@ -414,24 +417,28 @@ class _StartPageState extends State<StartPage>
         : [
             _navBarItem(
               asset: IconsAsset.customer,
+              label: 'Pessoas',
               itemIndex: 0,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_feed_pessoas',
             ),
             _navBarItem(
               asset: IconsAsset.home,
+              label: 'Imóveis',
               itemIndex: 1,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_feed_imoveis',
             ),
             _navBarItem(
               asset: IconsAsset.likes,
+              label: 'Curtidas',
               itemIndex: 2,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_curtidas',
             ),
             _navBarItem(
               asset: IconsAsset.chat,
+              label: 'Chat',
               itemIndex: 3,
               currentIndex: currentIndex,
               semanticsLabel: 'nav_chats',
@@ -442,7 +449,7 @@ class _StartPageState extends State<StartPage>
       snakeViewColor: Colors.white,
       shadowColor: const Color.fromARGB(255, 170, 110, 110),
       elevation: 10,
-      height: 60,
+      height: 68,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -572,6 +579,48 @@ class _StartPageState extends State<StartPage>
           child: _buildBody(),
         ),
       ),
+    );
+  }
+}
+
+class _BottomNavIconLabel extends StatelessWidget {
+  const _BottomNavIconLabel({
+    required this.asset,
+    required this.label,
+    required this.selected,
+  });
+
+  final String asset;
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? AppColors.primaryOrange : Colors.blueGrey;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          asset,
+          width: 28,
+          height: 28,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
+        const Gap(2),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.rubik(
+            fontSize: 10,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: color,
+            height: 1,
+          ),
+        ),
+      ],
     );
   }
 }

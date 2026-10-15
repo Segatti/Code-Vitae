@@ -2,6 +2,7 @@ import 'package:aluga_comigo/app/modules/auth/data/datasources/auth_supabase_dat
 import 'package:aluga_comigo/app/modules/auth/data/interfaces/auth_datasource.dart';
 import 'package:aluga_comigo/app/modules/auth/data/repositories/auth_repository.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/repositories/auth_repository.dart';
+import 'package:aluga_comigo/app/modules/auth/domain/usecases/check_signup_email_available.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/usecases/login_user.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/usecases/recover_password_user.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/usecases/signup_immobile.dart';
@@ -13,6 +14,9 @@ class AuthDiModule extends Module {
   void register(ModularContext c) {
     c.addSingleton<IAuthRepository>(AuthRepository.new);
     c.addSingleton<IAuthDatasource>(AuthSupabaseDatasource.new);
+    c.addLazySingleton<ICheckSignupEmailAvailable>(
+      CheckSignupEmailAvailable.new,
+    );
     c.addLazySingleton<ILoginUser>(LoginUser.new);
     c.addLazySingleton<ISignupUser>(SignupUser.new);
     c.addLazySingleton<ISignupImmobile>(SignupImmobile.new);

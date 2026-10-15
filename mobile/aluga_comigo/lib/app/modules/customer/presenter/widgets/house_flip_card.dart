@@ -1,5 +1,7 @@
 import 'package:aluga_comigo/app/modules/auth/domain/enums/type_immobile.dart';
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
+import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/history_opinion_badge.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:aluga_comigo/app/shared/ui/widgets/card_photo_pager.dart';
 import 'package:aluga_comigo/app/shared/ui/widgets/power_up_badge.dart';
@@ -16,6 +18,7 @@ class HouseFlipCard extends StatelessWidget {
   final Future<bool> Function(FlipCardController)? onVerMaisPressed;
   final VoidCallback? onVerNoMapaPressed;
   final String? ownerDisplayName;
+  final MatchType? historyOpinion;
 
   const HouseFlipCard({
     super.key,
@@ -25,6 +28,7 @@ class HouseFlipCard extends StatelessWidget {
     this.onVerMaisPressed,
     this.onVerNoMapaPressed,
     this.ownerDisplayName,
+    this.historyOpinion,
   });
 
   String _getTypeImmobileTitle(TypeImmobile type) {
@@ -32,7 +36,7 @@ class HouseFlipCard extends StatelessWidget {
       case TypeImmobile.house:
         return "Casa";
       case TypeImmobile.apartment:
-        return "Apartamento";
+        return 'Apê';
       case TypeImmobile.none:
         return "";
     }
@@ -80,16 +84,31 @@ class HouseFlipCard extends StatelessWidget {
                 left: 0,
                 right: 0,
                 bottom: 170,
-                child: CardPhotoPager(
-                  photoUrls: immobile.photos,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                  placeholder: Icon(
-                    Icons.home,
-                    size: 100,
-                    color: Colors.grey.shade400,
-                  ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CardPhotoPager(
+                      photoUrls: immobile.photos,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                      placeholder: Icon(
+                        Icons.home,
+                        size: 100,
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                    if (historyOpinion != null &&
+                        historyOpinion != MatchType.none)
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: HistoryOpinionBadge(
+                          matchType: historyOpinion!,
+                          customer: immobile,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Column(

@@ -16,6 +16,7 @@ import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_hel
 import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
@@ -55,6 +56,10 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
 
   bool get _hasActivePowerUp =>
       SessionService.customer?.hasActivePowerUp ?? false;
+
+  bool get _isLikedOrFavorite =>
+      _currentMatchType == MatchType.like ||
+      _currentMatchType == MatchType.favorite;
 
   int _calculateAge(String dateBirth) {
     if (dateBirth.isEmpty) return 0;
@@ -227,11 +232,13 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
                   calculateAge: _calculateAge,
                   getSkillName: _getSkillName,
                   height: maxHeight,
+                  historyOpinion: _currentMatchType,
                   onVerMaisPressed: _checkProfileAndShowDetails,
                 ),
                 ImmobileCustomerModel immobile => HouseFlipCard(
                   immobile: immobile,
                   height: maxHeight,
+                  historyOpinion: _currentMatchType,
                   onVerMaisPressed: _checkProfileAndShowDetails,
                   onVerNoMapaPressed: () {
                     MapsHelper.openLocation(
@@ -243,61 +250,72 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
               },
             ),
             const Gap(12),
-            Row(
-              children: [
-                const Gap(16),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _submitting
-                        ? null
-                        : () => _onMatchAction(MatchType.unlike),
-                    child: _actionButton(
-                      borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(50),
-                        right: Radius.circular(20),
-                      ),
-                      asset: IconsAsset.unlike,
-                    ),
+            if (_isLikedOrFavorite)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GestureDetector(
+                  onTap: _submitting
+                      ? null
+                      : () => _onMatchAction(MatchType.unlike),
+                  child: _actionButton(
+                    borderRadius: BorderRadius.circular(50),
+                    asset: IconsAsset.unlike,
+                    label: 'Não gostei',
                   ),
                 ),
-                const Gap(16),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _submitting
-                        ? null
-                        : () => _onMatchAction(MatchType.favorite),
-                    child: _actionButton(
-                      borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(10),
-                        right: Radius.circular(10),
+              )
+            else
+              Row(
+                children: [
+                  const Gap(16),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _submitting
+                          ? null
+                          : () => _onMatchAction(MatchType.favorite),
+                      child: _actionButton(
+                        borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(50),
+                          right: Radius.circular(20),
+                        ),
+                        icon: _isImmobileTarget
+                            ? SvgPicture.asset(
+                                IconsAsset.chat,
+                                width: 40,
+                                height: 40,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.amber,
+                                  BlendMode.srcIn,
+                                ),
+                              )
+                            : null,
+                        asset: _isImmobileTarget
+                            ? null
+                            : IconsAsset.superStar1,
                       ),
-                      asset: _isImmobileTarget
-                          ? IconsAsset.superChat1
-                          : IconsAsset.favorite,
                     ),
                   ),
-                ),
-                const Gap(16),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _submitting
-                        ? null
-                        : () => _onMatchAction(MatchType.like),
-                    child: _actionButton(
-                      borderRadius: const BorderRadius.horizontal(
-                        right: Radius.circular(50),
-                        left: Radius.circular(20),
+                  const Gap(16),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _submitting
+                          ? null
+                          : () => _onMatchAction(MatchType.like),
+                      child: _actionButton(
+                        borderRadius: const BorderRadius.horizontal(
+                          right: Radius.circular(50),
+                          left: Radius.circular(20),
+                        ),
+                        asset: IconsAsset.like,
                       ),
-                      asset: IconsAsset.like,
                     ),
                   ),
-                ),
-                const Gap(16),
-              ],
-            ),
+                  const Gap(16),
+                ],
+              ),
             if (_submitting)
               const Padding(
-                padding: EdgeInsets.only(top: 8, bottom: 8),
+                padding: EdgeInsets.only(top: 8, bottom: 16),
                 child: SizedBox(
                   width: 24,
                   height: 24,
@@ -305,32 +323,23 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
                 ),
               )
             else
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: Text(
-                  _matchTypeLabel(_currentMatchType),
-                  style: GoogleFonts.rubik(fontSize: 12, color: Colors.black54),
-                ),
-              ),
+              const Gap(16),
           ],
         ),
       ),
     );
   }
 
-  static String _matchTypeLabel(MatchType type) {
-    return switch (type) {
-      MatchType.like => 'Sua opinião atual: Curtiu',
-      MatchType.favorite => 'Sua opinião atual: Favorito',
-      MatchType.unlike => 'Sua opinião atual: Não curtiu',
-      MatchType.none => '',
-    };
-  }
-
   Widget _actionButton({
     required BorderRadius borderRadius,
-    required String asset,
+    String? asset,
+    Widget? icon,
+    String? label,
   }) {
+    assert(asset != null || icon != null);
+
+    final iconWidget = icon ?? Image.asset(asset!, width: 40, height: 40);
+
     return Container(
       decoration: BoxDecoration(
         boxShadow: const [
@@ -349,8 +358,24 @@ class _HistoryFlipDialogState extends State<HistoryFlipDialog> {
         borderRadius: borderRadius,
       ),
       height: 56,
-      padding: const EdgeInsets.all(8),
-      child: Image.asset(asset, width: 40, height: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: label == null
+          ? Center(child: iconWidget)
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                iconWidget,
+                const Gap(12),
+                Text(
+                  label,
+                  style: GoogleFonts.rubik(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

@@ -9,4 +9,8 @@ abstract class IAuthRepository {
   Future<Return<User>> signupUser(SignupUserInput input);
   Future<Return<User>> signupImmobile(SignupImmobileInput input);
   Future<Return<bool>> recoverPassword(String input);
+  Future<Return<bool>> isSignupEmailAvailable(
+    String email,
+    String password,
+  );
 }
