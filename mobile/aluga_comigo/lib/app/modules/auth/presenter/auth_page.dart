@@ -1,6 +1,7 @@
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:delayed_display/delayed_display.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,15 +33,42 @@ class _AuthPageState extends State<AuthPage> {
   bool? haveAccount;
   Color color = const Color(0xFF2C29A3);
   final PageController _controller = PageController();
+  final GlobalKey<SignupCardWidgetState> _signupCardKey = GlobalKey();
   bool showAnimation = true;
   final controller = inject<IAuthController>();
   final storage = inject<SecureStorageService>();
 
+  int get _authPageIndex =>
+      _controller.hasClients ? (_controller.page ?? 0).round() : 0;
+
+  bool get _onInitialChoice => _authPageIndex == 0;
+
   void backPage() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       color = const Color(0xFF2C29A3);
+      haveAccount = null;
     });
     _controller.previousPage(duration: Durations.short4, curve: Curves.linear);
+  }
+
+  void _handleSystemBack() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_onInitialChoice) {
+      SystemNavigator.pop();
+      return;
+    }
+
+    if (haveAccount == true) {
+      backPage();
+      return;
+    }
+
+    if (_signupCardKey.currentState?.handleSystemBack() ?? false) {
+      return;
+    }
+
+    backPage();
   }
 
   void nextPage() {
@@ -59,6 +87,9 @@ class _AuthPageState extends State<AuthPage> {
   @override
   void initState() {
     super.initState();
+    _controller.addListener(() {
+      if (mounted) setState(() {});
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       setState(() {
         showAnimation = false;
@@ -67,9 +98,21 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return PopScope(
+      canPop: _onInitialChoice,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleSystemBack();
+      },
+      child: Scaffold(
       body: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         alignment: Alignment.center,
@@ -221,6 +264,7 @@ class _AuthPageState extends State<AuthPage> {
                                 },
                               )
                             : SignupCardWidget(
+                                key: _signupCardKey,
                                 backPage: backPage,
                                 signup: (input) async {
                                   showAdaptiveDialog(
@@ -256,6 +300,7 @@ class _AuthPageState extends State<AuthPage> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

@@ -18,12 +18,14 @@ class SignupCardWidget extends StatefulWidget {
   });
 
   @override
-  State<SignupCardWidget> createState() => _SignupCardWidgetState();
+  State<SignupCardWidget> createState() => SignupCardWidgetState();
 }
 
-class _SignupCardWidgetState extends State<SignupCardWidget> {
+class SignupCardWidgetState extends State<SignupCardWidget> {
   bool? isUserAccount;
   final PageController _controller = PageController();
+  final GlobalKey<UserStepWidgetState> _userStepKey = GlobalKey();
+  final GlobalKey<ImmobileStepWidgetState> _immobileStepKey = GlobalKey();
 
   void backPage() {
     _controller.previousPage(
@@ -37,6 +39,23 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
       duration: Durations.short4,
       curve: Curves.linear,
     );
+  }
+
+  int get _currentPage =>
+      _controller.hasClients ? (_controller.page ?? 0).round() : 0;
+
+  /// Botão voltar do sistema dentro do fluxo de cadastro.
+  bool handleSystemBack() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_currentPage >= 1) {
+      final stepHandled = (isUserAccount ?? true)
+          ? (_userStepKey.currentState?.handleSystemBack() ?? false)
+          : (_immobileStepKey.currentState?.handleSystemBack() ?? false);
+      if (stepHandled) return true;
+      backPage();
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -123,10 +142,12 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
         ),
         (isUserAccount ?? true)
             ? UserStepWidget(
+                key: _userStepKey,
                 backPage: backPage,
                 signup: widget.signup,
               )
             : ImmobileStepWidget(
+                key: _immobileStepKey,
                 backPage: backPage,
                 signup: widget.signup,
               ),

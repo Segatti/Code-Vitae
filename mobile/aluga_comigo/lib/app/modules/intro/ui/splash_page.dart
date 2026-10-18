@@ -31,24 +31,45 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    Future<void>(() async {
+      final storage = inject<SecureStorageService>();
+      final introDone = await storage.getData(StorageKey.intro);
+      final savedUser = await storage.getData(StorageKey.user);
+      final skipIntroAnimation =
+          introDone == 'false' && savedUser != null;
+
+      if (skipIntroAnimation) {
+        if (!mounted) return;
+        setState(() {
+          showTitle = false;
+          borderLogo = 80;
+          widthContainer = 100;
+        });
+        await _runStartupChecksAndNavigate();
+        return;
+      }
+
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
       if (!mounted) return;
       setState(() {
         showTitle = false;
         borderLogo = 80;
         widthContainer = 100;
       });
-      Future.delayed(const Duration(seconds: 1), () async {
-        if (!mounted) return;
-        await _refreshSystemConfig();
-        if (!mounted) return;
-        await _ensureAppActive();
-        if (!mounted) return;
-        await _ensureBackendHealthy();
-        if (!mounted) return;
-        await _navigateAfterSplash();
-      });
+      await Future<void>.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
+      await _runStartupChecksAndNavigate();
     });
+  }
+
+  Future<void> _runStartupChecksAndNavigate() async {
+    await _refreshSystemConfig();
+    if (!mounted) return;
+    await _ensureAppActive();
+    if (!mounted) return;
+    await _ensureBackendHealthy();
+    if (!mounted) return;
+    await _navigateAfterSplash();
   }
 
   Future<void> _refreshSystemConfig() async {

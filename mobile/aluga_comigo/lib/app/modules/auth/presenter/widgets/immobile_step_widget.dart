@@ -34,10 +34,10 @@ class ImmobileStepWidget extends StatefulWidget {
   });
 
   @override
-  State<ImmobileStepWidget> createState() => _ImmobileStepWidgetState();
+  State<ImmobileStepWidget> createState() => ImmobileStepWidgetState();
 }
 
-class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
+class ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   final _controller = CarouselSliderController();
   var indexCarousel = 0;
   final _immobileInput = SignupImmobileInput();
@@ -80,6 +80,7 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
   }
 
   void backPage() {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (indexCarousel == 0) {
       widget.backPage();
     } else {
@@ -87,6 +88,13 @@ class _ImmobileStepWidgetState extends State<ImmobileStepWidget> {
       indexCarousel--;
     }
     setState(() {});
+  }
+
+  /// Botão voltar do sistema: etapas internas do cadastro imóvel.
+  bool handleSystemBack() {
+    if (indexCarousel <= 0) return false;
+    backPage();
+    return true;
   }
 
   void nextPage() {

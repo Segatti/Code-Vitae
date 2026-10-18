@@ -33,10 +33,10 @@ class UserStepWidget extends StatefulWidget {
   });
 
   @override
-  State<UserStepWidget> createState() => _UserStepWidgetState();
+  State<UserStepWidget> createState() => UserStepWidgetState();
 }
 
-class _UserStepWidgetState extends State<UserStepWidget> {
+class UserStepWidgetState extends State<UserStepWidget> {
   final PageController _controller = PageController();
   var indexCarousel = 0;
   final _userInput = SignupUserInput();
@@ -93,6 +93,13 @@ class _UserStepWidgetState extends State<UserStepWidget> {
       indexCarousel--;
     }
     setState(() {});
+  }
+
+  /// Botão voltar do sistema: etapas internas do cadastro pessoa.
+  bool handleSystemBack() {
+    if (indexCarousel <= 0) return false;
+    backPage();
+    return true;
   }
 
   void nextPage() {
