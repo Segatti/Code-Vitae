@@ -7,6 +7,8 @@ import 'package:styled_text/styled_text.dart';
 import '../../../shared/data/services/aluga_comigo_api_client.dart';
 import '../../../shared/data/services/secure_storage_service.dart';
 import '../../../shared/data/services/session_service.dart';
+import '../../../shared/domain/entities/system_config.dart';
+import '../../../shared/domain/usecases/load_system_config.dart';
 import '../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../shared/presenter/widgets/app_message_dialog.dart';
 import '../../auth/domain/enums/type_user.dart';
@@ -38,11 +40,58 @@ class _SplashPageState extends State<SplashPage> {
       });
       Future.delayed(const Duration(seconds: 1), () async {
         if (!mounted) return;
+        await _refreshSystemConfig();
+        if (!mounted) return;
+        await _ensureAppActive();
+        if (!mounted) return;
         await _ensureBackendHealthy();
         if (!mounted) return;
         await _navigateAfterSplash();
       });
     });
+  }
+
+  Future<void> _refreshSystemConfig() async {
+    final load = inject<ILoadSystemConfig>();
+    final result = await load();
+    result.fold(
+      SessionService.setSystemConfig,
+      (_) => SessionService.setSystemConfig(SystemConfig.defaults()),
+    );
+  }
+
+  Future<void> _ensureAppActive() async {
+    while (mounted) {
+      if (SessionService.systemConfig.appActive) return;
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) {
+          return PopScope(
+            canPop: false,
+            child: AppMessageDialogShell(
+              title: 'Manutenção',
+              message:
+                  'Aplicativo em manutenção, tente novamente mais tarde...',
+              messageAlign: TextAlign.center,
+              actions: [
+                AppMessageDialogShell.primaryButton(
+                  dialogContext,
+                  label: 'Recarregar',
+                  onPressed: () async {
+                    await _refreshSystemConfig();
+                    if (SessionService.systemConfig.appActive &&
+                        dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 
   Future<void> _ensureBackendHealthy() async {

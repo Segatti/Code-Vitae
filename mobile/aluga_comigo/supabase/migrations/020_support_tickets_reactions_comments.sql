@@ -26,6 +26,8 @@ CREATE INDEX IF NOT EXISTS idx_support_ticket_comments_ticket_created
 ALTER TABLE public.support_ticket_reactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.support_ticket_comments ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS support_ticket_reactions_select_own
+  ON public.support_ticket_reactions;
 CREATE POLICY support_ticket_reactions_select_own
   ON public.support_ticket_reactions FOR SELECT
   TO authenticated
@@ -36,6 +38,8 @@ CREATE POLICY support_ticket_reactions_select_own
     )
   );
 
+DROP POLICY IF EXISTS support_ticket_reactions_insert_own
+  ON public.support_ticket_reactions;
 CREATE POLICY support_ticket_reactions_insert_own
   ON public.support_ticket_reactions FOR INSERT
   TO authenticated
@@ -47,17 +51,23 @@ CREATE POLICY support_ticket_reactions_insert_own
     )
   );
 
+DROP POLICY IF EXISTS support_ticket_reactions_update_own
+  ON public.support_ticket_reactions;
 CREATE POLICY support_ticket_reactions_update_own
   ON public.support_ticket_reactions FOR UPDATE
   TO authenticated
   USING (account_id = auth.uid())
   WITH CHECK (account_id = auth.uid());
 
+DROP POLICY IF EXISTS support_ticket_reactions_delete_own
+  ON public.support_ticket_reactions;
 CREATE POLICY support_ticket_reactions_delete_own
   ON public.support_ticket_reactions FOR DELETE
   TO authenticated
   USING (account_id = auth.uid());
 
+DROP POLICY IF EXISTS support_ticket_comments_select_own
+  ON public.support_ticket_comments;
 CREATE POLICY support_ticket_comments_select_own
   ON public.support_ticket_comments FOR SELECT
   TO authenticated
@@ -68,6 +78,8 @@ CREATE POLICY support_ticket_comments_select_own
     )
   );
 
+DROP POLICY IF EXISTS support_ticket_comments_insert_open
+  ON public.support_ticket_comments;
 CREATE POLICY support_ticket_comments_insert_open
   ON public.support_ticket_comments FOR INSERT
   TO authenticated

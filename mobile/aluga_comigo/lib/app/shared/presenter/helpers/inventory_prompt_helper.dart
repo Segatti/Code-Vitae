@@ -60,6 +60,12 @@ abstract final class InventoryPromptHelper {
     );
 
     if (goToStore == true && context.mounted) {
+      if (!SessionService.systemConfig.storeActive) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('A loja está temporariamente indisponível.')),
+        );
+        return;
+      }
       context.pushNamed(storeRoute);
     }
   }
@@ -76,6 +82,12 @@ abstract final class InventoryPromptHelper {
     );
 
     if (goToStore == true && context.mounted) {
+      if (!SessionService.systemConfig.storeActive) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('A loja está temporariamente indisponível.')),
+        );
+        return;
+      }
       context.pushNamed(storeRoute);
     }
   }

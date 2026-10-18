@@ -48,4 +48,11 @@ app.*.map.json
 # Credenciais locais (geradas por scripts/initDev.sh)
 dart_defines.json
 dart_defines.android.json
+
+# Firebase (não commitar credenciais — ver docs/fcm-setup.md e firebase_config.dart)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase-service-account.json
 dart_defines.device.json
+lib/firebase_options.dart
+firebase.json

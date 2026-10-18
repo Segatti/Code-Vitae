@@ -45,6 +45,10 @@ class AuthSupabaseDatasource implements IAuthDatasource {
         await database.setAccountActive(true);
       } catch (_) {}
 
+      try {
+        await database.recordLastLogin();
+      } catch (_) {}
+
       final customer = await _readCustomerByUid(uid);
       return switch (customer) {
         PersonCustomerModel() => customer

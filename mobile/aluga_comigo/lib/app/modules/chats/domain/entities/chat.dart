@@ -9,11 +9,15 @@ class Chat {
   final String personPhoto;
   final String immobileName;
   final String immobilePhoto;
+  final String immobileOwnerAccountId;
+  final String immobileOwnerName;
+  final String immobileOwnerPhoto;
   final String otherName;
   final String otherPhoto;
   final String lastMessagePreview;
   final DateTime? lastMessageAt;
   final bool isPersonPeerChat;
+  final int unreadCount;
 
   /// Imóvel pelo qual a conversa foi aberta (metadado em [chats], não mensagem).
   String get contactListingId => immobileId;
@@ -27,11 +31,15 @@ class Chat {
     this.personPhoto = '',
     this.immobileName = '',
     this.immobilePhoto = '',
+    this.immobileOwnerAccountId = '',
+    this.immobileOwnerName = '',
+    this.immobileOwnerPhoto = '',
     required this.otherName,
     required this.otherPhoto,
     this.lastMessagePreview = '',
     this.lastMessageAt,
     this.isPersonPeerChat = false,
+    this.unreadCount = 0,
   });
 
   String otherParticipantAccountId(String currentAccountId) {
@@ -57,6 +65,9 @@ class Chat {
         'person_photo': personPhoto,
         'immobile_name': immobileName,
         'immobile_photo': immobilePhoto,
+        'immobile_owner_account_id': immobileOwnerAccountId,
+        'immobile_owner_name': immobileOwnerName,
+        'immobile_owner_photo': immobileOwnerPhoto,
       },
       currentAccountId,
     );

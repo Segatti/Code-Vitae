@@ -1,5 +1,6 @@
 import 'package:blur/blur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../data/models/incoming_like_model.dart';
@@ -21,9 +22,12 @@ class IncomingLikesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.only(bottom: 16),
-        child: Text('Ninguém por aqui ainda.'),
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+          'Ninguém por aqui ainda.',
+          style: GoogleFonts.rubik(color: Colors.black54, fontSize: 14),
+        ),
       );
     }
 
@@ -78,18 +82,32 @@ class _PhotoTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: SizedBox(
-          width: width,
-          height: width * (16 / 9),
-          child: blur
-              ? Blur(
-                  blur: 5,
-                  blurColor: Colors.white,
-                  child: SizedBox.expand(child: image),
-                )
-              : image,
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white, width: 2),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 8,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: SizedBox(
+            width: width,
+            height: width * (16 / 9),
+            child: blur
+                ? Blur(
+                    blur: 5,
+                    blurColor: Colors.white,
+                    child: SizedBox.expand(child: image),
+                  )
+                : image,
+          ),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import '../models/chat_message_model.dart';
 import '../models/chat_model.dart';
 
 abstract interface class IChatDatasource {
+  Future<ChatModel?> getChatById(String chatId);
   Future<List<ChatModel>> listChats();
   Future<List<ChatMessageModel>> listMessages(
     String chatId, {
@@ -45,6 +46,14 @@ class ChatDatasource implements IChatDatasource {
   final SupabaseRealtimeService realtime;
 
   const ChatDatasource(this.database, this.realtime);
+
+  @override
+  Future<ChatModel?> getChatById(String chatId) async {
+    final userId = SessionService.customer!.id;
+    final row = await database.findChatForUser(userId, chatId);
+    if (row == null) return null;
+    return ChatModel.fromMap(row);
+  }
 
   @override
   Future<List<ChatModel>> listChats() async {

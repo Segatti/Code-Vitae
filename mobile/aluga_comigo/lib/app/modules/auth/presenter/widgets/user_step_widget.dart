@@ -16,9 +16,9 @@ import 'package:chiclet/chiclet.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../helpers/signup_access_validation.dart';
 import '../helpers/signup_email_validation.dart';
 import 'card_auth_widget.dart';
 import 'signup_password_field.dart';
@@ -150,16 +150,7 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           },
                           textAlignVertical: TextAlignVertical.center,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (String? text) {
-                            String data = text?.trim() ?? '';
-                            if (data.isEmpty) {
-                              return "* Campo obrigatório";
-                            }
-                            if (!data.contains("@")) {
-                              return "Insira um email valido";
-                            }
-                            return null;
-                          },
+                          validator: SignupAccessValidation.emailError,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -167,26 +158,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             isDense: true,
                             hintText: 'Email',
                             hintStyle: GoogleFonts.rubik(fontSize: 18),
-                            suffixIcon: RepaintBoundary(
-                              child: JustTheTooltip(
-                                backgroundColor: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
-                                content: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  child: Text(
-                                    'Deve ser um email válido!',
-                                    style: GoogleFonts.rubik(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                isModal: true,
-                                child: const Icon(Icons.help),
-                              ),
-                            ),
                             contentPadding: const EdgeInsets.only(
                               left: 24.0,
                               bottom: 8.0,
@@ -256,11 +227,18 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                           onPressed: _isCheckingAccessEmail
                               ? null
                               : () async {
-                                  if (!(_formKey.currentState?.validate() ??
-                                      false)) {
-                                    setState(() {
-                                      haveError = true;
-                                    });
+                                  final accessError =
+                                      SignupAccessValidation.combinedMessage(
+                                        email: _emailController.text,
+                                        password: _passwordController.text,
+                                      );
+                                  if (accessError != null) {
+                                    setState(() => haveError = true);
+                                    _formKey.currentState?.validate();
+                                    notificationError(
+                                      'Dados de acesso',
+                                      accessError,
+                                    );
                                     return;
                                   }
 
@@ -357,26 +335,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             isDense: true,
                             hintStyle: GoogleFonts.rubik(fontSize: 18),
                             errorStyle: const TextStyle(fontSize: 0),
-                            suffixIcon: RepaintBoundary(
-                              child: JustTheTooltip(
-                                backgroundColor: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
-                                content: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  child: Text(
-                                    'Campo obrigatório',
-                                    style: GoogleFonts.rubik(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                isModal: true,
-                                child: const Icon(Icons.help),
-                              ),
-                            ),
                             contentPadding: const EdgeInsets.only(
                               left: 24.0,
                               bottom: 8.0,
@@ -432,26 +390,6 @@ class _UserStepWidgetState extends State<UserStepWidget> {
                             hintText: 'Telefone',
                             hintStyle: GoogleFonts.rubik(fontSize: 18),
                             errorStyle: const TextStyle(fontSize: 0),
-                            suffixIcon: RepaintBoundary(
-                              child: JustTheTooltip(
-                                backgroundColor: Colors.black,
-                                borderRadius: BorderRadius.circular(20),
-                                content: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  child: Text(
-                                    '(DDD) 9XXXX XXXX',
-                                    style: GoogleFonts.rubik(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                isModal: true,
-                                child: const Icon(Icons.help),
-                              ),
-                            ),
                             contentPadding: const EdgeInsets.only(
                               left: 24.0,
                               bottom: 8.0,

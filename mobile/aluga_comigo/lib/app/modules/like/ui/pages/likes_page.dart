@@ -51,10 +51,10 @@ class _LikesPageState extends State<LikesPage> {
     final accountId = SessionService.customer?.id ?? '';
     if (accountId.isEmpty) return;
     final database = inject<SupabaseDatabaseService>();
-    final result = await database.readImmobile(accountId);
+    final result = await database.readAccount(accountId);
     if (!mounted) return;
     result.fold((_) {}, (map) {
-      final name = map['name']?.toString().trim() ?? '';
+      final name = map['contact_name']?.toString().trim() ?? '';
       if (name.isNotEmpty) {
         setState(() => _ownerDisplayName = name);
       }
@@ -156,6 +156,8 @@ class _LikesPageState extends State<LikesPage> {
             children: [
               Text(
                 typeLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.rubik(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -166,7 +168,8 @@ class _LikesPageState extends State<LikesPage> {
                   immobile.price.toMoney(),
                   style: GoogleFonts.rubik(
                     fontSize: 14,
-                    color: Colors.black87,
+                    color: const Color(0xFF2C29A3),
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               Text(
@@ -176,14 +179,124 @@ class _LikesPageState extends State<LikesPage> {
             ],
           ),
         ),
-        TextButton(
-          onPressed: () => _showImmobileFlip(immobile),
-          child: Text(
-            'Ver',
-            style: GoogleFonts.rubik(fontWeight: FontWeight.w600),
+        Material(
+          color: const Color(0xFF2C29A3),
+          borderRadius: BorderRadius.circular(20),
+          child: InkWell(
+            onTap: () => _showImmobileFlip(immobile),
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              child: Text(
+                'Ver',
+                style: GoogleFonts.rubik(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _sectionHeader({
+    required String title,
+    required int count,
+    required IconData icon,
+    required Color accent,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: 0.14),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: accent, size: 24),
+        ),
+        const Gap(12),
+        Expanded(
+          child: Text(
+            title,
+            style: GoogleFonts.rubik(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        Container(
+          constraints: const BoxConstraints(minWidth: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            '$count',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.rubik(
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              color: accent,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _likesExpansionCard({
+    required Widget header,
+    required List<Widget> children,
+    bool initiallyExpanded = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.white24,
+            offset: Offset(-10, -10),
+            blurRadius: 40,
+          ),
+          BoxShadow(
+            color: Colors.black26,
+            offset: Offset(10, 10),
+            blurRadius: 20,
+          ),
+        ],
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.black12,
+        ),
+        child: ExpansionTile(
+          initiallyExpanded: initiallyExpanded,
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          expandedAlignment: Alignment.topLeft,
+          shape: const Border(),
+          collapsedShape: const Border(),
+          iconColor: const Color(0xFF2C29A3),
+          collapsedIconColor: Colors.black45,
+          title: header,
+          children: [
+            const Divider(height: 1, thickness: 1, color: Color(0xFFE8E8E8)),
+            const Gap(16),
+            ...children,
+          ],
+        ),
+      ),
     );
   }
 
@@ -196,108 +309,60 @@ class _LikesPageState extends State<LikesPage> {
 
   Widget _expansionSection({
     required String title,
+    required int count,
+    required IconData icon,
+    required Color accent,
     required List<IncomingLikeModel> items,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF2F2F2),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.white24,
-            blurRadius: 40,
-            offset: Offset(-20, -20),
-          ),
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 40,
-            offset: Offset(20, 20),
-          ),
-        ],
+    return _likesExpansionCard(
+      header: _sectionHeader(
+        title: title,
+        count: count,
+        icon: icon,
+        accent: accent,
       ),
-      child: ExpansionTile(
-        title: Text(title, style: GoogleFonts.rubik()),
-        shape: const Border(),
-        childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
-        expandedAlignment: Alignment.topLeft,
-        children: [
-          const Divider(height: 1, thickness: 2),
-          const Gap(16),
-          Row(
-            children: [
-              Expanded(
-                child: IncomingLikesGrid(
-                  items: items,
-                  blurForItem: _shouldBlurItem,
-                  onItemTap: _onItemTap,
-                ),
-              ),
-            ],
-          ),
-          const Gap(16),
-        ],
-      ),
+      children: [
+        IncomingLikesGrid(
+          items: items,
+          blurForItem: _shouldBlurItem,
+          onItemTap: _onItemTap,
+        ),
+      ],
     );
   }
 
   Widget _immobileOwnerSection(ImmobileLikesGroup group) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF2F2F2),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.white24,
-            blurRadius: 40,
-            offset: Offset(-20, -20),
+    return _likesExpansionCard(
+      initiallyExpanded: true,
+      header: _immobileGroupHeader(group),
+      children: [
+        if (group.items.isEmpty)
+          Text(
+            'Ninguém curtiu ou favoritou este imóvel ainda.',
+            style: GoogleFonts.rubik(color: Colors.black54),
+          )
+        else
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Wrap(
+                spacing: constraints.maxWidth * .1 / 2,
+                runSpacing: 16,
+                children: [
+                  for (final item in group.items)
+                    MatchActionPersonCard(
+                      title: _personName(item),
+                      photoUrl: item.customer.photos.isNotEmpty
+                          ? item.customer.photos.first
+                          : '',
+                      matchType: item.matchType,
+                      width: constraints.maxWidth * .3,
+                      onTap: () => _onItemTap(item),
+                    ),
+                ],
+              );
+            },
           ),
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 40,
-            offset: Offset(20, 20),
-          ),
-        ],
-      ),
-      child: ExpansionTile(
-        initiallyExpanded: true,
-        title: _immobileGroupHeader(group),
-        shape: const Border(),
-        childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
-        expandedAlignment: Alignment.topLeft,
-        children: [
-          const Divider(height: 1, thickness: 2),
-          const Gap(16),
-          if (group.items.isEmpty)
-            Text(
-              'Ninguém curtiu ou favoritou este imóvel ainda.',
-              style: GoogleFonts.rubik(color: Colors.black54),
-            )
-          else
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return Wrap(
-                  spacing: constraints.maxWidth * .1 / 2,
-                  runSpacing: 16,
-                  children: [
-                    for (final item in group.items)
-                      MatchActionPersonCard(
-                        title: _personName(item),
-                        photoUrl: item.customer.photos.isNotEmpty
-                            ? item.customer.photos.first
-                            : '',
-                        matchType: item.matchType,
-                        width: constraints.maxWidth * .3,
-                        onTap: () => _onItemTap(item),
-                      ),
-                  ],
-                );
-              },
-            ),
-          const Gap(16),
-        ],
-      ),
+      ],
     );
   }
 
@@ -354,13 +419,30 @@ class _LikesPageState extends State<LikesPage> {
         return SingleChildScrollView(
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Text(
+                  'Quem te deu Super Star ou curtiu seu perfil',
+                  style: GoogleFonts.rubik(
+                    fontSize: 14,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+              const Gap(12),
               _expansionSection(
-                title: 'Super Star(${controller.superStars.length})',
+                title: 'Super Star',
+                count: controller.superStars.length,
+                icon: Icons.star_rounded,
+                accent: const Color(0xFFFFC850),
                 items: controller.superStars,
               ),
               const Gap(16),
               _expansionSection(
-                title: 'Curtidas(${controller.likes.length})',
+                title: 'Curtidas',
+                count: controller.likes.length,
+                icon: Icons.favorite_rounded,
+                accent: const Color(0xFF2C29A3),
                 items: controller.likes,
               ),
               const Gap(100),

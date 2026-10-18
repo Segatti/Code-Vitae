@@ -4,7 +4,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../domain/entities/chat.dart';
+import '../../domain/usecases/list_chats.dart';
 import '../../domain/usecases/watch_chats.dart';
+import '../../../../shared/presenter/lifecycle/app_lifecycle_bridge.dart';
 
 abstract interface class IChatsListController extends ChangeNotifier {
   String? errorMessage;
@@ -12,6 +14,7 @@ abstract interface class IChatsListController extends ChangeNotifier {
   List<Chat> chats = [];
 
   Future<Unit> initialize();
+  Future<void> refreshChats();
   void resetSessionState();
   @override
   void dispose();
@@ -19,13 +22,19 @@ abstract interface class IChatsListController extends ChangeNotifier {
 
 class ChatsListController extends IChatsListController {
   final IWatchChats _watchChats;
+  final IListChats _listChats;
 
-  ChatsListController(this._watchChats);
+  ChatsListController(this._watchChats, this._listChats);
 
   StreamSubscription<List<Chat>>? _subscription;
+  bool _resumeListenerRegistered = false;
 
   @override
   void resetSessionState() {
+    if (_resumeListenerRegistered) {
+      AppLifecycleBridge.removeResumeListener(_onAppResume);
+      _resumeListenerRegistered = false;
+    }
     _subscription?.cancel();
     _subscription = null;
     chats = [];
@@ -36,6 +45,11 @@ class ChatsListController extends IChatsListController {
 
   @override
   Future<Unit> initialize() async {
+    if (!_resumeListenerRegistered) {
+      AppLifecycleBridge.addResumeListener(_onAppResume);
+      _resumeListenerRegistered = true;
+    }
+
     await _subscription?.cancel();
     _subscription = null;
 
@@ -62,8 +76,29 @@ class ChatsListController extends IChatsListController {
     return unit;
   }
 
+  void _onAppResume() {
+    unawaited(refreshChats());
+  }
+
+  @override
+  Future<void> refreshChats() async {
+    final result = await _listChats();
+    result.fold(
+      (list) {
+        chats = list;
+        errorMessage = null;
+        notifyListeners();
+      },
+      (_) {},
+    );
+  }
+
   @override
   void dispose() {
+    if (_resumeListenerRegistered) {
+      AppLifecycleBridge.removeResumeListener(_onAppResume);
+      _resumeListenerRegistered = false;
+    }
     _subscription?.cancel();
     super.dispose();
   }

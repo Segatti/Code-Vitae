@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/chat_message_insert_event.dart';
 import '../models/notification_insert_event.dart';
 
 class SupabaseRealtimeService {
@@ -11,12 +12,39 @@ class SupabaseRealtimeService {
   StreamController<void>? _inboxEvents;
   int _inboxListenerCount = 0;
   RealtimeChannel? _chatInboxChannel;
+  String? _inboxUserId;
+
+  StreamController<ChatMessageInsertEvent>? _incomingChatMessageEvents;
+  int _incomingChatMessageListenerCount = 0;
 
   final Map<String, StreamController<void>> _messageEvents = {};
   final Map<String, int> _messageListenerCounts = {};
   final Map<String, RealtimeChannel> _messageChannels = {};
+  final Map<String, ({String chatId, String table})> _messageChannelParams = {};
 
   SupabaseRealtimeService(this._client);
+
+  Future<void> resumeFromBackground() async {
+    if (_inboxListenerCount > 0 || _incomingChatMessageListenerCount > 0) {
+      await _resetChatInboxChannel();
+      if (_inboxListenerCount > 0) {
+        _ensureChatInboxChannel();
+      }
+    }
+
+    final keys = _messageListenerCounts.keys.toList();
+    for (final channelKey in keys) {
+      if ((_messageListenerCounts[channelKey] ?? 0) <= 0) continue;
+      final params = _messageChannelParams[channelKey];
+      if (params == null) continue;
+      await _resetMessageChannel(channelKey);
+      _ensureMessageChannel(
+        channelKey: channelKey,
+        chatId: params.chatId,
+        table: params.table,
+      );
+    }
+  }
 
   Stream<void> watchChatInboxChanges() {
     _inboxEvents ??= StreamController<void>.broadcast(
@@ -33,6 +61,26 @@ class SupabaseRealtimeService {
       },
     );
     return _inboxEvents!.stream;
+  }
+
+  Stream<ChatMessageInsertEvent> watchIncomingChatMessages(String userId) {
+    _inboxUserId = userId;
+    _incomingChatMessageEvents ??= StreamController<ChatMessageInsertEvent>.broadcast(
+      onListen: () {
+        _incomingChatMessageListenerCount++;
+        _ensureChatInboxChannel();
+      },
+      onCancel: () {
+        _incomingChatMessageListenerCount--;
+        if (_incomingChatMessageListenerCount <= 0) {
+          _incomingChatMessageListenerCount = 0;
+          if (_inboxListenerCount <= 0) {
+            unawaited(_resetChatInboxChannel());
+          }
+        }
+      },
+    );
+    return _incomingChatMessageEvents!.stream;
   }
 
   Stream<void> watchChatMessages({
@@ -73,6 +121,40 @@ class SupabaseRealtimeService {
     }
   }
 
+  void _emitIncomingChatMessage(ChatMessageInsertEvent event) {
+    final controller = _incomingChatMessageEvents;
+    if (controller != null && !controller.isClosed) {
+      controller.add(event);
+    }
+  }
+
+  void _onChatMessageInsert(
+    PostgresChangePayload payload, {
+    required bool isPersonPeerChat,
+  }) {
+    _emitInboxChange();
+    if (payload.eventType != PostgresChangeEvent.insert) return;
+
+    final userId = _inboxUserId ?? _client.auth.currentUser?.id ?? '';
+    if (userId.isEmpty) return;
+
+    final record = payload.newRecord;
+    final senderId = record['sender_id']?.toString() ?? '';
+    if (senderId.isEmpty || senderId == userId) return;
+
+    final chatId = record['chat_id']?.toString() ?? '';
+    if (chatId.isEmpty) return;
+
+    _emitIncomingChatMessage(
+      ChatMessageInsertEvent(
+        chatId: chatId,
+        senderId: senderId,
+        preview: record['content']?.toString() ?? '',
+        isPersonPeerChat: isPersonPeerChat,
+      ),
+    );
+  }
+
   void _emitMessageChange(String channelKey) {
     final controller = _messageEvents[channelKey];
     if (controller != null && !controller.isClosed) {
@@ -83,35 +165,39 @@ class SupabaseRealtimeService {
   void _ensureChatInboxChannel() {
     if (_chatInboxChannel != null) return;
 
-    final userId = _client.auth.currentUser?.id ?? 'anon';
+    final userId =
+        _inboxUserId ?? _client.auth.currentUser?.id ?? 'anon';
+    _inboxUserId ??= userId == 'anon' ? null : userId;
     final channel = _client.channel('chat-inbox-$userId');
 
-    void emit(PostgresChangePayload _) => _emitInboxChange();
+    void emitMeta(PostgresChangePayload payload) => _emitInboxChange();
 
     channel
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',
           table: 'chats',
-          callback: emit,
+          callback: emitMeta,
         )
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',
           table: 'person_peer_chats',
-          callback: emit,
+          callback: emitMeta,
         )
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',
           table: 'messages',
-          callback: emit,
+          callback: (payload) =>
+              _onChatMessageInsert(payload, isPersonPeerChat: false),
         )
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
           schema: 'public',
           table: 'person_peer_messages',
-          callback: emit,
+          callback: (payload) =>
+              _onChatMessageInsert(payload, isPersonPeerChat: true),
         );
 
     channel.subscribe((status, error) {
@@ -126,12 +212,16 @@ class SupabaseRealtimeService {
     _chatInboxChannel = channel;
   }
 
-  void _teardownChatInboxChannel() {
+  Future<void> _resetChatInboxChannel() async {
     final channel = _chatInboxChannel;
     _chatInboxChannel = null;
     if (channel != null) {
-      unawaited(_client.removeChannel(channel));
+      await _client.removeChannel(channel);
     }
+  }
+
+  void _teardownChatInboxChannel() {
+    unawaited(_resetChatInboxChannel());
   }
 
   void _ensureMessageChannel({
@@ -140,6 +230,8 @@ class SupabaseRealtimeService {
     required String table,
   }) {
     if (_messageChannels.containsKey(channelKey)) return;
+
+    _messageChannelParams[channelKey] = (chatId: chatId, table: table);
 
     final channel = _client.channel('chat-msgs-$channelKey');
 
@@ -170,11 +262,16 @@ class SupabaseRealtimeService {
     _messageChannels[channelKey] = channel;
   }
 
-  void _teardownMessageChannel(String channelKey) {
+  Future<void> _resetMessageChannel(String channelKey) async {
     final channel = _messageChannels.remove(channelKey);
     if (channel != null) {
-      unawaited(_client.removeChannel(channel));
+      await _client.removeChannel(channel);
     }
+  }
+
+  void _teardownMessageChannel(String channelKey) {
+    unawaited(_resetMessageChannel(channelKey));
+    _messageChannelParams.remove(channelKey);
     final events = _messageEvents.remove(channelKey);
     if (events != null && !events.isClosed) {
       unawaited(events.close());
@@ -261,6 +358,7 @@ class SupabaseRealtimeService {
                         record['notification_type']?.toString() ?? '',
                     title: record['title']?.toString() ?? '',
                     body: record['body']?.toString() ?? '',
+                    referenceId: record['reference_id']?.toString(),
                   ),
                 );
               },

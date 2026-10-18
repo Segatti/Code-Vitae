@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aluga_comigo/app/shared/domain/constants/app_colors.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/location_permission_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
@@ -35,9 +36,12 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage>
     with SingleTickerProviderStateMixin {
+  static const _exitConfirmWindow = Duration(seconds: 2);
+
   bool isMenuOpen = false;
   bool hasLocationPermission = false;
   bool isCheckingPermission = true;
+  DateTime? _lastBackPressAt;
 
   late AnimationController _animationController;
   final _drawerKey = GlobalKey<SliderDrawerState>();
@@ -116,6 +120,42 @@ class _StartPageState extends State<StartPage>
     super.dispose();
   }
 
+  void _handleSystemBack() {
+    final drawer = _drawerKey.currentState;
+    if (drawer != null && drawer.isDrawerOpen) {
+      drawer.closeSlider();
+      return;
+    }
+
+    final rootNav = Navigator.of(context, rootNavigator: true);
+    if (rootNav.canPop()) {
+      rootNav.pop();
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastPress = _lastBackPressAt;
+    if (lastPress != null &&
+        now.difference(lastPress) <= _exitConfirmWindow) {
+      SystemNavigator.pop();
+      return;
+    }
+
+    _lastBackPressAt = now;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            'Toque em voltar novamente se deseja sair',
+            style: GoogleFonts.rubik(color: Colors.white),
+          ),
+          duration: _exitConfirmWindow,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   Widget _buildDrawer() {
     final isImmobileOwner =
         SessionService.customer?.typeUser == TypeUser.immobile;
@@ -185,12 +225,13 @@ class _StartPageState extends State<StartPage>
               ),
               const Gap(8),
             ],
-            _DrawerMenuItem(
-              icon: Icons.store,
-              label: 'Loja',
-              onTap: () => closeAnd(() => context.pushNamed('/store/')),
-            ),
-            const Gap(8),
+            if (SessionService.systemConfig.storeActive)
+              _DrawerMenuItem(
+                icon: Icons.store,
+                label: 'Loja',
+                onTap: () => closeAnd(() => context.pushNamed('/store/')),
+              ),
+            if (SessionService.systemConfig.storeActive) const Gap(8),
             const Spacer(),
             _DrawerMenuItem(
               icon: Icons.support_agent,
@@ -455,15 +496,22 @@ class _StartPageState extends State<StartPage>
       );
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: SliderDrawer(
-          key: _drawerKey,
-          sliderOpenSize: 80,
-          isDraggable: false,
-          appBar: _buildAppBar(),
-          slider: _buildDrawer(),
-          child: _buildBody(),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _handleSystemBack();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: SliderDrawer(
+            key: _drawerKey,
+            sliderOpenSize: 80,
+            isDraggable: false,
+            appBar: _buildAppBar(),
+            slider: _buildDrawer(),
+            child: _buildBody(),
+          ),
         ),
       ),
     );

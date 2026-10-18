@@ -872,21 +872,169 @@ class SupabaseDatabaseService {
     }
   }
 
+  Future<Map<String, int>> unreadMessageCountsByChat(String userId) async {
+    final counts = <String, int>{};
+    try {
+      final rows = await _client
+          .from('messages')
+          .select('chat_id')
+          .filter('read_at', 'is', null)
+          .neq('sender_id', userId);
+      for (final row in rows) {
+        final chatId = row['chat_id']?.toString() ?? '';
+        if (chatId.isEmpty) continue;
+        counts[chatId] = (counts[chatId] ?? 0) + 1;
+      }
+
+      final peerRows = await _client
+          .from('person_peer_messages')
+          .select('chat_id')
+          .filter('read_at', 'is', null)
+          .neq('sender_id', userId);
+      for (final row in peerRows) {
+        final chatId = row['chat_id']?.toString() ?? '';
+        if (chatId.isEmpty) continue;
+        counts[chatId] = (counts[chatId] ?? 0) + 1;
+      }
+      return counts;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  void _flattenChatListingJoin(Map<String, dynamic> row) {
+    final listing = row['immobiles'];
+    if (listing is! Map) return;
+    final listingMap = Map<String, dynamic>.from(listing);
+    row['immobile_owner_account_id'] =
+        listingMap['owner_account_id']?.toString() ?? '';
+    row.remove('immobiles');
+  }
+
+  Future<void> _ensureListingOwnerAccountIds(
+    List<Map<String, dynamic>> rows,
+  ) async {
+    final listingIds = <String>{};
+    for (final row in rows) {
+      final ownerId = row['immobile_owner_account_id']?.toString() ?? '';
+      if (ownerId.isNotEmpty) continue;
+      final listingId = row['immobile_id']?.toString() ?? '';
+      if (listingId.isNotEmpty) {
+        listingIds.add(listingId);
+      }
+    }
+    if (listingIds.isEmpty) return;
+
+    final listings = await _client
+        .from('immobiles')
+        .select('id, owner_account_id')
+        .inFilter('id', listingIds.toList());
+
+    final ownerByListing = <String, String>{};
+    for (final listing in listings) {
+      final map = Map<String, dynamic>.from(listing);
+      final id = map['id']?.toString() ?? '';
+      final ownerId = map['owner_account_id']?.toString() ?? '';
+      if (id.isNotEmpty && ownerId.isNotEmpty) {
+        ownerByListing[id] = ownerId;
+      }
+    }
+
+    for (final row in rows) {
+      if ((row['immobile_owner_account_id']?.toString() ?? '').isNotEmpty) {
+        continue;
+      }
+      final listingId = row['immobile_id']?.toString() ?? '';
+      final ownerId = ownerByListing[listingId];
+      if (ownerId != null) {
+        row['immobile_owner_account_id'] = ownerId;
+      }
+    }
+  }
+
+  Future<void> _preparePersonImmobileChatRows(
+    List<Map<String, dynamic>> rows,
+  ) async {
+    for (final row in rows) {
+      _flattenChatListingJoin(row);
+    }
+    await _ensureListingOwnerAccountIds(rows);
+    await _attachImmobileOwnerProfiles(rows);
+  }
+
+  Future<void> _attachImmobileOwnerProfiles(List<Map<String, dynamic>> rows) async {
+    final ownerIds = <String>{};
+    for (final row in rows) {
+      final ownerId = row['immobile_owner_account_id']?.toString() ?? '';
+      if (ownerId.isNotEmpty) {
+        ownerIds.add(ownerId);
+      }
+    }
+    if (ownerIds.isEmpty) return;
+
+    final accounts = await _client
+        .from('accounts')
+        .select('id, contact_name, immobiles(photos)')
+        .inFilter('id', ownerIds.toList());
+
+    final ownerById = <String, Map<String, dynamic>>{};
+    for (final account in accounts) {
+      final map = Map<String, dynamic>.from(account);
+      final id = map['id']?.toString() ?? '';
+      if (id.isNotEmpty) {
+        ownerById[id] = map;
+      }
+    }
+
+    for (final row in rows) {
+      final ownerId = row['immobile_owner_account_id']?.toString() ?? '';
+      final owner = ownerById[ownerId];
+      if (owner == null) continue;
+
+      final contactName = owner['contact_name']?.toString().trim() ?? '';
+      row['immobile_owner_name'] = contactName;
+
+      final immobile = owner['immobiles'];
+      Map<String, dynamic>? profileRow;
+      if (immobile is Map) {
+        profileRow = Map<String, dynamic>.from(immobile);
+      } else if (immobile is List && immobile.isNotEmpty) {
+        profileRow = Map<String, dynamic>.from(immobile.first as Map);
+      }
+      final photos = profileRow?['photos'];
+      if (photos is List && photos.isNotEmpty) {
+        row['immobile_owner_photo'] = photos.first?.toString() ?? '';
+      }
+    }
+  }
+
   Future<List<Json>> listChatsForUser(String userId) async {
     try {
+      final unreadByChat = await unreadMessageCountsByChat(userId);
+
       // RLS restringe às conversas do usuário (inclui dono do anúncio quando
       // immobile_id é o id do listing, não da conta).
       final rows = await _client
           .from('chats')
-          .select()
+          .select('*, immobiles(owner_account_id)')
           .order('last_message_at', ascending: false, nullsFirst: false);
 
-      final immobileChats = rows
+      final chatRows = rows
+          .map((row) => Map<String, dynamic>.from(row))
+          .toList();
+      await _preparePersonImmobileChatRows(chatRows);
+
+      final immobileChats = chatRows
           .map(
-            (row) => ChatMapper.fromRow(
-              Map<String, dynamic>.from(row),
-              userId,
-            ),
+            (row) {
+              final map = ChatMapper.fromRow(row, userId);
+              final id = map['id']?.toString() ?? '';
+              map['unreadCount'] = unreadByChat[id] ?? 0;
+              return map;
+            },
           )
           .toList();
 
@@ -898,10 +1046,15 @@ class SupabaseDatabaseService {
 
       final peerChats = peerRows
           .map(
-            (row) => PeerChatMapper.fromRow(
-              Map<String, dynamic>.from(row),
-              userId,
-            ),
+            (row) {
+              final map = PeerChatMapper.fromRow(
+                Map<String, dynamic>.from(row),
+                userId,
+              );
+              final id = map['id']?.toString() ?? '';
+              map['unreadCount'] = unreadByChat[id] ?? 0;
+              return map;
+            },
           )
           .toList();
 
@@ -920,6 +1073,40 @@ class SupabaseDatabaseService {
         return bDate.compareTo(aDate);
       });
       return merged;
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<Json?> findChatForUser(String userId, String chatId) async {
+    if (chatId.trim().isEmpty) return null;
+    try {
+      final peerRow = await _client
+          .from('person_peer_chats')
+          .select()
+          .eq('id', chatId)
+          .maybeSingle();
+      if (peerRow != null) {
+        return PeerChatMapper.fromRow(
+          Map<String, dynamic>.from(peerRow),
+          userId,
+        );
+      }
+
+      final row = await _client
+          .from('chats')
+          .select('*, immobiles(owner_account_id)')
+          .eq('id', chatId)
+          .maybeSingle();
+      if (row != null) {
+        final map = Map<String, dynamic>.from(row);
+        await _preparePersonImmobileChatRows([map]);
+        return ChatMapper.fromRow(map, userId);
+      }
+      return null;
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -990,12 +1177,35 @@ class SupabaseDatabaseService {
   Future<void> claimQuestReward(String questId) =>
       _api.claimQuestReward(questId);
 
+  Future<List<Json>> listConfigSystemEntries() async {
+    try {
+      final rows = await _client.from('config_system').select();
+      return rows
+          .map((row) => Map<String, dynamic>.from(row))
+          .map(
+            (row) => {
+              'key': row['key'],
+              'type': row['type'],
+              'value': row['value'],
+            },
+          )
+          .map((map) => Map<String, dynamic>.from(map))
+          .toList();
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<List<Json>> listUserNotifications(String accountId) async {
     try {
       final rows = await _client
           .from('user_notifications')
           .select()
           .eq('account_id', accountId)
+          .neq('notification_type', 'chatMessage')
           .order('created_at', ascending: false)
           .limit(100);
 
@@ -1007,6 +1217,7 @@ class SupabaseDatabaseService {
               'title': row['title'],
               'body': row['body'],
               'createdAt': row['created_at'],
+              'referenceId': row['reference_id'],
             },
           )
           .map((map) => Map<String, dynamic>.from(map))
@@ -1031,7 +1242,9 @@ class SupabaseDatabaseService {
           'p_immobile_id': immobileId,
         },
       );
-      return Map<String, dynamic>.from(row as Map);
+      final map = Map<String, dynamic>.from(row as Map);
+      await _preparePersonImmobileChatRows([map]);
+      return map;
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -1070,6 +1283,37 @@ class SupabaseDatabaseService {
           .maybeSingle();
       if (row == null) return null;
       return Map<String, dynamic>.from(row);
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> recordLastLogin() async {
+    try {
+      await _client.rpc('record_last_login');
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
+  Future<void> upsertDevicePushToken({
+    required String fcmToken,
+    required String platform,
+  }) async {
+    try {
+      await _client.rpc(
+        'upsert_device_push_token',
+        params: {
+          'p_fcm_token': fcmToken,
+          'p_platform': platform,
+        },
+      );
     } on PostgrestException catch (error) {
       debugPrint(error.toString());
       throw FailureDatasource(
@@ -1286,6 +1530,7 @@ class SupabaseDatabaseService {
           .from('user_notifications')
           .select('id')
           .eq('account_id', accountId)
+          .neq('notification_type', 'chatMessage')
           .gt('created_at', after.toUtc().toIso8601String());
 
       return rows.length;

@@ -35,6 +35,7 @@ Visão do que **já existe neste repositório** e do que **ainda está previsto*
 - [x] **Supabase Auth** (e-mail/senha)
 - [x] **Storage** (fotos de perfil / anúncios)
 - [x] **Realtime** (chat e inbox)
+- [x] **FCM** (push nativo de chat — ver [`docs/fcm-setup.md`](./docs/fcm-setup.md))
 - [x] Seed local de demonstração (`supabase/seed.sql`)
 - [x] Ambiente local via Docker + Supabase CLI (`scripts/initDev.sh`)
 - [x] Backend **Dart** (`backend/`, Postgres direto + JWT Supabase) para regras críticas de loja/missões

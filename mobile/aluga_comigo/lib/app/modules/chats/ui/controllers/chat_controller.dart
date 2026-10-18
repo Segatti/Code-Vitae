@@ -14,6 +14,8 @@ import '../../domain/usecases/offer_immobile_in_chat.dart';
 import '../../domain/usecases/send_message.dart';
 import '../../domain/usecases/send_super_chat_message.dart';
 import '../../domain/usecases/watch_messages.dart';
+import '../../presenter/active_chat_session.dart';
+import '../../../../shared/presenter/lifecycle/app_lifecycle_bridge.dart';
 
 abstract interface class IChatController extends ChangeNotifier {
   String? errorMessage;
@@ -57,9 +59,12 @@ class ChatController extends IChatController {
 
   @override
   Future<Unit> initialize(Chat chat) async {
+    AppLifecycleBridge.removeResumeListener(_onAppResume);
     await _messagesSubscription?.cancel();
     _messagesSubscription = null;
     _chat = chat;
+    ActiveChatSession.setOpenChat(chat.id);
+    AppLifecycleBridge.addResumeListener(_onAppResume);
     messages = [];
     contactListing = null;
     immobileOffers = [];
@@ -84,6 +89,10 @@ class ChatController extends IChatController {
     );
 
     return unit;
+  }
+
+  void _onAppResume() {
+    unawaited(loadMessages());
   }
 
   @override
@@ -243,6 +252,10 @@ class ChatController extends IChatController {
 
   @override
   void dispose() {
+    AppLifecycleBridge.removeResumeListener(_onAppResume);
+    if (ActiveChatSession.openChatId == _chat?.id) {
+      ActiveChatSession.setOpenChat(null);
+    }
     unawaited(_messagesSubscription?.cancel());
     _messagesSubscription = null;
     messageController.dispose();

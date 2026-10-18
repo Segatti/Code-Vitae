@@ -6,6 +6,7 @@ import '../entities/chat_immobile_offer.dart';
 import '../entities/chat_message.dart';
 
 abstract interface class IChatRepository {
+  AsyncResult<Chat> getChatById(String chatId);
   AsyncResult<List<Chat>> listChats();
   AsyncResult<List<ChatMessage>> listMessages(
     String chatId, {

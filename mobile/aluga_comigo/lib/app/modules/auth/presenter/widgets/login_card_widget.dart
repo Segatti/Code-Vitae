@@ -24,6 +24,10 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
   int tabSelected = 0;
   bool _obscurePassword = true;
 
+  void _dismissKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,6 +62,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                   TextFormField(
                     key: const ValueKey('login_email_field'),
                     controller: email,
+                    onTapOutside: (_) => _dismissKeyboard(),
                     onChanged: (_) {
                       if (haveError) {
                         if (_formKey.currentState?.validate() ?? false) {
@@ -91,7 +96,10 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                         fontSize: 18,
                       ),
                       contentPadding: const EdgeInsets.only(
-                          left: 24.0, bottom: 8.0, top: 8.0),
+                        left: 24.0,
+                        bottom: 8.0,
+                        top: 8.0,
+                      ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(25.7),
@@ -120,6 +128,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                   TextFormField(
                     key: const ValueKey('login_password_field'),
                     controller: password,
+                    onTapOutside: (_) => _dismissKeyboard(),
                     onChanged: (_) {
                       if (haveError) {
                         if (_formKey.currentState?.validate() ?? false) {
@@ -168,7 +177,10 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                         ),
                       ),
                       contentPadding: const EdgeInsets.only(
-                          left: 24.0, bottom: 8.0, top: 8.0),
+                        left: 24.0,
+                        bottom: 8.0,
+                        top: 8.0,
+                      ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: const BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(25.7),
@@ -198,7 +210,10 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                     children: [
                       Expanded(
                         child: ChicletAnimatedButton(
-                          onPressed: () => widget.backPage(),
+                          onPressed: () {
+                            _dismissKeyboard();
+                            widget.backPage();
+                          },
                           borderRadius: 50,
                           backgroundColor: Colors.red,
                           child: Text(
@@ -216,8 +231,11 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                         child: ChicletAnimatedButton(
                           key: const ValueKey('login_submit_button'),
                           onPressed: () {
+                            _dismissKeyboard();
                             if (_formKey.currentState?.validate() ?? false) {
                               widget.login(email.text, password.text);
+                            } else {
+                              setState(() => haveError = true);
                             }
                           },
                           borderRadius: 50,

@@ -6,6 +6,7 @@ class AppNotificationModel {
   final String title;
   final String body;
   final DateTime? createdAt;
+  final String? referenceId;
 
   const AppNotificationModel({
     required this.id,
@@ -13,6 +14,7 @@ class AppNotificationModel {
     required this.title,
     required this.body,
     this.createdAt,
+    this.referenceId,
   });
 
   factory AppNotificationModel.fromMap(Map<String, dynamic> map) {
@@ -28,6 +30,7 @@ class AppNotificationModel {
       title: map['title']?.toString() ?? '',
       body: map['body']?.toString() ?? '',
       createdAt: createdAt,
+      referenceId: map['referenceId']?.toString(),
     );
   }
 
@@ -37,5 +40,6 @@ class AppNotificationModel {
     title: title,
     body: body,
     createdAt: createdAt,
+    referenceId: referenceId,
   );
 }

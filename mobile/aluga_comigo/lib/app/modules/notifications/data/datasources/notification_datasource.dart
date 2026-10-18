@@ -71,6 +71,7 @@ class NotificationDatasource implements INotificationDatasource {
     return realtime.watchUserNotificationInserts(accountId).map(
           (event) => IncomingNotification(
             notificationType: event.notificationType,
+            referenceId: event.referenceId,
             title: event.title,
             body: event.body,
           ),

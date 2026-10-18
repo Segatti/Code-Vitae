@@ -33,6 +33,7 @@ class _SignupTermsDialogState extends State<SignupTermsDialog> {
     return AppMessageDialogShell(
       title: 'Termos de uso',
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           StyledText(

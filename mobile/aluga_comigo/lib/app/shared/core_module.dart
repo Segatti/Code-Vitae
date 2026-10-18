@@ -3,12 +3,17 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'data/datasources/system_config_datasource.dart';
+import 'data/repositories/system_config_repository.dart';
 import 'data/services/aluga_comigo_api_client.dart';
+import 'domain/repositories/system_config_repository.dart' as domain;
+import 'domain/usecases/load_system_config.dart';
 import 'data/services/camera_service.dart';
 import 'data/services/secure_storage_service.dart';
 import 'data/services/supabase_auth_service.dart';
 import 'data/services/supabase_database_service.dart';
 import 'data/services/supabase_realtime_service.dart';
+import 'data/services/fcm_push_service.dart';
 import 'data/services/local_push_notification_service.dart';
 import 'data/services/supabase_storage_service.dart';
 
@@ -23,6 +28,9 @@ class CoreModule extends Module {
       () => AlugaComigoApiClient(supabase: Supabase.instance.client),
     );
     c.addSingleton<SupabaseDatabaseService>(SupabaseDatabaseService.new);
+    c.addSingleton<ISystemConfigDatasource>(SystemConfigDatasource.new);
+    c.addSingleton<domain.ISystemConfigRepository>(SystemConfigRepository.new);
+    c.addSingleton<ILoadSystemConfig>(LoadSystemConfig.new);
     c.addSingleton<SupabaseRealtimeService>(SupabaseRealtimeService.new);
     c.addSingleton<SupabaseAuthService>(SupabaseAuthService.new);
     c.addSingleton<SupabaseStorageService>(SupabaseStorageService.new);
@@ -30,5 +38,6 @@ class CoreModule extends Module {
     c.addSingleton<LocalPushNotificationService>(
       LocalPushNotificationService.new,
     );
+    c.addSingleton<FcmPushService>(FcmPushService.new);
   }
 }

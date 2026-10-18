@@ -16,6 +16,10 @@ class ChatMapper {
       'personPhoto': row['person_photo']?.toString() ?? '',
       'immobileName': row['immobile_name']?.toString() ?? '',
       'immobilePhoto': row['immobile_photo']?.toString() ?? '',
+      'immobileOwnerAccountId':
+          row['immobile_owner_account_id']?.toString() ?? '',
+      'immobileOwnerName': row['immobile_owner_name']?.toString() ?? '',
+      'immobileOwnerPhoto': row['immobile_owner_photo']?.toString() ?? '',
       'otherName': display['otherName'],
       'otherPhoto': display['otherPhoto'],
       'lastMessagePreview': row['last_message_preview'] ?? '',

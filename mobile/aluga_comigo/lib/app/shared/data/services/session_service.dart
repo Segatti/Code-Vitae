@@ -1,5 +1,7 @@
 import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
 
+import '../../domain/entities/system_config.dart';
+
 class UserInventory {
   final int superStarBalance;
   final int superChatBalance;
@@ -20,6 +22,7 @@ class UserInventory {
 class SessionService {
   static CustomerModel? customer;
   static UserInventory inventory = const UserInventory();
+  static SystemConfig systemConfig = SystemConfig.defaults();
   static bool incompleteProfileEntryPromptShown = false;
 
   static void setCustomer(CustomerModel data) {
@@ -28,6 +31,10 @@ class SessionService {
 
   static void setInventory(UserInventory data) {
     inventory = data;
+  }
+
+  static void setSystemConfig(SystemConfig config) {
+    systemConfig = config;
   }
 
   static void clearCustomer() {

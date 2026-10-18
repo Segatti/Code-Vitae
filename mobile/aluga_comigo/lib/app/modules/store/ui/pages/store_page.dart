@@ -68,6 +68,8 @@ class _StorePageState extends State<StorePage> {
 
   @override
   Widget build(BuildContext context) {
+    final config = SessionService.systemConfig;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -89,6 +91,29 @@ class _StorePageState extends State<StorePage> {
         builder: (context, _) {
           if (controller.loadingList.contains('initialize')) {
             return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!config.storeActive) {
+            return Column(
+              children: [
+                const Divider(height: 2, thickness: 2),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        'A loja está temporariamente indisponível.',
+                        style: GoogleFonts.rubik(
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
           }
 
           return Column(
@@ -134,19 +159,22 @@ class _StorePageState extends State<StorePage> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      StoreCategorySection(
-                        category: StoreItemCategory.powerUp,
-                        backgroundColor: const Color(0xFFFFF3E0),
-                        headerColor: const Color(0xFFDF924B),
-                        headerTextColor: Colors.white,
-                        descriptionTextColor: const Color(0xFF5D4037),
-                        products: StoreCatalog.powerUpProducts,
-                        priceFor: controller.priceFor,
-                        purchasingProductId: controller.purchasingProductId,
-                        onProductTap: _confirmPurchase,
-                      ),
-                      if (!_isImmobileOwner) ...[
-                        const Gap(32),
+                      if (config.storePowerUpActive) ...[
+                        StoreCategorySection(
+                          category: StoreItemCategory.powerUp,
+                          backgroundColor: const Color(0xFFFFF3E0),
+                          headerColor: const Color(0xFFDF924B),
+                          headerTextColor: Colors.white,
+                          descriptionTextColor: const Color(0xFF5D4037),
+                          products: StoreCatalog.powerUpProducts,
+                          priceFor: controller.priceFor,
+                          purchasingProductId: controller.purchasingProductId,
+                          onProductTap: _confirmPurchase,
+                        ),
+                      ],
+                      if (!_isImmobileOwner &&
+                          config.storeSuperStarActive) ...[
+                        if (config.storePowerUpActive) const Gap(32),
                         StoreCategorySection(
                           category: StoreItemCategory.superStar,
                           backgroundColor: const Color(0xFFFFDC64),
@@ -158,17 +186,33 @@ class _StorePageState extends State<StorePage> {
                           onProductTap: _confirmPurchase,
                         ),
                       ],
-                      const Gap(32),
-                      StoreCategorySection(
-                        category: StoreItemCategory.superChat,
-                        backgroundColor: const Color(0xFF605DDE),
-                        headerColor: const Color(0xFF5350C3),
-                        headerTextColor: Colors.white,
-                        products: StoreCatalog.superChatProducts,
-                        priceFor: controller.priceFor,
-                        purchasingProductId: controller.purchasingProductId,
-                        onProductTap: _confirmPurchase,
-                      ),
+                      if (config.storeSuperChatActive) ...[
+                        if (config.storePowerUpActive ||
+                            (!_isImmobileOwner &&
+                                config.storeSuperStarActive))
+                          const Gap(32),
+                        StoreCategorySection(
+                          category: StoreItemCategory.superChat,
+                          backgroundColor: const Color(0xFF605DDE),
+                          headerColor: const Color(0xFF5350C3),
+                          headerTextColor: Colors.white,
+                          products: StoreCatalog.superChatProducts,
+                          priceFor: controller.priceFor,
+                          purchasingProductId: controller.purchasingProductId,
+                          onProductTap: _confirmPurchase,
+                        ),
+                      ],
+                      if (!config.storePowerUpActive &&
+                          !config.storeSuperChatActive &&
+                          (_isImmobileOwner || !config.storeSuperStarActive))
+                        Padding(
+                          padding: const EdgeInsets.only(top: 32),
+                          child: Text(
+                            'Nenhuma categoria disponível no momento.',
+                            style: GoogleFonts.rubik(color: Colors.black54),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       const Gap(16),
                     ],
                   ),

@@ -12,6 +12,7 @@ class ImmobileMapper {
       'password': '',
       'typeUser': 'immobile',
       'phone': account?['phone'] ?? '',
+      'contactName': account?['contact_name']?.toString() ?? '',
       'name': immobileRow['name'] ?? '',
       'state': immobileRow['state'] ?? '',
       'city': immobileRow['city'] ?? '',

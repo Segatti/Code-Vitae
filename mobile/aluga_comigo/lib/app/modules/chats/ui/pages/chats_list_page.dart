@@ -207,10 +207,14 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                   : chat.otherParticipantDisplay(
                                                       sessionId,
                                                     );
+                                              final hasUnread =
+                                                  chat.unreadCount > 0;
                                               return Container(
                                                 width: double.infinity,
                                                 height: 55,
-                                                color: Colors.white,
+                                                color: hasUnread
+                                                    ? const Color(0xFFEEF0FF)
+                                                    : Colors.white,
                                                 padding:
                                                     const EdgeInsetsDirectional.symmetric(
                                                       horizontal: 8,
@@ -285,8 +289,17 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                                       fontSize:
                                                                           16,
                                                                       fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
+                                                                          hasUnread
+                                                                          ? FontWeight
+                                                                                .w700
+                                                                          : FontWeight
+                                                                                .w500,
+                                                                      color: hasUnread
+                                                                          ? const Color(
+                                                                              0xFF2C29A3,
+                                                                            )
+                                                                          : Colors
+                                                                                .black,
                                                                     ),
                                                                   ),
                                                                 ),
@@ -295,10 +308,20 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                                     chat.lastMessageAt,
                                                                   ),
                                                                   style: GoogleFonts.rubik(
-                                                                    color: Colors
-                                                                        .black54,
+                                                                    color: hasUnread
+                                                                        ? const Color(
+                                                                            0xFF2C29A3,
+                                                                          )
+                                                                        : Colors
+                                                                            .black54,
                                                                     fontSize:
                                                                         13,
+                                                                    fontWeight:
+                                                                        hasUnread
+                                                                        ? FontWeight
+                                                                              .w600
+                                                                        : FontWeight
+                                                                              .normal,
                                                                   ),
                                                                 ),
                                                               ],
@@ -317,11 +340,64 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                                                     style: GoogleFonts.rubik(
                                                                       fontSize:
                                                                           12,
-                                                                      color: Colors
-                                                                          .black54,
+                                                                      color: hasUnread
+                                                                          ? Colors
+                                                                                .black87
+                                                                          : Colors
+                                                                                .black54,
+                                                                      fontWeight:
+                                                                          hasUnread
+                                                                          ? FontWeight
+                                                                                .w600
+                                                                          : FontWeight
+                                                                                .normal,
                                                                     ),
                                                                   ),
                                                                 ),
+                                                                if (hasUnread)
+                                                                  Container(
+                                                                    constraints:
+                                                                        const BoxConstraints(
+                                                                      minWidth:
+                                                                          22,
+                                                                    ),
+                                                                    padding:
+                                                                        const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          6,
+                                                                      vertical:
+                                                                          2,
+                                                                    ),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: const Color(
+                                                                        0xFF2C29A3,
+                                                                      ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                        12,
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      chat.unreadCount >
+                                                                              99
+                                                                          ? '99+'
+                                                                          : '${chat.unreadCount}',
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: GoogleFonts
+                                                                          .rubik(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            11,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                               ],
                                                             ),
                                                           ],
@@ -350,18 +426,24 @@ class _ChatsListPageState extends State<ChatsListPage> {
                                 onTap: () async {
                                   await showModalBottomSheet<void>(
                                     context: context,
+                                    useRootNavigator: true,
                                     useSafeArea: true,
                                     isScrollControlled: true,
+                                    isDismissible: true,
+                                    enableDrag: true,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(20),
                                       ),
                                     ),
-                                    builder: (context) {
-                                      return FractionallySizedBox(
-                                        heightFactor: 0.9,
-                                        child: ContactListPage(
-                                          tabIndex: tabSelected,
+                                    builder: (sheetContext) {
+                                      return PopScope(
+                                        canPop: true,
+                                        child: FractionallySizedBox(
+                                          heightFactor: 0.9,
+                                          child: ContactListPage(
+                                            tabIndex: tabSelected,
+                                          ),
                                         ),
                                       );
                                     },

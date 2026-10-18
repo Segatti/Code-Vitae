@@ -264,6 +264,7 @@ class ImmobileCustomerModel extends CustomerModel {
   final double price;
   final TypeImmobile typeImmobile;
   final String ownerAccountId;
+  final String contactName;
 
   ImmobileCustomerModel({
     super.id = "",
@@ -279,6 +280,7 @@ class ImmobileCustomerModel extends CustomerModel {
     this.price = 0,
     this.typeImmobile = TypeImmobile.none,
     this.ownerAccountId = '',
+    this.contactName = '',
     super.cityState = "",
     this.cep = "",
     this.bathrooms = 0,
@@ -314,6 +316,7 @@ class ImmobileCustomerModel extends CustomerModel {
       'city': city,
       'state': state,
       'typeImmobile': typeImmobile.name,
+      'contactName': contactName,
       'cep': cep,
       'bathrooms': bathrooms,
       'bedrooms': bedrooms,
@@ -347,6 +350,7 @@ class ImmobileCustomerModel extends CustomerModel {
       cityState: cityState,
       typeImmobile: TypeImmobile.get(map.getSafe<String>('typeImmobile')),
       ownerAccountId: map.getSafe<String>('ownerAccountId'),
+      contactName: map.getSafe<String>('contactName'),
       cep: map.getSafe<String>('cep'),
       bathrooms: map.getSafe<int>('bathrooms'),
       bedrooms: map.getSafe<int>('bedrooms'),
@@ -387,6 +391,7 @@ class ImmobileCustomerModel extends CustomerModel {
     String? cityState,
     TypeImmobile? typeImmobile,
     String? ownerAccountId,
+    String? contactName,
     String? cep,
     int? bathrooms,
     int? bedrooms,
@@ -415,6 +420,7 @@ class ImmobileCustomerModel extends CustomerModel {
       cityState: cityState ?? this.cityState,
       typeImmobile: typeImmobile ?? this.typeImmobile,
       ownerAccountId: ownerAccountId ?? this.ownerAccountId,
+      contactName: contactName ?? this.contactName,
       cep: cep ?? this.cep,
       bathrooms: bathrooms ?? this.bathrooms,
       bedrooms: bedrooms ?? this.bedrooms,

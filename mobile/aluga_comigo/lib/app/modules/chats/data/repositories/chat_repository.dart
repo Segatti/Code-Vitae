@@ -15,6 +15,15 @@ class ChatRepository implements domain.IChatRepository {
   const ChatRepository(this.datasource);
 
   @override
+  AsyncResult<Chat> getChatById(String chatId) async {
+    final model = await datasource.getChatById(chatId);
+    if (model == null) {
+      return Failure(Exception('Conversa não encontrada'));
+    }
+    return Success(model.toEntity());
+  }
+
+  @override
   AsyncResult<List<Chat>> listChats() async {
     return datasource
         .listChats()

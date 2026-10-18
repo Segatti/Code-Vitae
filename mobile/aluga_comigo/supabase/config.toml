@@ -48,7 +48,10 @@ double_confirm_changes = false
 enable_confirmations = false
 
 [edge_runtime]
-enabled = false
+enabled = true
+
+[functions.send-chat-push]
+verify_jwt = false
 
 [analytics]
 enabled = false

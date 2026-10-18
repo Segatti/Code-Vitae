@@ -4,6 +4,7 @@ import 'package:aluga_comigo/app/modules/chats/data/repositories/chat_repository
 import 'package:aluga_comigo/app/modules/chats/data/repositories/match_contact_repository.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/repositories/chat_repository.dart'
     as domain;
+import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_chat_by_id.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_chat_contact_profile.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/get_immobile_listing.dart';
 import 'package:aluga_comigo/app/modules/chats/domain/usecases/list_chat_immobile_offers.dart';
@@ -30,6 +31,7 @@ class ChatsDiModule extends Module {
     c.addSingleton<IMatchContactRepository>(MatchContactRepository.new);
     c.addSingleton<IListMatchContacts>(ListMatchContacts.new);
     c.addSingleton<IGetOrCreateChatForContact>(GetOrCreateChatForContact.new);
+    c.addSingleton<IGetChatById>(GetChatById.new);
     c.addSingleton<IGetChatContactProfile>(GetChatContactProfile.new);
     c.addSingleton<IListChats>(ListChats.new);
     c.addSingleton<IWatchChats>(WatchChats.new);

@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/shared/presentation/layout/design_screen.dart';
+import 'package:aluga_comigo/app/shared/presenter/lifecycle/app_lifecycle_listener.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -16,11 +17,13 @@ class AppWidget extends StatelessWidget {
       supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
       builder: (context, child) {
         DesignScreen.updateFrom(MediaQuery.sizeOf(context));
-        return MediaQuery(
-          data: MediaQuery.of(
-            context,
-          ).copyWith(textScaler: const TextScaler.linear(1)),
-          child: child ?? const SizedBox.shrink(),
+        return AlugaAppLifecycleListener(
+          child: MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: const TextScaler.linear(1)),
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
     );

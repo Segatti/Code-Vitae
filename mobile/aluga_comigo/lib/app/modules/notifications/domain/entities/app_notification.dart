@@ -19,6 +19,7 @@ class AppNotification {
   final String title;
   final String body;
   final DateTime? createdAt;
+  final String? referenceId;
 
   const AppNotification({
     required this.id,
@@ -26,5 +27,6 @@ class AppNotification {
     required this.title,
     required this.body,
     this.createdAt,
+    this.referenceId,
   });
 }

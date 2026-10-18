@@ -1,11 +1,8 @@
-import 'package:aluga_comigo/app/modules/auth/domain/enums/type_immobile.dart';
 import 'package:aluga_comigo/app/modules/chats/data/models/match_contact_model.dart';
 import 'package:aluga_comigo/app/modules/chats/chat_navigation.dart';
 import 'package:aluga_comigo/app/modules/chats/ui/controllers/contact_list_controller.dart';
-import 'package:aluga_comigo/app/modules/customer/data/models/customer_model.dart';
+import 'package:aluga_comigo/app/modules/chats/ui/widgets/contact_match_tile.dart';
 import 'package:aluga_comigo/app/modules/customer/domain/enums/match_type.dart';
-import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,41 +28,6 @@ class _ContactListPageState extends State<ContactListPage> {
   }
 
   bool get _groupByAlphabet => widget.tabIndex == 0;
-
-  String _contactTitle(CustomerModel customer) {
-    return switch (customer) {
-      PersonCustomerModel(:final name) => name,
-      ImmobileCustomerModel(:final typeImmobile, :final shortDescription) =>
-        shortDescription.isNotEmpty
-            ? shortDescription
-            : switch (typeImmobile) {
-                TypeImmobile.house => 'Casa',
-                TypeImmobile.apartment => 'Apartamento',
-                TypeImmobile.none => 'Imóvel',
-              },
-    };
-  }
-
-  String? _contactSubtitle(CustomerModel customer) {
-    return switch (customer) {
-      PersonCustomerModel(:final dateBirth) => _ageLabel(dateBirth),
-      ImmobileCustomerModel(:final cityState) =>
-        cityState.isNotEmpty ? cityState : null,
-    };
-  }
-
-  String? _ageLabel(String dateBirth) {
-    if (dateBirth.isEmpty) return null;
-    final date = dateBirth.toDate();
-    if (date == null) return null;
-    final now = DateTime.now();
-    var age = now.year - date.year;
-    if (now.month < date.month ||
-        (now.month == date.month && now.day < date.day)) {
-      age--;
-    }
-    return '$age anos';
-  }
 
   Future<void> _onContactTap(MatchContactModel contact) async {
     if (controller.loadingList.contains('resolveChat')) return;
@@ -123,34 +85,49 @@ class _ContactListPageState extends State<ContactListPage> {
           key: const ValueKey('contact_list_body'),
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(
+                _groupByAlphabet
+                    ? 'Escolha uma pessoa para conversar'
+                    : 'Escolha um imóvel para conversar',
+                style: GoogleFonts.rubik(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(
-                height: 35,
+                height: 40,
                 child: TextFormField(
-                  style: const TextStyle(color: Colors.white),
-                  cursorColor: Colors.white,
+                  style: GoogleFonts.rubik(color: Colors.black87),
+                  cursorColor: const Color(0xFF2C29A3),
                   decoration: InputDecoration(
-                    fillColor: Colors.grey,
+                    fillColor: const Color(0xFFEFEFEF),
                     filled: true,
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
                     prefixIcon: const Icon(
                       Icons.search,
-                      size: 25,
-                      color: Colors.white,
+                      size: 22,
+                      color: Colors.black54,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
                     hintText: 'Pesquisar por nome',
-                    hintStyle: GoogleFonts.rubik(color: Colors.white),
+                    hintStyle: GoogleFonts.rubik(color: Colors.black45),
                   ),
                 ),
               ),
             ),
+            const Gap(8),
             Expanded(
               child: ListView(
+                padding: const EdgeInsets.only(bottom: 16),
                 children: _groupByAlphabet
                     ? _buildAlphabetSections()
                     : _buildImmobileSections(),
@@ -165,7 +142,7 @@ class _ContactListPageState extends State<ContactListPage> {
   List<Widget> _buildAlphabetSections() {
     final letters = <String>{};
     for (final contact in controller.contacts) {
-      final title = _contactTitle(contact.customer);
+      final title = ContactMatchTile.sortKey(contact.customer);
       if (title.isNotEmpty) {
         letters.add(title[0].toUpperCase());
       }
@@ -174,50 +151,24 @@ class _ContactListPageState extends State<ContactListPage> {
 
     return [
       for (final letter in sortedLetters) ...[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              letter,
-              style: GoogleFonts.rubik(
-                color: Colors.black,
-                fontSize: 36,
-                height: 1,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        const Gap(8),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final sectionContacts = controller.contacts.where((contact) {
-                final title = _contactTitle(contact.customer);
-                return title.toUpperCase().startsWith(letter);
-              });
-              return Wrap(
-                spacing: constraints.maxWidth * .1,
-                runSpacing: 12,
-                children: [
-                  for (final contact in sectionContacts)
-                    _ContactTile(
-                      key: ValueKey('contact_list_tile_${contact.customer.id}'),
-                      width: constraints.maxWidth * .45,
-                      title: _contactTitle(contact.customer),
-                      subtitle: _contactSubtitle(contact.customer),
-                      photoUrl: contact.customer.photos.isNotEmpty
-                          ? contact.customer.photos.first
-                          : '',
-                      onTap: () => _onContactTap(contact),
-                    ),
-                ],
-              );
-            },
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          child: Text(
+            letter,
+            style: GoogleFonts.rubik(
+              color: const Color(0xFF2C29A3),
+              fontSize: 28,
+              height: 1,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
-        const Gap(16),
+        _contactList(
+          controller.contacts.where((contact) {
+            final title = ContactMatchTile.sortKey(contact.customer);
+            return title.toUpperCase().startsWith(letter);
+          }),
+        ),
       ],
     ];
   }
@@ -233,141 +184,50 @@ class _ContactListPageState extends State<ContactListPage> {
     if (favorites.isEmpty && likes.isEmpty) {
       return [
         _sectionTitle('Contatos'),
-        _contactWrap(controller.contacts),
-        const Gap(16),
+        _contactList(controller.contacts),
       ];
     }
 
     return [
       if (favorites.isNotEmpty) ...[
         _sectionTitle('Favoritos'),
-        _contactWrap(favorites),
-        const Gap(16),
+        _contactList(favorites),
       ],
       if (likes.isNotEmpty) ...[
         _sectionTitle('Curtidos'),
-        _contactWrap(likes),
-        const Gap(16),
+        _contactList(likes),
       ],
     ];
   }
 
   Widget _sectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Text(
         title,
-        style: GoogleFonts.rubik(fontSize: 22, fontWeight: FontWeight.w600),
+        style: GoogleFonts.rubik(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF2C29A3),
+        ),
       ),
     );
   }
 
-  Widget _contactWrap(List<MatchContactModel> items) {
+  Widget _contactList(Iterable<MatchContactModel> items) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Wrap(
-            spacing: constraints.maxWidth * .1,
-            runSpacing: 12,
-            children: [
-              for (final contact in items)
-                _ContactTile(
-                  key: ValueKey('contact_list_tile_${contact.customer.id}'),
-                  width: constraints.maxWidth * .45,
-                  title: _contactTitle(contact.customer),
-                  subtitle: _contactSubtitle(contact.customer),
-                  photoUrl: contact.customer.photos.isNotEmpty
-                      ? contact.customer.photos.first
-                      : '',
-                  onTap: () => _onContactTap(contact),
-                ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ContactTile extends StatelessWidget {
-  final double width;
-  final String title;
-  final String? subtitle;
-  final String photoUrl;
-  final VoidCallback onTap;
-
-  const _ContactTile({
-    super.key,
-    required this.width,
-    required this.title,
-    this.subtitle,
-    required this.photoUrl,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: 'contact_list_tile',
-      button: true,
-      child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey),
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: photoUrl.isEmpty
-                  ? Container(
-                      height: 80,
-                      width: 80,
-                      color: Colors.grey.shade300,
-                      child: const Icon(Icons.person),
-                    )
-                  : CachedNetworkImage(
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                      imageUrl: photoUrl,
-                    ),
+      child: Column(
+        children: [
+          for (final contact in items) ...[
+            ContactMatchTile(
+              key: ValueKey('contact_list_tile_${contact.customer.id}'),
+              customer: contact.customer,
+              onTap: () => _onContactTap(contact),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.rubik(height: 1),
-                    ),
-                    if (subtitle != null) ...[
-                      const Gap(6),
-                      Text(
-                        subtitle!,
-                        style: GoogleFonts.rubik(
-                          height: 1,
-                          color: Colors.black54,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
+            const Gap(10),
           ],
-        ),
-      ),
+        ],
       ),
     );
   }

@@ -188,6 +188,7 @@ class _AuthPageState extends State<AuthPage> {
                             ? LoginCardWidget(
                                 backPage: backPage,
                                 login: (email, password) async {
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                   showAdaptiveDialog(
                                     context: context,
                                     barrierDismissible: false,
@@ -201,8 +202,7 @@ class _AuthPageState extends State<AuthPage> {
                                   if (!context.mounted) return;
 
                                   if (result) {
-                                    FeedSessionHelper
-                                        .resetSessionScopedControllers();
+                                    FeedSessionHelper.resetSessionScopedControllers();
                                     context.navigate(
                                       StartNavigationHelper.homeRouteFor(
                                         SessionService.customer?.typeUser ??
@@ -211,6 +211,8 @@ class _AuthPageState extends State<AuthPage> {
                                     );
                                   } else {
                                     if (context.mounted) Navigator.pop(context);
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
                                     notificationError(
                                       "Falha no Login",
                                       controller.errorMessage,
@@ -231,8 +233,7 @@ class _AuthPageState extends State<AuthPage> {
                                   if (!context.mounted) return;
                                   Navigator.pop(context);
                                   if (result) {
-                                    FeedSessionHelper
-                                        .resetSessionScopedControllers();
+                                    FeedSessionHelper.resetSessionScopedControllers();
                                     context.navigate(
                                       StartNavigationHelper.homeRouteFor(
                                         SessionService.customer?.typeUser ??

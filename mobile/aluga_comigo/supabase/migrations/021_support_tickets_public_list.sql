@@ -2,6 +2,7 @@
 -- reagir/comentar em tickets abertos de outros.
 
 DROP POLICY IF EXISTS support_tickets_select_own ON public.support_tickets;
+DROP POLICY IF EXISTS support_tickets_select_authenticated ON public.support_tickets;
 
 CREATE POLICY support_tickets_select_authenticated
   ON public.support_tickets FOR SELECT
@@ -12,6 +13,8 @@ CREATE INDEX IF NOT EXISTS idx_support_tickets_created
   ON public.support_tickets(created_at DESC);
 
 DROP POLICY IF EXISTS support_ticket_reactions_select_own
+  ON public.support_ticket_reactions;
+DROP POLICY IF EXISTS support_ticket_reactions_select_authenticated
   ON public.support_ticket_reactions;
 
 CREATE POLICY support_ticket_reactions_select_authenticated
@@ -26,6 +29,8 @@ CREATE POLICY support_ticket_reactions_select_authenticated
 
 DROP POLICY IF EXISTS support_ticket_reactions_insert_own
   ON public.support_ticket_reactions;
+DROP POLICY IF EXISTS support_ticket_reactions_insert_authenticated
+  ON public.support_ticket_reactions;
 
 CREATE POLICY support_ticket_reactions_insert_authenticated
   ON public.support_ticket_reactions FOR INSERT
@@ -39,6 +44,8 @@ CREATE POLICY support_ticket_reactions_insert_authenticated
   );
 
 DROP POLICY IF EXISTS support_ticket_comments_select_own
+  ON public.support_ticket_comments;
+DROP POLICY IF EXISTS support_ticket_comments_select_authenticated
   ON public.support_ticket_comments;
 
 CREATE POLICY support_ticket_comments_select_authenticated

@@ -35,29 +35,47 @@ abstract final class ChatParticipantHelper {
   static Json personImmobileDisplayFromRow(Json row, String currentAccountId) {
     final personId = row['person_id']?.toString() ?? '';
     final immobileId = row['immobile_id']?.toString() ?? '';
+    final ownerAccountId = row['immobile_owner_account_id']?.toString() ?? '';
+    final ownerName = row['immobile_owner_name']?.toString() ?? '';
+    final ownerPhoto = row['immobile_owner_photo']?.toString() ?? '';
+    final personName = row['person_name']?.toString() ?? '';
+    final personPhoto = row['person_photo']?.toString() ?? '';
+    final listingName = row['immobile_name']?.toString() ?? '';
+    final listingPhoto = row['immobile_photo']?.toString() ?? '';
 
+    // Pessoa interessada: contato é o dono/responsável do anúncio, não o título.
     if (_sameId(personId, currentAccountId)) {
+      if (ownerName.trim().isNotEmpty) {
+        return {
+          'otherName': ownerName,
+          'otherPhoto': ownerPhoto.isNotEmpty ? ownerPhoto : listingPhoto,
+        };
+      }
       return {
-        'otherName': row['immobile_name']?.toString() ?? '',
-        'otherPhoto': row['immobile_photo']?.toString() ?? '',
-      };
-    }
-    if (_sameId(immobileId, currentAccountId)) {
-      return {
-        'otherName': row['person_name']?.toString() ?? '',
-        'otherPhoto': row['person_photo']?.toString() ?? '',
+        'otherName': listingName,
+        'otherPhoto': listingPhoto,
       };
     }
 
-    if (!_sameId(immobileId, currentAccountId) && immobileId.isNotEmpty) {
+    // Dono do anúncio (ou legado: immobile_id = conta): contato é a pessoa.
+    if (_sameId(ownerAccountId, currentAccountId) ||
+        _sameId(immobileId, currentAccountId)) {
       return {
-        'otherName': row['immobile_name']?.toString() ?? '',
-        'otherPhoto': row['immobile_photo']?.toString() ?? '',
+        'otherName': personName,
+        'otherPhoto': personPhoto,
       };
     }
+
+    if (personId.isNotEmpty && !_sameId(personId, currentAccountId)) {
+      return {
+        'otherName': personName,
+        'otherPhoto': personPhoto,
+      };
+    }
+
     return {
-      'otherName': row['person_name']?.toString() ?? '',
-      'otherPhoto': row['person_photo']?.toString() ?? '',
+      'otherName': listingName,
+      'otherPhoto': listingPhoto,
     };
   }
 

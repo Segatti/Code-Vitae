@@ -72,7 +72,12 @@ class AppMessageDialogShell extends StatelessWidget {
                 if (body != null) ...[
                   ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: maxBodyHeight),
-                    child: body!,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      widthFactor: 1,
+                      heightFactor: 1,
+                      child: body!,
+                    ),
                   ),
                   const Gap(16),
                 ] else if (message != null && message!.isNotEmpty)
