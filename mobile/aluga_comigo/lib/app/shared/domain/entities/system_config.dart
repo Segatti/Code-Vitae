@@ -4,6 +4,7 @@ class SystemConfig {
   final bool storePowerUpActive;
   final bool storeSuperStarActive;
   final bool storeSuperChatActive;
+  final String termsOfUseCurrentVersion;
 
   const SystemConfig({
     required this.appActive,
@@ -11,6 +12,7 @@ class SystemConfig {
     required this.storePowerUpActive,
     required this.storeSuperStarActive,
     required this.storeSuperChatActive,
+    required this.termsOfUseCurrentVersion,
   });
 
   factory SystemConfig.defaults() {
@@ -20,6 +22,7 @@ class SystemConfig {
       storePowerUpActive: true,
       storeSuperStarActive: true,
       storeSuperChatActive: true,
+      termsOfUseCurrentVersion: '1.0',
     );
   }
 }

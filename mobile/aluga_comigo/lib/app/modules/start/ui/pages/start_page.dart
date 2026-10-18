@@ -20,6 +20,7 @@ import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/domain/constants/icons_asset.dart';
 import '../../../../shared/domain/helpers/start_navigation_helper.dart';
 import '../../../../shared/presenter/helpers/feed_session_helper.dart';
+import '../../../../shared/presenter/helpers/terms_acceptance_flow.dart';
 import '../../../../shared/presenter/widgets/app_message_dialog.dart';
 import '../../../auth/domain/enums/type_user.dart';
 import '../../../chats/ui/controllers/chats_list_controller.dart';
@@ -61,9 +62,18 @@ class _StartPageState extends State<StartPage>
     );
     _checkLocationPermission();
     _loadInventory();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _ensureSwipeTabForSession(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _ensureTermsAccepted();
+      if (!mounted) return;
+      _ensureSwipeTabForSession();
+    });
+  }
+
+  Future<void> _ensureTermsAccepted() async {
+    final accepted = await TermsAcceptanceFlow.ensureAcceptedIfNeeded(context);
+    if (!accepted && mounted) {
+      context.navigate('/auth/');
+    }
   }
 
   void _ensureSwipeTabForSession() {

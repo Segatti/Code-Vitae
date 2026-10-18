@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../shared/data/services/session_service.dart';
+import '../../../../shared/domain/usecases/record_terms_acceptance.dart';
 import '../../domain/entities/inputs/login_input.dart';
 import '../../domain/entities/inputs/signup_input.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -12,8 +13,14 @@ import '../interfaces/auth_datasource.dart';
 
 class AuthRepository implements IAuthRepository {
   final IAuthDatasource datasource;
+  final IRecordTermsAcceptance _recordTermsAcceptance;
 
-  const AuthRepository(this.datasource);
+  AuthRepository(this.datasource, this._recordTermsAcceptance);
+
+  Future<void> _recordCurrentTermsAcceptance() async {
+    final version = SessionService.systemConfig.termsOfUseCurrentVersion;
+    await _recordTermsAcceptance(version);
+  }
 
   @override
   Future<Return<User>> login(LoginInput input) async {
@@ -62,6 +69,7 @@ class AuthRepository implements IAuthRepository {
     try {
       final response = await datasource.signupImmobile(input);
       SessionService.setCustomer(response);
+      await _recordCurrentTermsAcceptance();
       return Right(User(
         id: response.id,
         email: response.email,
@@ -110,6 +118,7 @@ class AuthRepository implements IAuthRepository {
     try {
       final response = await datasource.signupUser(input);
       SessionService.setCustomer(response);
+      await _recordCurrentTermsAcceptance();
       return Right(User(
         id: response.id,
         email: response.email,

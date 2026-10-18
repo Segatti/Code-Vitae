@@ -10,6 +10,10 @@ abstract final class SystemConfigParser {
       storePowerUpActive: _bool(map['store_powerup_active'], defaultValue: true),
       storeSuperStarActive: _bool(map['store_superstar_active'], defaultValue: true),
       storeSuperChatActive: _bool(map['store_superchat_active'], defaultValue: true),
+      termsOfUseCurrentVersion: _string(
+        map['terms_of_use_current_version'],
+        defaultValue: '1.0',
+      ),
     );
   }
 
@@ -20,5 +24,12 @@ abstract final class SystemConfigParser {
     if (normalized == 'true' || normalized == '1') return true;
     if (normalized == 'false' || normalized == '0') return false;
     return defaultValue;
+  }
+
+  static String _string(SystemConfigEntry? entry, {required String defaultValue}) {
+    if (entry == null) return defaultValue;
+    if (entry.type != 'string') return defaultValue;
+    final value = entry.value.trim();
+    return value.isEmpty ? defaultValue : value;
   }
 }

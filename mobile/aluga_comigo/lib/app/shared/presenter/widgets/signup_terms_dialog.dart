@@ -1,9 +1,10 @@
+import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
 import 'package:styled_text/styled_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// Termos de uso no fim do cadastro (pessoa ou imóvel).
 class SignupTermsDialog extends StatefulWidget {
@@ -53,14 +54,12 @@ class _SignupTermsDialogState extends State<SignupTermsDialog> {
           const Gap(16),
           GestureDetector(
             onTap: () {
-              launchUrl(
-                Uri.parse(
-                  'https://drive.google.com/file/d/1Ob1x0-bLgEiZs7RYAqF7NfY2sNR51rBc/view?usp=drive_link',
-                ),
-                mode: LaunchMode.externalApplication,
-              );
+              final version =
+                  SessionService.systemConfig.termsOfUseCurrentVersion;
+              context.pushNamed('/auth/terms?version=$version');
             },
             child: Container(
+              key: const ValueKey('signup_terms_read_button'),
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(

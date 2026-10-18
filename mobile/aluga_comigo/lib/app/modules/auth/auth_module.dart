@@ -1,6 +1,8 @@
 import 'package:aluga_comigo/app/modules/auth/presenter/auth_page.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/controllers/auth_controller.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/terms_of_use_catalog.dart';
 import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
+import 'package:aluga_comigo/app/shared/presenter/pages/terms_of_use_page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AuthModule extends Module {
@@ -14,6 +16,16 @@ class AuthModule extends Module {
       '/',
       transition: AppTransitions.rightToLeft,
       child: (_, _) => const AuthPage(),
+    );
+    c.route(
+      '/terms',
+      transition: AppTransitions.rightToLeft,
+      child: (_, state) {
+        final version =
+            state.uri.queryParameters['version'] ??
+            TermsOfUseCatalog.defaultVersion;
+        return TermsOfUsePage(version: version);
+      },
     );
   }
 }

@@ -5,9 +5,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'data/datasources/system_config_datasource.dart';
 import 'data/repositories/system_config_repository.dart';
+import 'data/repositories/terms_acceptance_repository.dart';
 import 'data/services/aluga_comigo_api_client.dart';
 import 'domain/repositories/system_config_repository.dart' as domain;
 import 'domain/usecases/load_system_config.dart';
+import 'domain/repositories/terms_acceptance_repository.dart';
+import 'domain/usecases/check_terms_acceptance_required.dart';
+import 'domain/usecases/record_terms_acceptance.dart';
 import 'data/services/camera_service.dart';
 import 'data/services/secure_storage_service.dart';
 import 'data/services/supabase_auth_service.dart';
@@ -31,6 +35,11 @@ class CoreModule extends Module {
     c.addSingleton<ISystemConfigDatasource>(SystemConfigDatasource.new);
     c.addSingleton<domain.ISystemConfigRepository>(SystemConfigRepository.new);
     c.addSingleton<ILoadSystemConfig>(LoadSystemConfig.new);
+    c.addSingleton<ITermsAcceptanceRepository>(TermsAcceptanceRepository.new);
+    c.addSingleton<ICheckTermsAcceptanceRequired>(
+      CheckTermsAcceptanceRequired.new,
+    );
+    c.addSingleton<IRecordTermsAcceptance>(RecordTermsAcceptance.new);
     c.addSingleton<SupabaseRealtimeService>(SupabaseRealtimeService.new);
     c.addSingleton<SupabaseAuthService>(SupabaseAuthService.new);
     c.addSingleton<SupabaseStorageService>(SupabaseStorageService.new);

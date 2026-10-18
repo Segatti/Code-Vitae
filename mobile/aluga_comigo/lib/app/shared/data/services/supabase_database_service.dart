@@ -1302,6 +1302,28 @@ class SupabaseDatabaseService {
     }
   }
 
+  Future<String?> getTermsOfUseAcceptedVersion(String accountId) async {
+    final result = await readAccount(accountId);
+    return result.fold(
+      (failure) => throw failure,
+      (row) => row['terms_of_use_version_accepted']?.toString(),
+    );
+  }
+
+  Future<void> acceptTermsOfUse(String version) async {
+    try {
+      await _client.rpc(
+        'accept_terms_of_use',
+        params: {'p_version': version},
+      );
+    } on PostgrestException catch (error) {
+      debugPrint(error.toString());
+      throw FailureDatasource(
+        message: SupabaseErrorHandler.getMessage(error.code, error.message),
+      );
+    }
+  }
+
   Future<void> upsertDevicePushToken({
     required String fcmToken,
     required String platform,
