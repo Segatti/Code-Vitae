@@ -1,7 +1,9 @@
 import 'package:aluga_comigo/app/modules/auth/presenter/auth_page.dart';
 import 'package:aluga_comigo/app/modules/auth/presenter/controllers/auth_controller.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/privacy_policy_catalog.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/terms_of_use_catalog.dart';
 import 'package:aluga_comigo/app/shared/domain/transitions/app_transitions.dart';
+import 'package:aluga_comigo/app/shared/presenter/pages/privacy_policy_page.dart';
 import 'package:aluga_comigo/app/shared/presenter/pages/terms_of_use_page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -25,6 +27,16 @@ class AuthModule extends Module {
             state.uri.queryParameters['version'] ??
             TermsOfUseCatalog.defaultVersion;
         return TermsOfUsePage(version: version);
+      },
+    );
+    c.route(
+      '/privacy',
+      transition: AppTransitions.rightToLeft,
+      child: (_, state) {
+        final version =
+            state.uri.queryParameters['version'] ??
+            PrivacyPolicyCatalog.defaultVersion;
+        return PrivacyPolicyPage(version: version);
       },
     );
   }

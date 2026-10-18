@@ -1,4 +1,5 @@
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/privacy_policy_catalog.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
@@ -74,6 +75,24 @@ class _SignupTermsDialogState extends State<SignupTermsDialog> {
                   fontWeight: FontWeight.w400,
                 ),
                 textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          const Gap(8),
+          GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                '/auth/privacy?version=${PrivacyPolicyCatalog.defaultVersion}',
+              );
+            },
+            child: Text(
+              'Ver Política de Privacidade',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.rubik(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF2C29A3),
+                decoration: TextDecoration.underline,
               ),
             ),
           ),
