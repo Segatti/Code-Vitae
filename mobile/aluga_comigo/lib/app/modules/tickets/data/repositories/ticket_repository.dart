@@ -39,6 +39,8 @@ class TicketRepository implements domain.ITicketRepository {
           title: input.title,
           category: input.category,
           description: input.description,
+          reportedAccountId: input.reportedAccountId,
+          reportContext: input.reportContext,
         )
         .toAsyncResult();
   }

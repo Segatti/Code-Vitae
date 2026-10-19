@@ -14,6 +14,7 @@ abstract interface class IPurchaseRepository {
   Future<UserInventory> loadInventory();
   Future<bool> startPurchase(ProductDetails product);
   Future<void> handlePurchaseUpdate(PurchaseDetails purchase);
+  Future<void> restorePurchases();
 }
 
 class PurchaseRepository implements IPurchaseRepository {
@@ -75,4 +76,7 @@ class PurchaseRepository implements IPurchaseRepository {
       await iap.completePurchase(purchase);
     }
   }
+
+  @override
+  Future<void> restorePurchases() => iap.restorePurchases();
 }

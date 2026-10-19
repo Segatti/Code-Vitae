@@ -9,7 +9,9 @@ import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/string.dart';
 import 'package:aluga_comigo/app/shared/domain/helpers/maps_helper.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/incomplete_profile_helper.dart';
+import 'package:aluga_comigo/app/shared/domain/enums/user_report_context.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/user_safety_sheet.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:gap/gap.dart';
@@ -211,7 +213,43 @@ class _ChatContactFlipDialogState extends State<ChatContactFlipDialog> {
                     ),
                 },
               ),
-            if (!_loading && _errorMessage == null && _customer != null)
+            if (!_loading && _errorMessage == null && _customer != null) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          final customer = _customer!;
+                          UserSafetySheet.show(
+                            context,
+                            reportedAccountId: customer.id,
+                            displayName: switch (_customer!) {
+                              PersonCustomerModel person => person.name,
+                              ImmobileCustomerModel immobile =>
+                                immobile.contactName.isNotEmpty
+                                    ? immobile.contactName
+                                    : immobile.shortDescription,
+                            },
+                            reportContext: UserReportContext.chat,
+                            chat: widget.chat,
+                            onBlocked: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            onUnmatched: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                        child: const Text('Denunciar / Bloquear'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: SizedBox(
@@ -227,8 +265,8 @@ class _ChatContactFlipDialogState extends State<ChatContactFlipDialog> {
                         : const Text('Desfazer match'),
                   ),
                 ),
-              )
-            else
+              ),
+            ] else
               const Gap(12),
           ],
         ),

@@ -8,6 +8,7 @@ abstract interface class IIapDatasource {
   Future<List<ProductDetails>> queryProducts(Set<String> productIds);
   Future<bool> buyProduct(ProductDetails product);
   Future<void> completePurchase(PurchaseDetails purchase);
+  Future<void> restorePurchases();
 }
 
 class IapDatasource implements IIapDatasource {
@@ -38,4 +39,7 @@ class IapDatasource implements IIapDatasource {
   Future<void> completePurchase(PurchaseDetails purchase) {
     return _iap.completePurchase(purchase);
   }
+
+  @override
+  Future<void> restorePurchases() => _iap.restorePurchases();
 }

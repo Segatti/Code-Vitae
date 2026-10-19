@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
@@ -11,6 +13,8 @@ import '../../../customer/domain/enums/match_type.dart';
 import '../../../customer/domain/usecases/get_customers.dart';
 import '../../../customer/domain/usecases/match_customer.dart';
 import '../../../customer/domain/usecases/match_immobile_with_super_chat.dart';
+import '../../../../shared/data/services/analytics_service.dart';
+import '../../../../shared/domain/analytics/analytics_events.dart';
 
 abstract class IHousesController extends ChangeNotifier {
   List<String> loadingList = [];
@@ -44,10 +48,13 @@ class HousesController extends IHousesController {
   final IMatchCustomer _matchCustomer;
   final IMatchImmobileWithSuperChat _matchImmobileWithSuperChat;
 
+  final IAnalyticsService _analytics;
+
   HousesController(
     this._getCustomers,
     this._matchCustomer,
     this._matchImmobileWithSuperChat,
+    this._analytics,
   );
 
   late final getHousesCommand = Command0(
@@ -129,9 +136,29 @@ class HousesController extends IHousesController {
     CustomerModel customer,
     MatchType matchType,
   ) async {
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.swipeAction,
+        parameters: {
+          AnalyticsParams.matchType: matchType.name,
+          AnalyticsParams.targetType: customer.typeUser.name,
+        },
+      ),
+    );
     final outcome = await matchHouse(customer, matchType);
     if (outcome == null) {
       return const SwipeActionResult(removed: false);
+    }
+    if (outcome.mutualMatch != null) {
+      unawaited(
+        _analytics.logEvent(
+          AnalyticsEvents.match,
+          parameters: {
+            AnalyticsParams.isMutual: 1,
+            AnalyticsParams.targetType: customer.typeUser.name,
+          },
+        ),
+      );
     }
     houses.removeWhere((item) => item.id == customer.id);
     notifyListeners();

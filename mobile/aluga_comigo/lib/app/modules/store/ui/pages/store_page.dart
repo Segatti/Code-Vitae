@@ -12,6 +12,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:aluga_comigo/app/shared/data/services/analytics_service.dart';
+import 'package:aluga_comigo/app/shared/domain/analytics/analytics_events.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/privacy_policy_catalog.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/terms_of_use_catalog.dart';
+import 'package:aluga_comigo/app/shared/presenter/pages/privacy_policy_page.dart';
+import 'package:aluga_comigo/app/shared/presenter/pages/terms_of_use_page.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -31,6 +37,7 @@ class _StorePageState extends State<StorePage> {
     controller = inject<IStoreController>();
     controller.addListener(_onControllerUpdate);
     controller.initialize();
+    inject<IAnalyticsService>().logEvent(AnalyticsEvents.storeView);
   }
 
   @override
@@ -240,13 +247,77 @@ class _StorePageState extends State<StorePage> {
                       Text(
                         'Compras seguras via Google Play ou App Store. '
                         'Créditos entram na sua conta assim que o pagamento '
-                        'é confirmado.',
+                        'é confirmado. Reembolsos seguem as regras da loja '
+                        'e o Código de Defesa do Consumidor quando aplicável.',
                         style: GoogleFonts.rubik(
                           fontSize: 11,
                           color: const Color(0xFF999999),
                           height: 1.35,
                         ),
                         textAlign: TextAlign.center,
+                      ),
+                      const Gap(12),
+                      TextButton(
+                        onPressed: controller.loadingList.contains('restore')
+                            ? null
+                            : controller.restorePurchases,
+                        child: controller.loadingList.contains('restore')
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Text(
+                                'Restaurar compras',
+                                style: GoogleFonts.rubik(
+                                  fontSize: 13,
+                                  color: const Color(0xFF2C29A3),
+                                ),
+                              ),
+                      ),
+                      Text(
+                        'Créditos consumíveis podem não ser restaurados em '
+                        'todos os casos; use esta opção se a loja indicar '
+                        'compras pendentes de entrega.',
+                        style: GoogleFonts.rubik(
+                          fontSize: 10,
+                          color: const Color(0xFF999999),
+                          height: 1.35,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Gap(8),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 8,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => TermsOfUsePage(
+                                  version: TermsOfUseCatalog.defaultVersion,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Termos de uso',
+                              style: GoogleFonts.rubik(fontSize: 12),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => PrivacyPolicyPage(
+                                  version: PrivacyPolicyCatalog.defaultVersion,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Privacidade',
+                              style: GoogleFonts.rubik(fontSize: 12),
+                            ),
+                          ),
+                        ],
                       ),
                       const Gap(16),
                     ],

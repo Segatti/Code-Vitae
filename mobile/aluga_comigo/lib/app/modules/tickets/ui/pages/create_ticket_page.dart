@@ -7,7 +7,9 @@ import '../../domain/enums/ticket_category.dart';
 import '../controllers/create_ticket_controller.dart';
 
 class CreateTicketPage extends StatefulWidget {
-  const CreateTicketPage({super.key});
+  final Map<String, dynamic> prefill;
+
+  const CreateTicketPage({super.key, this.prefill = const {}});
 
   @override
   State<CreateTicketPage> createState() => _CreateTicketPageState();
@@ -18,10 +20,34 @@ class _CreateTicketPageState extends State<CreateTicketPage> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
 
+  TicketCategory? _categoryFromPrefill() {
+    final raw = widget.prefill['category']?.toString();
+    return switch (raw) {
+      'report' => TicketCategory.report,
+      'bug' => TicketCategory.bug,
+      'complaint' => TicketCategory.complaint,
+      'suggestion' => TicketCategory.suggestion,
+      _ => null,
+    };
+  }
+
   @override
   void initState() {
     super.initState();
     controller = inject<ICreateTicketController>();
+    final title = widget.prefill['title']?.toString();
+    final description = widget.prefill['description']?.toString();
+    if (title != null && title.isNotEmpty) {
+      _titleController.text = title;
+    }
+    if (description != null && description.isNotEmpty) {
+      _descriptionController.text = description;
+    }
+    controller.applyPrefill(
+      category: _categoryFromPrefill(),
+      reportedAccountId: widget.prefill['reportedAccountId']?.toString(),
+      reportContext: widget.prefill['reportContext']?.toString(),
+    );
   }
 
   @override

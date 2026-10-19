@@ -12,7 +12,9 @@ import 'package:aluga_comigo/app/modules/chats/ui/widgets/offer_immobile_picker_
 import 'package:aluga_comigo/app/modules/house/ui/widgets/super_chat_immobile_dialog.dart';
 import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
+import 'package:aluga_comigo/app/shared/domain/enums/user_report_context.dart';
 import 'package:aluga_comigo/app/shared/presenter/helpers/inventory_prompt_helper.dart';
+import 'package:aluga_comigo/app/shared/presenter/widgets/user_safety_sheet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -231,6 +233,27 @@ class _ChatPageState extends State<ChatPage> {
             const Gap(16),
           ],
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Opções da conversa',
+            onPressed: sessionId.isEmpty
+                ? null
+                : () {
+                    UserSafetySheet.show(
+                      context,
+                      reportedAccountId: widget.chat.otherParticipantAccountId(
+                        sessionId,
+                      ),
+                      displayName: otherDisplay.name,
+                      reportContext: UserReportContext.chat,
+                      chat: widget.chat,
+                      onBlocked: () => Navigator.of(context).pop(),
+                      onUnmatched: () => Navigator.of(context).pop(),
+                    );
+                  },
+            icon: const Icon(Icons.more_vert, color: Colors.grey),
+          ),
+        ],
       ),
       body: Column(
         children: [

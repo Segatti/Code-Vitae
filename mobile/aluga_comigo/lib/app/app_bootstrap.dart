@@ -12,6 +12,7 @@ import 'app_module.dart';
 import 'app_widget.dart';
 import 'modules/chats/chat_navigation.dart';
 import 'shared/data/services/fcm_background_handler.dart';
+import 'shared/data/services/firebase_observability_service.dart';
 import 'shared/data/services/fcm_push_service.dart';
 import 'shared/data/services/session_service.dart';
 import 'shared/domain/entities/system_config.dart';
@@ -33,6 +34,7 @@ Future<void> bootstrapAlugaComigoApp() async {
 
   if (FirebaseConfig.isConfigured) {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    await FirebaseObservabilityService.ensureInitialized();
   }
 
   runApp(

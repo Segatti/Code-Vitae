@@ -2,6 +2,7 @@ import 'package:aluga_comigo/app/shared/data/services/session_service.dart';
 
 import '../../../../shared/data/services/secure_storage_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
+import '../../../../shared/domain/usecases/list_blocked_account_ids.dart';
 import '../../../../shared/domain/entities/failures.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/enums/type_user.dart';
@@ -29,8 +30,13 @@ abstract interface class ICustomerDatasource {
 class CustomerDatasource implements ICustomerDatasource {
   final SupabaseDatabaseService database;
   final SecureStorageService storage;
+  final IListBlockedAccountIds listBlockedAccountIds;
 
-  const CustomerDatasource(this.database, this.storage);
+  const CustomerDatasource(
+    this.database,
+    this.storage,
+    this.listBlockedAccountIds,
+  );
 
   @override
   Future<MatchCustomerResponse> matchCustomer(
@@ -205,9 +211,16 @@ class CustomerDatasource implements ICustomerDatasource {
       TypeUser.none => <String>[],
     };
 
+    final blockedResult = await listBlockedAccountIds();
+    final blockedIds = blockedResult.fold(
+      (ids) => ids,
+      (_) => const <String>[],
+    );
+
     final excludeIds = {
       ...matchedIds,
       ...alreadyLoadedIds,
+      ...blockedIds,
     }.where((id) => id.isNotEmpty).toList();
 
     final rows = switch (typeUser) {

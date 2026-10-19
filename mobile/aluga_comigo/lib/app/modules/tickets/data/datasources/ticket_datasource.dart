@@ -21,6 +21,8 @@ abstract interface class ITicketDatasource {
     required String title,
     required TicketCategory category,
     required String description,
+    String? reportedAccountId,
+    String? reportContext,
   });
 
   Future<TicketReaction?> setReaction({
@@ -138,15 +140,26 @@ class TicketDatasource implements ITicketDatasource {
     required String title,
     required TicketCategory category,
     required String description,
+    String? reportedAccountId,
+    String? reportContext,
   }) async {
     try {
-      await client.from('support_tickets').insert({
+      final payload = <String, dynamic>{
         'account_id': _accountId,
         'title': title.trim(),
         'category': category.storageValue,
         'description': description.trim(),
         'status': 'open',
-      });
+      };
+      final reportedId = reportedAccountId?.trim();
+      if (reportedId != null && reportedId.isNotEmpty) {
+        payload['reported_account_id'] = reportedId;
+      }
+      final context = reportContext?.trim();
+      if (context != null && context.isNotEmpty) {
+        payload['report_context'] = context;
+      }
+      await client.from('support_tickets').insert(payload);
     } on PostgrestException catch (error) {
       throw FailureDatasource(
         message: SupabaseErrorHandler.getMessage(error.code, error.message),

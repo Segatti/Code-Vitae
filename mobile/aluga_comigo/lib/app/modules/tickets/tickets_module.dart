@@ -19,7 +19,10 @@ class TicketsModule extends Module {
     c.route(
       '/new',
       transition: AppTransitions.rightToLeft,
-      child: (_, _) => const CreateTicketPage(),
+      child: (_, state) {
+        final map = state.arguments as Map<String, dynamic>? ?? {};
+        return CreateTicketPage(prefill: map);
+      },
     );
     c.route(
       '/detail',

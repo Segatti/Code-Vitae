@@ -17,7 +17,14 @@ import 'data/services/secure_storage_service.dart';
 import 'data/services/supabase_auth_service.dart';
 import 'data/services/supabase_database_service.dart';
 import 'data/services/supabase_realtime_service.dart';
+import 'data/datasources/account_block_datasource.dart';
+import 'data/repositories/account_block_repository.dart';
+import 'data/services/analytics_service.dart';
 import 'data/services/fcm_push_service.dart';
+import 'domain/repositories/account_block_repository.dart' as block_domain;
+import 'domain/usecases/block_account.dart';
+import 'domain/usecases/list_blocked_account_ids.dart';
+import '../../../../firebase_config.dart';
 import 'data/services/local_push_notification_service.dart';
 import 'data/services/supabase_storage_service.dart';
 
@@ -48,5 +55,16 @@ class CoreModule extends Module {
       LocalPushNotificationService.new,
     );
     c.addSingleton<FcmPushService>(FcmPushService.new);
+    c.addSingleton<IAccountBlockDatasource>(AccountBlockDatasource.new);
+    c.addSingleton<block_domain.IAccountBlockRepository>(
+      AccountBlockRepository.new,
+    );
+    c.addSingleton<IBlockAccount>(BlockAccount.new);
+    c.addSingleton<IListBlockedAccountIds>(ListBlockedAccountIds.new);
+    c.addSingleton<IAnalyticsService>(
+      () => FirebaseConfig.isConfigured
+          ? AnalyticsService()
+          : NoOpAnalyticsService(),
+    );
   }
 }

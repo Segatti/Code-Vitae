@@ -15,6 +15,8 @@ import '../../domain/usecases/send_message.dart';
 import '../../domain/usecases/send_super_chat_message.dart';
 import '../../domain/usecases/watch_messages.dart';
 import '../../presenter/active_chat_session.dart';
+import '../../../../shared/data/services/analytics_service.dart';
+import '../../../../shared/domain/analytics/analytics_events.dart';
 import '../../../../shared/presenter/lifecycle/app_lifecycle_bridge.dart';
 
 abstract interface class IChatController extends ChangeNotifier {
@@ -44,6 +46,8 @@ class ChatController extends IChatController {
   final IListChatImmobileOffers _listChatImmobileOffers;
   final IOfferImmobileInChat _offerImmobileInChat;
 
+  final IAnalyticsService _analytics;
+
   ChatController(
     this._listMessages,
     this._sendMessage,
@@ -52,6 +56,7 @@ class ChatController extends IChatController {
     this._getImmobileListing,
     this._listChatImmobileOffers,
     this._offerImmobileInChat,
+    this._analytics,
   );
 
   Chat? _chat;
@@ -72,6 +77,13 @@ class ChatController extends IChatController {
     loadingList = [];
     await loadMessages();
     unawaited(loadChatContext());
+
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.chatOpen,
+        parameters: {AnalyticsParams.chatId: chat.id},
+      ),
+    );
 
     _messagesSubscription = _watchMessages(
       chat.id,
@@ -208,6 +220,15 @@ class ChatController extends IChatController {
         messageController.clear();
         errorMessage = null;
         notifyListeners();
+        unawaited(
+          _analytics.logEvent(
+            AnalyticsEvents.chatMessageSent,
+            parameters: {
+              AnalyticsParams.chatId: chat.id,
+              AnalyticsParams.messageType: 'text',
+            },
+          ),
+        );
         return true;
       },
       (_) {
@@ -239,6 +260,15 @@ class ChatController extends IChatController {
         messages = [...messages, message];
         errorMessage = null;
         notifyListeners();
+        unawaited(
+          _analytics.logEvent(
+            AnalyticsEvents.chatMessageSent,
+            parameters: {
+              AnalyticsParams.chatId: chat.id,
+              AnalyticsParams.messageType: 'super_chat',
+            },
+          ),
+        );
         return true;
       },
       (failure) {

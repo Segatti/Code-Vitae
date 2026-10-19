@@ -2,6 +2,8 @@
 
 Este guia configura **notificação nativa** (app fechado ou em segundo plano) para mensagens de chat.
 
+Analytics e Crashlytics usam o mesmo projeto e `--dart-define` Firebase — ver [`docs/analytics.md`](analytics.md).
+
 ## 1. Firebase Console
 
 1. Crie um projeto em [Firebase Console](https://console.firebase.google.com/) (ou use o existente).

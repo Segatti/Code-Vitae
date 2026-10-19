@@ -1,4 +1,7 @@
 import 'package:material_ui/material_ui.dart';
+
+import '../../../../shared/data/services/analytics_service.dart';
+import '../../../../shared/domain/analytics/analytics_events.dart';
 import '../../domain/entities/create_ticket_input.dart';
 import '../../domain/enums/ticket_category.dart';
 import '../../domain/usecases/create_support_ticket.dart';
@@ -7,6 +10,16 @@ abstract interface class ICreateTicketController extends ChangeNotifier {
   bool submitting = false;
   String errorMessage = '';
   TicketCategory category = TicketCategory.suggestion;
+  String? reportedAccountId;
+  String? reportContext;
+
+  void applyPrefill({
+    TicketCategory? category,
+    String? title,
+    String? description,
+    String? reportedAccountId,
+    String? reportContext,
+  });
 
   void setCategory(TicketCategory value);
   Future<bool> submit({
@@ -17,8 +30,23 @@ abstract interface class ICreateTicketController extends ChangeNotifier {
 
 class CreateTicketController extends ICreateTicketController {
   final ICreateSupportTicket _createSupportTicket;
+  final IAnalyticsService _analytics;
 
-  CreateTicketController(this._createSupportTicket);
+  CreateTicketController(this._createSupportTicket, this._analytics);
+
+  @override
+  void applyPrefill({
+    TicketCategory? category,
+    String? title,
+    String? description,
+    String? reportedAccountId,
+    String? reportContext,
+  }) {
+    if (category != null) this.category = category;
+    this.reportedAccountId = reportedAccountId;
+    this.reportContext = reportContext;
+    notifyListeners();
+  }
 
   @override
   void setCategory(TicketCategory value) {
@@ -54,21 +82,36 @@ class CreateTicketController extends ICreateTicketController {
         title: trimmedTitle,
         category: category,
         description: trimmedDescription,
+        reportedAccountId: reportedAccountId,
+        reportContext: reportContext,
       ),
     );
 
     submitting = false;
-    return result.fold(
-      (_) {
-        errorMessage = '';
-        notifyListeners();
-        return true;
-      },
+
+    final ok = result.fold((_) => true, (_) => false);
+    if (ok) {
+      if (category == TicketCategory.report) {
+        await _analytics.logEvent(
+          AnalyticsEvents.reportSubmitted,
+          parameters: {
+            if (reportContext != null)
+              AnalyticsParams.reportContext: reportContext!,
+          },
+        );
+      }
+      errorMessage = '';
+      notifyListeners();
+      return true;
+    }
+
+    result.fold(
+      (_) {},
       (failure) {
         errorMessage = failure.toString().replaceFirst('Exception: ', '');
         notifyListeners();
-        return false;
       },
     );
+    return false;
   }
 }

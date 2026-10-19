@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:result_command/result_command.dart';
 import 'package:result_dart/result_dart.dart';
 
-import '../../../auth/domain/enums/type_user.dart';
 import '../../data/models/customer_model.dart';
 import '../../domain/constants/swipe_feed_constants.dart';
 import '../../domain/entities/match_customer_response.dart';
@@ -10,6 +11,9 @@ import '../../domain/entities/swipe_action_result.dart';
 import '../../domain/enums/match_type.dart';
 import '../../domain/usecases/get_customers.dart';
 import '../../domain/usecases/match_customer.dart';
+import '../../../../shared/data/services/analytics_service.dart';
+import '../../../../shared/domain/analytics/analytics_events.dart';
+import '../../../auth/domain/enums/type_user.dart';
 
 abstract class ICustomersController extends ChangeNotifier {
   List<String> loadingList = [];
@@ -37,8 +41,13 @@ abstract class ICustomersController extends ChangeNotifier {
 class CustomersController extends ICustomersController {
   final IGetCustomers _getCustomers;
   final IMatchCustomer _matchCustomer;
+  final IAnalyticsService _analytics;
 
-  CustomersController(this._getCustomers, this._matchCustomer);
+  CustomersController(
+    this._getCustomers,
+    this._matchCustomer,
+    this._analytics,
+  );
 
   late final getCustomersCommand = Command0(
     () => _getCustomers.call(
@@ -82,9 +91,29 @@ class CustomersController extends ICustomersController {
     CustomerModel customer,
     MatchType matchType,
   ) async {
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.swipeAction,
+        parameters: {
+          AnalyticsParams.matchType: matchType.name,
+          AnalyticsParams.targetType: customer.typeUser.name,
+        },
+      ),
+    );
     final outcome = await matchCustomer(customer, matchType);
     if (outcome == null) {
       return const SwipeActionResult(removed: false);
+    }
+    if (outcome.mutualMatch != null) {
+      unawaited(
+        _analytics.logEvent(
+          AnalyticsEvents.match,
+          parameters: {
+            AnalyticsParams.isMutual: 1,
+            AnalyticsParams.targetType: customer.typeUser.name,
+          },
+        ),
+      );
     }
     customers.removeWhere((item) => item.id == customer.id);
     notifyListeners();

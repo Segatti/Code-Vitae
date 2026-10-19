@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../shared/data/services/analytics_service.dart';
 import '../../../../shared/data/services/session_service.dart';
+import '../../../../shared/domain/analytics/analytics_events.dart';
 import '../../data/repositories/purchase_repository.dart';
 import '../../interactor/models/store_catalog.dart';
 import '../../interactor/models/store_product.dart';
@@ -22,13 +24,15 @@ abstract interface class IStoreController extends ChangeNotifier {
   String? compareAtPriceFor(StoreProduct product);
   bool get firstPurchaseOfferEligible;
   Future<void> purchase(StoreProduct product);
+  Future<void> restorePurchases();
 }
 
 class StoreController extends IStoreController {
   final IPurchaseRepository _repository;
+  final IAnalyticsService _analytics;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
 
-  StoreController(this._repository);
+  StoreController(this._repository, this._analytics);
 
   @override
   Future<void> initialize() async {
@@ -68,7 +72,21 @@ class StoreController extends IStoreController {
         inventory = SessionService.inventory;
         errorMessage = '';
         purchaseSuccessMessage = 'Compra realizada com sucesso!';
+        await _analytics.logEvent(
+          AnalyticsEvents.purchase,
+          parameters: {
+            AnalyticsParams.itemId: purchase.productID,
+            AnalyticsParams.transactionId: purchase.purchaseID ?? '',
+          },
+        );
       } catch (error) {
+        await _analytics.logEvent(
+          AnalyticsEvents.purchaseFailed,
+          parameters: {
+            AnalyticsParams.itemId: purchase.productID,
+            AnalyticsParams.errorMessage: error.toString(),
+          },
+        );
         final raw = error.toString();
         if (raw.contains('first purchase offer not eligible')) {
           errorMessage =
@@ -121,6 +139,13 @@ class StoreController extends IStoreController {
     notifyListeners();
 
     try {
+      await _analytics.logEvent(
+        AnalyticsEvents.beginCheckout,
+        parameters: {
+          AnalyticsParams.itemId: product.id,
+          AnalyticsParams.itemCategory: product.category.name,
+        },
+      );
       final started = await _repository.startPurchase(details);
       if (!started) {
         purchasingProductId = null;
@@ -130,6 +155,30 @@ class StoreController extends IStoreController {
     } catch (error) {
       purchasingProductId = null;
       errorMessage = error.toString();
+      notifyListeners();
+    }
+  }
+
+  @override
+  Future<void> restorePurchases() async {
+    if (!storeAvailable) {
+      errorMessage = 'Loja indisponível.';
+      notifyListeners();
+      return;
+    }
+    loadingList.add('restore');
+    notifyListeners();
+    try {
+      await _analytics.logEvent(AnalyticsEvents.restorePurchases);
+      await _repository.restorePurchases();
+      errorMessage = '';
+      purchaseSuccessMessage =
+          'Restauração solicitada. Créditos pendentes serão aplicados '
+          'quando a loja confirmar.';
+    } catch (error) {
+      errorMessage = error.toString();
+    } finally {
+      loadingList.remove('restore');
       notifyListeners();
     }
   }

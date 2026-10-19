@@ -1,6 +1,8 @@
+import '../../../../shared/data/datasources/account_block_datasource.dart';
 import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../../shared/data/services/supabase_realtime_service.dart';
+import '../../../../shared/domain/usecases/list_blocked_account_ids.dart';
 import '../../../customer/data/models/customer_model.dart';
 import '../../domain/entities/chat.dart';
 import '../models/chat_immobile_offer_model.dart';
@@ -44,8 +46,37 @@ abstract interface class IChatDatasource {
 class ChatDatasource implements IChatDatasource {
   final SupabaseDatabaseService database;
   final SupabaseRealtimeService realtime;
+  final IListBlockedAccountIds listBlockedAccountIds;
+  final IAccountBlockDatasource accountBlockDatasource;
 
-  const ChatDatasource(this.database, this.realtime);
+  const ChatDatasource(
+    this.database,
+    this.realtime,
+    this.listBlockedAccountIds,
+    this.accountBlockDatasource,
+  );
+
+  Future<Set<String>> _blockedIds() async {
+    final result = await listBlockedAccountIds();
+    return result.fold((ids) => ids.toSet(), (_) => <String>{});
+  }
+
+  Future<void> _ensureNotBlockedWithChat(String chatId) async {
+    final userId = SessionService.customer!.id;
+    final row = await database.findChatForUser(userId, chatId);
+    if (row == null) {
+      throw Exception('Conversa não encontrada');
+    }
+    final chat = ChatModel.fromMap(row);
+    final otherId = chat.toEntity().otherParticipantAccountId(userId);
+    final blocked = await accountBlockDatasource.isBlockedEitherWay(
+      accountId: userId,
+      otherAccountId: otherId,
+    );
+    if (blocked) {
+      throw Exception('Você não pode interagir com este contato.');
+    }
+  }
 
   @override
   Future<ChatModel?> getChatById(String chatId) async {
@@ -59,7 +90,14 @@ class ChatDatasource implements IChatDatasource {
   Future<List<ChatModel>> listChats() async {
     final userId = SessionService.customer!.id;
     final rows = await database.listChatsForUser(userId);
-    return rows.map<ChatModel>(ChatModel.fromMap).toList();
+    final blocked = await _blockedIds();
+    return rows
+        .map<ChatModel>(ChatModel.fromMap)
+        .where((chat) {
+          final otherId = chat.toEntity().otherParticipantAccountId(userId);
+          return !blocked.contains(otherId);
+        })
+        .toList();
   }
 
   @override
@@ -81,6 +119,7 @@ class ChatDatasource implements IChatDatasource {
     required String content,
     required bool isPersonPeerChat,
   }) async {
+    await _ensureNotBlockedWithChat(chatId);
     final senderId = SessionService.customer!.id;
     final row = await database.sendMessage(
       chatId: chatId,
@@ -96,6 +135,7 @@ class ChatDatasource implements IChatDatasource {
     required String chatId,
     required String content,
   }) async {
+    await _ensureNotBlockedWithChat(chatId);
     final consumed = await database.consumeSuperChat();
     if (!consumed) {
       throw Exception('Você não tem Super Chat. Compre na loja.');
