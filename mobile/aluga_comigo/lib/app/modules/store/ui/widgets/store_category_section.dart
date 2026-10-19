@@ -9,10 +9,6 @@ import 'store_product_icon.dart';
 
 class StoreCategorySection extends StatelessWidget {
   final StoreItemCategory category;
-  final Color backgroundColor;
-  final Color headerColor;
-  final Color headerTextColor;
-  final Color? descriptionTextColor;
   final List<StoreProduct> products;
   final void Function(StoreProduct product)? onProductTap;
   final String Function(StoreProduct product)? priceFor;
@@ -21,10 +17,6 @@ class StoreCategorySection extends StatelessWidget {
   const StoreCategorySection({
     super.key,
     required this.category,
-    required this.backgroundColor,
-    required this.headerColor,
-    required this.headerTextColor,
-    this.descriptionTextColor,
     required this.products,
     this.onProductTap,
     this.priceFor,
@@ -33,188 +25,270 @@ class StoreCategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: backgroundColor,
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.white24,
-                offset: Offset(-10, -10),
-                blurRadius: 40,
-              ),
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(10, 10),
-                blurRadius: 20,
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.only(
-            top: 32,
-            bottom: 16,
-            left: 16,
-            right: 16,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final accent = _StoreCategoryStyle.accentColor(category);
+    final surface = _StoreCategoryStyle.surfaceColor(category);
+    final icon = _StoreCategoryStyle.headerIcon(category);
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Text(
-                category.description,
-                style: GoogleFonts.rubik(
-                  fontSize: 13,
-                  color:
-                      descriptionTextColor ??
-                      headerTextColor.withValues(alpha: 0.85),
-                  fontWeight: FontWeight.w400,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Icon(icon, color: Colors.white, size: 22),
               ),
               const Gap(12),
-              LayoutBuilder(
-                builder: (context, constraints) => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (final product in products)
-                      _ProductCard(
-                        product: product,
-                        priceLabel:
-                            priceFor?.call(product) ?? product.priceLabel,
-                        isPurchasing: purchasingProductId == product.id,
-                        width: constraints.maxWidth * .3,
-                        height: constraints.maxWidth * .45,
-                        onTap: onProductTap == null
-                            ? null
-                            : () => onProductTap!(product),
+                    Text(
+                      category.title,
+                      style: GoogleFonts.rubik(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
+                    ),
+                    Text(
+                      category.tagline,
+                      style: GoogleFonts.rubik(
+                        fontSize: 13,
+                        color: const Color(0xFF555555),
+                        height: 1.3,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
-        Container(
-          height: 32,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20),
-              bottom: Radius.circular(10),
-            ),
-            color: headerColor,
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 5),
-                blurRadius: 5,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              category.title,
-              style: GoogleFonts.rubik(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: headerTextColor,
-              ),
+          const Gap(12),
+          Text(
+            category.description,
+            style: GoogleFonts.rubik(
+              fontSize: 13,
+              color: const Color(0xFF666666),
+              height: 1.35,
             ),
           ),
-        ),
-      ],
+          const Gap(10),
+          ...category.benefits.map(
+            (benefit) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.check_circle, size: 16, color: accent),
+                  const Gap(8),
+                  Expanded(
+                    child: Text(
+                      benefit,
+                      style: GoogleFonts.rubik(
+                        fontSize: 12,
+                        color: const Color(0xFF444444),
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Gap(16),
+          LayoutBuilder(
+            builder: (context, constraints) => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < products.length; i++) ...[
+                  if (i > 0) const Gap(8),
+                  Expanded(
+                    child: _ProductCard(
+                      product: products[i],
+                      accentColor: accent,
+                      priceLabel:
+                          priceFor?.call(products[i]) ??
+                          products[i].priceLabel,
+                      isPurchasing:
+                          purchasingProductId == products[i].id,
+                      onTap: onProductTap == null
+                          ? null
+                          : () => onProductTap!(products[i]),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+class _StoreCategoryStyle {
+  static Color accentColor(StoreItemCategory category) => switch (category) {
+    StoreItemCategory.superStar => const Color(0xFFE6A800),
+    StoreItemCategory.superChat => const Color(0xFF5350C3),
+    StoreItemCategory.powerUp => const Color(0xFFDF924B),
+  };
+
+  static Color surfaceColor(StoreItemCategory category) => switch (category) {
+    StoreItemCategory.superStar => const Color(0xFFFFF8E1),
+    StoreItemCategory.superChat => const Color(0xFFF0EFFF),
+    StoreItemCategory.powerUp => const Color(0xFFFFF3E0),
+  };
+
+  static IconData headerIcon(StoreItemCategory category) => switch (category) {
+    StoreItemCategory.superStar => Icons.star_rounded,
+    StoreItemCategory.superChat => Icons.chat_bubble_rounded,
+    StoreItemCategory.powerUp => Icons.bolt_rounded,
+  };
+}
+
 class _ProductCard extends StatelessWidget {
   final StoreProduct product;
+  final Color accentColor;
   final String priceLabel;
   final bool isPurchasing;
-  final double width;
-  final double height;
   final VoidCallback? onTap;
 
   const _ProductCard({
     required this.product,
+    required this.accentColor,
     required this.priceLabel,
     required this.isPurchasing,
-    required this.width,
-    required this.height,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final borderColor = product.isRecommended
+        ? accentColor
+        : const Color(0xFFACACAC);
+
     return Bounce(
       duration: Durations.short3,
       onPressed: onTap ?? () {},
       child: Container(
-        width: width,
-        height: height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
-          border: Border.all(color: Colors.grey),
+          border: Border.all(
+            color: borderColor,
+            width: product.isRecommended ? 2 : 1,
+          ),
+          boxShadow: product.isRecommended
+              ? [
+                  BoxShadow(
+                    color: accentColor.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           children: [
-            Flexible(
-              flex: 3,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: StoreProductIconWidget(icon: product.icon),
+            if (product.badgeLabel != null)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(8),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Text(
-                product.label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.rubik(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
                 child: Text(
-                  product.description,
+                  product.badgeLabel!,
                   textAlign: TextAlign.center,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.rubik(
                     fontSize: 10,
-                    height: 1.2,
-                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
+              child: SizedBox(
+                height: 56,
+                child: StoreProductIconWidget(icon: product.icon),
+              ),
             ),
-            const Divider(height: 1),
-            Flexible(
-              child: Center(
-                child: isPurchasing
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(
-                        priceLabel,
-                        style: GoogleFonts.rubik(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+              child: Text(
+                product.label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: GoogleFonts.rubik(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            if (product.description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Text(
+                  product.description,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.rubik(
+                    fontSize: 10,
+                    height: 1.25,
+                    color: const Color(0xFF666666),
+                  ),
+                ),
+              ),
+            const Gap(8),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: isPurchasing
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          'Comprar\n$priceLabel',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.rubik(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                            height: 1.2,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
+                ),
               ),
             ),
           ],

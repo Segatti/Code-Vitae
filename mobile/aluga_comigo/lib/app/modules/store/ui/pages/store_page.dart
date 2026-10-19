@@ -5,9 +5,13 @@ import 'package:aluga_comigo/app/modules/store/interactor/models/store_catalog.d
 import 'package:aluga_comigo/app/modules/store/interactor/models/store_product.dart';
 import 'package:aluga_comigo/app/modules/store/ui/controllers/store_controller.dart';
 import 'package:aluga_comigo/app/modules/store/ui/widgets/store_category_section.dart';
+import 'package:aluga_comigo/app/modules/store/ui/widgets/store_first_purchase_offer.dart';
+import 'package:aluga_comigo/app/shared/domain/constants/icons_asset.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -45,11 +49,19 @@ class _StorePageState extends State<StorePage> {
   }
 
   Future<void> _confirmPurchase(StoreProduct product) async {
+    final isFirstOffer = product.id == StoreCatalog.firstPurchaseOffer.id;
     final confirmed = await showAppConfirmDialog(
       context: context,
-      title: product.label,
-      message: 'Confirmar compra por ${controller.priceFor(product)}?',
-      confirmLabel: 'Comprar',
+      title: isFirstOffer ? 'Oferta de primeira compra' : 'Confirmar compra',
+      message: isFirstOffer
+          ? 'Você recebe 7 dias de PowerUp, 5 Super Star e 5 Super Chat por '
+              '${controller.priceFor(product)} (de ${product.compareAtPriceLabel}).\n\n'
+              'Válido apenas uma vez, para quem nunca comprou na loja. '
+              'Pagamento via Google Play ou App Store.'
+          : '${product.label} — ${controller.priceFor(product)}\n\n'
+              'O pagamento é processado pela loja do seu celular '
+              '(Google Play ou App Store).',
+      confirmLabel: isFirstOffer ? 'Garantir oferta' : 'Comprar agora',
     );
 
     if (confirmed == true && mounted) {
@@ -129,43 +141,60 @@ class _StorePageState extends State<StorePage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    if (!_isImmobileOwner)
-                      _BalanceChip(
-                        icon: Icons.star,
-                        label: 'Super Star',
-                        value: controller.inventory.superStarBalance,
-                      ),
-                    _BalanceChip(
-                      icon: Icons.chat_bubble,
-                      label: 'Super Chat',
-                      value: controller.inventory.superChatBalance,
-                    ),
-                  ],
-                ),
-              ),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        'Destaque-se no match',
+                        style: GoogleFonts.rubik(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Gap(6),
+                      Text(
+                        'Créditos e PowerUp para aparecer mais no feed, '
+                        'conversar com destaque e ser lembrado por quem importa.',
+                        style: GoogleFonts.rubik(
+                          fontSize: 14,
+                          color: const Color(0xFF666666),
+                          height: 1.35,
+                        ),
+                      ),
+                      const Gap(16),
+                      if (controller.firstPurchaseOfferEligible) ...[
+                        StoreFirstPurchaseOffer(
+                          product: StoreCatalog.firstPurchaseOffer,
+                          priceLabel: controller.priceFor(
+                            StoreCatalog.firstPurchaseOffer,
+                          ),
+                          compareAtPriceLabel: controller.compareAtPriceFor(
+                            StoreCatalog.firstPurchaseOffer,
+                          ),
+                          isPurchasing: controller.purchasingProductId ==
+                              StoreCatalog.firstPurchaseOffer.id,
+                          onTap: () => _confirmPurchase(
+                            StoreCatalog.firstPurchaseOffer,
+                          ),
+                        ),
+                        const Gap(20),
+                      ],
+                      _BalancePanel(
+                        showSuperStar: !_isImmobileOwner,
+                        superStarBalance: controller.inventory.superStarBalance,
+                        superChatBalance: controller.inventory.superChatBalance,
+                        hasActivePowerUp:
+                            SessionService.customer?.hasActivePowerUp ?? false,
+                        powerUpUntil: SessionService.customer?.powerUpUntil,
+                      ),
+                      const Gap(24),
                       if (config.storePowerUpActive) ...[
                         StoreCategorySection(
                           category: StoreItemCategory.powerUp,
-                          backgroundColor: const Color(0xFFFFF3E0),
-                          headerColor: const Color(0xFFDF924B),
-                          headerTextColor: Colors.white,
-                          descriptionTextColor: const Color(0xFF5D4037),
                           products: StoreCatalog.powerUpProducts,
                           priceFor: controller.priceFor,
                           purchasingProductId: controller.purchasingProductId,
@@ -174,12 +203,9 @@ class _StorePageState extends State<StorePage> {
                       ],
                       if (!_isImmobileOwner &&
                           config.storeSuperStarActive) ...[
-                        if (config.storePowerUpActive) const Gap(32),
+                        if (config.storePowerUpActive) const Gap(20),
                         StoreCategorySection(
                           category: StoreItemCategory.superStar,
-                          backgroundColor: const Color(0xFFFFDC64),
-                          headerColor: const Color(0xFFFFC850),
-                          headerTextColor: Colors.black,
                           products: StoreCatalog.superStarProducts,
                           priceFor: controller.priceFor,
                           purchasingProductId: controller.purchasingProductId,
@@ -190,12 +216,9 @@ class _StorePageState extends State<StorePage> {
                         if (config.storePowerUpActive ||
                             (!_isImmobileOwner &&
                                 config.storeSuperStarActive))
-                          const Gap(32),
+                          const Gap(20),
                         StoreCategorySection(
                           category: StoreItemCategory.superChat,
-                          backgroundColor: const Color(0xFF605DDE),
-                          headerColor: const Color(0xFF5350C3),
-                          headerTextColor: Colors.white,
                           products: StoreCatalog.superChatProducts,
                           priceFor: controller.priceFor,
                           purchasingProductId: controller.purchasingProductId,
@@ -213,6 +236,18 @@ class _StorePageState extends State<StorePage> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                      const Gap(8),
+                      Text(
+                        'Compras seguras via Google Play ou App Store. '
+                        'Créditos entram na sua conta assim que o pagamento '
+                        'é confirmado.',
+                        style: GoogleFonts.rubik(
+                          fontSize: 11,
+                          color: const Color(0xFF999999),
+                          height: 1.35,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                       const Gap(16),
                     ],
                   ),
@@ -226,29 +261,203 @@ class _StorePageState extends State<StorePage> {
   }
 }
 
-class _BalanceChip extends StatelessWidget {
-  final IconData icon;
+class _BalancePanel extends StatelessWidget {
+  final bool showSuperStar;
+  final int superStarBalance;
+  final int superChatBalance;
+  final bool hasActivePowerUp;
+  final DateTime? powerUpUntil;
+
+  const _BalancePanel({
+    required this.showSuperStar,
+    required this.superStarBalance,
+    required this.superChatBalance,
+    required this.hasActivePowerUp,
+    this.powerUpUntil,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEAEAEA),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Seu saldo',
+            style: GoogleFonts.rubik(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF777777),
+            ),
+          ),
+          const Gap(10),
+          Row(
+            children: [
+              if (showSuperStar)
+                Expanded(
+                  child: _BalanceTile(
+                    assetPath: IconsAsset.superStar1,
+                    label: 'Super Star',
+                    value: superStarBalance,
+                  ),
+                ),
+              if (showSuperStar) const Gap(10),
+              Expanded(
+                child: _BalanceTile(
+                  assetPath: IconsAsset.superChat1,
+                  label: 'Super Chat',
+                  value: superChatBalance,
+                ),
+              ),
+            ],
+          ),
+          const Gap(10),
+          _PowerUpStatusTile(
+            hasActivePowerUp: hasActivePowerUp,
+            powerUpUntil: powerUpUntil,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PowerUpStatusTile extends StatelessWidget {
+  final bool hasActivePowerUp;
+  final DateTime? powerUpUntil;
+
+  const _PowerUpStatusTile({
+    required this.hasActivePowerUp,
+    this.powerUpUntil,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final statusColor = hasActivePowerUp
+        ? const Color(0xFFDF924B)
+        : const Color(0xFF777777);
+    final statusLabel = hasActivePowerUp ? 'PowerUp ativo' : 'PowerUp inativo';
+    final until = powerUpUntil;
+    final expiresLabel = hasActivePowerUp && until != null
+        ? 'Termina em ${DateFormat('dd/MM/yyyy \'às\' HH:mm').format(until.toLocal())}'
+        : 'Compre um pacote para prioridade no feed';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: hasActivePowerUp
+              ? const Color(0xFFDF924B)
+              : const Color(0xFFACACAC),
+          width: hasActivePowerUp ? 1.5 : 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 28,
+            height: 28,
+            child: SvgPicture.asset(IconsAsset.powerup1),
+          ),
+          const Gap(8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      statusLabel,
+                      style: GoogleFonts.rubik(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: statusColor,
+                      ),
+                    ),
+                    if (hasActivePowerUp) ...[
+                      const Gap(6),
+                      Icon(Icons.bolt_rounded, size: 16, color: statusColor),
+                    ],
+                  ],
+                ),
+                Text(
+                  expiresLabel,
+                  style: GoogleFonts.rubik(
+                    fontSize: 11,
+                    color: const Color(0xFF666666),
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BalanceTile extends StatelessWidget {
+  final String assetPath;
   final String label;
   final int value;
 
-  const _BalanceChip({
-    required this.icon,
+  const _BalanceTile({
+    required this.assetPath,
     required this.label,
     required this.value,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 20, color: const Color(0xFF2C29A3)),
-        const Gap(6),
-        Text(
-          '$label: $value',
-          style: GoogleFonts.rubik(fontWeight: FontWeight.w500),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFACACAC)),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 28,
+            height: 28,
+            child: SvgPicture.asset(assetPath),
+          ),
+          const Gap(8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.rubik(
+                    fontSize: 11,
+                    color: const Color(0xFF777777),
+                  ),
+                ),
+                Text(
+                  '$value crédito${value == 1 ? '' : 's'}',
+                  style: GoogleFonts.rubik(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF2C29A3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

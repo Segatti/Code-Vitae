@@ -20,6 +20,9 @@ class StoreProduct {
   final String description;
   final StoreProductIcon icon;
   final Duration boostDuration;
+  final String? badgeLabel;
+  final bool isRecommended;
+  final String? compareAtPriceLabel;
 
   const StoreProduct({
     required this.id,
@@ -29,5 +32,8 @@ class StoreProduct {
     required this.description,
     required this.icon,
     required this.boostDuration,
+    this.badgeLabel,
+    this.isRecommended = false,
+    this.compareAtPriceLabel,
   });
 }

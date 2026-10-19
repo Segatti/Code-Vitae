@@ -1,6 +1,7 @@
 import '../../../../shared/data/services/session_service.dart';
 import '../../../../shared/data/services/supabase_database_service.dart';
 import '../../../customer/data/models/customer_model.dart';
+import '../../interactor/models/store_catalog.dart';
 
 abstract interface class IPurchaseSupabaseDatasource {
   Future<UserInventory> getInventory();
@@ -37,7 +38,7 @@ class PurchaseSupabaseDatasource implements IPurchaseSupabaseDatasource {
     );
     await getInventory();
 
-    if (productId.startsWith('power_up_')) {
+    if (StoreCatalog.powerUpProductIds.contains(productId)) {
       await _refreshProfilePowerUp();
     }
   }

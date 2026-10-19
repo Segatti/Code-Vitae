@@ -19,6 +19,8 @@ abstract interface class IStoreController extends ChangeNotifier {
 
   Future<void> initialize();
   String priceFor(StoreProduct product);
+  String? compareAtPriceFor(StoreProduct product);
+  bool get firstPurchaseOfferEligible;
   Future<void> purchase(StoreProduct product);
 }
 
@@ -67,8 +69,17 @@ class StoreController extends IStoreController {
         errorMessage = '';
         purchaseSuccessMessage = 'Compra realizada com sucesso!';
       } catch (error) {
-        errorMessage = error.toString();
+        final raw = error.toString();
+        if (raw.contains('first purchase offer not eligible')) {
+          errorMessage =
+              'Esta oferta é exclusiva para quem nunca comprou na loja.';
+        } else {
+          errorMessage = raw;
+        }
         purchaseSuccessMessage = null;
+        try {
+          inventory = await _repository.loadInventory();
+        } catch (_) {}
       } finally {
         purchasingProductId = null;
         notifyListeners();
@@ -82,6 +93,16 @@ class StoreController extends IStoreController {
     if (details != null) return details.price;
     return product.priceLabel;
   }
+
+  @override
+  String? compareAtPriceFor(StoreProduct product) {
+    if (product.compareAtPriceLabel == null) return null;
+    return product.compareAtPriceLabel;
+  }
+
+  @override
+  bool get firstPurchaseOfferEligible =>
+      inventory.firstPurchaseOfferEligible;
 
   @override
   Future<void> purchase(StoreProduct product) async {

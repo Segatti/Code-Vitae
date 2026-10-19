@@ -2,36 +2,49 @@ import '../enums/store_item_category.dart';
 import 'store_product.dart';
 
 class StoreCatalog {
+  static const firstPurchaseOffer = StoreProduct(
+    id: 'first_purchase_offer',
+    category: StoreItemCategory.powerUp,
+    label: 'Pacote boas-vindas',
+    priceLabel: 'R\$ 49,99',
+    compareAtPriceLabel: 'R\$ 80,99',
+    description:
+        '7 dias de PowerUp + 5 Super Star + 5 Super Chat — só na primeira compra.',
+    icon: StoreProductIcon.powerUp3,
+    boostDuration: Duration(days: 7),
+    badgeLabel: 'Oferta especial',
+  );
+
   static const superStarProducts = [
     StoreProduct(
       id: 'super_star_1',
       category: StoreItemCategory.superStar,
-      label: '1 un.',
+      label: '2 créditos',
       priceLabel: 'R\$ 11,99',
-      description:
-          '1 crédito de Super Star para usar quando quiser em um perfil ou imóvel.',
+      description: 'Para experimentar o destaque',
       icon: StoreProductIcon.superStar1,
       boostDuration: Duration.zero,
     ),
     StoreProduct(
       id: 'super_star_2',
       category: StoreItemCategory.superStar,
-      label: '3 un.',
+      label: '5 créditos',
       priceLabel: 'R\$ 27,99',
-      description:
-          'Pacote com 3 Super Stars — ideal para destacar vários matches.',
+      description: 'Melhor equilíbrio preço × uso',
       icon: StoreProductIcon.superStar2,
       boostDuration: Duration.zero,
+      badgeLabel: 'Popular',
+      isRecommended: true,
     ),
     StoreProduct(
       id: 'super_star_3',
       category: StoreItemCategory.superStar,
-      label: '5 un.',
+      label: '10 créditos',
       priceLabel: 'R\$ 49,99',
-      description:
-          'Pacote com 5 Super Stars — melhor custo para quem usa com frequência.',
+      description: 'Para quem reage com frequência',
       icon: StoreProductIcon.superStar3,
       boostDuration: Duration.zero,
+      badgeLabel: 'Melhor valor',
     ),
   ];
 
@@ -39,32 +52,32 @@ class StoreCatalog {
     StoreProduct(
       id: 'super_chat_1',
       category: StoreItemCategory.superChat,
-      label: '1 un.',
+      label: '2 créditos',
       priceLabel: 'R\$ 11,99',
-      description:
-          '1 crédito de Super Chat: mensagem inicial em destaque com notificação.',
+      description: 'Ideal para testar conversas',
       icon: StoreProductIcon.superChat1,
       boostDuration: Duration.zero,
     ),
     StoreProduct(
       id: 'super_chat_2',
       category: StoreItemCategory.superChat,
-      label: '3 un.',
+      label: '5 créditos',
       priceLabel: 'R\$ 27,99',
-      description:
-          '3 Super Chats para iniciar conversas com mais visibilidade.',
+      description: 'Mais mensagens em destaque',
       icon: StoreProductIcon.superChat2,
       boostDuration: Duration.zero,
+      badgeLabel: 'Popular',
+      isRecommended: true,
     ),
     StoreProduct(
       id: 'super_chat_3',
       category: StoreItemCategory.superChat,
-      label: '5 un.',
+      label: '10 créditos',
       priceLabel: 'R\$ 49,99',
-      description:
-          '5 Super Chats — pacote econômico para contatos frequentes.',
+      description: 'Para conversar sem limites',
       icon: StoreProductIcon.superChat3,
       boostDuration: Duration.zero,
+      badgeLabel: 'Melhor valor',
     ),
   ];
 
@@ -74,8 +87,7 @@ class StoreCatalog {
       category: StoreItemCategory.powerUp,
       label: '24 horas',
       priceLabel: 'R\$ 9,99',
-      description:
-          '24 h de destaque no feed da sua cidade. Permite mudar opinião no histórico.',
+      description: 'Impulso rápido no feed',
       icon: StoreProductIcon.powerUp1,
       boostDuration: Duration(hours: 24),
     ),
@@ -84,20 +96,21 @@ class StoreCatalog {
       category: StoreItemCategory.powerUp,
       label: '7 dias',
       priceLabel: 'R\$ 24,99',
-      description:
-          '7 dias de destaque + 1 Super Star e 1 Super Chat de bônus.',
+      description: '+ 1 Super Star e 1 Super Chat',
       icon: StoreProductIcon.powerUp2,
       boostDuration: Duration(days: 7),
+      badgeLabel: 'Popular',
+      isRecommended: true,
     ),
     StoreProduct(
       id: 'power_up_30d',
       category: StoreItemCategory.powerUp,
       label: '30 dias',
       priceLabel: 'R\$ 59,99',
-      description:
-          '30 dias de destaque + 4 Super Stars e 4 Super Chats de bônus.',
+      description: '+ 4 Super Stars e 4 Super Chats',
       icon: StoreProductIcon.powerUp3,
       boostDuration: Duration(days: 30),
+      badgeLabel: 'Melhor valor',
     ),
   ];
 
@@ -109,10 +122,18 @@ class StoreCatalog {
       };
 
   static List<StoreProduct> get allProducts => [
-        ...powerUpProducts,
-        ...superStarProducts,
-        ...superChatProducts,
-      ];
+    firstPurchaseOffer,
+    ...powerUpProducts,
+    ...superStarProducts,
+    ...superChatProducts,
+  ];
+
+  static const powerUpProductIds = {
+    'power_up_24h',
+    'power_up_7d',
+    'power_up_30d',
+    'first_purchase_offer',
+  };
 
   static List<String> get allProductIds =>
       allProducts.map((product) => product.id).toList();

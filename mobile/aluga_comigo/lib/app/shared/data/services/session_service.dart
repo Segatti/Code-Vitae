@@ -5,16 +5,20 @@ import '../../domain/entities/system_config.dart';
 class UserInventory {
   final int superStarBalance;
   final int superChatBalance;
+  final bool firstPurchaseOfferEligible;
 
   const UserInventory({
     this.superStarBalance = 0,
     this.superChatBalance = 0,
+    this.firstPurchaseOfferEligible = false,
   });
 
   factory UserInventory.fromMap(Map<String, dynamic> map) {
     return UserInventory(
       superStarBalance: (map['superStarBalance'] as num?)?.toInt() ?? 0,
       superChatBalance: (map['superChatBalance'] as num?)?.toInt() ?? 0,
+      firstPurchaseOfferEligible:
+          map['firstPurchaseOfferEligible'] as bool? ?? false,
     );
   }
 }
