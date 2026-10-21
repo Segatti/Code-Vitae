@@ -3,7 +3,6 @@ import 'package:aluga_comigo/app/modules/auth/domain/enums/user_housework.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_life_style.dart';
 import 'package:aluga_comigo/app/modules/auth/domain/enums/user_skill.dart';
 import 'package:aluga_comigo/app/shared/presenter/widgets/app_message_dialog.dart';
-import 'package:aluga_comigo/app/shared/presenter/widgets/primary_button.dart';
 import 'package:aluga_comigo/app/shared/domain/extends/number.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';

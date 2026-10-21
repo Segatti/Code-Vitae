@@ -95,8 +95,7 @@ class CreateTicketController extends ICreateTicketController {
         await _analytics.logEvent(
           AnalyticsEvents.reportSubmitted,
           parameters: {
-            if (reportContext != null)
-              AnalyticsParams.reportContext: reportContext!,
+            AnalyticsParams.reportContext: ?reportContext,
           },
         );
       }

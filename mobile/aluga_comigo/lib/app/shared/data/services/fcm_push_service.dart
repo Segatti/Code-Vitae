@@ -65,7 +65,7 @@ class FcmPushService {
     }
 
     await _tokenRefreshSubscription?.cancel();
-    _tokenRefreshSubscription = messaging.onTokenRefresh.listen(
+    _tokenRefreshSubscription = messaging.onRegistered.listen(
       (token) => unawaited(_registerToken(token)),
     );
 
@@ -74,10 +74,7 @@ class FcmPushService {
 
   Future<void> syncTokenWithBackend() async {
     if (!_initialized) return;
-    final token = await FirebaseMessaging.instance.getToken();
-    if (token != null) {
-      await _registerToken(token);
-    }
+    await FirebaseMessaging.instance.register();
   }
 
   Future<void> _registerToken(String token) async {
