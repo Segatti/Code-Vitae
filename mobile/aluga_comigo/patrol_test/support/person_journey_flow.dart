@@ -394,7 +394,9 @@ Future<void> openProfileFromDrawer(PatrolIntegrationTester $) async {
       break;
     }
     if (find.byKey(const ValueKey('chat_message_field')).evaluate().isNotEmpty) {
-      await $.native.pressBack();
+      await $.platformAutomator.action(
+        android: $.platformAutomator.android.pressBack,
+      );
       await pumpBrief($, duration: const Duration(milliseconds: 800));
       continue;
     }
